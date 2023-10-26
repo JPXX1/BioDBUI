@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploadService } from '../file-upload.service';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
-import { ImpFormsPhylib } from '../file-upload/impformsphylib';
+//import { ImpFormsPhylib } from '../file-upload/impformsphylib';
 import { ImpFormsPhylibServ } from '../impeinheitphylib.service';
+import { User } from '../user';
 
 @Component({
 	selector: 'app-file-upload',
@@ -11,6 +12,8 @@ import { ImpFormsPhylibServ } from '../impeinheitphylib.service';
 })
 
 export class FileUploadComponent implements OnInit {
+	users!: User[];
+	user: User = new User();
 
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
@@ -21,8 +24,12 @@ export class FileUploadComponent implements OnInit {
 	constructor(private fileUploadService: FileUploadService,private impFormsPhylibServ: ImpFormsPhylibServ) { 
 	}
 	
-	ngOnInit(): void {
-	}
+	ngOnInit() {
+		this.impFormsPhylibServ.getUsers().subscribe(data => {
+		  console.log(data);
+		  this.users = data;
+		})
+	  }
 
 	// On file Select 
 	onChange(event) {
@@ -30,13 +37,7 @@ export class FileUploadComponent implements OnInit {
 	}
 
 
-	holeImpEinheit(){
-		var impFormsPhylib=new ImpFormsPhylib();
-		this.impFormsPhylibServ.getFormen.call(data => {
-			console.log(data);
-			impFormsPhylib = data;
-		  })
-	}
+
 
 
 	// OnClick of button Upload 
@@ -70,7 +71,16 @@ export class FileUploadComponent implements OnInit {
 		let XL_row_object;
 		let json_Messstelle;
 
-		this.holeImpEinheit()
+
+		//############
+
+		this.impFormsPhylibServ.getUsers().subscribe(data => {
+			console.log(data);
+			this.users = data;
+		  })
+		
+
+		//##########
 		reader.readAsBinaryString(file);
 		return new Promise((resolve, reject) => {
 			reader.onload = function () {
