@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploadService } from '../file-upload.service';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
+import { ImpFormsPhylib } from '../file-upload/impformsphylib';
+import { ImpFormsPhylibServ } from '../impeinheitphylib.service';
 
 @Component({
 	selector: 'app-file-upload',
@@ -16,15 +18,26 @@ export class FileUploadComponent implements OnInit {
 	file: File = null; // Variable to store file 
 
 	// Inject service 
-	constructor(private fileUploadService: FileUploadService) { }
-
+	constructor(private fileUploadService: FileUploadService,private impFormsPhylibServ: ImpFormsPhylibServ) { 
+	}
+	
 	ngOnInit(): void {
 	}
 
 	// On file Select 
 	onChange(event) {
-		this.file = event.target.files[0];
+		this.file=event.target.files[0];
 	}
+
+
+	holeImpEinheit(){
+		var impFormsPhylib=new ImpFormsPhylib();
+		this.impFormsPhylibServ.getFormen.call(data => {
+			console.log(data);
+			impFormsPhylib = data;
+		  })
+	}
+
 
 	// OnClick of button Upload 
 	onUpload() {
@@ -56,6 +69,8 @@ export class FileUploadComponent implements OnInit {
 		//var=sheet;
 		let XL_row_object;
 		let json_Messstelle;
+
+		this.holeImpEinheit()
 		reader.readAsBinaryString(file);
 		return new Promise((resolve, reject) => {
 			reader.onload = function () {
@@ -66,7 +81,7 @@ export class FileUploadComponent implements OnInit {
 				// workbookkk.SheetNames.forEach(function(sheetName) {
 
 
-				sheets = workbookkk.SheetNames;
+				//sheets = workbookkk.SheetNames;
 
 				for (let i = 0, l = workbookkk.SheetNames.length; i < l; i += 1) {
 
@@ -76,7 +91,7 @@ export class FileUploadComponent implements OnInit {
 					XL_row_object = utils.sheet_to_json(workbookkk.Sheets[workbookkk.SheetNames[i]]);
 					json_Messstelle = JSON.stringify(XL_row_object);
 					const obj = JSON.parse(json_Messstelle);
-					if (workbookkk.SheetNames[i] == 'Messstellen') {
+					if (workbookkk.SheetNames[i] == 'Messstelle') {
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
