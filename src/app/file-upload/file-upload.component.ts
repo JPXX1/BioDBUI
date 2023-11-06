@@ -1,35 +1,60 @@
 import { Component, OnInit } from '@angular/core';
-import { FileUploadService } from '../file-upload.service';
+import { FileUploadService } from './services/file-upload.service';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
 //import { ImpFormsPhylib } from '../file-upload/impformsphylib';
-import { ImpFormsPhylibServ } from '../impeinheitphylib.service';
-import { User } from '../user';
-
+import { ImpFormsPhylibServ } from './services/impformenphylib.service';
+import { Formen } from '../file-upload/klassen/formen';
+import { Injectable } from '@angular/core';
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.css']
 })
-
+@Injectable({
+	providedIn: 'root'
+  })
 export class FileUploadComponent implements OnInit {
-	users!: User[];
-	user: User = new User();
-
+	
+	formen: Formen[] = [];
+users:any;
+	 
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
 	loading: boolean = false; // Flag variable 
 	file: File = null; // Variable to store file 
 
 	// Inject service 
+	
 	constructor(private fileUploadService: FileUploadService,private impFormsPhylibServ: ImpFormsPhylibServ) { 
 	}
 	
 	ngOnInit() {
-		this.impFormsPhylibServ.getUsers().subscribe(data => {
-		  console.log(data);
-		  this.users = data;
-		})
+
+		this.impFormsPhylibServ.getFormen().subscribe(formen => { 
+			//let roles = formen; 
+			console.log(formen);
+		 });
+
+		//this.impFormsPhylibServ.getFormen().subscribe(data => {
+		 
+		//	this.users = data;
+
+			
+		 // console.log(this.users);
+	//	});
 	  }
+	  getFormenPhylib(){
+		
+
+			this.impFormsPhylibServ.getFormen().subscribe(formen => { 
+				//let roles = formen; 
+				console.log(formen);
+			 });
+	
+		return this.formen;
+		  }
+	
+	  
 
 	// On file Select 
 	onChange(event) {
@@ -46,6 +71,7 @@ export class FileUploadComponent implements OnInit {
 		//console.log(this.file); 
 		this.convertExcelToJson(this.file);
 		this.shortLink='FF';
+		
 		this.fileUploadService.upload(this.file).subscribe(
 			(event: any) => {
 				if (typeof (event) === 'object') {
@@ -58,26 +84,27 @@ export class FileUploadComponent implements OnInit {
 			}
 		);
 	}
-	listUsers = []
+	//listUsers = []
 
 
 	convertExcelToJson(file) {
+		
 		let reader = new FileReader();
 		let workbookkk;
 		var sheets;
-		var Messstelle;var Probe;var Taxon;var Form;var Messwert;var Einheit;var cf;
+		var Messstelle;var Probe;var Taxon;var Form:Formen;var Messwert;var Einheit;var cf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
-		//var=sheet;
+		
 		let XL_row_object;
 		let json_Messstelle;
 
 
 		//############
-
-		this.impFormsPhylibServ.getUsers().subscribe(data => {
-			console.log(data);
-			this.users = data;
-		  })
+		let phylibform;
+		this.impFormsPhylibServ.getFormen().subscribe(formen => { 
+			phylibform=formen; 
+			//console.log(formen);
+		 });
 		
 
 		//##########
@@ -90,13 +117,13 @@ export class FileUploadComponent implements OnInit {
 				//console.log(workbookkk);
 				// workbookkk.SheetNames.forEach(function(sheetName) {
 
-
+				
 				//sheets = workbookkk.SheetNames;
 
 				for (let i = 0, l = workbookkk.SheetNames.length; i < l; i += 1) {
 
 
-
+					
 					console.log(workbookkk.SheetNames[i]);
 					XL_row_object = utils.sheet_to_json(workbookkk.Sheets[workbookkk.SheetNames[i]]);
 					json_Messstelle = JSON.stringify(XL_row_object);
@@ -107,7 +134,7 @@ export class FileUploadComponent implements OnInit {
 								for (var i in obj[index]) {
 									//var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
 	
-
+										
 									if (i == 'Messstelle') {
 										if (index > 0) { console.log("Insert into Messstellen (Messstelle, Oekoregion, Makrophytenveroedung, Begruendung,Helophytendominanz,Diatomeentyp,Phytobenthostyp,Makrophytentyp,WRRLTyp,Gesamtdeckungsgrad) values ('" + Messstelle + "','" + Oekoregion + "','" + Makrophytenveroedung + "','" + Begruendung + "','" + Helophytendominanz + "','" + Diatomeentyp + "','" + Phytobenthostyp + "','" + Makrophytentyp + "','" + WRRLTyp + "','" + Gesamtdeckungsgrad + "');"); }
 										Messstelle = obj[index][i];
@@ -163,7 +190,11 @@ export class FileUploadComponent implements OnInit {
 									}
 									if (i == 'Form') {
 										Form = obj[index][i];
-
+										let employeeName:string = obj[index][i];
+										console.log(employeeName)
+										let filteredPeople= phylibform.filter((formen) => formen.ident_form== 's');
+									
+										console.log(filteredPeople)
 									}
 									if (i == 'Messwert') {
 										Messwert = obj[index][i];
