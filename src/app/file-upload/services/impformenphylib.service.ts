@@ -4,15 +4,29 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class ImpFormsPhylibServ {
+export class ImpPhylibServ {
  
   constructor(private httpClient: HttpClient) { }
 
   getFormen(){ 
   
- return this.httpClient.get('http://localhost:3000/impformsphylib');
+ return this.httpClient.get('http://localhost:3000/impformenphylib');
     
 
     
   }
+  getEinheiten(){ 
+  
+    return this.httpClient.get('http://localhost:3000/impeinheitenphylib');
+       
+   
+       
+     }
+     getMst(){ 
+  
+      return this.httpClient.get('http://localhost:3000/impMst');
+         
+     
+         
+       }
 }

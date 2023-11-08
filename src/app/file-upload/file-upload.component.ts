@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploadService } from './services/file-upload.service';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
-//import { ImpFormsPhylib } from '../file-upload/impformsphylib';
-import { ImpFormsPhylibServ } from './services/impformenphylib.service';
-import { Formen } from '../file-upload/klassen/formen';
+import { ImpPhylibServ } from './services/impformenphylib.service';
+
 import { Injectable } from '@angular/core';
 @Component({
 	selector: 'app-file-upload',
@@ -15,8 +14,9 @@ import { Injectable } from '@angular/core';
   })
 export class FileUploadComponent implements OnInit {
 	
-	formen: Formen[] = [];
-users:any;
+	//formen: Taxonzus[] = [];
+	//einheiten:Einheiten[]=[];
+	
 	 
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
@@ -25,35 +25,36 @@ users:any;
 
 	// Inject service 
 	
-	constructor(private fileUploadService: FileUploadService,private impFormsPhylibServ: ImpFormsPhylibServ) { 
+	constructor(private fileUploadService: FileUploadService,private impPhylibServ: ImpPhylibServ) { 
 	}
 	
 	ngOnInit() {
 
-		this.impFormsPhylibServ.getFormen().subscribe(formen => { 
-			//let roles = formen; 
-			console.log(formen);
-		 });
-
-		//this.impFormsPhylibServ.getFormen().subscribe(data => {
-		 
-		//	this.users = data;
-
-			
-		 // console.log(this.users);
-	//	});
-	  }
-	  getFormenPhylib(){
 		
 
-			this.impFormsPhylibServ.getFormen().subscribe(formen => { 
-				//let roles = formen; 
-				console.log(formen);
+	  }
+	  getFormenPhylib(){
+		var data;
+
+			this.impPhylibServ.getFormen().subscribe(formen_ => { 
+				data =formen_; 
+				console.log(data);
+				//return formen;
 			 });
 	
-		return this.formen;
+		return data;
 		  }
+		  getEinheitenPhylib(){
+			let einheiten
+
+			this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
+				 einheiten=einheiten_;
+				console.log(einheiten);
+				//return einheiten;
+			 });
 	
+		return einheiten;
+		  }
 	  
 
 	// On file Select 
@@ -92,7 +93,7 @@ users:any;
 		let reader = new FileReader();
 		let workbookkk;
 		var sheets;
-		var Messstelle;var Probe;var Taxon;var Form:Formen;var Messwert;var Einheit;var cf;
+		var Messstelle;var Probe;var Taxon;var Form:Number;var Messwert;var Einheit;var cf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
 		
 		let XL_row_object;
@@ -100,12 +101,33 @@ users:any;
 
 
 		//############
-		let phylibform;
-		this.impFormsPhylibServ.getFormen().subscribe(formen => { 
-			phylibform=formen; 
-			//console.log(formen);
+		let einheiten
+
+		this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
+			 einheiten=einheiten_;
+			console.log(einheiten);
+			//return einheiten;
 		 });
-		
+
+		 var formen;
+
+			this.impPhylibServ.getFormen().subscribe(formen_ => { 
+				formen =formen_; 
+				console.log(formen);
+				//return formen;
+			 });
+
+		var messstellen;
+
+			 this.impPhylibServ.getMst().subscribe(messstellen_ => { 
+				messstellen =messstellen_; 
+				 console.log(messstellen);
+				 //return formen;
+			  });
+		//let phylibeinh=einheiten; 
+		//let phylibform=this.getFormenPhylib();
+		// let p:any=this.getFormenPhylib();
+		 
 
 		//##########
 		reader.readAsBinaryString(file);
@@ -178,9 +200,22 @@ users:any;
 								for (var i in obj[index]) {
 									//console.log(val + " / " + obj[index][i] + ": " + i);
 
+
+
+									
 									if (i == 'Messstelle') {
-										if (index > 0) { console.log("Insert into daten (Messstelle, Probe, Taxon, Form,Messwert,Einheit,cf) values ('" + Messstelle + "','" + Probe + "','" + Taxon + "','" + Form + "','" + Messwert + "','" + Einheit + "'," + cf + ");"); }
-										Messstelle = obj[index][i];
+										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); }
+										
+										var mst:string = obj[index][i];
+										
+										//taxonzus=new Taxonzus();
+										let mstee = messstellen.filter(messstellen => messstellen.namemst== mst);
+
+										//console.log(id_taxonzus);
+										
+										 if (mstee !== null) {Messstelle=mstee[0].id_mst;}
+										
+										//Messstelle = obj[index][i];
 										}
 									if (i == 'Probe') {
 										Probe = obj[index][i];
@@ -189,19 +224,28 @@ users:any;
 										Taxon = obj[index][i];
 									}
 									if (i == 'Form') {
-										Form = obj[index][i];
-										let employeeName:string = obj[index][i];
-										console.log(employeeName)
-										let filteredPeople= phylibform.filter((formen) => formen.ident_form== 's');
-									
-										console.log(filteredPeople)
-									}
+										Form;
+										
+										var employeeName:string = obj[index][i];
+										console.log(formen);
+										//taxonzus=new Taxonzus();
+										let taxonzus = formen.filter(formen => formen.importname== employeeName);
+
+										//console.log(id_taxonzus);
+										
+										 if (taxonzus !== null) {Form=taxonzus[0].id_taxonzus;}
+										 console.log('Form:'+Form);}
 									if (i == 'Messwert') {
 										Messwert = obj[index][i];
 
 									}
 									if (i == 'Einheit') {
-										Einheit = obj[index][i];
+
+										var EinheitName:string = obj[index][i];
+										let einh= einheiten.filter((einheit) => einheit.importname== EinheitName);
+										if (einh !== null) {
+											Einheit = einh[0].id;
+											console.log('Einheit:'+Einheit);}
 
 
 									}
