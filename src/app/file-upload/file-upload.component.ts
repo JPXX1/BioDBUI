@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FileUploadService } from './services/file-upload.service';
 import { WorkBook, read, utils, write, readFile } from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
-
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 import { Injectable } from '@angular/core';
 @Component({
 	selector: 'app-file-upload',
@@ -13,11 +14,14 @@ import { Injectable } from '@angular/core';
 	providedIn: 'root'
   })
 export class FileUploadComponent implements OnInit {
+
 	
+	displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
+	public MessData:Observable<messdata[]>;
 	//formen: Taxonzus[] = [];
 	//einheiten:Einheiten[]=[];
 	
-	 
+	
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
 	loading: boolean = false; // Flag variable 
@@ -89,11 +93,11 @@ export class FileUploadComponent implements OnInit {
 
 
 	convertExcelToJson(file) {
-		
+		const array: messdata[]=[];
 		let reader = new FileReader();
 		let workbookkk;
 		var sheets;
-		var Messstelle;var Probe;var Taxon;var Form:Number;var Messwert;var Einheit;var cf;
+		var Messstelle:string;var Probe:string;var Taxon;var Form:string;var Messwert;var Einheit;var cf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
 		
 		let XL_row_object;
@@ -194,24 +198,25 @@ export class FileUploadComponent implements OnInit {
 					}
 					if (workbookkk.SheetNames[i] == 'Messwerte') {
 						// Here is your object
-						
+						let o:number=1;
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
 									//console.log(val + " / " + obj[index][i] + ": " + i);
 
-
+									o=o+1;
 
 									
 									if (i == 'Messstelle') {
 										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); }
+										array.push({_Nr:o,_Messstelle:Messstelle,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf});
 										
-										var mst:string = obj[index][i];
+										let mst:string = obj[index][i];
 										
 										//taxonzus=new Taxonzus();
 										let mstee = messstellen.filter(messstellen => messstellen.namemst== mst);
 
-										//console.log(id_taxonzus);
+										console.log(mst);
 										
 										 if (mstee !== null) {Messstelle=mstee[0].id_mst;}
 										
@@ -258,16 +263,25 @@ export class FileUploadComponent implements OnInit {
 								}
 							}
 						})
-						resolve(XL_row_object);
-					}
+						resolve(XL_row_object);console.log(array);
+						 of(array);}
 				}
 			}
 		});
 	};
-
+	
 }
 
-
+interface messdata{
+	_Nr:number;
+	_Messstelle: string;
+	_Probe: string;
+	_Taxon: string;
+	_Form: string;
+	_Messwert: string;
+	_Einheit: string;
+	_cf: string;
+}
 
 
 
