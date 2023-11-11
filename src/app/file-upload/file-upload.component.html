@@ -7,7 +7,22 @@
 		Upload 
 	</button> 
 </div> 
+<div class="text-center"> 
+	
 
+	<button (click)="getFormenPhylib()" 
+		class="btn btn-success"> 
+		getFormenPhylib 
+	</button> 
+	<button (click)="getEinheitenPhylib()" 
+		class="btn btn-success"> 
+		getEinheitenPhylib 
+	</button> 
+	<button (click)="getMStPhylib()" 
+		class="btn btn-success"> 
+		getMst 
+	</button> 
+</div>
 <!-- Shareable short link of uploaded file -->
 <div class="container text-center jumbotron"
 	*ngIf="shortLink"> 
@@ -19,7 +34,13 @@
 <div class="container" *ngIf="loading"> 
 	<h3>Loading ...</h3> 
 </div> 
+
+<div class="col-md-8 form-group">        
+	<input type="file" class="form-control" (change)="addfile($event)" placeholder="Upload file" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">        
+  </div>  
+
 <div>
+	
 	<table mat-table [dataSource]="MessData" class="mat-elevation-z8">
 
 		<!--- Note that these columns can be defined in any order.
@@ -63,7 +84,6 @@
 		  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 		  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
 	  </table>
-	  
 	  
 </div>
 

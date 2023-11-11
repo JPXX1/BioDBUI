@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { FileUploadService } from './services/file-upload.service';
-import { WorkBook, read, utils, write, readFile } from 'xlsx';
+import * as XLSX from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { Injectable } from '@angular/core';
+
+
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.css']
 })
-@Injectable({
-	providedIn: 'root'
-  })
-export class FileUploadComponent implements OnInit {
 
-	
-	displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
-	public MessData:Observable<messdata[]>;
+export class FileUploadComponent implements OnInit {
+	public einheiten:any;
+	public mst:any;
+	public formen:any;
+	arrayBuffer:any;
+	public MessData:messdata[];
+	//xls:WorkBook;
+
 	//formen: Taxonzus[] = [];
 	//einheiten:Einheiten[]=[];
 	
@@ -38,29 +38,39 @@ export class FileUploadComponent implements OnInit {
 
 	  }
 	  getFormenPhylib(){
-		var data;
+		
 
 			this.impPhylibServ.getFormen().subscribe(formen_ => { 
-				data =formen_; 
-				console.log(data);
+				this.formen =formen_; 
+				console.log(this.formen);
 				//return formen;
 			 });
 	
-		return data;
+		//return data;
 		  }
 		  getEinheitenPhylib(){
-			let einheiten
+			
 
 			this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
-				 einheiten=einheiten_;
-				console.log(einheiten);
+				 this.einheiten=einheiten_;
+				console.log(this.einheiten);
 				//return einheiten;
 			 });
 	
-		return einheiten;
+		//return einheiten;
 		  }
 	  
+		  getMStPhylib(){
+			
 
+			this.impPhylibServ.getMst().subscribe(mst_ => { 
+				 this.mst=mst_;
+				console.log(this.mst);
+				//return einheiten;
+			 });
+	
+		//return einheiten;
+		  }
 	// On file Select 
 	onChange(event) {
 		this.file=event.target.files[0];
@@ -74,7 +84,8 @@ export class FileUploadComponent implements OnInit {
 	onUpload() {
 		this.loading = !this.loading;
 		//console.log(this.file); 
-		this.convertExcelToJson(this.file);
+		//this.startconvertExcelToJson(this.file);
+
 		this.shortLink='FF';
 		
 		this.fileUploadService.upload(this.file).subscribe(
@@ -89,72 +100,78 @@ export class FileUploadComponent implements OnInit {
 			}
 		);
 	}
-	//listUsers = []
+	
+	
+		addfile(event)     
+		{    
+		this.file= event.target.files[0];     
+		let fileReader = new FileReader();    
+		fileReader.readAsArrayBuffer(this.file);     
+		fileReader.onload = (e) => {    
+			this.arrayBuffer = fileReader.result;    
+			var data = new Uint8Array(this.arrayBuffer);    
+			var arr = new Array();    
+			for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
+			var bstr = arr.join("");    
+			var workbook = XLSX.read(bstr, {type:"binary"});    
+			var first_sheet_name = workbook.SheetNames[1];    
+			var worksheet = workbook.Sheets[first_sheet_name];    
+			console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
+			  var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
+				  //this.filelist = [];    
+				  console.log(arraylist)  ; 
+				  this.getFormenPhylib();
+				  this.convertExcelToJson_(workbook);  
+				 
+		}    
+	  }  ;
+	
 
 
-	convertExcelToJson(file) {
-		const array: messdata[]=[];
-		let reader = new FileReader();
-		let workbookkk;
+	
+	  convertExcelToJson_(workbook): messdata[]{
+		let array: messdata[]=[];
+		//let reader = new FileReader();
+		
 		var sheets;
 		var Messstelle:string;var Probe:string;var Taxon;var Form:string;var Messwert;var Einheit;var cf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
 		
 		let XL_row_object;
 		let json_Messstelle;
-
-
+	
+	
 		//############
-		let einheiten
-
-		this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
-			 einheiten=einheiten_;
-			console.log(einheiten);
-			//return einheiten;
-		 });
-
-		 var formen;
-
-			this.impPhylibServ.getFormen().subscribe(formen_ => { 
-				formen =formen_; 
-				console.log(formen);
-				//return formen;
-			 });
-
-		var messstellen;
-
-			 this.impPhylibServ.getMst().subscribe(messstellen_ => { 
-				messstellen =messstellen_; 
-				 console.log(messstellen);
-				 //return formen;
-			  });
+		
+	
+		
 		//let phylibeinh=einheiten; 
 		//let phylibform=this.getFormenPhylib();
 		// let p:any=this.getFormenPhylib();
 		 
-
+	
 		//##########
-		reader.readAsBinaryString(file);
-		return new Promise((resolve, reject) => {
-			reader.onload = function () {
+		
+		
+			
 				//  alert(reader.result);
-				let data = reader.result;
-				workbookkk = read(data, { type: 'binary' });
+				//let data = reader.result;
+			
 				//console.log(workbookkk);
 				// workbookkk.SheetNames.forEach(function(sheetName) {
-
+	
 				
 				//sheets = workbookkk.SheetNames;
-
-				for (let i = 0, l = workbookkk.SheetNames.length; i < l; i += 1) {
-
-
+	
+				for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
+	
+	
 					
-					console.log(workbookkk.SheetNames[i]);
-					XL_row_object = utils.sheet_to_json(workbookkk.Sheets[workbookkk.SheetNames[i]]);
+					console.log(workbook.SheetNames[i]);
+					XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]]);
 					json_Messstelle = JSON.stringify(XL_row_object);
 					const obj = JSON.parse(json_Messstelle);
-					if (workbookkk.SheetNames[i] == 'Messstelle') {
+					if (workbook.SheetNames[i] == 'Messstelle') {
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
@@ -196,16 +213,16 @@ export class FileUploadComponent implements OnInit {
 							}
 						})
 					}
-					if (workbookkk.SheetNames[i] == 'Messwerte') {
+					if (workbook.SheetNames[i] == 'Messwerte') {
 						// Here is your object
 						let o:number=1;
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
 									//console.log(val + " / " + obj[index][i] + ": " + i);
-
+	
 									o=o+1;
-
+	
 									
 									if (i == 'Messstelle') {
 										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); }
@@ -214,8 +231,8 @@ export class FileUploadComponent implements OnInit {
 										let mst:string = obj[index][i];
 										
 										//taxonzus=new Taxonzus();
-										let mstee = messstellen.filter(messstellen => messstellen.namemst== mst);
-
+										let mstee = this.mst.filter(messstellen => messstellen.namemst== mst);
+	
 										console.log(mst);
 										
 										 if (mstee !== null) {Messstelle=mstee[0].id_mst;}
@@ -232,60 +249,63 @@ export class FileUploadComponent implements OnInit {
 										Form;
 										
 										var employeeName:string = obj[index][i];
-										console.log(formen);
+										console.log(this.formen);
 										//taxonzus=new Taxonzus();
-										let taxonzus = formen.filter(formen => formen.importname== employeeName);
-
+										let taxonzus = this.formen.filter(formen => formen.importname== employeeName);
+	
 										//console.log(id_taxonzus);
 										
 										 if (taxonzus !== null) {Form=taxonzus[0].id_taxonzus;}
 										 console.log('Form:'+Form);}
 									if (i == 'Messwert') {
 										Messwert = obj[index][i];
-
+	
 									}
 									if (i == 'Einheit') {
-
+	
 										var EinheitName:string = obj[index][i];
-										let einh= einheiten.filter((einheit) => einheit.importname== EinheitName);
+										let einh= this.einheiten.filter((einheit) => einheit.importname== EinheitName);
 										if (einh !== null) {
 											Einheit = einh[0].id;
 											console.log('Einheit:'+Einheit);}
-
-
+	
+	
 									}
 									if (i == 'cf') {
-
+	
 										cf = true;
-
-
+	
+	
 									} else { cf = false }
 								}
 							}
 						})
-						resolve(XL_row_object);console.log(array);
-						 of(array);}
+						
+						 //of(array);
+						}
 				}
-			}
-		});
-	};
+				this.MessData=array;
+				console.log(array);	
+		return array;
+	}
+
+	displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
 	
-}
-
-interface messdata{
-	_Nr:number;
-	_Messstelle: string;
-	_Probe: string;
-	_Taxon: string;
-	_Form: string;
-	_Messwert: string;
-	_Einheit: string;
-	_cf: string;
-}
+		
+	}
 
 
 
-
+	interface messdata{
+		_Nr:number;
+		_Messstelle: string;
+		_Probe: string;
+		_Taxon: string;
+		_Form: string;
+		_Messwert: string;
+		_Einheit: string;
+		_cf: string;
+	}
 
 
 
