@@ -102,9 +102,9 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	
-		addfile(event)     
+		addfile()     
 		{    
-		this.file= event.target.files[0];     
+	//	this.file= event.target.files[0];     
 		let fileReader = new FileReader();    
 		fileReader.readAsArrayBuffer(this.file);     
 		fileReader.onload = (e) => {    
@@ -129,7 +129,7 @@ export class FileUploadComponent implements OnInit {
 
 
 	
-	  convertExcelToJson_(workbook): messdata[]{
+	  convertExcelToJson_(workbook){
 		let array: messdata[]=[];
 		//let reader = new FileReader();
 		
@@ -285,8 +285,8 @@ export class FileUploadComponent implements OnInit {
 						}
 				}
 				this.MessData=array;
-				console.log(array);	
-		return array;
+					
+		
 	}
 
 	displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
