@@ -3,6 +3,7 @@ import { FileUploadService } from './services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
 
+ 
 
 @Component({
 	selector: 'app-file-upload',
@@ -11,11 +12,12 @@ import { ImpPhylibServ } from './services/impformenphylib.service';
 })
 
 export class FileUploadComponent implements OnInit {
+	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
 	public formen:any;
 	arrayBuffer:any;
-	public MessData:messdata[];
+	public MessData:messdata[];	public MessDataGr:messdata[];
 	//xls:WorkBook;
 
 	//formen: Taxonzus[] = [];
@@ -33,8 +35,11 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	ngOnInit() {
-
+		this.getMStPhylib;
+		this.getEinheitenPhylib;
+		this.getFormenPhylib();
 		
+		//
 
 	  }
 	  getFormenPhylib(){
@@ -43,6 +48,7 @@ export class FileUploadComponent implements OnInit {
 			this.impPhylibServ.getFormen().subscribe(formen_ => { 
 				this.formen =formen_; 
 				console.log(this.formen);
+
 				//return formen;
 			 });
 	
@@ -101,7 +107,24 @@ export class FileUploadComponent implements OnInit {
 		);
 	}
 	
+	group(){
+
+	var temp=this.groupBy(this.MessData,'_Messstelle');
 	
+	console.log(temp);
+	
+}
+	groupBy = (array, key) => {
+		// Return the end result
+		return array.reduce((result, currentValue) => {
+		  // If an array already present for key, push it to the array. Else create an array and push the object
+		  ;(result[currentValue[key]] = result[currentValue[key]] || []).push(
+			currentValue,
+		  )
+		  // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+		  return result
+		}, {}) // empty object is the initial value for result object
+	  }
 		addfile()     
 		{    
 	//	this.file= event.target.files[0];     
@@ -113,15 +136,41 @@ export class FileUploadComponent implements OnInit {
 			var arr = new Array();    
 			for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
 			var bstr = arr.join("");    
-			var workbook = XLSX.read(bstr, {type:"binary"});    
-			var first_sheet_name = workbook.SheetNames[1];    
-			var worksheet = workbook.Sheets[first_sheet_name];    
-			console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
-			  var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
-				  //this.filelist = [];    
-				  console.log(arraylist)  ; 
-				  this.getFormenPhylib();
-				  this.convertExcelToJson_(workbook);  
+			var workbook = XLSX.read(bstr, {type:"binary"}); 
+			
+			//Exceltabs auslesen
+
+			//for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
+
+				//Phylibimportdatei
+				if (workbook.SheetNames.length=2){
+					if (workbook.SheetNames[0]=='Messstellen' && workbook.SheetNames[1]=='Messwerte') {
+					this.Phylibimport(workbook);this.group();
+					this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.MessData.length + " Datensätze in der Importdatei.";
+					
+					}
+					else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard."}
+				}else{this.InfoBox="Fehler"}
+
+
+
+
+
+				 
+
+
+
+
+
+
+			//var first_sheet_name = workbook.SheetNames[1];    
+			//var worksheet = workbook.Sheets[first_sheet_name];    
+			//console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
+			//  var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
+			//	  //this.filelist = [];    
+			//	  console.log(arraylist)  ; 
+			//	  this.getFormenPhylib();
+				  
 				 
 		}    
 	  }  ;
@@ -129,12 +178,13 @@ export class FileUploadComponent implements OnInit {
 
 
 	
-	  convertExcelToJson_(workbook){
+	  Phylibimport(workbook){
 		let array: messdata[]=[];
 		//let reader = new FileReader();
 		
 		var sheets;
 		var Messstelle:string;var Probe:string;var Taxon;var Form:string;var Messwert;var Einheit;var cf;
+		let aMessstelle:string;let aProbe:string;let aTaxon;let aForm:string;let aMesswert;let aEinheit;let acf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
 		
 		let XL_row_object;
@@ -225,11 +275,11 @@ export class FileUploadComponent implements OnInit {
 	
 									
 									if (i == 'Messstelle') {
-										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); }
-										array.push({_Nr:o,_Messstelle:Messstelle,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf});
+										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
+										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf});}
 										
 										let mst:string = obj[index][i];
-										
+										aMessstelle=mst;
 										//taxonzus=new Taxonzus();
 										let mstee = this.mst.filter(messstellen => messstellen.namemst== mst);
 	
@@ -249,14 +299,16 @@ export class FileUploadComponent implements OnInit {
 										Form;
 										
 										var employeeName:string = obj[index][i];
+
 										console.log(this.formen);
 										//taxonzus=new Taxonzus();
 										let taxonzus = this.formen.filter(formen => formen.importname== employeeName);
 	
 										//console.log(id_taxonzus);
 										
-										 if (taxonzus !== null) {Form=taxonzus[0].id_taxonzus;}
-										 console.log('Form:'+Form);}
+										 if (taxonzus !== null) {Form=taxonzus[0].id_taxonzus;aForm=employeeName;}
+										 //console.log('Form:'+Form);
+										}
 									if (i == 'Messwert') {
 										Messwert = obj[index][i];
 	
@@ -266,8 +318,9 @@ export class FileUploadComponent implements OnInit {
 										var EinheitName:string = obj[index][i];
 										let einh= this.einheiten.filter((einheit) => einheit.importname== EinheitName);
 										if (einh !== null) {
-											Einheit = einh[0].id;
-											console.log('Einheit:'+Einheit);}
+											Einheit = einh[0].id;aEinheit=EinheitName;
+											//console.log('Einheit:'+Einheit);
+										}
 	
 	
 									}
@@ -307,6 +360,12 @@ export class FileUploadComponent implements OnInit {
 		_cf: string;
 	}
 
-
+	interface Messgroup{
+		_Nr:number;
+		_Messstelle: string;
+		_Probe: string;
+		_AnzahlTaxa: number;
+		
+	}
 
 
