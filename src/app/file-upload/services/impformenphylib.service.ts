@@ -29,4 +29,11 @@ export class ImpPhylibServ {
      
          
        }
+       getArtenPhylibMP(){ 
+  
+        return this.httpClient.get('http://localhost:3000/impArten');
+           
+       
+           
+         }
 }

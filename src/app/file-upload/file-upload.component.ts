@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { FileUploadService } from './services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
@@ -10,7 +11,7 @@ import { ImpPhylibServ } from './services/impformenphylib.service';
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.css']
 })
-
+@Injectable()
 export class FileUploadComponent implements OnInit {
 	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
@@ -35,51 +36,32 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	ngOnInit() {
-		this.getMStPhylib;
-		this.getEinheitenPhylib;
-		this.getFormenPhylib();
+		this.impPhylibServ.getFormen().subscribe(formen_ => { 
+			this.formen =formen_; 
+			console.log(this.formen);
+
+				 });
 		
+		
+		this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
+			this.einheiten=einheiten_;
+		   console.log(this.einheiten);
+		   //return einheiten;
+		});
 		//
+		this.impPhylibServ.getMst().subscribe(mst_ => { 
+			this.mst=mst_;
+		   console.log(this.mst);
+		   //return einheiten;
+		}) ;
 
 	  }
-	  getFormenPhylib(){
-		
 
-			this.impPhylibServ.getFormen().subscribe(formen_ => { 
-				this.formen =formen_; 
-				console.log(this.formen);
-
-				//return formen;
-			 });
-	
-		//return data;
-		  }
-		  getEinheitenPhylib(){
-			
-
-			this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
-				 this.einheiten=einheiten_;
-				console.log(this.einheiten);
-				//return einheiten;
-			 });
-	
-		//return einheiten;
-		  }
 	  
-		  getMStPhylib(){
-			
-
-			this.impPhylibServ.getMst().subscribe(mst_ => { 
-				 this.mst=mst_;
-				console.log(this.mst);
-				//return einheiten;
-			 });
-	
-		//return einheiten;
-		  }
 	// On file Select 
 	onChange(event) {
 		this.file=event.target.files[0];
+		
 	}
 
 
@@ -193,7 +175,7 @@ export class FileUploadComponent implements OnInit {
 	
 		//############
 		
-	
+
 		
 		//let phylibeinh=einheiten; 
 		//let phylibform=this.getFormenPhylib();
@@ -275,17 +257,21 @@ export class FileUploadComponent implements OnInit {
 	
 									
 									if (i == 'Messstelle') {
-										if (index > 0) { console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf});}
+										let mstOK=true;let ok=true;
+										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
+										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok});}
 										
 										let mst:string = obj[index][i];
-										aMessstelle=mst;
+										//aMessstelle=mst;
 										//taxonzus=new Taxonzus();
 										let mstee = this.mst.filter(messstellen => messstellen.namemst== mst);
 	
 										console.log(mst);
 										
-										 if (mstee !== null) {Messstelle=mstee[0].id_mst;}
+										 if (mstee.length !== 0) {aMessstelle=mstee[0].id_mst;}else{
+											aMessstelle=mst;
+											mstOK=false
+										 }
 										
 										//Messstelle = obj[index][i];
 										}
@@ -358,6 +344,9 @@ export class FileUploadComponent implements OnInit {
 		_Messwert: string;
 		_Einheit: string;
 		_cf: string;
+		MstOK:boolean;
+		OK:boolean;
+
 	}
 
 	interface Messgroup{
