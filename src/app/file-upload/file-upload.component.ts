@@ -17,12 +17,12 @@ export class FileUploadComponent implements OnInit {
 	public einheiten:any;
 	public mst:any;
 	public formen:any;
+	public arten:any;
 	arrayBuffer:any;
-	public MessData:messdata[];	public MessDataGr:messdata[];
+	public MessData:messdata[]=[];	public MessDataGr:Messgroup[]=[];
 	//xls:WorkBook;
 
-	//formen: Taxonzus[] = [];
-	//einheiten:Einheiten[]=[];
+
 	
 	
 	// Variable to store shortLink from api response 
@@ -38,25 +38,34 @@ export class FileUploadComponent implements OnInit {
 	ngOnInit() {
 		this.impPhylibServ.getFormen().subscribe(formen_ => { 
 			this.formen =formen_; 
-			console.log(this.formen);
+			//console.log(this.formen);
 
 				 });
 		
 		
 		this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
 			this.einheiten=einheiten_;
-		   console.log(this.einheiten);
+		  // console.log(this.einheiten);
 		   //return einheiten;
 		});
 		//
 		this.impPhylibServ.getMst().subscribe(mst_ => { 
 			this.mst=mst_;
-		   console.log(this.mst);
+		  // console.log(this.mst);
 		   //return einheiten;
 		}) ;
+		
+	  
+	}
+callarten(){
 
-	  }
-
+	
+	this.impPhylibServ.getArtenPhylibMP(1).subscribe(arten_ => { 
+		this.arten=arten_;
+	   //console.log(this.arten);
+	   //return einheiten;
+	}) ;	
+}
 	  
 	// On file Select 
 	onChange(event) {
@@ -90,10 +99,12 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	group(){
-
+		
 	var temp=this.groupBy(this.MessData,'_Messstelle');
+	for (let i = 0, l = temp.length; i < l; i += 1) {
+		//console.log(temp[i]);
+	}
 	
-	console.log(temp);
 	
 }
 	groupBy = (array, key) => {
@@ -127,7 +138,14 @@ export class FileUploadComponent implements OnInit {
 				//Phylibimportdatei
 				if (workbook.SheetNames.length=2){
 					if (workbook.SheetNames[0]=='Messstellen' && workbook.SheetNames[1]=='Messwerte') {
-					this.Phylibimport(workbook);this.group();
+
+						this.impPhylibServ.getArtenPhylibMP(1).subscribe(arten_ => { 
+							this.arten=arten_;
+						   //console.log(this.arten);
+						   //return einheiten;
+						}) ;	
+					this.Phylibimport(workbook);
+					console.log(this.MessDataGr);
 					this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.MessData.length + " Datensätze in der Importdatei.";
 					
 					}
@@ -136,23 +154,7 @@ export class FileUploadComponent implements OnInit {
 
 
 
-
-
-				 
-
-
-
-
-
-
-			//var first_sheet_name = workbook.SheetNames[1];    
-			//var worksheet = workbook.Sheets[first_sheet_name];    
-			//console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));    
-			//  var arraylist = XLSX.utils.sheet_to_json(worksheet,{raw:true});     
-			//	  //this.filelist = [];    
-			//	  console.log(arraylist)  ; 
-			//	  this.getFormenPhylib();
-				  
+		  
 				 
 		}    
 	  }  ;
@@ -161,49 +163,27 @@ export class FileUploadComponent implements OnInit {
 
 	
 	  Phylibimport(workbook){
-		let array: messdata[]=[];
+		let array: messdata[]=[]; this.MessDataGr=[];
 		//let reader = new FileReader();
 		
 		var sheets;
 		var Messstelle:string;var Probe:string;var Taxon;var Form:string;var Messwert;var Einheit;var cf;
 		let aMessstelle:string;let aProbe:string;let aTaxon;let aForm:string;let aMesswert;let aEinheit;let acf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;
-		
+		let mstOK:boolean;let ok:boolean;
 		let XL_row_object;
 		let json_Messstelle;
-	
-	
-		//############
-		
-
-		
-		//let phylibeinh=einheiten; 
-		//let phylibform=this.getFormenPhylib();
-		// let p:any=this.getFormenPhylib();
-		 
-	
-		//##########
-		
-		
-			
-				//  alert(reader.result);
-				//let data = reader.result;
-			
-				//console.log(workbookkk);
-				// workbookkk.SheetNames.forEach(function(sheetName) {
-	
-				
-				//sheets = workbookkk.SheetNames;
+		let mst:string;
 	
 				for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
 	
 	
 					
-					console.log(workbook.SheetNames[i]);
+					//console.log(workbook.SheetNames[i]);
 					XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]]);
 					json_Messstelle = JSON.stringify(XL_row_object);
 					const obj = JSON.parse(json_Messstelle);
-					if (workbook.SheetNames[i] == 'Messstelle') {
+					if (workbook.SheetNames[i] == 'Messstellen') {
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
@@ -211,8 +191,10 @@ export class FileUploadComponent implements OnInit {
 	
 										
 									if (i == 'Messstelle') {
-										if (index > 0) { console.log("Insert into Messstellen (Messstelle, Oekoregion, Makrophytenveroedung, Begruendung,Helophytendominanz,Diatomeentyp,Phytobenthostyp,Makrophytentyp,WRRLTyp,Gesamtdeckungsgrad) values ('" + Messstelle + "','" + Oekoregion + "','" + Makrophytenveroedung + "','" + Begruendung + "','" + Helophytendominanz + "','" + Diatomeentyp + "','" + Phytobenthostyp + "','" + Makrophytentyp + "','" + WRRLTyp + "','" + Gesamtdeckungsgrad + "');"); }
+										//if (index > 0) { console.log("Insert into Messstellen (Messstelle, Oekoregion, Makrophytenveroedung, Begruendung,Helophytendominanz,Diatomeentyp,Phytobenthostyp,Makrophytentyp,WRRLTyp,Gesamtdeckungsgrad) values ('" + Messstelle + "','" + Oekoregion + "','" + Makrophytenveroedung + "','" + Begruendung + "','" + Helophytendominanz + "','" + Diatomeentyp + "','" + Phytobenthostyp + "','" + Makrophytentyp + "','" + WRRLTyp + "','" + Gesamtdeckungsgrad + "');"); }
 										Messstelle = obj[index][i];
+										if (Messstelle!==null){
+											this.groupNAch(Messstelle);}
 										}
 									if (i == 'Ökoregion') {
 										Oekoregion = obj[index][i];
@@ -257,18 +239,21 @@ export class FileUploadComponent implements OnInit {
 	
 									
 									if (i == 'Messstelle') {
-										let mstOK=true;let ok=true;
-										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok});}
 										
-										let mst:string = obj[index][i];
+										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
+										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok});
+										this.groupNAch(mst)}
+										
+										mst = obj[index][i];
 										//aMessstelle=mst;
 										//taxonzus=new Taxonzus();
 										let mstee = this.mst.filter(messstellen => messstellen.namemst== mst);
 	
-										console.log(mst);
+										//console.log(mst);
 										
 										 if (mstee.length !== 0) {aMessstelle=mstee[0].id_mst;}else{
+											
+											
 											aMessstelle=mst;
 											mstOK=false
 										 }
@@ -280,20 +265,26 @@ export class FileUploadComponent implements OnInit {
 									}
 									if (i == 'Taxon') {
 										Taxon = obj[index][i];
+										let taxon_ = this.arten.filter(arten => arten.taxon== Taxon);
+										if (taxon_.length !== 0) {aTaxon=taxon_[0].id_taxon;}else{
+											//aMessstelle=mst;
+											//console.log(Taxon+' '+ aTaxon);
+											ok=false;
+										 }
 									}
 									if (i == 'Form') {
 										Form;
 										
 										var employeeName:string = obj[index][i];
 
-										console.log(this.formen);
+										//console.log(this.formen);
 										//taxonzus=new Taxonzus();
 										let taxonzus = this.formen.filter(formen => formen.importname== employeeName);
 	
 										//console.log(id_taxonzus);
 										
 										 if (taxonzus !== null) {Form=taxonzus[0].id_taxonzus;aForm=employeeName;}
-										 //console.log('Form:'+Form);
+										 ok=false;
 										}
 									if (i == 'Messwert') {
 										Messwert = obj[index][i];
@@ -328,12 +319,45 @@ export class FileUploadComponent implements OnInit {
 		
 	}
 
-	displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
+	displayedColumns: string[] = ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
+	// displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
 	
-		
+	// dataSource=this.MessData;
+	dataSource=this.MessDataGr;
+	groupNAch(mst:string){
+		// console.log(mst)
+		if (this.MessDataGr.length==0){
+			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,MstOK:true,OK:true});
+
+		}else{
+			let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
+			
+
+			if (messgroup.length==0){
+			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,MstOK:true,OK:true});}
+			else{
+				for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
+					
+				if (this.MessDataGr[i]._Messstelle==mst){
+				var _Nr:number=this.MessDataGr[i]._Nr;
+				var _Messstelle: string=this.MessDataGr[i]._Messstelle;
+				var _AnzahlTaxa: number=this.MessDataGr[i]._AnzahlTaxa+1;
+				var MstOK:boolean=this.MessDataGr[i].MstOK;
+				var OK:boolean=this.MessDataGr[i].OK;
+
+					
+				this.MessDataGr.splice(i, 1);
+				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,MstOK,OK});
+				// console.log(this.MessDataGr)
+				break;
+					}}
+			}
+	
+	}
+			
 	}
 
-
+}
 
 	interface messdata{
 		_Nr:number;
@@ -352,9 +376,10 @@ export class FileUploadComponent implements OnInit {
 	interface Messgroup{
 		_Nr:number;
 		_Messstelle: string;
-		_Probe: string;
 		_AnzahlTaxa: number;
+		MstOK:boolean;
+		OK:boolean;
 		
 	}
-
+	
 

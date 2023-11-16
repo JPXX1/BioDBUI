@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +29,18 @@ export class ImpPhylibServ {
      
          
        }
-       getArtenPhylibMP(){ 
-  
-        return this.httpClient.get('http://localhost:3000/impArten');
-           
-       
-           
-         }
+
+       getArtenPhylibMPtets() {
+
+              return this.httpClient.get('http://localhost:3000/impArten2');}
+
+
+       getArtenPhylibMP(parameter :number){ 
+        //const headers = new HttpHeaders().append('header', 'value');
+        //const params = new HttpParams().append('id', parameter);
+        let params = new HttpParams().set('id',parameter);
+        console.log(params.toString())
+        //const params: { id: 1 };
+        return this.httpClient.get('http://localhost:3000/impArten', {params});
+        }
 }

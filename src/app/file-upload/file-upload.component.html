@@ -5,6 +5,10 @@
 	<button (click)="addfile()" 
 		class="btn btn-success"> 
 		Upload 
+	</button>
+	<button (click)="callarten()" 
+		class="btn btn-success"> 
+		Upload 
 	</button> 
 </div> 
 <div class="text-center"> 
@@ -33,51 +37,46 @@
 
 
 
-	
-	  
-	<table mat-table [dataSource]="MessData" class="mat-elevation-z8">
+	<table mat-table [dataSource]="MessDataGr" class="mat-elevation-z8">
 
 		<!--- Note that these columns can be defined in any order.
 			  The actual rendered columns are set as a property on the row definition" -->
-	  
+			
 		<!-- Position Column -->
-		<ng-container matColumnDef="nr">
+		<ng-container matColumnDef="Nr">
 		  <th mat-header-cell *matHeaderCellDef> No. </th>
 		  <td mat-cell *matCellDef="let element"> {{element._Nr}} </td>
 		</ng-container>
 		
 		<!-- Name Column -->
-		<ng-container matColumnDef="mst">
+		<ng-container matColumnDef="Messstelle">
 		  <th mat-header-cell *matHeaderCellDef> Messstelle </th>
-		  <td mat-cell *matCellDef="let element"> {{element._Messstelle}} </td>
+		  <td mat-cell *matCellDef="let element"> <button>{{element._Messstelle}} </button> </td>
 		</ng-container>
-	  
+		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
 		<!-- Weight Column -->
-		<ng-container matColumnDef="probe">
-		  <th mat-header-cell *matHeaderCellDef> _Probe </th>
-		  <td mat-cell *matCellDef="let element"> {{element._Probe}} </td>
+		<ng-container matColumnDef="AnzahlTaxa">
+		  <th mat-header-cell *matHeaderCellDef> AnzahlTaxa </th>
+		  <td mat-cell *matCellDef="let element"> {{element._AnzahlTaxa}} </td>
 		</ng-container>
 	  
 		<!-- Symbol Column -->
-		<ng-container matColumnDef="taxon">
-		  <th mat-header-cell *matHeaderCellDef> _Taxon </th>
-		  <td mat-cell *matCellDef="let element"> {{element._Taxon}} </td>
+		<ng-container matColumnDef="Mst_bekannt">
+		  <th mat-header-cell *matHeaderCellDef> MinBioDB </th>
+		  <td mat-cell *matCellDef="let element"> {{element._MstOK}} </td>
 		</ng-container>
-		<ng-container matColumnDef="form">
-			<th mat-header-cell *matHeaderCellDef> _Form </th>
-			<td mat-cell *matCellDef="let element"> {{element._Form}} </td>
+		<ng-container matColumnDef="Fehler">
+			<th mat-header-cell *matHeaderCellDef>Fehler</th>
+			<td mat-cell *matCellDef="let element"> {{element.OK}} </td>
 		  </ng-container>
-		  <ng-container matColumnDef="wert">
-			<th mat-header-cell *matHeaderCellDef> _Messwert </th>
-			<td mat-cell *matCellDef="let element"> {{element._Messwert}} </td>
-		  </ng-container>
-		  <ng-container matColumnDef="einheit">
-			<th mat-header-cell *matHeaderCellDef> _Einheit </th>
-			<td mat-cell *matCellDef="let element"> {{element._Einheit}} </td>
-		  </ng-container>
+		
 		  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 		  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
 	  </table>
+	  
+	
+	  
+	  
 	  
 </div>
 
