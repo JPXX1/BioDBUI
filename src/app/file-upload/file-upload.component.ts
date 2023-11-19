@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Injectable } from "@angular/core";
+import {NestedTreeControl} from '@angular/cdk/tree';
 import { FileUploadService } from './services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
 
- 
+
+
+
 
 @Component({
 	selector: 'app-file-upload',
@@ -19,7 +22,9 @@ export class FileUploadComponent implements OnInit {
 	public formen:any;
 	public arten:any;
 	arrayBuffer:any;
-	public MessData:messdata[]=[];	public MessDataGr:Messgroup[]=[];
+	dtOptions: any = {};
+
+	public MessData:messdata[]=[];	public MessDataOrgi:messdata[]=[];public MessDataGr:Messgroup[]=[];
 	//xls:WorkBook;
 
 
@@ -40,6 +45,9 @@ export class FileUploadComponent implements OnInit {
 			this.formen =formen_; 
 			//console.log(this.formen);
 
+			
+
+			
 				 });
 		
 		
@@ -137,7 +145,7 @@ callarten(){
 
 				//Phylibimportdatei
 				if (workbook.SheetNames.length=2){
-					if (workbook.SheetNames[0]=='Messstellen' && workbook.SheetNames[1]=='Messwerte') {
+					if ((workbook.SheetNames[0]=='Messstellen' ||  workbook.SheetNames[0]=='Messstelle') && workbook.SheetNames[1]=='Messwerte') {
 
 						this.impPhylibServ.getArtenPhylibMP(1).subscribe(arten_ => { 
 							this.arten=arten_;
@@ -163,7 +171,7 @@ callarten(){
 
 	
 	  Phylibimport(workbook){
-		let array: messdata[]=[]; this.MessDataGr=[];
+		let array: messdata[]=[]; this.MessDataGr=[];this.MessDataOrgi=[];
 		//let reader = new FileReader();
 		
 		var sheets;
@@ -183,7 +191,7 @@ callarten(){
 					XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]]);
 					json_Messstelle = JSON.stringify(XL_row_object);
 					const obj = JSON.parse(json_Messstelle);
-					if (workbook.SheetNames[i] == 'Messstellen') {
+					if (workbook.SheetNames[i] == 'Messstellen' || workbook.SheetNames[i] == 'Messstelle') {
 						obj.forEach((val, index) => {
 							if (obj[index] !== null) {
 								for (var i in obj[index]) {
@@ -241,7 +249,8 @@ callarten(){
 									if (i == 'Messstelle') {
 										
 										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-										array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:Taxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok});
+											this.MessDataOrgi.push({_Nr:o,_Messstelle:mst,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
+											array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
 										this.groupNAch(mst)}
 										
 										mst = obj[index][i];
@@ -315,13 +324,40 @@ callarten(){
 						}
 				}
 				this.MessData=array;
-					
+				this.makeChildrenTree();	
 		
 	}
 
+	handleRowClick(mst:string){
+
+		console.log(mst);
+	}
+	makeChildrenTree(){
+		let mst ;
+		let array: messdata[]=[];
+		for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
+			console.log(this.MessDataOrgi[1]._Messstelle)
+		 mst =this.MessDataGr[i]._Messstelle;
+			let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== mst);
+			array=[];
+			if (messgroup.length!=0){
+				for (let a = 0, le = messgroup.length; a < le; a += 1) {
+				array.push({_Nr:a+1,_Messstelle:messgroup[a]._Messstelle,_Probe:messgroup[a]._Probe,_Taxon:messgroup[a]._Taxon, _Form:messgroup[a]._Form, _Messwert:messgroup[a]._Messwert, _Einheit:messgroup[a]._Einheit, _cf:messgroup[a]._cf,MstOK:messgroup[a].MstOK,OK:messgroup[a].MstOK,_AnzahlTaxa:messgroup[a]._AnzahlTaxa});	
+				}}
+				this.MessDataGr[i].children=array;	
+	}
+	this.treeControl = new NestedTreeControl<Messgroup>(node => node.children);
+	this.dataSourceTree = this.MessDataGr;
+  
+	this.hasChild = (_: number, node: Messgroup) => !!node.children && node.children.length > 0;
+	}
+	treeControl = new NestedTreeControl<Messgroup>(node => node.children);
+	dataSourceTree = this.MessDataGr;
+	
+	hasChild = (_: number, node: Messgroup) => !!node.children && node.children.length > 0;
 	displayedColumns: string[] = ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
 	// displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
-	
+	isOpen = false;
 	// dataSource=this.MessData;
 	dataSource=this.MessDataGr;
 	groupNAch(mst:string){
@@ -370,7 +406,7 @@ callarten(){
 		_cf: string;
 		MstOK:boolean;
 		OK:boolean;
-
+		_AnzahlTaxa: number;
 	}
 
 	interface Messgroup{
@@ -379,6 +415,7 @@ callarten(){
 		_AnzahlTaxa: number;
 		MstOK:boolean;
 		OK:boolean;
+		children?: messdata[];
 		
 	}
 	
