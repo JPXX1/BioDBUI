@@ -1,5 +1,52 @@
-<p>eineldatenimp works!</p>
+<div>
+	<table  cdk-table [dataSource]="Einzeldat">
 
-<table datatable [dtOptions]="dtOptions" class="row-border hover"></table>
-
-<!-- <router-outlet></router-outlet> -->
+		<!--- Note that these columns can be defined in any order.
+			  The actual rendered columns are set as a property on the row definition" -->
+			
+		<!-- Position Column -->
+		<ng-container cdkColumnDef="nr">
+		  <th cdk-header-cell *cdkHeaderCellDef> No. </th>
+		  <td cdk-cell *cdkCellDef="let element"> {{element._Nr}} </td>
+		</ng-container>
+		
+		<!-- Name Column -->
+		<ng-container cdkColumnDef="mst">
+		  <th  cdk-header-cell *cdkHeaderCellDef> Messstelle </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element._Messstelle}} 
+			</td>
+			
+		</ng-container>
+		<ng-container cdkColumnDef="probe">
+			<th  cdk-header-cell *cdkHeaderCellDef> Probe </th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element._Probe}} 
+			  </td>
+			  
+		  </ng-container>
+		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
+		<!-- Weight Column -->
+		<ng-container cdkColumnDef="taxon">
+		  <th  cdk-header-cell *cdkHeaderCellDef> Taxa </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element._Taxon}} </td>
+		  
+		</ng-container>
+		<ng-container cdkColumnDef="wert">
+			<th  cdk-header-cell *cdkHeaderCellDef>Wert</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element._wert}} </td>
+		  </ng-container>
+		<!-- Symbol Column -->
+		<ng-container cdkColumnDef="einheit">
+		  <th  cdk-header-cell *cdkHeaderCellDef> Einheit </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element._Einheit}} </td>
+		</ng-container>
+		<ng-container cdkColumnDef="form">
+			<th  cdk-header-cell *cdkHeaderCellDef>Form</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element._Form}} </td>
+		  </ng-container>
+		 
+		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+	  </table>
+	  
+		
+	</div>

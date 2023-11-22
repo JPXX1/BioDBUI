@@ -1,30 +1,27 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,Input } from '@angular/core';
 
 @Component({
   selector: 'app-eineldatenimp',
   templateUrl: './eineldatenimp.component.html',
   styleUrls: ['./eineldatenimp.component.css']
 })
-export class EineldatenimpComponent  implements OnInit {
-  // Must be declared as "any", not as "DataTables.Settings"
-  dtOptions: any = {};
+export class EineldatenimpComponent {
+  @Input()  Einzeldat:messdata[]=[];	
+  displayedColumns: string[] = ['nr','mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
 
-  ngOnInit(): void {
-    this.dtOptions = {
-      ajax: 'data/data.json',
-      columns: [{
-        title: 'ID',
-        data: 'id'
-      }, {
-        title: 'First name',
-        data: 'firstName'
-      }, {
-        title: 'Last name',
-        data: 'lastName',
-        class: 'none'
-      }],
-      // Use this attribute to enable the responsive extension
-      responsive: true
-    };
-  }
+	dataSource=this.Einzeldat; 
+}
+
+interface messdata{
+  _Nr:number;
+  _Messstelle: string;
+  _Probe: string;
+  _Taxon: string;
+  _Form: string;
+  _Messwert: string;
+  _Einheit: string;
+  _cf: string;
+  MstOK:boolean;
+  OK:boolean;
+  _AnzahlTaxa: number;
 }

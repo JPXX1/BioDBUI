@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Injectable } from "@angular/core";
-import {NestedTreeControl} from '@angular/cdk/tree';
+import {PageEvent} from '@angular/material/paginator';
 import { FileUploadService } from './services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { ImpPhylibServ } from './services/impformenphylib.service';
@@ -22,10 +22,10 @@ export class FileUploadComponent implements OnInit {
 	public formen:any;
 	public arten:any;
 	arrayBuffer:any;
-	dtOptions: any = {};
+	
 
 	public MessData:messdata[]=[];	public MessDataOrgi:messdata[]=[];public MessDataGr:Messgroup[]=[];
-	//xls:WorkBook;
+	//xls:WorkBook11;
 
 
 	
@@ -251,7 +251,9 @@ callarten(){
 										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
 											this.MessDataOrgi.push({_Nr:o,_Messstelle:mst,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
 											array.push({_Nr:o,_Messstelle:aMessstelle,_Probe:Probe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
-										this.groupNAch(mst)}
+										this.groupNAch(mst); 
+										
+									}
 										
 										mst = obj[index][i];
 										//aMessstelle=mst;
@@ -324,43 +326,49 @@ callarten(){
 						}
 				}
 				this.MessData=array;
-				this.makeChildrenTree();	
+				//this.makeChildrenTree();	
 		
 	}
 
 	handleRowClick(mst:string){
-
+		let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== mst);
+		this.MessData=messgroup;
 		console.log(mst);
 	}
-	makeChildrenTree(){
-		let mst ;
-		let array: messdata[]=[];
-		for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
-			console.log(this.MessDataOrgi[1]._Messstelle)
-		 mst =this.MessDataGr[i]._Messstelle;
-			let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== mst);
-			array=[];
-			if (messgroup.length!=0){
-				for (let a = 0, le = messgroup.length; a < le; a += 1) {
-				array.push({_Nr:a+1,_Messstelle:messgroup[a]._Messstelle,_Probe:messgroup[a]._Probe,_Taxon:messgroup[a]._Taxon, _Form:messgroup[a]._Form, _Messwert:messgroup[a]._Messwert, _Einheit:messgroup[a]._Einheit, _cf:messgroup[a]._cf,MstOK:messgroup[a].MstOK,OK:messgroup[a].MstOK,_AnzahlTaxa:messgroup[a]._AnzahlTaxa});	
-				}}
-				this.MessDataGr[i].children=array;	
-	}
-	this.treeControl = new NestedTreeControl<Messgroup>(node => node.children);
-	this.dataSourceTree = this.MessDataGr;
-  
-	this.hasChild = (_: number, node: Messgroup) => !!node.children && node.children.length > 0;
-	}
-	treeControl = new NestedTreeControl<Messgroup>(node => node.children);
-	dataSourceTree = this.MessDataGr;
+	// makeChildrenTree(){
+	// 	let mst ;
+	// 	let array: messdata[]=[];
+	// 	for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
+	// 		console.log(this.MessDataOrgi[1]._Messstelle)
+	// 	 mst =this.MessDataGr[i]._Messstelle;
+	// 		let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== mst);
+	// 		array=[];
+	// 		if (messgroup.length!=0){
+	// 			for (let a = 0, le = messgroup.length; a < le; a += 1) {
+	// 			array.push({_Nr:a+1,_Messstelle:messgroup[a]._Messstelle,_Probe:messgroup[a]._Probe,_Taxon:messgroup[a]._Taxon, _Form:messgroup[a]._Form, _Messwert:messgroup[a]._Messwert, _Einheit:messgroup[a]._Einheit, _cf:messgroup[a]._cf,MstOK:messgroup[a].MstOK,OK:messgroup[a].MstOK,_AnzahlTaxa:messgroup[a]._AnzahlTaxa});	
+	// 			}}
+	// 			this.MessDataGr[i].children=array;	
+	// }
 	
-	hasChild = (_: number, node: Messgroup) => !!node.children && node.children.length > 0;
+  
+	
+	// }
+	
+	length = 100;
+	pageSize = 10;
+	pageSizeOptions: number[] = [5, 10, 25, 100];
+	// MatPaginator Output
+	pageEvent: PageEvent;
+
+	setPageSizeOptions(setPageSizeOptionsInput: string) {
+	  this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);}
+
+	//displayedColumns2: string[] = ['Nr','Messstelle', 'Taxa', 'Wert', 'Einheit'];
 	displayedColumns: string[] = ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
-	// displayedColumns: string[] = ['mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
-	isOpen = false;
-	// dataSource=this.MessData;
+	
 	dataSource=this.MessDataGr;
 	groupNAch(mst:string){
+		
 		// console.log(mst)
 		if (this.MessDataGr.length==0){
 			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,MstOK:true,OK:true});
