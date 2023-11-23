@@ -15,6 +15,13 @@ export class ImpPhylibServ {
 
     
   }
+
+  getTiefen(){
+
+    //var temp=this.httpClient.get('http://localhost:3000/imptiefenphylib');
+    return this.httpClient.get('http://localhost:3000/imptiefenphylib');
+    
+  }
   getEinheiten(){ 
   
     return this.httpClient.get('http://localhost:3000/impeinheitenphylib');
@@ -23,7 +30,7 @@ export class ImpPhylibServ {
        
      }
      getMst(){ 
-  
+      // return this.httpClient.get('http://localhost:3000/imptiefenphylib');
       return this.httpClient.get('http://localhost:3000/impMst');
          
      

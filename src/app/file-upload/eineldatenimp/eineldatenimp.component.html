@@ -5,10 +5,7 @@
 			  The actual rendered columns are set as a property on the row definition" -->
 			
 		<!-- Position Column -->
-		<ng-container cdkColumnDef="nr">
-		  <th cdk-header-cell *cdkHeaderCellDef> No. </th>
-		  <td cdk-cell *cdkCellDef="let element"> {{element._Nr}} </td>
-		</ng-container>
+		
 		
 		<!-- Name Column -->
 		<ng-container cdkColumnDef="mst">
@@ -25,6 +22,11 @@
 		  </ng-container>
 		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
 		<!-- Weight Column -->
+		<ng-container cdkColumnDef="tiefe">
+			<th  cdk-header-cell *cdkHeaderCellDef> Tiefenstufe </th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element._Tiefe}} </td>
+			
+		  </ng-container>
 		<ng-container cdkColumnDef="taxon">
 		  <th  cdk-header-cell *cdkHeaderCellDef> Taxa </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element._Taxon}} </td>

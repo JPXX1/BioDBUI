@@ -7,7 +7,7 @@ import { Component,Input } from '@angular/core';
 })
 export class EineldatenimpComponent {
   @Input()  Einzeldat:messdata[]=[];	
-  displayedColumns: string[] = ['nr','mst', 'probe', 'taxon', 'form', 'wert', 'einheit'];
+  displayedColumns: string[] = ['mst', 'probe','tiefe', 'taxon', 'form', 'wert', 'einheit'];
 
 	dataSource=this.Einzeldat; 
 }
@@ -15,6 +15,7 @@ export class EineldatenimpComponent {
 interface messdata{
   _Nr:number;
   _Messstelle: string;
+  _Tiefe:String;
   _Probe: string;
   _Taxon: string;
   _Form: string;

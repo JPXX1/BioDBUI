@@ -27,6 +27,7 @@
     "datatables.net-responsive": "^2.5.0",
     "datatables.net-responsive-dt": "^2.5.0",
     "jquery": "^3.6.0",
+    "primeng": "^16.8.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "xlsx": "^0.18.5",

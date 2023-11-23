@@ -3,12 +3,13 @@ import { BrowserModule } from
 import { NgModule } from '@angular/core'; 
 import { RouterModule, Routes } from '@angular/router';
 import { FileUploadComponent } from './file-upload/file-upload.component'; 
-
+import {MatGridListModule} from '@angular/material/grid-list'; 
 import { AppComponent } from './app.component'; 
 import {HttpClientModule} from 	'@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import {CdkTableModule} from '@angular/cdk/table'; 
-
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
@@ -29,7 +30,7 @@ declarations: [
 	FileUploadComponent, InfoBoxComponent, EineldatenimpComponent, HomeComponent, 
 ], 
 imports: [ 
-	BrowserModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
+	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule, BrowserAnimationsModule, AppRoutingModule 
 ], 
 providers: [], 

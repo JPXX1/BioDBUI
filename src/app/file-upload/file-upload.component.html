@@ -29,60 +29,59 @@
 	       
   </div>  
 
-<div>
+
 	<app-info-box [Info]="InfoBox"></app-info-box>
+	<mat-grid-list cols="2">
 
-
-	<!-- <mat-paginator [length]="length"[pageSize]="pageSize"[pageSizeOptions]="pageSizeOptions"(page)="pageEvent = $event"> -->
-
-
-	<table  cdk-table [dataSource]="MessDataGr">
-
-		<!--- Note that these columns can be defined in any order.
-			  The actual rendered columns are set as a property on the row definition" -->
-			
-		<!-- Position Column -->
-		<ng-container cdkColumnDef="Nr">
-		  <th cdk-header-cell *cdkHeaderCellDef> No. </th>
-		  <td cdk-cell *cdkCellDef="let element"> {{element._Nr}} </td>
-		</ng-container>
-		
-		<!-- Name Column -->
-		<ng-container cdkColumnDef="Messstelle">
-		  <th  cdk-header-cell *cdkHeaderCellDef> Messstelle </th>
-		  <td  cdk-cell *cdkCellDef="let element"> 
-			<button (click)="handleRowClick(element._Messstelle)">{{element._Messstelle}} </button> </td>
-			
-		</ng-container>
-		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
-		<!-- Weight Column -->
-		<ng-container cdkColumnDef="AnzahlTaxa">
-		  <th  cdk-header-cell *cdkHeaderCellDef> AnzahlTaxa </th>
-		  <td  cdk-cell *cdkCellDef="let element"> {{element._AnzahlTaxa}} </td>
-		  
-		</ng-container>
-	  
-		<!-- Symbol Column -->
-		<ng-container cdkColumnDef="Mst_bekannt">
-		  <th  cdk-header-cell *cdkHeaderCellDef> MinBioDB </th>
-		  <td  cdk-cell *cdkCellDef="let element"> {{element._MstOK}} </td>
-		</ng-container>
-		<ng-container cdkColumnDef="Fehler">
-			<th  cdk-header-cell *cdkHeaderCellDef>Fehler</th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.OK}} </td>
-		  </ng-container>
-		
-		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
-	  </table>
-	  
-	<!-- </mat-paginator> -->
 	
-	  
+		
+			
+	
+				<mat-grid-tile>
+
+
+<div class="card" *ngIf="mstimptab == true">
+    <p-table
+        [value]="MessDataGr"
+        [paginator]="true"
+        [rows]="20"
+        [showCurrentPageReport]="false"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        (sortFunction)="customSort($event)" [customSort]="true"
+        [rowsPerPageOptions]="[10, 25, 50]"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="_Nr" style="width:20%">Nr<p-sortIcon field="code"></p-sortIcon></th>
+                <th pSortableColumn="_Messstelle" style="width:20%">Messstelle<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="_AnzahlTaxa" style="width:20%">Messwerte<p-sortIcon field="category"></p-sortIcon></th>
+                <th pSortableColumn="_MstOK" style="width:20%">Mst_bekannt<p-sortIcon field="quantity"></p-sortIcon></th>
+                <th pSortableColumn="OK" style="width:20%">Fehler<p-sortIcon field="price"></p-sortIcon></th>
+             
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-MessDataGr>
+            <tr>
+                <td>{{ MessDataGr._Nr }}</td>
+				<td><button (click)="handleRowClick(MessDataGr._Messstelle)">{{MessDataGr._Messstelle}} </button></td>
+				<td>{{ MessDataGr._AnzahlTaxa }}</td>
+                <td>{{ MessDataGr.MstOK }}</td>
+				<td>{{ MessDataGr.OK }}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-table>
 </div>
-
-
+</mat-grid-tile>
+<mat-grid-tile>
+<div class="card"   *ngIf="Datimptab == true">
 <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
-
-
+</div>
+</mat-grid-tile>
+</mat-grid-list> 
 <router-outlet></router-outlet>
