@@ -16,6 +16,7 @@ import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
 import { HomeComponent } from './home/home.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 import {MatPaginatorModule} from '@angular/material/paginator'; 
 
@@ -31,7 +32,7 @@ declarations: [
 ], 
 imports: [ 
 	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
-	HttpClientModule, BrowserAnimationsModule, AppRoutingModule 
+	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, BsDatepickerModule.forRoot() 
 ], 
 providers: [], 
 bootstrap: [AppComponent] 

@@ -29,8 +29,19 @@
 	       
   </div>  
 
-
+<div calss="row"> 
 	<app-info-box [Info]="InfoBox"></app-info-box>
+    <div class="col-xs-12 col-12 col-md-4 form-group mb-3">
+        <input type="text"
+               placeholder="Datepicker"
+               class="form-control"
+               bsDatepicker
+               [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD.MM.YYYY' }"
+               [bsValue]="newDate">
+      </div>
+    </div>
+
+
 	<mat-grid-list cols="2">
 
 	
@@ -55,6 +66,8 @@
                 <th pSortableColumn="_Nr" style="width:20%">Nr<p-sortIcon field="code"></p-sortIcon></th>
                 <th pSortableColumn="_Messstelle" style="width:20%">Messstelle<p-sortIcon field="name"></p-sortIcon></th>
                 <th pSortableColumn="_AnzahlTaxa" style="width:20%">Messwerte<p-sortIcon field="category"></p-sortIcon></th>
+                <th pSortableColumn="_Typ" style="width:20%">MPtyp<p-sortIcon field="typ"></p-sortIcon></th>
+                <th pSortableColumn="_UMG" style="width:20%">VegGrenze<p-sortIcon field="umg"></p-sortIcon></th>
                 <th pSortableColumn="_MstOK" style="width:20%">Mst_bekannt<p-sortIcon field="quantity"></p-sortIcon></th>
                 <th pSortableColumn="OK" style="width:20%">Fehler<p-sortIcon field="price"></p-sortIcon></th>
              
@@ -65,6 +78,8 @@
                 <td>{{ MessDataGr._Nr }}</td>
 				<td><button (click)="handleRowClick(MessDataGr._Messstelle)">{{MessDataGr._Messstelle}} </button></td>
 				<td>{{ MessDataGr._AnzahlTaxa }}</td>
+                <td>{{ MessDataGr._Typ }}</td>
+                <td>{{ MessDataGr._UMG }}</td>
                 <td>{{ MessDataGr.MstOK }}</td>
 				<td>{{ MessDataGr.OK }}</td>
             </tr>
