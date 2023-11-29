@@ -106,7 +106,7 @@ export class XlsxImportPhylibService {
 											
 											mstOK=false
 										 }
-											this.groupNAch(Messstelle,typmp,Veggrenze,mstOK,true);
+											this.groupNAch(Messstelle,typmp,Diatomeentyp,WRRLTyp,Phytobenthostyp,Veggrenze,Makrophytenveroedung,Begruendung,Helophytendominanz,Oekoregion,mstOK,true,false);
 										}
 										}
 									if (i == 'Ökoregion') {
@@ -160,9 +160,9 @@ export class XlsxImportPhylibService {
 									if (i == 'Messstelle') {
 										
 										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-											array.push({_Nr:o,_Messstelle:mst,_Tiefe:Tiefe,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
-											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:Probe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1});
-										this.groupNAch(aMessstelle,null,null,mstOK,ok); 
+											array.push({_Nr:o,_Messstelle:mst,_Tiefe:Tiefe,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
+											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:Probe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
+										this.groupNAch(aMessstelle,null,null,null,null,null,null,null,null,null,mstOK,ok,null); 
 
 										Messstelle=null;Probe=null;Taxon=null; Form=null;Messwert=null;Einheit=null;Tiefe=null;cf=null;ok=true;mstOK=true;
 										aMessstelle=null;aProbe=null;aTaxon=null;aForm=null;aMesswert=null;aEinheit=null;aTiefe=null;acf=null;
@@ -251,24 +251,23 @@ export class XlsxImportPhylibService {
 						}
 				}
 				this.MessDataImp=array;
-				//this.makeChildrenTree();	
-		
+				
 	}
-  groupNAch(mst:string,_typ:string,_umg:string,mstok:boolean,ok:boolean){
+  groupNAch(mst:string,_typmp:string,_typdia:string,_typwrrl:string,_typphytobenth,_umg:string,_veroedung:string,_b_veroedung:string,_helo_dom:string,_oekoreg:string,mstok:boolean,ok:boolean,keinemp:boolean){
 		let MstOK:boolean;let OK:boolean;
 		// console.log(mst)
 		if (this.MessDataGr.length==0){
 
 			_Typ:String;
 		_UMG
-			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});
+			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp});
 
 		}else{
 			let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
 			
 
 			if (messgroup.length==0){
-			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});}
+				this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp});}
 			else{
 				for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
 					
@@ -276,14 +275,25 @@ export class XlsxImportPhylibService {
 				var _Nr:number=this.MessDataGr[i]._Nr;
 				var _Messstelle: string=this.MessDataGr[i]._Messstelle;
 				var _AnzahlTaxa: number=this.MessDataGr[i]._AnzahlTaxa+1;
-				var _Typ:string=this.MessDataGr[i]._Typ
+				var _TypMP:string=this.MessDataGr[i]._TypMP
+				var _TypDIA:string=this.MessDataGr[i]._TypDIA
+				var _TypWRRL:string=this.MessDataGr[i]._TypWRRL
+				var _TypPhytoBenthos:string=this.MessDataGr[i]._TypPhytoBenthos
+				
 				var _UMG:string=this.MessDataGr[i]._UMG
+				var _Veroedung:string=this.MessDataGr[i]._Veroedung
+				var _B_veroedung:string=this.MessDataGr[i]._B_veroedung
+				var _Oekoreg:string=this.MessDataGr[i]._Oekoreg
+				var _Helo_dom:string=this.MessDataGr[i]._Helo_dom
 				if (this.MessDataGr[i].MstOK==false || MstOK==false) {MstOK=false;}else {MstOK=true}
 				if (this.MessDataGr[i].OK==false || ok==false) {OK=false;}else {OK=true;};
+				var KeineMP:boolean;
+				if (this.MessDataGr[i].KeineMP==false || keinemp==false) {KeineMP=false;}else {KeineMP=true;};
+
 
 					
 				this.MessDataGr.splice(i, 1);//löscht vorhandenen DS
-				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_Typ,_UMG,MstOK,OK});
+				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_TypMP,_TypDIA,_TypWRRL,_TypPhytoBenthos,_UMG,_Veroedung,_B_veroedung,_Helo_dom,_Oekoreg,MstOK,OK,KeineMP});
 				// console.log(this.MessDataGr)
 				break;
 					}}
@@ -292,6 +302,13 @@ export class XlsxImportPhylibService {
 	}
 			
 	}
+	importIntoDB(){this.importMesswerteIntoDB();}
+importMesswerteIntoDB(){
+	for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], "15.07.2010","1","1");
 
+	}
+	//console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
 
+}
 }

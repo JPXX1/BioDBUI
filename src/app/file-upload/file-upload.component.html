@@ -25,20 +25,17 @@
 	<h3>Loading ...</h3> 
 </div> 
 
-<div class="col-md-8 form-group">        
-	       
-  </div>  
+
 
 <div calss="row"> 
-	<app-info-box [Info]="InfoBox"></app-info-box>
-    <div class="col-xs-12 col-12 col-md-4 form-group mb-3">
-        <input type="text"
-               placeholder="Datepicker"
-               class="form-control"
-               bsDatepicker
-               [bsConfig]="{ adaptivePosition: true, dateInputFormat: 'DD.MM.YYYY' }"
-               [bsValue]="newDate">
-      </div>
+	<!-- <app-info-box [Info]="InfoBox"></app-info-box> -->
+   
+
+      <button (click)="importIntoDB()" 
+      class="btn btn-success"> 
+      Import in die Datenbank 
+  </button>
+      
     </div>
 
 

@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import {PageEvent} from '@angular/material/paginator';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
-import { ImpPhylibServ } from '../services/impformenphylib.service';
 import { SortEvent } from 'primeng/api';
 import { Messgroup } from '../interfaces/messgroup';
 import { Messwerte } from '../interfaces/messwerte';
@@ -29,7 +28,7 @@ export class FileUploadComponent implements OnInit {
 	arrayBuffer:any;
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;
-	newDate: Date;
+	public newDate: string;
 
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
 	//xls:WorkBook11;
@@ -76,7 +75,10 @@ export class FileUploadComponent implements OnInit {
 		
 	  
 	}
-
+	onValueChange($event){
+		console.log($event)
+		this.newDate=$event;
+	  }
 	  
 	// On file Select 
 	onChange(event) {
@@ -123,26 +125,9 @@ export class FileUploadComponent implements OnInit {
 		);
 	}
 	
-	// group(){
-		
-	// var temp=this.groupBy(this.MessData,'_Messstelle');
-	// for (let i = 0, l = temp.length; i < l; i += 1) {
-	// 	//console.log(temp[i]);
-	// }
-	
-	
-// }
-	// groupBy = (array, key) => {
-	// 	// Return the end result
-	// 	return array.reduce((result, currentValue) => {
-	// 	  // If an array already present for key, push it to the array. Else create an array and push the object
-	// 	  ;(result[currentValue[key]] = result[currentValue[key]] || []).push(
-	// 		currentValue,
-	// 	  )
-	// 	  // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
-	// 	  return result
-	// 	}, {}) // empty object is the initial value for result object
-	//   }
+		importIntoDB(){
+			this.xlsxImportPhylibService.importIntoDB();
+		}
 		addfile()     
 		{  
 			this.mstimptab=true; this.Datimptab=false;  
@@ -168,6 +153,8 @@ export class FileUploadComponent implements OnInit {
 
 						
 						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
+						this.xlsxImportPhylibService.callarten();
+						this.xlsxImportPhylibService.ngOnInit();
 						this.xlsxImportPhylibService.Phylibimport(workbook);
 						this.MessDataOrgi=this.xlsxImportPhylibService.MessDataOrgi;
 						this.MessDataGr=this.xlsxImportPhylibService.MessDataGr;
@@ -212,44 +199,44 @@ export class FileUploadComponent implements OnInit {
 	displayedColumns: string[] = ['Nr','Messstelle', 'MPtyp','VegGrenze','AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
 	
 	dataSource=this.MessDataGr;
-	groupNAch(mst:string,_typ:string,_umg:string,mstok:boolean,ok:boolean){
-		let MstOK:boolean;let OK:boolean;
-		// console.log(mst)
-		if (this.MessDataGr.length==0){
+	// groupNAch(mst:string,_typ:string,_umg:string,mstok:boolean,ok:boolean){
+	// 	let MstOK:boolean;let OK:boolean;
+	// 	// console.log(mst)
+	// 	if (this.MessDataGr.length==0){
 
-			_Typ:String;
-		_UMG
-			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});
+	// 		_Typ:String;
+	// 	_UMG
+	// 		this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});
 
-		}else{
-			let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
+	// 	}else{
+	// 		let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
 			
 
-			if (messgroup.length==0){
-			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});}
-			else{
-				for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
+	// 		if (messgroup.length==0){
+	// 		this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});}
+	// 		else{
+	// 			for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
 					
-				if (this.MessDataGr[i]._Messstelle==mst){
-				var _Nr:number=this.MessDataGr[i]._Nr;
-				var _Messstelle: string=this.MessDataGr[i]._Messstelle;
-				var _AnzahlTaxa: number=this.MessDataGr[i]._AnzahlTaxa+1;
-				var _Typ:string=this.MessDataGr[i]._Typ
-				var _UMG:string=this.MessDataGr[i]._UMG
-				if (this.MessDataGr[i].MstOK==false || MstOK==false) {MstOK=false;}else {MstOK=true}
-				if (this.MessDataGr[i].OK==false || ok==false) {OK=false;}else {OK=true;};
+	// 			if (this.MessDataGr[i]._Messstelle==mst){
+	// 			var _Nr:number=this.MessDataGr[i]._Nr;
+	// 			var _Messstelle: string=this.MessDataGr[i]._Messstelle;
+	// 			var _AnzahlTaxa: number=this.MessDataGr[i]._AnzahlTaxa+1;
+	// 			var _Typ:string=this.MessDataGr[i]._Typ
+	// 			var _UMG:string=this.MessDataGr[i]._UMG
+	// 			if (this.MessDataGr[i].MstOK==false || MstOK==false) {MstOK=false;}else {MstOK=true}
+	// 			if (this.MessDataGr[i].OK==false || ok==false) {OK=false;}else {OK=true;};
 
 					
-				this.MessDataGr.splice(i, 1);//löscht vorhandenen DS
-				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_Typ,_UMG,MstOK,OK});
-				// console.log(this.MessDataGr)
-				break;
-					}}
-			}
+	// 			this.MessDataGr.splice(i, 1);//löscht vorhandenen DS
+	// 			this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_Typ,_UMG,MstOK,OK});
+	// 			// console.log(this.MessDataGr)
+	// 			break;
+	// 				}}
+	// 		}
 	
-	}
+	// }
 			
-	}
+	// }
 
 }
 

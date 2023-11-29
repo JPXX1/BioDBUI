@@ -3,8 +3,16 @@ export interface Messgroup {
         _Nr:number;
 		_Messstelle: string;
 		_AnzahlTaxa: number;
-		_Typ:string;
+		_TypMP:string;
+		_TypDIA:string;
+		_TypWRRL:string;
+		_TypPhytoBenthos:string;
 		_UMG:string;
-		MstOK:boolean;
+		_Veroedung:string;
+		_B_veroedung:string;
+		_Helo_dom:string;
+		_Oekoreg:string;
+		MstOK:boolean;//Mst in Stammdatenvorhanden
 		OK:boolean;
+		KeineMP:boolean;//kein Makrophyten
 }

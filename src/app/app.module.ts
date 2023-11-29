@@ -16,9 +16,10 @@ import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
 import { HomeComponent } from './home/home.component';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-
-import {MatPaginatorModule} from '@angular/material/paginator'; 
+//import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import {MatSelectModule} from '@angular/material/select'; 
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { SelectjahrComponent } from './file-upload/select/selectjahr/selectjahr.component'; 
 
 const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
@@ -28,11 +29,11 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, 
-	FileUploadComponent, InfoBoxComponent, EineldatenimpComponent, HomeComponent, 
+	FileUploadComponent, InfoBoxComponent, EineldatenimpComponent, HomeComponent, SelectjahrComponent, 
 ], 
 imports: [ 
 	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
-	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, BsDatepickerModule.forRoot() 
+	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, MatSelectModule 
 ], 
 providers: [], 
 bootstrap: [AppComponent] 
