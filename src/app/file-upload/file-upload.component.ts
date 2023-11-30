@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Injectable } from "@angular/core";
+import { Component, OnInit,Output ,ViewChild,Injectable} from '@angular/core';
+//import {  Injectable} from "@angular/core";
 import {PageEvent} from '@angular/material/paginator';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
@@ -7,6 +7,7 @@ import { SortEvent } from 'primeng/api';
 import { Messgroup } from '../interfaces/messgroup';
 import { Messwerte } from '../interfaces/messwerte';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service'
+import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
 
 
 
@@ -19,12 +20,14 @@ import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service'
 })
 @Injectable()
 export class FileUploadComponent implements OnInit {
+	@ViewChild(SelectjahrComponent, {static: false}) child1: SelectjahrComponent;
 	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
 	public formen:any;
 	public arten:any;
 	public tiefen:any;
+	public jahr:any;
 	arrayBuffer:any;
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;
@@ -43,37 +46,12 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService) { 
+	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService, selectjahrComponent:SelectjahrComponent) { 
 	}
 	
 	ngOnInit() {
-		// this.impPhylibServ.getFormen().subscribe(formen_ => { 
-		// 	this.formen =formen_; 
-		// 	console.log(this.formen);
-
-			
-
-			
-		// 		 },(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
-		
-		// 		 this.impPhylibServ.getTiefen().subscribe(tief_ => { 
-		// 			this.tiefen=tief_;
-		// 		  console.log(tief_);
-		// 		   //return einheiten;
-		// 		},(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
-		// this.impPhylibServ.getEinheiten().subscribe(einheiten_ => { 
-		// 	this.einheiten=einheiten_;
-		//    console.log(this.einheiten);
-		//    //return einheiten;
-		// },(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
-		// //
-		// this.impPhylibServ.getMst().subscribe(mst_ => { 
-		// 	this.mst=mst_;
-		//   // console.log(this.mst);
-		//    //return einheiten;
-		// },(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
-		
-	  
+		// this.jahrsel.ngOnInit
+		// this.jahr=this.jahrsel.Jahr;
 	}
 	onValueChange($event){
 		console.log($event)
@@ -126,7 +104,11 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 		importIntoDB(){
-			this.xlsxImportPhylibService.importIntoDB();
+			this.jahr=this.child1.selected;
+			console.log(this.jahr);
+			if (this.jahr=== null){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
+			}else
+			{this.xlsxImportPhylibService.importIntoDB(this.jahr);}
 		}
 		addfile()     
 		{  
@@ -199,44 +181,7 @@ export class FileUploadComponent implements OnInit {
 	displayedColumns: string[] = ['Nr','Messstelle', 'MPtyp','VegGrenze','AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
 	
 	dataSource=this.MessDataGr;
-	// groupNAch(mst:string,_typ:string,_umg:string,mstok:boolean,ok:boolean){
-	// 	let MstOK:boolean;let OK:boolean;
-	// 	// console.log(mst)
-	// 	if (this.MessDataGr.length==0){
-
-	// 		_Typ:String;
-	// 	_UMG
-	// 		this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});
-
-	// 	}else{
-	// 		let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
-			
-
-	// 		if (messgroup.length==0){
-	// 		this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_Typ:_typ,_UMG:_umg,MstOK:mstok,OK:ok});}
-	// 		else{
-	// 			for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
-					
-	// 			if (this.MessDataGr[i]._Messstelle==mst){
-	// 			var _Nr:number=this.MessDataGr[i]._Nr;
-	// 			var _Messstelle: string=this.MessDataGr[i]._Messstelle;
-	// 			var _AnzahlTaxa: number=this.MessDataGr[i]._AnzahlTaxa+1;
-	// 			var _Typ:string=this.MessDataGr[i]._Typ
-	// 			var _UMG:string=this.MessDataGr[i]._UMG
-	// 			if (this.MessDataGr[i].MstOK==false || MstOK==false) {MstOK=false;}else {MstOK=true}
-	// 			if (this.MessDataGr[i].OK==false || ok==false) {OK=false;}else {OK=true;};
-
-					
-	// 			this.MessDataGr.splice(i, 1);//löscht vorhandenen DS
-	// 			this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_Typ,_UMG,MstOK,OK});
-	// 			// console.log(this.MessDataGr)
-	// 			break;
-	// 				}}
-	// 		}
 	
-	// }
-			
-	// }
 
 }
 

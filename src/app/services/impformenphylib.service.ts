@@ -37,7 +37,10 @@ export class ImpPhylibServ {
      
          
        }
-
+       getJahr(){
+        return this.httpClient.get('http://localhost:3000/impJahr');
+        
+       }
        getArtenPhylibMPtets() {
 
               return this.httpClient.get('http://localhost:3000/impArten2');}

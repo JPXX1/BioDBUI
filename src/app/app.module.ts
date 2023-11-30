@@ -13,13 +13,16 @@ import { ButtonModule } from 'primeng/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
+import {SelectjahrComponent} from './select/selectjahr/selectjahr.component'
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
 import { HomeComponent } from './home/home.component';
-//import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import {MatSelectModule} from '@angular/material/select'; 
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { SelectjahrComponent } from './file-upload/select/selectjahr/selectjahr.component'; 
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+// import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
@@ -29,13 +32,13 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, 
-	FileUploadComponent, InfoBoxComponent, EineldatenimpComponent, HomeComponent, SelectjahrComponent, 
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent,  
 ], 
 imports: [ 
 	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
-	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, MatSelectModule 
+	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
-providers: [], 
+providers: [SelectjahrComponent], 
 bootstrap: [AppComponent] 
 }) 
 

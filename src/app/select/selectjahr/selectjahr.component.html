@@ -1,0 +1,22 @@
+<p>
+    
+  <!-- <mat-select> 
+    <mat-option value="html"> HTML </mat-option> 
+    <mat-option value="css" disabled>CSS (disabled)</mat-option> 
+    <mat-option value="js">JAVASCRIPT</mat-option> 
+  </mat-select>  -->
+  
+
+
+  
+    <mat-select
+    placeholder="Untersuchungsjahr" 
+        name="year" [(ngModel)]="selected" (ngModelChange)="onChange($event)" >
+     
+     
+      <mat-option *ngFor="let year of jahre" [value]="year.jahr">
+        {{year.jahr}}
+      </mat-option>
+
+    </mat-select>
+ </p>

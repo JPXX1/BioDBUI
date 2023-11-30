@@ -24,12 +24,14 @@
 <div class="container" *ngIf="loading"> 
 	<h3>Loading ...</h3> 
 </div> 
+<div>
 
-
-
+</div>
 <div calss="row"> 
-	<!-- <app-info-box [Info]="InfoBox"></app-info-box> -->
+	<app-info-box [Info]="InfoBox"></app-info-box>
    
+    <div><app-selectjahr  [selected]="jahr"></app-selectjahr></div>
+
 
       <button (click)="importIntoDB()" 
       class="btn btn-success"> 
@@ -93,6 +95,8 @@
 <mat-grid-tile>
 <div class="card"   *ngIf="Datimptab == true">
 <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
+
+
 </div>
 </mat-grid-tile>
 </mat-grid-list> 

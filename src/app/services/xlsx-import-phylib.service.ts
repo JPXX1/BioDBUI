@@ -302,10 +302,14 @@ export class XlsxImportPhylibService {
 	}
 			
 	}
-	importIntoDB(){this.importMesswerteIntoDB();}
-importMesswerteIntoDB(){
+	importIntoDB(jahr:string){this.importMesswerteIntoDB(jahr);}
+importMesswerteIntoDB(jahr:string){
+	let jahrtemp:string;
+	jahrtemp.concat('15.07.',jahr);
 	for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
-	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], "15.07.2010","1","1");
+
+
+	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], jahrtemp,"1","1");
 
 	}
 	//console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
