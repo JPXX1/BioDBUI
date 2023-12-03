@@ -1,0 +1,10 @@
+<p>    <mat-select
+    placeholder="Probenehmer" 
+        name="year" [(ngModel)]="selectedPN" (ngModelChange)="onChange($event)" >
+     
+     
+      <mat-option *ngFor="let p of pn" [value]="p.id_pn">
+        {{p.firma}}
+      </mat-option>
+
+    </mat-select></p>

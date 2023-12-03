@@ -25,6 +25,8 @@ export class XlsxImportPhylibService {
 
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
 	
+	
+	
 	callarten(){
 
 	
@@ -35,6 +37,7 @@ export class XlsxImportPhylibService {
 		},(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;		
 	}
 	ngOnInit() {
+		
 		this.impPhylibServ.getFormen().subscribe(formen_ => { 
 			this.formen =formen_; 
 			console.log(this.formen);
@@ -161,7 +164,7 @@ export class XlsxImportPhylibService {
 										
 										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
 											array.push({_Nr:o,_Messstelle:mst,_Tiefe:Tiefe,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
-											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:Probe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
+											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:aProbe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
 										this.groupNAch(aMessstelle,null,null,null,null,null,null,null,null,null,mstOK,ok,null); 
 
 										Messstelle=null;Probe=null;Taxon=null; Form=null;Messwert=null;Einheit=null;Tiefe=null;cf=null;ok=true;mstOK=true;
@@ -186,7 +189,8 @@ export class XlsxImportPhylibService {
 										//Messstelle = obj[index][i];
 										}
 									if (i == 'Probe') {
-										Probe = obj[index][i];
+										aProbe = obj[index][i];
+										Probe='11';
 									}
 									if (i == 'Taxon') {
 										//ok=false;
@@ -302,17 +306,21 @@ export class XlsxImportPhylibService {
 	}
 			
 	}
-	importIntoDB(jahr:string){this.importMesswerteIntoDB(jahr);}
-importMesswerteIntoDB(jahr:string){
+	importIntoDB(jahr:string,probenehmer:string){this.importMesswerteIntoDB(jahr,probenehmer);}
+
+	importMesswerteIntoDB(jahr:string,probenehmer:string){
 	let jahrtemp:string;
-	jahrtemp.concat('15.07.',jahr);
+	jahrtemp=("15.07."+jahr);
+	console.log(jahrtemp);
 	for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
-
-
-	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], jahrtemp,"1","1");
-
-	}
-	//console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
+		var a=a+1;
+		
+		
+	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], jahrtemp,probenehmer,"1");
+	
+}}
 
 }
-}
+
+
+

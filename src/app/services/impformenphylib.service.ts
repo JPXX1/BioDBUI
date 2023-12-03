@@ -37,6 +37,12 @@ export class ImpPhylibServ {
      
          
        }
+
+       
+       getProbenehmer(){
+        return this.httpClient.get('http://localhost:3000/impProbenehmer');
+        
+       }
        getJahr(){
         return this.httpClient.get('http://localhost:3000/impJahr');
         
@@ -46,6 +52,26 @@ export class ImpPhylibServ {
               return this.httpClient.get('http://localhost:3000/impArten2');}
 
 
+
+
+      kontrollPhylibMesswerte(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
+        let params = new HttpParams()  .set('id_taxon',MessDataImp._Taxon)
+        .set('id_einheit',MessDataImp._Einheit)
+        .set('id_probe',MessDataImp._Probe)
+        .set('id_mst',MessDataImp._Messstelle)
+        .set('id_taxonzus',MessDataImp._Form)
+        .set('id_pn',Probenehmer)
+        .set('datumpn',datum)
+        .set('id_import',id_import)
+        .set('id_tiefe',MessDataImp._Tiefe)
+        .set('id_abundanz',MessDataImp._idAbundanz)
+        .set('cf',MessDataImp._cf)
+        .set('wert',MessDataImp._Messwert);;
+        //console.log(MessDataImp)
+      //  return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte',paras);  
+       return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte', {params});   
+      }
+
        getArtenPhylibMP(parameter :number){ 
         //const headers = new HttpHeaders().append('header', 'value');
         //const params = new HttpParams().append('id', parameter);
@@ -54,27 +80,32 @@ export class ImpPhylibServ {
         //const params: { id: 1 };
         return this.httpClient.get('http://localhost:3000/impArten', {params});
         }
+        
+        
 
         postMessstellenPhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:string){
 
-          // INSERT INTO public.data_taxa_abundanzen
-          // (id, id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, created, id_import, wert, cf, id_tiefe, id_abundanz)
-          // VALUES(nextval('seq_tbl_einzeldaten'::regclass), 0, 0, 0, 0, 0, 0, '', now(), 0, '', false, 0, 0);
-          // id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_import,id_tiefe, id_abundanz,cf,wert
-            let params = new HttpParams();
-          params.set('id_taxon',MessDataImp._Taxon);
-          params.set('id_einheit',MessDataImp._Einheit);
-          params.set('id_probe',MessDataImp._Probe);
-          params.set('id_mst',MessDataImp._Messstelle);
-          params.set('id_taxonzus',MessDataImp._Form);
-          params.set('id_pn',Probenehmer);
-          params.set('datumpn',datum);
-          params.set('id_import',id_import);
-          params.set('id_tiefe',MessDataImp._Tiefe);
-          params.set('id_abundanz',MessDataImp._idAbundanz);
-          params.set('cf',MessDataImp._cf);
-          params.set('wert',MessDataImp._Messwert);
-          return this.httpClient.post('http://localhost:3000/insertPhylibMesswerte', {params});
-          
+         
+            const body = new HttpParams()
+          .set('id_taxon',MessDataImp._Taxon)
+          .set('id_einheit',MessDataImp._Einheit)
+          .set('id_probe',MessDataImp._Probe)
+          .set('id_mst',MessDataImp._Messstelle)
+          .set('id_taxonzus',MessDataImp._Form)
+          .set('id_pn',Probenehmer)
+          .set('datumpn',datum)
+          .set('id_import',id_import)
+          .set('id_tiefe',MessDataImp._Tiefe)
+          .set('id_abundanz',MessDataImp._idAbundanz)
+          .set('cf',MessDataImp._cf)
+          .set('wert',MessDataImp._Messwert);
+
+        
+          console.log(MessDataImp)
+          this.httpClient.post('http://localhost:3000/insertPhylibMesswerte', body).subscribe(resp => {
+            console.log("response %o, ", resp);
+          });     
         }
+       
+        
 }

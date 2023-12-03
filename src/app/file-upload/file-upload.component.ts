@@ -8,6 +8,7 @@ import { Messgroup } from '../interfaces/messgroup';
 import { Messwerte } from '../interfaces/messwerte';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service'
 import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
+import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
 
 
 
@@ -21,6 +22,7 @@ import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component';
 @Injectable()
 export class FileUploadComponent implements OnInit {
 	@ViewChild(SelectjahrComponent, {static: false}) child1: SelectjahrComponent;
+	@ViewChild(SelectProbenehmerComponent, {static: false}) childPN: SelectProbenehmerComponent;
 	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
@@ -28,6 +30,7 @@ export class FileUploadComponent implements OnInit {
 	public arten:any;
 	public tiefen:any;
 	public jahr:any;
+	public probenehmer:any;
 	arrayBuffer:any;
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;
@@ -46,7 +49,7 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService, selectjahrComponent:SelectjahrComponent) { 
+	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService) { 
 	}
 	
 	ngOnInit() {
@@ -57,6 +60,7 @@ export class FileUploadComponent implements OnInit {
 		console.log($event)
 		this.newDate=$event;
 	  }
+	
 	  
 	// On file Select 
 	onChange(event) {
@@ -105,11 +109,17 @@ export class FileUploadComponent implements OnInit {
 	
 		importIntoDB(){
 			this.jahr=this.child1.selected;
+			this.probenehmer=this.childPN.selectedPN;
 			console.log(this.jahr);
-			if (this.jahr=== null){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
+
+			if (!this.jahr){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
+			}else{
+
+			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
 			}else
-			{this.xlsxImportPhylibService.importIntoDB(this.jahr);}
-		}
+
+			{this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);}
+			}}
 		addfile()     
 		{  
 			this.mstimptab=true; this.Datimptab=false;  

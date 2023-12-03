@@ -13,7 +13,6 @@ import { ButtonModule } from 'primeng/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
-import {SelectjahrComponent} from './select/selectjahr/selectjahr.component'
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
 import { HomeComponent } from './home/home.component';
@@ -22,6 +21,9 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
+
+import {SelectjahrComponent} from './select/selectjahr/selectjahr.component';
+import { SelectProbenehmerComponent } from './select/select-probenehmer/select-probenehmer.component'
 // import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
@@ -32,7 +34,7 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, 
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent,  
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
 ], 
 imports: [ 
 	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
