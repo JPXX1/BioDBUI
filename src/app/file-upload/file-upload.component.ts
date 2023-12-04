@@ -14,6 +14,7 @@ import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-
 
 
 
+
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
@@ -31,6 +32,7 @@ export class FileUploadComponent implements OnInit {
 	public tiefen:any;
 	public jahr:any;
 	public probenehmer:any;
+	public importuebersicht:any;
 	arrayBuffer:any;
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;

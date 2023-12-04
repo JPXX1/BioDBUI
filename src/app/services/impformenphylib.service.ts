@@ -38,7 +38,9 @@ export class ImpPhylibServ {
          
        }
 
-       
+       getimpUebersicht(){
+        return this.httpClient.get('http://localhost:3000/impUebersicht');
+       }
        getProbenehmer(){
         return this.httpClient.get('http://localhost:3000/impProbenehmer');
         

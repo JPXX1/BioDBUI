@@ -21,9 +21,11 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
-
+import {CdkListboxModule} from '@angular/cdk/listbox'; 
 import {SelectjahrComponent} from './select/selectjahr/selectjahr.component';
-import { SelectProbenehmerComponent } from './select/select-probenehmer/select-probenehmer.component'
+import { SelectProbenehmerComponent } from './select/select-probenehmer/select-probenehmer.component';
+import {SelectUebersichtImportComponent} from './select/select-uebersicht-import/select-uebersicht-import.component';
+
 // import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
@@ -36,7 +38,7 @@ declarations: [
 	AppComponent, 
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
 ], 
-imports: [ 
+imports: [ CdkListboxModule,SelectUebersichtImportComponent,
 	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
