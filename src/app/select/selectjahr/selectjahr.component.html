@@ -11,7 +11,7 @@
   
     <mat-select
     placeholder="Untersuchungsjahr" 
-        name="year" [(ngModel)]="selected" (ngModelChange)="onChange($event)" >
+        name="year" [(ngModel)]="selected" (ngModelChange)="onChange($event)" class="example-Jahr" >
      
      
       <mat-option *ngFor="let year of jahre" [value]="year.jahr">

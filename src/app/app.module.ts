@@ -1,12 +1,13 @@
-import { BrowserModule } from 
-	'@angular/platform-browser'; 
+
 import { NgModule } from '@angular/core'; 
+ import { BrowserModule } from '@angular/platform-browser'; 
+
 import { RouterModule, Routes } from '@angular/router';
 import { FileUploadComponent } from './file-upload/file-upload.component'; 
 import {MatGridListModule} from '@angular/material/grid-list'; 
 import { AppComponent } from './app.component'; 
 import {HttpClientModule} from 	'@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
+ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import {CdkTableModule} from '@angular/cdk/table'; 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -21,11 +22,11 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
-import {CdkListboxModule} from '@angular/cdk/listbox'; 
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import {SelectjahrComponent} from './select/selectjahr/selectjahr.component';
 import { SelectProbenehmerComponent } from './select/select-probenehmer/select-probenehmer.component';
 import {SelectUebersichtImportComponent} from './select/select-uebersicht-import/select-uebersicht-import.component';
-
+import {MatCardModule} from '@angular/material/card'; 
 // import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
@@ -35,12 +36,12 @@ const routes: Routes = [
   ]
 @NgModule({ 
 declarations: [ 
-	AppComponent, 
+	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
 ], 
-imports: [ CdkListboxModule,SelectUebersichtImportComponent,
-	ButtonModule,MatGridListModule,BrowserModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
-	HttpClientModule, BrowserAnimationsModule, AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
+imports: [ MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
+	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
 providers: [SelectjahrComponent], 
 bootstrap: [AppComponent] 

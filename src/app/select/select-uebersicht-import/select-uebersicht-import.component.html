@@ -1,15 +1,14 @@
 <div class="example-listbox-container">
-    <label class="example-listbox-label" id="example-spatula-label">
+  <mat-card>
+  <label class="example-listbox-label" id="example-spatula-label">
       Importübersicht
     </label>
-    <ul cdkListbox
-    cdkListboxMultiple
-    (cdkListboxValueChange)="onSelect($event)"
-    [cdkListboxDisabled]="false"
-    >
-  <li *ngFor="let tag of uebersicht" [cdkOption]="tag.dateiname">
-    {{tag.dateiname}}
-  </li>
-</ul>
+    
+    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+      <div *cdkVirtualFor="let item of uebersicht" class="example-item">{{item.dateiname}}</div>
+    </cdk-virtual-scroll-viewport>
+    
+  </mat-card>  
+ 
   </div>
 
