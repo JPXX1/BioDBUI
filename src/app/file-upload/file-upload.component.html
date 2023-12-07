@@ -1,6 +1,6 @@
-<div class="text-center"> 
+<div style="margin-left:100px"> 
 	<input class="form-control" type="file"
-			(change)="onChange($event)" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"> 
+			(change)="onChange($event)" accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="fileupload"> 
 
 	<button (click)="addfile()" 
 		class="btn btn-success"> 
@@ -28,30 +28,33 @@
 
 </div>
 <div calss="row"> 
-	<app-info-box [Info]="InfoBox"></app-info-box>
+	<app-info-box [Info]="InfoBox" class="info" style="margin-left:100px"></app-info-box>
    
-    <div><app-selectjahr  [selected]="jahr"></app-selectjahr></div>
+    <div style="margin-left:100px"><app-selectjahr  [selected]="jahr" style="margin-left:100px"></app-selectjahr></div>
 
-    <div><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div>
+    <div style="margin-left:100px"><app-select-probenehmer [selectedPN]="probenehmer" style="margin-left:100px"></app-select-probenehmer></div>
 
       <button (click)="importIntoDB()" 
-      class="btn btn-success"> 
+      class="btn btn-success" style="margin-left:100px"> 
       Import in die Datenbank 
   </button>
-      
+  <button (click)="pruefeObMesswerteschonVorhanden()" 
+  class="btn btn-success" style="margin-left:100px"> 
+  prüf
+</button>  
     </div>
 
-    <app-select-uebersicht-import></app-select-uebersicht-import>
+    <app-select-uebersicht-import style="margin-left:100px"></app-select-uebersicht-import>
 	<mat-grid-list cols="2">
 
 	
 		
 			
 	
-				<mat-grid-tile>
+				<mat-grid-tile >
 
 
-<div class="card" *ngIf="mstimptab == true">
+<div  *ngIf="mstimptab == true" style="vertical-align: top;">
     <p-table
         [value]="MessDataGr"
         [paginator]="true"
@@ -60,7 +63,7 @@
         [tableStyle]="{ 'min-width': '50rem' }"
         (sortFunction)="customSort($event)" [customSort]="true"
         [rowsPerPageOptions]="[10, 25, 50]"
-    >
+   >
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="_Nr" style="width:20%">Nr<p-sortIcon field="code"></p-sortIcon></th>
@@ -93,8 +96,8 @@
     </p-table>
 </div>
 </mat-grid-tile>
-<mat-grid-tile>
-<div class="card"   *ngIf="Datimptab == true">
+<mat-grid-tile style="vertical-align: top;">
+<div class="card"   *ngIf="Datimptab == true" style="vertical-align: top;">
 <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
 
 

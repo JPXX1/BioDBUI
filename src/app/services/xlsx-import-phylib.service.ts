@@ -306,7 +306,38 @@ export class XlsxImportPhylibService {
 	}
 			
 	}
-	importIntoDB(jahr:string,probenehmer:string){this.importMesswerteIntoDB(jahr,probenehmer);}
+
+	
+	pruefeObMesswerteschonVorhanden(jahr:string,probenehmer:string){
+		let jahrtemp:string;let vorhanden:boolean=false;
+		jahrtemp=("2006-07-15");probenehmer='1';
+		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+
+			var a=a+1;
+			let temp:any;	
+			
+		this.impPhylibServ.kontrollPhylibMesswerte(this.MessDataImp[i], jahrtemp,probenehmer,"1").subscribe
+		(arten_ => { 
+			temp=arten_;
+			if (temp.length){
+				vorhanden=true;}
+		   //console.log(this.arten);
+		   //return einheiten;
+		},) ;	
+	
+	}	
+return vorhanden;
+
+	}
+
+
+	importIntoDB(jahr:string,probenehmer:string):string{
+		
+		if (this.pruefeObMesswerteschonVorhanden( jahr,probenehmer)==true){
+			return "Es sind bereits Daten der Importdatei in der Datenbank. Der Import kann leider nicht fortgesetzt werden.";
+		}
+		this.importMesswerteIntoDB(jahr,probenehmer);
+			return "Datenimport erfolgreich durchgeführt."}
 
 	importMesswerteIntoDB(jahr:string,probenehmer:string){
 	let jahrtemp:string;

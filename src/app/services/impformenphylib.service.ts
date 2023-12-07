@@ -57,21 +57,24 @@ export class ImpPhylibServ {
 
 
       kontrollPhylibMesswerte(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
-        let params = new HttpParams()  .set('id_taxon',MessDataImp._Taxon)
+        let params = new HttpParams().set('id_taxon',(MessDataImp._Taxon))
         .set('id_einheit',MessDataImp._Einheit)
         .set('id_probe',MessDataImp._Probe)
-        .set('id_mst',MessDataImp._Messstelle)
+        .set('id_mst',(MessDataImp._Messstelle))
         .set('id_taxonzus',MessDataImp._Form)
-        .set('id_pn',Probenehmer)
-        .set('datumpn',datum)
-        .set('id_import',id_import)
-        .set('id_tiefe',MessDataImp._Tiefe)
-        .set('id_abundanz',MessDataImp._idAbundanz)
+        .set('id_pn',(Probenehmer))
+        .set('datumpn',datum)       
+        .set('id_import',(id_import))
+        .set('id_tiefe',(MessDataImp._Tiefe))
+        .set('id_abundanz',(MessDataImp._idAbundanz))
         .set('cf',MessDataImp._cf)
-        .set('wert',MessDataImp._Messwert);;
-        //console.log(MessDataImp)
-      //  return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte',paras);  
-       return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte', {params});   
+        .set('wert',MessDataImp._Messwert);
+        console.log(params.toString());
+      //  return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte',paras); 
+      return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte', {params: params}); 
+      
+      
+      
       }
 
        getArtenPhylibMP(parameter :number){ 

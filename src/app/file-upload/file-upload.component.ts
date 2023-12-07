@@ -108,7 +108,12 @@ export class FileUploadComponent implements OnInit {
 			}
 		);
 	}
-	
+	pruefeObMesswerteschonVorhanden(){
+		if (this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer)==true)
+		{this.InfoBox="mist"} else
+		{this.InfoBox="allet jut"};
+
+	}
 		importIntoDB(){
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
@@ -120,7 +125,7 @@ export class FileUploadComponent implements OnInit {
 			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
 			}else
 
-			{this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);}
+			{this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);}
 			}}
 		addfile()     
 		{  

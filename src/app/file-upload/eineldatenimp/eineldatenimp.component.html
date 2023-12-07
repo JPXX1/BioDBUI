@@ -9,13 +9,13 @@
 		
 		<!-- Name Column -->
 		<ng-container cdkColumnDef="mst">
-		  <th  cdk-header-cell *cdkHeaderCellDef> Messstelle </th>
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header"> Messstelle </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element._Messstelle}} 
 			</td>
 			
 		</ng-container>
 		<ng-container cdkColumnDef="probe">
-			<th  cdk-header-cell *cdkHeaderCellDef> Probe </th>
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header"> Probe</th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element._Probe}} 
 			  </td>
 			  
@@ -23,26 +23,26 @@
 		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
 		<!-- Weight Column -->
 		<ng-container cdkColumnDef="tiefe">
-			<th  cdk-header-cell *cdkHeaderCellDef> Tiefenstufe </th>
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header"> Tiefenstufe </th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element._Tiefe}} </td>
 			
 		  </ng-container>
 		<ng-container cdkColumnDef="taxon">
-		  <th  cdk-header-cell *cdkHeaderCellDef> Taxa </th>
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header"> Taxa </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element._Taxon}} </td>
 		  
 		</ng-container>
 		<ng-container cdkColumnDef="wert">
-			<th  cdk-header-cell *cdkHeaderCellDef>Wert</th>
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header">Wert</th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element._wert}} </td>
 		  </ng-container>
 		<!-- Symbol Column -->
 		<ng-container cdkColumnDef="einheit">
-		  <th  cdk-header-cell *cdkHeaderCellDef> Einheit </th>
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header"> Einheit </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element._Einheit}} </td>
 		</ng-container>
 		<ng-container cdkColumnDef="form">
-			<th  cdk-header-cell *cdkHeaderCellDef>Form</th>
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header">Form</th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element._Form}} </td>
 		  </ng-container>
 		 

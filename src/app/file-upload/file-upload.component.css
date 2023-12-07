@@ -1,0 +1,15 @@
+.info {
+    height: 20px;
+    width: 200px;
+    border: 1px solid rgb(235, 23, 23);
+    background-color: rgb(236, 148, 15);
+  }
+  .fileupload{
+    height: 32px;
+    width: 400px;
+    border: 1px solid rgb(22, 126, 53);
+    background-color: rgb(203, 236, 15);
+    margin-left: 0;
+    
+
+  }
