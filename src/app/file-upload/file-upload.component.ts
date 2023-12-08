@@ -109,9 +109,12 @@ export class FileUploadComponent implements OnInit {
 		);
 	}
 	pruefeObMesswerteschonVorhanden(){
-		if (this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer)==true)
+		if (this.MessDataOrgi.length>0){
+		this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+		
+		if (this.xlsxImportPhylibService.vorhanden===true)
 		{this.InfoBox="mist"} else
-		{this.InfoBox="allet jut"};
+		{this.InfoBox="allet jut"};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 
 	}
 		importIntoDB(){

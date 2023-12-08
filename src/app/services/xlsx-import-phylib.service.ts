@@ -22,6 +22,8 @@ export class XlsxImportPhylibService {
 	public Datimptab:boolean=false;
 	newDate: Date;
 	public InfoBox:string="";
+	public temp:any;
+	vorhanden:boolean;
 
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
 	
@@ -308,36 +310,47 @@ export class XlsxImportPhylibService {
 	}
 
 	
-	pruefeObMesswerteschonVorhanden(jahr:string,probenehmer:string){
-		let jahrtemp:string;let vorhanden:boolean=false;
-		jahrtemp=("2006-07-15");probenehmer='1';
-		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+	 pruefeObMesswerteschonVorhanden(jahr:string,probenehmer:string){
 
-			var a=a+1;
-			let temp:any;	
+		let jahrtemp:string; this.vorhanden=false;
+		jahrtemp=('15.07.2006');probenehmer='1';
+		let i=0;
+		
+		
+		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+			this.holeMesswerteausDB(this.MessDataImp[i],jahrtemp,probenehmer,'1')
 			
-		this.impPhylibServ.kontrollPhylibMesswerte(this.MessDataImp[i], jahrtemp,probenehmer,"1").subscribe
-		(arten_ => { 
-			temp=arten_;
-			if (temp.length){
-				vorhanden=true;}
-		   //console.log(this.arten);
-		   //return einheiten;
-		},) ;	
+			
+			
+			
+		i += 1;}
 	
-	}	
-return vorhanden;
+	}
+	holeMesswerteausDB(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
+
+		this.impPhylibServ.kontrollPhylibMesswerte(MessDataImp, datum,Probenehmer,id_import).subscribe
+		(arten_ => { 
+			 this.temp=arten_;
+			
+		
+		},) ;
+
+		this.updateVorhanden();
+
 
 	}
-
-
+	updateVorhanden(){
+		console.log(this.temp);
+		if (this.temp.length){
+			this.vorhanden=true;}
+	  }
 	importIntoDB(jahr:string,probenehmer:string):string{
-		
-		if (this.pruefeObMesswerteschonVorhanden( jahr,probenehmer)==true){
+		this.pruefeObMesswerteschonVorhanden( jahr,probenehmer);
+		if (this.vorhanden===true){
 			return "Es sind bereits Daten der Importdatei in der Datenbank. Der Import kann leider nicht fortgesetzt werden.";
-		}
+		} else{
 		this.importMesswerteIntoDB(jahr,probenehmer);
-			return "Datenimport erfolgreich durchgeführt."}
+			return "Datenimport erfolgreich durchgeführt."}}
 
 	importMesswerteIntoDB(jahr:string,probenehmer:string){
 	let jahrtemp:string;
@@ -350,8 +363,8 @@ return vorhanden;
 	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], jahrtemp,probenehmer,"1");
 	
 }}
-
 }
+
 
 
 
