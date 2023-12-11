@@ -15,4 +15,5 @@ export interface Messgroup {
 		MstOK:boolean;//Mst in Stammdatenvorhanden
 		OK:boolean;
 		KeineMP:boolean;//kein Makrophyten
+		gesamtdeckg:string;
 }

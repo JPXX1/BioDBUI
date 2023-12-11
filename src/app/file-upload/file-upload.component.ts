@@ -108,16 +108,28 @@ export class FileUploadComponent implements OnInit {
 			}
 		);
 	}
-	pruefeObMesswerteschonVorhanden(){
-		if (this.MessDataOrgi.length>0){
-		this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
-		
+
+
+	hole(){
+	
+	
 		if (this.xlsxImportPhylibService.vorhanden===true)
+		{this.InfoBox="mist"} else
+		{this.InfoBox="allet jut"};
+	
+	
+	}
+	
+	async pruefeObMesswerteschonVorhanden(){
+		if (this.MessDataOrgi.length>0){
+		await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+		
+		if (this.xlsxImportPhylibService.vorhanden==true)
 		{this.InfoBox="mist"} else
 		{this.InfoBox="allet jut"};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 
 	}
-		importIntoDB(){
+	async	importIntoDB(){
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
 			console.log(this.jahr);
@@ -126,9 +138,15 @@ export class FileUploadComponent implements OnInit {
 			}else{
 
 			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
-			}else
+			}else 
 
-			{this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);}
+			if (this.MessDataOrgi.length>0){
+				await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+				
+				if (this.xlsxImportPhylibService.vorhanden==true)
+				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+				{this.InfoBox="Der Import wird durchgeführt.";this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
+		
 			}}
 		addfile()     
 		{  

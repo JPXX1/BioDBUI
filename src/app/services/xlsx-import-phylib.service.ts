@@ -3,6 +3,7 @@ import { ImpPhylibServ } from '../services/impformenphylib.service';
 import * as XLSX from 'xlsx';
 import { Messgroup } from '../interfaces/messgroup';
 import { Messwerte } from '../interfaces/messwerte';
+import {MessstellenImp} from '../interfaces/messstellen-imp';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,11 @@ export class XlsxImportPhylibService {
 	newDate: Date;
 	public InfoBox:string="";
 	public temp:any;
+	public parameterabiot:any;
+	
 	vorhanden:boolean;
 
-	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
+	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];public messstellenImp:MessstellenImp[]=[];
 	
 	
 	
@@ -38,7 +41,7 @@ export class XlsxImportPhylibService {
 		   //return einheiten;
 		},(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;		
 	}
-	ngOnInit() {
+	async ngOnInit() {
 		
 		this.impPhylibServ.getFormen().subscribe(formen_ => { 
 			this.formen =formen_; 
@@ -60,22 +63,34 @@ export class XlsxImportPhylibService {
 		   //return einheiten;
 		},(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
 		//
-		this.impPhylibServ.getMst().subscribe(mst_ => { 
-			this.mst=mst_;
+		
+		 this.impPhylibServ.getParameterAbiot();
+		
+		this.impPhylibServ.getParameterAbiot().subscribe(mst_ => { 
+			this.parameterabiot=mst_;
 		  // console.log(this.mst);
 		   //return einheiten;
 		},(err) =>{this.InfoBox=this.InfoBox+" " + err.message}) ;	
 		
 	  
 	}
+
+	async holeMst(){
+	// this.workbookInit(datum,Probenehmer)
+	 await this.impPhylibServ.getMst().forEach(value => {
+		this.mst = value;
+		console.log('observable -> ' + value);
+	  });}
+
   Phylibimport(workbook){
 		let array: Messwerte[]=[]; this.MessDataGr=[];this.MessDataOrgi=[];
 		//let reader = new FileReader();
-		
+		this.holeMst();
 		var sheets;
 		var Messstelle:string;var Probe:string;var Taxon;var Form:string;var Messwert;var Einheit;var Tiefe;var cf;
 		let aMessstelle:string;let aProbe:string;let aTaxon;let aForm:string;let aMesswert;let aEinheit;let aTiefe;let acf;
 		var Oekoregion;var Makrophytenveroedung;var Begruendung;var Helophytendominanz;var Diatomeentyp;var Phytobenthostyp;var Makrophytentyp;var WRRLTyp;var Gesamtdeckungsgrad;var Veggrenze;var typmp;
+		let bidmst;let bidpara;let bideinh;let bwert;
 		let mstOK:boolean;let ok:boolean;
 		let XL_row_object;
 		let json_Messstelle;
@@ -106,50 +121,142 @@ export class XlsxImportPhylibService {
 										
 										 if (
 											mstee.length !== 0) {mstOK=true;
+												bidmst=mstee(0).id_mst;	
 												}
 										 else{
 											
 											mstOK=false
 										 }
-											this.groupNAch(Messstelle,typmp,Diatomeentyp,WRRLTyp,Phytobenthostyp,Veggrenze,Makrophytenveroedung,Begruendung,Helophytendominanz,Oekoregion,mstOK,true,false);
+										 //let bveggrenze;let bidmst;let bidpara;let bideinh;let bidpara;
+										 this.messstellenImp.push({id_mst:bidmst,datum:null,id_einh:bideinh,id_para:bidpara,wert:bwert,id_import:null,id_pn:null});
+											this.groupNAch(Messstelle,Makrophytentyp,Diatomeentyp,WRRLTyp,Phytobenthostyp,Veggrenze,Makrophytenveroedung,Begruendung,Helophytendominanz,Oekoregion,mstOK,true,false,Gesamtdeckungsgrad);
 										}
 										}
 									if (i == 'Ökoregion') {
 										Oekoregion = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Oekoregion;
+										 				}
 									}
 									if (i == 'Makrophytenverödung') {
 										Makrophytenveroedung = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Makrophytenveroedung;
+										 				}
 									}
 									if (i == 'Begründung') {
 										Begruendung = obj[index][i];
+
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Begruendung;
+										 				
 									}
 									if (i == 'Helophytendominanz') {
 										Helophytendominanz = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Helophytendominanz;
+										 				
 									}
 									if (i == 'Diatomeentyp') {
 										Diatomeentyp = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Diatomeentyp;
+										 				
 									}
 									if (i == 'Phytobenthostyp') {
 										Phytobenthostyp = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Phytobenthostyp;
+										 				
 									}
 									if (i == 'Makrophytentyp') {
 										Makrophytentyp = obj[index][i];
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Makrophytentyp;
+										 				
 									}
 									if (i == 'WRRL-Typ') {
 										WRRLTyp = obj[index][i];
-									}
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=WRRLTyp;
+										 				}
+									
 									if (i == 'Gesamtdeckungsgrad') {
 										Gesamtdeckungsgrad = obj[index][i];
-									}
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=1;bwert=Gesamtdeckungsgrad;
+										 				}
+									
 									if (i == 'Vegetationsgrenze') {
 										Veggrenze = obj[index][i];
-									}
+
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=13;
+												bwert=Veggrenze;
+										 				}
 									if (i == 'Makrophytentyp') {
-										typmp = obj[index][i];
+										Makrophytentyp = obj[index][i];
+
+										let veggrenze = this.parameterabiot.filter(formen => formen.importname== i);
+
+										if (
+											veggrenze.length !== 0) {
+												bidpara=veggrenze[0].id_para;}
+												bideinh=12;
+												bwert=Makrophytentyp;
+										 				
 									}
 								}
-							}
-						})
+							
+						)
 					}
 					if (workbook.SheetNames[i] == 'Messwerte') {
 						// Here is your object
@@ -165,9 +272,9 @@ export class XlsxImportPhylibService {
 									if (i == 'Messstelle') {
 										
 										if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-											array.push({_Nr:o,_Messstelle:mst,_Tiefe:Tiefe,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
-											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:aProbe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:'1'});
-										this.groupNAch(aMessstelle,null,null,null,null,null,null,null,null,null,mstOK,ok,null); 
+											array.push({_Nr:o,_Messstelle:mst,_Tiefe:Tiefe,_Probe:Probe,_Taxon:Taxon, _Form:Form, _Messwert:Messwert, _Einheit:Einheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:1});
+											this.MessDataOrgi.push({_Nr:o,_Messstelle:aMessstelle,_Tiefe:aTiefe,_Probe:aProbe,_Taxon:aTaxon, _Form:aForm, _Messwert:Messwert, _Einheit:aEinheit, _cf:cf,MstOK:mstOK,OK:ok,_AnzahlTaxa:1,_idAbundanz:1});
+										this.groupNAch(aMessstelle,null,null,null,null,null,null,null,null,null,mstOK,ok,null,null); 
 
 										Messstelle=null;Probe=null;Taxon=null; Form=null;Messwert=null;Einheit=null;Tiefe=null;cf=null;ok=true;mstOK=true;
 										aMessstelle=null;aProbe=null;aTaxon=null;aForm=null;aMesswert=null;aEinheit=null;aTiefe=null;acf=null;
@@ -259,21 +366,21 @@ export class XlsxImportPhylibService {
 				this.MessDataImp=array;
 				
 	}
-  groupNAch(mst:string,_typmp:string,_typdia:string,_typwrrl:string,_typphytobenth,_umg:string,_veroedung:string,_b_veroedung:string,_helo_dom:string,_oekoreg:string,mstok:boolean,ok:boolean,keinemp:boolean){
+  groupNAch(mst:string,_typmp:string,_typdia:string,_typwrrl:string,_typphytobenth,_umg:string,_veroedung:string,_b_veroedung:string,_helo_dom:string,_oekoreg:string,mstok:boolean,ok:boolean,keinemp:boolean,_gesamtdeckg:string){
 		let MstOK:boolean;let OK:boolean;
 		// console.log(mst)
 		if (this.MessDataGr.length==0){
 
 			_Typ:String;
 		_UMG
-			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp});
+			this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp,gesamtdeckg:_gesamtdeckg});
 
 		}else{
 			let messgroup = this.MessDataGr.filter(dd => dd._Messstelle== mst);
 			
 
 			if (messgroup.length==0){
-				this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp});}
+				this.MessDataGr.push({_Nr:this.MessDataGr.length+1,_Messstelle:mst,_AnzahlTaxa:0,_TypMP:_typmp,_TypDIA:_typdia,_TypWRRL:_typwrrl,_TypPhytoBenthos:_typphytobenth,_UMG:_umg,_Veroedung:_veroedung,_B_veroedung:_b_veroedung,_Helo_dom:_helo_dom,_Oekoreg:_oekoreg,MstOK:mstok,OK:ok,KeineMP:keinemp,gesamtdeckg:_gesamtdeckg},);}
 			else{
 				for (let i = 0, l = this.MessDataGr.length; i < l; i += 1) {
 					
@@ -295,11 +402,13 @@ export class XlsxImportPhylibService {
 				if (this.MessDataGr[i].OK==false || ok==false) {OK=false;}else {OK=true;};
 				var KeineMP:boolean;
 				if (this.MessDataGr[i].KeineMP==false || keinemp==false) {KeineMP=false;}else {KeineMP=true;};
+				var agesamtdeckg:string=this.MessDataGr[i].gesamtdeckg;
+				
 
 
 					
 				this.MessDataGr.splice(i, 1);//löscht vorhandenen DS
-				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_TypMP,_TypDIA,_TypWRRL,_TypPhytoBenthos,_UMG,_Veroedung,_B_veroedung,_Helo_dom,_Oekoreg,MstOK,OK,KeineMP});
+				this.MessDataGr.push({_Nr,_Messstelle,_AnzahlTaxa,_TypMP,_TypDIA,_TypWRRL,_TypPhytoBenthos,_UMG,_Veroedung,_B_veroedung,_Helo_dom,_Oekoreg,MstOK,OK,KeineMP,gesamtdeckg:agesamtdeckg});
 				// console.log(this.MessDataGr)
 				break;
 					}}
@@ -310,44 +419,58 @@ export class XlsxImportPhylibService {
 	}
 
 	
-	 pruefeObMesswerteschonVorhanden(jahr:string,probenehmer:string){
+	async pruefeObMesswerteschonVorhanden(jahr:string,probenehmer:string){
 
 		let jahrtemp:string; this.vorhanden=false;
-		jahrtemp=('15.07.2006');probenehmer='1';
+		jahrtemp=('15.07.'+jahr);probenehmer='1';
 		let i=0;
 		
 		
-		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
-			this.holeMesswerteausDB(this.MessDataImp[i],jahrtemp,probenehmer,'1')
-			
-			
-			
-			
-		i += 1;}
-	
-	}
-	holeMesswerteausDB(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
-
-		this.impPhylibServ.kontrollPhylibMesswerte(MessDataImp, datum,Probenehmer,id_import).subscribe
-		(arten_ => { 
-			 this.temp=arten_;
-			
 		
-		},) ;
+			await this.holeMesswerteausDB(jahrtemp,probenehmer);
+			for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+				const mw:Messwerte= this.MessDataImp[i];
 
-		this.updateVorhanden();
 
+		const combi = this.temp.filter (d => d.id_mst=== mw._Messstelle && d.id_taxon===mw._Taxon && d.id_tiefe=== mw._Tiefe && d.id_taxonzus===mw._Form && d.id_abundanz===mw._idAbundanz);
+		console.log ("combi", combi)
+
+		if (combi.length>0){
+			this.vorhanden=true;
+			i=l;
+		}
+	
+			}}
+
+
+			
+			
+			
+
+			async holeMesswerteausDB(datum:string,Probenehmer:string){
+		// this.workbookInit(datum,Probenehmer)
+		 await this.impPhylibServ.kontrollPhylibMesswerte2(datum,Probenehmer).forEach(value => {
+			this.temp = value;
+			console.log('observable -> ' + value);
+		  });
+		// const a= this.impPhylibServ.kontrollPhylibMesswerte2(datum,Probenehmer).subscribe
+		// (arten_ => { 
+		// 	 this.temp=arten_;
+			 
+		// 	 console.log("f"+arten_.toLocaleString.length)
+		 	 this.update();
+		
+		// },) ;
+		// this.update();
 
 	}
-	updateVorhanden(){
+	update(){
 		console.log(this.temp);
-		if (this.temp.length){
-			this.vorhanden=true;}
 	  }
 	importIntoDB(jahr:string,probenehmer:string):string{
 		this.pruefeObMesswerteschonVorhanden( jahr,probenehmer);
 		if (this.vorhanden===true){
-			return "Es sind bereits Daten der Importdatei in der Datenbank. Der Import kann leider nicht fortgesetzt werden.";
+			 return  "Es sind bereits Daten der Importdatei in der Datenbank. Der Import kann leider nicht fortgesetzt werden.";
 		} else{
 		this.importMesswerteIntoDB(jahr,probenehmer);
 			return "Datenimport erfolgreich durchgeführt."}}
@@ -360,7 +483,7 @@ export class XlsxImportPhylibService {
 		var a=a+1;
 		
 		
-	this.impPhylibServ.postMessstellenPhylib(this.MessDataImp[i], jahrtemp,probenehmer,"1");
+	this.impPhylibServ.postMesswertePhylib(this.MessDataImp[i], jahrtemp,probenehmer,"1");
 	
 }}
 }

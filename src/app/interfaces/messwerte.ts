@@ -8,7 +8,7 @@ export interface Messwerte {
     _Messwert: string;
     _Einheit: string;
     _cf: string;
-    _idAbundanz:string;
+    _idAbundanz:number;
     MstOK:boolean;
     OK:boolean;
     _AnzahlTaxa: number;

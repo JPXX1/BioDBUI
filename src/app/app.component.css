@@ -1,0 +1,5 @@
+.panel {
+    background: rgba(206, 245, 144, 0.473);
+    border-radius: var(--panel-border-width);
+    padding: var(--panel-border-width);
+  }
