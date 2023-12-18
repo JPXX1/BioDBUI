@@ -58,17 +58,8 @@ export class ImpPhylibServ {
                 return this.httpClient.get('http://localhost:3000/impParaAbiot');}
 
 
-          //     kontrollPhylibMesswerte3(datum:string,Probenehmer:string) {
-          //       let params = new HttpParams()
-          //       .set('id_pn',(Probenehmer))
-          //       .set('datumpn',datum)       
-          //  ;
-          //       return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte2', {params: params}).pipe(tap(data => {
-          //           this.myVariable = data;
-          //       }));
-          //   }
-
-              kontrollPhylibMesswerte2(datum:string,Probenehmer:string): Observable<any>{
+  
+      kontrollPhylibMesswerte2(datum:string,Probenehmer:string): Observable<any>{
                 let params = new HttpParams()
                 .set('id_pn',(Probenehmer))
                 .set('datumpn',datum)       
@@ -77,7 +68,15 @@ export class ImpPhylibServ {
               return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte2', {params: params}); 
               
               }
-
+      kontrollPhylibMessstellen(datum:string,Probenehmer:string): Observable<any>{
+                let params = new HttpParams()
+                .set('id_pn',(Probenehmer))
+                .set('datum',datum)       
+           ;
+               
+         return this.httpClient.get('http://localhost:3000/kontrollPhylibMessstellen', {params: params}); 
+              
+              }
       kontrollPhylibMesswerte(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
         let params = new HttpParams().set('id_taxon',(MessDataImp._Taxon))
         .set('id_einheit',MessDataImp._Einheit)
@@ -96,29 +95,31 @@ export class ImpPhylibServ {
       
       }
  
+      getvalExceltabs(): Observable<any>{
+
+
+      return this.httpClient.get('http://localhost:3000/valExceltabs');}
+
 
        getArtenPhylibMP(parameter :number){ 
-        //const headers = new HttpHeaders().append('header', 'value');
-        //const params = new HttpParams().append('id', parameter);
+
         let params = new HttpParams().set('id',parameter);
         console.log(params.toString())
         //const params: { id: 1 };
         return this.httpClient.get('http://localhost:3000/impArten', {params});
         }
         
-        postMessstellenPhylib2(MessstellenImp:MessstellenImp){ 
+        postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import:string){ 
           const body = new HttpParams()
           .set('id_mst',MessstellenImp.id_mst)
           .set('id_para',MessstellenImp.id_para)
-          .set('id_import',MessstellenImp.id_import)
-          .set('id_pn',MessstellenImp.id_pn)
-          .set('datum',MessstellenImp.datum)
+          .set('id_import',id_import)
+          .set('id_pn',Probenehmer)
+          .set('datum',datum)
           .set('id_einh',MessstellenImp.id_einh)
           .set('wert',MessstellenImp.wert);
           
-          //INSERT INTO public.data_abiotik
-        // (id_para, id_mst, id_import, datum, id_einh)
-        //VALUES(nextval('seq_dat_abiot'::regclass), 0, 0, 0, '', 0, now());
+
         console.log(MessstellenImp)
         this.httpClient.post('http://localhost:3000/insertPhylibMessstellen', body).subscribe(resp => {
           console.log("response %o, ", resp);

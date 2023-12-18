@@ -1,7 +1,7 @@
 
 import { NgModule } from '@angular/core'; 
  import { BrowserModule } from '@angular/platform-browser'; 
-
+ import {MatToolbarModule} from '@angular/material/toolbar'; 
 import { RouterModule, Routes } from '@angular/router';
 import { FileUploadComponent } from './file-upload/file-upload.component'; 
 import {MatGridListModule} from '@angular/material/grid-list'; 
@@ -39,7 +39,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
 ], 
-imports: [ MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 

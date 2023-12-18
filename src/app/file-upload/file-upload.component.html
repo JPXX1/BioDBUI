@@ -29,15 +29,16 @@
 </div>
 <div calss="row"> 
 	<app-info-box [Info]="InfoBox" class="info" style="margin-left:100px"></app-info-box>
-   
+    <span> 
     <div style="margin-left:100px"><app-selectjahr  [selected]="jahr" style="margin-left:100px"></app-selectjahr></div>
 
     <div style="margin-left:100px"><app-select-probenehmer [selectedPN]="probenehmer" style="margin-left:100px"></app-select-probenehmer></div>
-
+</span> 
       <button (click)="importIntoDB()" 
       class="btn btn-success" style="margin-left:100px"> 
       Import in die Datenbank 
   </button>
+
   <button (click)="pruefeObMesswerteschonVorhanden()" 
   class="btn btn-success" style="margin-left:100px"> 
   prüf

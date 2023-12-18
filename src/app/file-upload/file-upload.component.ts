@@ -6,7 +6,8 @@ import * as XLSX from 'xlsx';
 import { SortEvent } from 'primeng/api';
 import { Messgroup } from '../interfaces/messgroup';
 import { Messwerte } from '../interfaces/messwerte';
-import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service'
+import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
+import {ValExceltabsService} from '../services/val-exceltabs.service';
 import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
 import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
 
@@ -38,8 +39,9 @@ export class FileUploadComponent implements OnInit {
 	public Datimptab:boolean=false;
 	public newDate: string;
 
+
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
-	//xls:WorkBook11;
+
 
 
 	
@@ -51,7 +53,7 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService) { 
+	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
 	}
 	
 	ngOnInit() {
@@ -67,6 +69,7 @@ export class FileUploadComponent implements OnInit {
 	// On file Select 
 	onChange(event) {
 		this.file=event.target.files[0];
+		
 		this.mstimptab=false;  this.Datimptab=false;
 	}
 
@@ -142,13 +145,20 @@ export class FileUploadComponent implements OnInit {
 
 			if (this.MessDataOrgi.length>0){
 				await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+				await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
 				
-				if (this.xlsxImportPhylibService.vorhanden==true)
+				if (this.xlsxImportPhylibService.vorhanden===true)
 				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+				if (this.xlsxImportPhylibService.vorhandenMst===true)
+				{this.InfoBox="Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+
+
 				{this.InfoBox="Der Import wird durchgeführt.";this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 		
 			}}
-		addfile()     
+
+
+			 addfile()     
 		{  
 			this.mstimptab=true; this.Datimptab=false;  
 	//	this.file= event.target.files[0];     
@@ -168,7 +178,7 @@ export class FileUploadComponent implements OnInit {
 			//for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
 
 				//Phylibimportdatei
-				if (workbook.SheetNames.length=2){
+				if (workbook.SheetNames.length===2){
 					if ((workbook.SheetNames[0]=='Messstellen' ||  workbook.SheetNames[0]=='Messstelle') && workbook.SheetNames[1]=='Messwerte') {
 
 						
@@ -180,11 +190,21 @@ export class FileUploadComponent implements OnInit {
 						this.MessDataGr=this.xlsxImportPhylibService.MessDataGr;
 						//this.Phylibimport(workbook);
 					console.log(this.xlsxImportPhylibService.MessDataGr);
-					this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.xlsxImportPhylibService.MessData.length + " Datensätze in der Importdatei.";
+					this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.xlsxImportPhylibService.MessDataImp.length + " Datensätze in der Importdatei.";
 					
 					}
-					else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard."}
-				}else{this.InfoBox="Fehler"}
+					else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard einer Phyli."}
+				}else
+				if (workbook.SheetNames.length===1){
+					//this.xlsxImportPhylibService.Phylibimport(workbook); 
+					this.valExceltabsService.ExcelTabsinArray(workbook,0);	
+					//this.valExceltabsService.ValExcelTabs();
+				}
+
+				else
+				
+				
+				{this.InfoBox="Fehler"}
 
 
 
@@ -195,7 +215,7 @@ export class FileUploadComponent implements OnInit {
 	
 
 
-	
+	  
 	 
 
 	handleRowClick(mst:string){
