@@ -94,12 +94,24 @@ export class ImpPhylibServ {
       return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte', {params: params}); 
       
       }
- 
+      
+      
+      
+
+      getvalVerfahren(): Observable<any>{
+
+
+        return this.httpClient.get('http://localhost:3000/valVerfahren');}
+
       getvalExceltabs(): Observable<any>{
 
 
       return this.httpClient.get('http://localhost:3000/valExceltabs');}
+      
+      getvalExcelSpalten(): Observable<any>{
 
+
+        return this.httpClient.get('http://localhost:3000/valExcelspalten');}
 
        getArtenPhylibMP(parameter :number){ 
 
