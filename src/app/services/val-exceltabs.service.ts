@@ -91,7 +91,8 @@ let tabs="";
 
       this.spaltenauslesen(1,workbook);
       this.ValExcelSpalten(1);
-
+     const vernr= this.ArrayAvg(this.VorhandeneVerfahren);
+console.log(vernr)
     }
 
 
@@ -119,8 +120,8 @@ let tabs="";
     json_daten = JSON.stringify(XL_row_object);
     const obj = JSON.parse(json_daten);
     obj.forEach((val, index) => {
-      if (obj[index] !== null) {
-        for (var i in obj[index]) {
+      if (obj[index] !== null && index===0) {
+        for (var i in obj[0]) {
          
           this.excelspaltenimport.push(i);
         }
@@ -136,7 +137,7 @@ let tabs="";
     const name=this.excelspaltenimport[i];
 
    for (let a = 0, l = valspaltenfiter.length; a < l; a += 1) {
-    const valname=valspaltenfiter[a].tabname;
+    const valname=valspaltenfiter[a].spalten_name;
     const valnameerforderlich:boolean=valspaltenfiter[a].kennung;
     const verfahrens_id:number=valspaltenfiter[a].id_verfahren;
       if (name===valname && valnameerforderlich===true){
@@ -147,6 +148,17 @@ let tabs="";
     }
 
 }
+console.log(this.VorhandeneVerfahren)
+}
 
+
+ ArrayAvg(myArray) {
+  var i = 0, summ = 0, ArrayLen = myArray.length;
+  while (i < ArrayLen) {
+    summ = summ + myArray[i++];
+  }
+
+  let d=summ/ArrayLen
+  return d.toFixed(1);
 }
 }

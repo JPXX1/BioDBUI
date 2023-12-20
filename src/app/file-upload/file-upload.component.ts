@@ -197,6 +197,7 @@ export class FileUploadComponent implements OnInit {
 				}else
 				if (workbook.SheetNames.length===1){
 					//this.xlsxImportPhylibService.Phylibimport(workbook); 
+					
 					this.valExceltabsService.ExcelTabsinArray(workbook,0);	
 					//this.valExceltabsService.ValExcelTabs();
 				}
