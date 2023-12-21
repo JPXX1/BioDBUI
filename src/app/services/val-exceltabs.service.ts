@@ -6,14 +6,15 @@ import * as XLSX from 'xlsx';
   providedIn: 'root'
 })
 export class ValExceltabsService {
-	excelspaltenimport:string[]=[];
+
+	excelspaltenimport:TabSpalte[]=[];
   public valexceltabs: any;
   public valverfahren: any;
   public valspalten: any;
   public InfoBox: string = "";
   public Verfahren:string="";
   public NrVerfahren:number;
-  public Exceltabsalle:string="";
+  public Exceltabsimpalle:string="";
   
   constructor(private impPhylibServ: ImpPhylibServ) { }
   VorhandeneVerfahren:number[]=[];
@@ -56,53 +57,61 @@ export class ValExceltabsService {
   exceltabsauslesen(workbook){
 let tabs="";
     for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-      tabs=workbook.SheetNames[i]
+     const tabNeu=workbook.SheetNames[i]
       if (i+1<l){
-        tabs=tabs+";";
+        tabs=tabNeu+";";
+      }else if(i+1===l){
+        tabs=tabs+tabNeu;
+
       }
 
     }
 
-    this.Exceltabsalle=tabs;
+    this.Exceltabsimpalle=tabs;
   }
 
 
-  async ExcelTabsinArray(workbook, sheetNr: number) {
+  async ExcelTabsinArray(workbook) {
     await this.callvalexceltabs();
-
     
+    //Anzahl Tabs ermitteln
     let tabs = workbook.SheetNames.length;
     let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === tabs);
     this.exceltabsauslesen(workbook);//liest Exceltabs aus
+    this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
 
     if (valexceltabsfilter.length === 1) {//wenn nur ein Tab vorhanden ist
-     if ( valexceltabsfilter[0].ident_kriterium===1){//Anzahl der Tabs ist eindeutig für Verfahrensauswahl
-      this.waehleVerfahren(valexceltabsfilter[0].id_verfahren);
-      //führe Verfahren aus
-    }else if (valexceltabsfilter[0].ident_kriterium===2){//Anzahl und Name der Tabs ist eindeutig für Verfahrensauswahl
-
-      let valexceltabsfilter2_1 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsalle);
-      if (valexceltabsfilter2_1.length === 1) {
-
-        this.waehleVerfahren(valexceltabsfilter2_1[0].id_verfahren);
+      //Anzahl der Tabs ist eindeutig für Verfahrensauswahl
+      if (valexceltabsfilter[0].ident_kriterium === 1) {
+        this.waehleVerfahren(valexceltabsfilter[0].id_verfahren);
         //führe Verfahren aus
+        //Anzahl der Tabs ist nicht eindeutig für Verfahrensauswahl 
+      } else if (valexceltabsfilter[0].ident_kriterium === 2) {//Anzahl und Name der Tabs ist erforderlich für Verfahrensauswahl
+
+        let valexceltabsfilter2_1 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
+        if (valexceltabsfilter2_1.length === 1) {
+
+          this.waehleVerfahren(valexceltabsfilter2_1[0].id_verfahren);
+
+        }
+      } else if (valexceltabsfilter[0].ident_kriterium === 4) {
+
+        
+        this.ValExcelSpalten(valexceltabsfilter[0].namentabs);
+        this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
+
+
+        console.log(this.NrVerfahren);
       }
-    }else if (valexceltabsfilter[0].ident_kriterium===4){
-
-      this.spaltenauslesen(1,workbook);
-      this.ValExcelSpalten(1);
-     const vernr= this.ArrayAvg(this.VorhandeneVerfahren);
-console.log(vernr)
-    }
 
 
     }
-
+      //wenn mehr als ein Tab vorhanden ist
     else if (valexceltabsfilter.length > 1) {
 
       
-
-      let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsalle);
+      //Phylibimportdatei Prüfung anhand der Tab-Benennung
+      let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
       if (valexceltabsfilter2.length === 1) {
 
         this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
@@ -113,36 +122,51 @@ console.log(vernr)
  
 }
 
-  spaltenauslesen(tab: number, workbook) {
+  spaltenauslesen( workbook) {
+
+    this.excelspaltenimport=[];
     let XL_row_object;
     let json_daten;
-    XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[tab-1]]);
+    for (let a = 0, l = workbook.SheetNames.length; a < l; a += 1) {
+      
+      let Tabname=workbook.SheetNames[a];
+    XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[a]]);
     json_daten = JSON.stringify(XL_row_object);
     const obj = JSON.parse(json_daten);
     obj.forEach((val, index) => {
       if (obj[index] !== null && index===0) {
-        for (var i in obj[0]) {
-         
-          this.excelspaltenimport.push(i);
+        for (var i in obj[index]) {
+          let temp:TabSpalte={} as TabSpalte;
+
+         temp.Spaltenname=i;
+         temp.Tabname=Tabname;
+          this.excelspaltenimport.push(temp);
         }
       }
-    })
+    })}
   }
- async ValExcelSpalten(tab:number){
-
-  let valspaltenfiter= this.valspalten.filter(exceltabs => exceltabs.id_tab === tab-1);
-
+  ValExcelSpalten(namentabs:string){
+  let valspaltenfiter=null;let valtabname=namentabs;
+  if (namentabs==="indifferent"){ 
+    valspaltenfiter= this.valspalten.filter(excelspalten => excelspalten.name_exceltab === namentabs);}
+  else{
+    valspaltenfiter= this.valspalten.filter(excelspalten => excelspalten.name_exceltab !== "indifferent");
+  }
+console.log(this.excelspaltenimport)
    for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
 
-    const name=this.excelspaltenimport[i];
+    let name=this.excelspaltenimport[i];
 
    for (let a = 0, l = valspaltenfiter.length; a < l; a += 1) {
-    const valname=valspaltenfiter[a].spalten_name;
+    const valnamespalte=valspaltenfiter[a].spalten_name;
+    if (namentabs!=="indifferent"){ 
+     valtabname=valspaltenfiter[a].name_exceltab;}else{name.Tabname="indifferent";}
     const valnameerforderlich:boolean=valspaltenfiter[a].kennung;
     const verfahrens_id:number=valspaltenfiter[a].id_verfahren;
-      if (name===valname && valnameerforderlich===true){
+    
+      if (name.Spaltenname===valnamespalte && name.Tabname===valtabname && valnameerforderlich===true){
 
-    await this.VorhandeneVerfahren.push(verfahrens_id);
+     this.VorhandeneVerfahren.push(verfahrens_id);
       }
     
     }
@@ -153,12 +177,24 @@ console.log(this.VorhandeneVerfahren)
 
 
  ArrayAvg(myArray) {
+  let d=20;
   var i = 0, summ = 0, ArrayLen = myArray.length;
   while (i < ArrayLen) {
     summ = summ + myArray[i++];
   }
-
-  let d=summ/ArrayLen
-  return d.toFixed(1);
+if (ArrayLen>0){
+ d=summ/ArrayLen}
+  return Math.round (d);
 }
+
+
+
+}
+interface TabSpalte {
+        
+
+Tabname: string;
+Spaltenname: string;
+
+
 }

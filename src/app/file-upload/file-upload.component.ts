@@ -158,13 +158,13 @@ export class FileUploadComponent implements OnInit {
 			}}
 
 
-			 addfile()     
+			async addfile()     
 		{  
 			this.mstimptab=true; this.Datimptab=false;  
 	//	this.file= event.target.files[0];     
 		let fileReader = new FileReader();    
 		fileReader.readAsArrayBuffer(this.file);     
-		fileReader.onload = (e) => {    
+		 fileReader.onload = async (e) => {    
 			this.arrayBuffer = fileReader.result;    
 			var data = new Uint8Array(this.arrayBuffer);    
 			var arr = new Array();    
@@ -173,39 +173,76 @@ export class FileUploadComponent implements OnInit {
 			var workbook = XLSX.read(bstr, {type:"binary"}); 
 			
 			
-			//Exceltabs auslesen
+			//Exceltabs auslesen und VErfahren auswählen
+			await this.valExceltabsService.ExcelTabsinArray(workbook);	
+			let valexcelspalten: any=this.valExceltabsService.valspalten
 
-			//for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-
-				//Phylibimportdatei
-				if (workbook.SheetNames.length===2){
-					if ((workbook.SheetNames[0]=='Messstellen' ||  workbook.SheetNames[0]=='Messstelle') && workbook.SheetNames[1]=='Messwerte') {
-
-						
+			console.log(this.valExceltabsService.NrVerfahren);
+				switch(this.valExceltabsService.NrVerfahren) {
+					
+				  case 1:
 						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
 						this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
 						this.xlsxImportPhylibService.Phylibimport(workbook);
-						this.MessDataOrgi=this.xlsxImportPhylibService.MessDataOrgi;
-						this.MessDataGr=this.xlsxImportPhylibService.MessDataGr;
+						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+						this.MessDataGr = this.xlsxImportPhylibService.MessDataGr;
 						//this.Phylibimport(workbook);
-					console.log(this.xlsxImportPhylibService.MessDataGr);
-					this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.xlsxImportPhylibService.MessDataImp.length + " Datensätze in der Importdatei.";
-					
-					}
-					else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard einer Phyli."}
-				}else
-				if (workbook.SheetNames.length===1){
-					//this.xlsxImportPhylibService.Phylibimport(workbook); 
-					
-					this.valExceltabsService.ExcelTabsinArray(workbook,0);	
-					//this.valExceltabsService.ValExcelTabs();
-				}
+						console.log(this.xlsxImportPhylibService.MessDataGr);
+						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
+						
+					break;
+				  case 2:
+					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
+					this.xlsxImportPhylibService.callarten();
+						this.xlsxImportPhylibService.ngOnInit();
+						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
+						
+						break;
+					case 3:
+					// code block
+					break;
+					case 4:
+					// code block
+					break;
+					case 5:
+					// code block
+					break;
+				  default:
+					// code block
+				} 
 
-				else
+			//for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
+
+				//Phylibimportdatei
+				// if (workbook.SheetNames.length===2){
+				// 	if ((workbook.SheetNames[0]=='Messstellen' ||  workbook.SheetNames[0]=='Messstelle') && workbook.SheetNames[1]=='Messwerte') {
+
+						
+				// 		//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
+				// 		this.xlsxImportPhylibService.callarten();
+				// 		this.xlsxImportPhylibService.ngOnInit();
+				// 		this.xlsxImportPhylibService.Phylibimport(workbook);
+				// 		this.MessDataOrgi=this.xlsxImportPhylibService.MessDataOrgi;
+				// 		this.MessDataGr=this.xlsxImportPhylibService.MessDataGr;
+				// 		//this.Phylibimport(workbook);
+				// 	console.log(this.xlsxImportPhylibService.MessDataGr);
+				// 	this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.xlsxImportPhylibService.MessDataImp.length + " Datensätze in der Importdatei.";
+					
+				// 	}
+				// 	else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard einer Phyli."}
+				// }else
+				// if (workbook.SheetNames.length===1){
+				// 	//this.xlsxImportPhylibService.Phylibimport(workbook); 
+					
+					
+				// 	//this.valExceltabsService.ValExcelTabs();
+				// }
+
+				// else
 				
 				
-				{this.InfoBox="Fehler"}
+				// {this.InfoBox="Fehler"}
 
 
 
@@ -229,7 +266,7 @@ export class FileUploadComponent implements OnInit {
 	
 	length = 100;
 	pageSize = 10;
-	pageSizeOptions: number[] = [5, 10, 25, 100];
+	pageSizeOptions: number[] = [5, 10, 25];
 	// MatPaginator Output
 	pageEvent: PageEvent;
 

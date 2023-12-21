@@ -84,7 +84,71 @@ export class XlsxImportPhylibService {
 			console.log('observable -> ' + value);
 		});
 	}
+	async PhylibBewertungimport(workbook, valspalten: any, tab: number, verfahrennr: number) {
+		await this.holeMst();
 
+		this.messstellenImp = [];
+		tab = tab - 1;
+		let XL_row_object;
+		let json_Messstelle; var Messstelle: string; let mstOK: boolean;
+		let bidmst; let bidpara; let bideinh; let bwert;
+		// for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
+
+		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import === true);
+
+		//console.log(workbook.SheetNames[i]);
+		XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[tab]]);
+		json_Messstelle = JSON.stringify(XL_row_object);
+		const obj = JSON.parse(json_Messstelle);
+		// if (workbook.SheetNames[i] == 'Messstellen' || workbook.SheetNames[i] == 'Messstelle') {
+		obj.forEach((val, index) => {
+			if (obj[index] !== null) {
+				for (var i in obj[index]) {
+					
+
+					if (i === 'Messstelle') {
+						Messstelle = obj[index][i];
+						if (Messstelle !== null) {
+							let mstee = this.mst.filter(messstellen => messstellen.namemst == Messstelle);
+
+							if (
+								mstee.length !== 0) {
+								mstOK = true;
+								bidmst = mstee[0].id_mst;
+							}
+							else {
+
+								mstOK = false
+							}
+
+						}
+
+					} else {
+						const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => excelspalten.spalten_name === i);
+
+						if (valspaltenfiter2.length === 1) {
+							//Oekoregion = obj[index][i];
+							//let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
+							bwert = obj[index][i];
+
+							bidpara = valspaltenfiter2[0].id_para;
+
+							bideinh = valspaltenfiter2[0].id_einheit;
+
+							this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
+						}
+
+					}
+
+
+
+				}
+			}
+		})
+	console.log(this.messstellenImp);}
+
+
+	
 	async Phylibimport(workbook) {
 		let array: Messwerte[] = []; this.MessDataGr = []; this.MessDataOrgi = [];
 		//let reader = new FileReader();
