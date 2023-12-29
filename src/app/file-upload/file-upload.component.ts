@@ -1,16 +1,19 @@
 import { Component, OnInit,Output ,ViewChild,Injectable} from '@angular/core';
 //import {  Injectable} from "@angular/core";
-import {PageEvent} from '@angular/material/paginator';
+
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { SortEvent } from 'primeng/api';
-import { Messgroup } from '../interfaces/messgroup';
+
 import { Messwerte } from '../interfaces/messwerte';
+import { Uebersicht } from '../interfaces/uebersicht';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
 import {ValExceltabsService} from '../services/val-exceltabs.service';
 import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
 import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
-
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 
 
@@ -25,6 +28,9 @@ import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-
 export class FileUploadComponent implements OnInit {
 	@ViewChild(SelectjahrComponent, {static: false}) child1: SelectjahrComponent;
 	@ViewChild(SelectProbenehmerComponent, {static: false}) childPN: SelectProbenehmerComponent;
+	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatSort) sort: MatSort;
+
 	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
@@ -38,12 +44,16 @@ export class FileUploadComponent implements OnInit {
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;
 	public newDate: string;
+	public uebersicht:Uebersicht[]=[];
+	
+	dataSource: MatTableDataSource<Uebersicht>;
+	
 
-
-	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];public MessDataGr:Messgroup[]=[];public MessDataImp:Messwerte[]=[];
-
-
-
+	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];//public MessDataGr:Messgroup[]=[];
+	public MessDataImp:Messwerte[]=[];
+	displayColumnNames:string[]=['Nr','Messstelle','Anzahl', 'MPtyp'];
+	dynamicColumns:string[]=['nr','mst','anzahl','sp3','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
+	
 	
 	
 	// Variable to store shortLink from api response 
@@ -76,20 +86,20 @@ export class FileUploadComponent implements OnInit {
 
 
 
-	customSort(event: SortEvent) {
-        event.data.sort((data1, data2) => {
-            let value1 = data1[event.field];
-            let value2 = data2[event.field];
-            let result = null;
+	// customSort(event: SortEvent) {
+    //     event.data.sort((data1, data2) => {
+    //         let value1 = data1[event.field];
+    //         let value2 = data2[event.field];
+    //         let result = null;
 
-            if (value1 == null && value2 != null) result = -1;
-            else if (value1 != null && value2 == null) result = 1;
-            else if (value1 == null && value2 == null) result = 0;
-            else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
-            else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
+    //         if (value1 == null && value2 != null) result = -1;
+    //         else if (value1 != null && value2 == null) result = 1;
+    //         else if (value1 == null && value2 == null) result = 0;
+    //         else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
+    //         else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
 
-            return event.order * result;
-        });}
+    //         return event.order * result;
+    //     });}
 	// OnClick of button Upload 
 	onUpload() {
 		this.loading = !this.loading;
@@ -171,7 +181,8 @@ export class FileUploadComponent implements OnInit {
 			for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
 			var bstr = arr.join("");    
 			var workbook = XLSX.read(bstr, {type:"binary"}); 
-			
+			//Tab1 Inhalte löschen
+			//this.MessDataGr=[];
 			
 			//Exceltabs auslesen und VErfahren auswählen
 			await this.valExceltabsService.ExcelTabsinArray(workbook);	
@@ -184,19 +195,26 @@ export class FileUploadComponent implements OnInit {
 						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
 						this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
-						this.xlsxImportPhylibService.Phylibimport(workbook);
+						await this.xlsxImportPhylibService.Phylibimport(workbook,this.valExceltabsService.valspalten,0,1,this.valExceltabsService.NrVerfahren);
+						// Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number)
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.MessDataGr = this.xlsxImportPhylibService.MessDataGr;
-						//this.Phylibimport(workbook);
-						console.log(this.xlsxImportPhylibService.MessDataGr);
+						
+					
+						this.displayableColumns(1);
+						
+						
 						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
 						
+		this.dataSource.sort = this.sort;
 					break;
 				  case 2:
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
 						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
+						
+						
+						this.displayableColumns(2);
 						
 						break;
 					case 3:
@@ -212,71 +230,54 @@ export class FileUploadComponent implements OnInit {
 					// code block
 				} 
 
-			//for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-
-				//Phylibimportdatei
-				// if (workbook.SheetNames.length===2){
-				// 	if ((workbook.SheetNames[0]=='Messstellen' ||  workbook.SheetNames[0]=='Messstelle') && workbook.SheetNames[1]=='Messwerte') {
-
-						
-				// 		//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
-				// 		this.xlsxImportPhylibService.callarten();
-				// 		this.xlsxImportPhylibService.ngOnInit();
-				// 		this.xlsxImportPhylibService.Phylibimport(workbook);
-				// 		this.MessDataOrgi=this.xlsxImportPhylibService.MessDataOrgi;
-				// 		this.MessDataGr=this.xlsxImportPhylibService.MessDataGr;
-				// 		//this.Phylibimport(workbook);
-				// 	console.log(this.xlsxImportPhylibService.MessDataGr);
-				// 	this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "), Import erfolgt. " + this.xlsxImportPhylibService.MessDataImp.length + " Datensätze in der Importdatei.";
-					
-				// 	}
-				// 	else{this.InfoBox="Fehler beim Import von (" + this.file.name+ "). Die Beschriftung der Exeltabs entspricht nicht dem Standard einer Phyli."}
-				// }else
-				// if (workbook.SheetNames.length===1){
-				// 	//this.xlsxImportPhylibService.Phylibimport(workbook); 
-					
-					
-				// 	//this.valExceltabsService.ValExcelTabs();
-				// }
-
-				// else
-				
-				
-				// {this.InfoBox="Fehler"}
+			
 
 
 
 		  
 				 
 		}    
-	  }  ;
+		
 	
+	};
+displayableColumns(idverfahren:number){
+	// if (idverfahren===1){
+	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,0);
+	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
+	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
 
-
-	  
-	 
-
-	handleRowClick(mst:string){
+	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
+	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
+	this.dataSource.paginator = this.paginator;
+}
+	handleRowClick(row){
+		
+		
+		
+		// event.currentTarget.
 		this.Datimptab=true;
-		let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== mst);
+		let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== row.mst);
 		this.MessData=messgroup;
-		console.log(mst);
+		console.log(row);
 	}
 	
 	
-	length = 100;
-	pageSize = 10;
-	pageSizeOptions: number[] = [5, 10, 25];
-	// MatPaginator Output
-	pageEvent: PageEvent;
+	// length = 100;
+	// pageSize = 10;
+	// pageSizeOptions: number[] = [5, 10, 25];
+	// // MatPaginator Output
+	// pageEvent: PageEvent;
 
-	setPageSizeOptions(setPageSizeOptionsInput: string) {
-	  this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);}
+	// setPageSizeOptions(setPageSizeOptionsInput: string) {
+	//   this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);}
 
 	//displayedColumns2: string[] = ['Nr','Messstelle', 'Taxa', 'Wert', 'Einheit'];
-	displayedColumns: string[] = ['Nr','Messstelle', 'MPtyp','VegGrenze','AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
+	// displayedColumns: string[] = ['Nr','Messstelle', 'MPtyp','VegGrenze','AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
 	
-	dataSource=this.MessDataGr;
+	//dataSource=[{nr:1,mst:'mst',anzahl:1,sp3:'1',sp4:'1',sp5:'1',sp6:'1',sp7:'1',sp8:'1',sp9:'1',sp10:'1',sp11:'1',sp12:'1',sp13:'1'}];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
+	//dataSoure=this.uebersicht;
+	
+	//this.uebersicht;//this.MessDataGr;
 	
 
 }

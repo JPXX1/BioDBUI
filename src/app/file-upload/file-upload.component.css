@@ -13,3 +13,9 @@
     
 
   }
+  .table {
+    width: 100%;
+    vertical-align: top;
+    background-color: rgb(203, 236, 15);
+  }
+  

@@ -6,8 +6,12 @@ import { Component,Input } from '@angular/core';
   styleUrls: ['./eineldatenimp.component.css']
 })
 export class EineldatenimpComponent {
+
+
+	
   @Input()  Einzeldat:messdata[]=[];	
   displayedColumns: string[] = ['mst', 'probe','tiefe', 'taxon', 'form', 'wert', 'einheit'];
+ 
 
 	dataSource=this.Einzeldat; 
 }

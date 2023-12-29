@@ -27,6 +27,7 @@ import {SelectjahrComponent} from './select/selectjahr/selectjahr.component';
 import { SelectProbenehmerComponent } from './select/select-probenehmer/select-probenehmer.component';
 import {SelectUebersichtImportComponent} from './select/select-uebersicht-import/select-uebersicht-import.component';
 import {MatCardModule} from '@angular/material/card'; 
+import {MatTableModule} from '@angular/material/table'; 
 // import { DropdownModule } from 'primeng/dropdown';
 
 const routes: Routes = [
@@ -39,7 +40,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
 ], 
-imports: [ MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
