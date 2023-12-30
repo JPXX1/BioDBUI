@@ -664,6 +664,7 @@ console.log(this.mstindex);
 		let _fehler1: boolean=this._uebersicht.fehler1;let  _fehler2: boolean=this._uebersicht.fehler2;
 		let _fehler3: boolean=this._uebersicht.fehler3;
 		console.log(this._uebersicht);
+		if (mst!==undefined){
 		if (this.uebersicht.length == 0) {
 
 			
@@ -671,10 +672,10 @@ console.log(this.mstindex);
 			 this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3});
 
 		} else {
-			let messgroup = this.uebersicht.filter(dd => dd.mst == mst);
+			let messgroup = this.uebersicht.filter(dd => dd.mst === mst);
 
 
-			if (messgroup.length == 0) {
+			if (messgroup.length === 0) {
 				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3});
 
 			//	this.MessDataGr.push({ _Nr: this.MessDataGr.length + 1, _Messstelle: mst, _AnzahlTaxa: 0, _TypMP: _typmp, _TypDIA: _typdia, _TypWRRL: _typwrrl, _TypPhytoBenthos: _typphytobenth, _UMG: _umg, _Veroedung: _veroedung, _B_veroedung: _b_veroedung, _Helo_dom: _helo_dom, _Oekoreg: _oekoreg, MstOK: mstok, OK: ok, KeineMP: keinemp, gesamtdeckg: _gesamtdeckg },);
@@ -717,13 +718,13 @@ console.log(this.mstindex);
 						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2, fehler3: _fehler3});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
-						// console.log(this.MessDataGr)
+						 console.log(this.uebersicht)
 						break;
 					}
 				}
 			}
 
-		}
+		}}
 
 	}
 
@@ -842,11 +843,15 @@ console.log(this.mstindex);
 			this.displayColumnNames.push(valspaltenfiter[i].anzeigename);
 			this.dynamicColumns.push(valspaltenfiter[i].namespalteng)
 			if(valspaltenfiter[i].spalte_messstelle===true){
-				this.displayColumnNames.push('Messwerte');
+				
+				if (idVerfahren===1){
+					this.displayColumnNames.push('Messwerte');
 				this.dynamicColumns.push('anzahl');
+				}
 			}
 		}
-		this.dynamicColumns.push('actions');
+		if (idVerfahren===1){
+		this.dynamicColumns.push('actions');}
 	}
 }
 

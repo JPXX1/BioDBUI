@@ -65,7 +65,7 @@ export class FileUploadComponent implements OnInit {
 	
 	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
 	}
-	
+	panelOpenState = false;
 	ngOnInit() {
 		// this.jahrsel.ngOnInit
 		// this.jahr=this.jahrsel.Jahr;
