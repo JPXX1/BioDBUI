@@ -4,10 +4,10 @@
 
       <div class="grid-item">
         <div style="margin-left:50px">
-          <table>
-            <tr>
+          <table style="background-color: aliceblue;">
+            <tr style="vertical-align:top">
               <td>
-                <span style="float:left">
+              <span style="float:left;vertical-align: top">
                   <input class="form-control" type="file" (change)="onChange($event)"
                     accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     class="fileupload">
@@ -16,9 +16,9 @@
                   <button (click)="addfile()" class="btn btn-success">
                     Upload
                   </button>
-                </span>
+                  </span> 
               </td>
-
+              
                 <td>
 
                   <span style="float:left">

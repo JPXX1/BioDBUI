@@ -16,7 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
-import { HomeComponent } from './home/home.component';
+
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -28,20 +28,23 @@ import { SelectProbenehmerComponent } from './select/select-probenehmer/select-p
 import {SelectUebersichtImportComponent} from './select/select-uebersicht-import/select-uebersicht-import.component';
 import {MatCardModule} from '@angular/material/card'; 
 import {MatTableModule} from '@angular/material/table'; 
-import {MatExpansionModule} from '@angular/material/expansion'; 
-// import { DropdownModule } from 'primeng/dropdown';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { MonitoringComponent } from './monitoring/monitoring/monitoring.component'; 
+import {MatMenuModule} from '@angular/material/menu';
+import {MatRadioModule} from '@angular/material/radio';
 
 const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
-	{ path: 'fileupload', component: FileUploadComponent },
+	{ path: 'datenimport', component: FileUploadComponent },
+	{ path: 'monitoring', component: MonitoringComponent },
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent, HomeComponent, SelectProbenehmerComponent,   
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent,   
 ], 
-imports: [ MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
