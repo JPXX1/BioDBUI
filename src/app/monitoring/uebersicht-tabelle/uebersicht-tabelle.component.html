@@ -1,0 +1,64 @@
+<div class="mat-elevation-z8 table">
+	<table  cdk-table [dataSource]="wkUebersicht">
+
+		<!--- Note that these columns can be defined in any order.
+			  The actual rendered columns are set as a property on the row definition" -->
+			
+		<!-- Position Column -->
+		<!-- WKname: string;
+  Jahr:number;
+  OKZ_TK_MP:string;
+  OKZ_TK_Dia:string;
+  OKZ_QK_MZB:string;
+  OKZ_QK_F:string;
+  OKZ_QK_P:string;
+  OKZ:string; -->
+		
+		<!-- Name Column -->
+		<ng-container cdkColumnDef="WKname">
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header"> Wasserkörper </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element.WKname}} 
+			</td>
+			
+		</ng-container>
+		<ng-container cdkColumnDef="Jahr">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header"> Jahr</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.Jahr}} 
+			  </td>
+			  
+		  </ng-container>
+		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
+		<!-- Weight Column -->
+		<ng-container cdkColumnDef="OKZ_TK_MP">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header"> Makrophyten </th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.OKZ_TK_MP}} </td>
+			
+		  </ng-container>
+		<ng-container cdkColumnDef="OKZ_TK_Dia">
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-arten"> Diatomeen </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element.OKZ_TK_Dia}} </td>
+		  
+		</ng-container>
+		<ng-container cdkColumnDef="OKZ_QK_MZB">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header">Makrozoobenthos</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.OKZ_QK_MZB}} </td>
+		  </ng-container>
+		<!-- Symbol Column -->
+		<ng-container cdkColumnDef="OKZ_QK_F">
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header"> Fische </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element.OKZ_QK_F}} </td>
+		</ng-container>
+		<ng-container cdkColumnDef="OKZ_QK_P">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header">Phytoplankton</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.OKZ_QK_P}} </td>
+		  </ng-container>
+          <ng-container cdkColumnDef="OKZ">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header">ÖKZ</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.OKZ}} </td>
+		  </ng-container>
+		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+	  </table>
+	  
+		
+	</div>

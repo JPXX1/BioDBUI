@@ -1,9 +1,7 @@
 import { Component, OnInit,Output ,ViewChild,Injectable} from '@angular/core';
-//import {  Injectable} from "@angular/core";
-
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
-import { SortEvent } from 'primeng/api';
+
 
 import { Messwerte } from '../interfaces/messwerte';
 import { Uebersicht } from '../interfaces/uebersicht';
