@@ -43,7 +43,7 @@ export class AnzeigeBewertungService {
 
     await this.getBwWKUebersicht().forEach(formen_ => {
       this.dbBewertungWk = formen_;
-      console.log(formen_);
+     // console.log(formen_);
     });
   }
 

@@ -33,6 +33,7 @@ import {MonitoringComponent} from './monitoring/monitoring/monitoring.component'
 import {MatMenuModule} from '@angular/material/menu';
 import {MatRadioModule} from '@angular/material/radio';
 import { UebersichtTabelleComponent } from './monitoring/uebersicht-tabelle/uebersicht-tabelle.component';
+import { MakorphytenTabelleComponent } from './monitoring/makorphyten-tabelle/makorphyten-tabelle.component';
 
 const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
@@ -43,7 +44,7 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent,   
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent,   
 ], 
 imports: [ MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,

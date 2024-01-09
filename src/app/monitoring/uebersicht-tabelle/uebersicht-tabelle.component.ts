@@ -12,7 +12,7 @@ export class UebersichtTabelleComponent {
   
 
   @Input()  wkUebersicht: WkUebersicht[] = [];	
-  displayedColumns: string[] = ['WKname', 'Jahr','OKZ_TK_MP', 'OKZ_TK_Dia', 'OKZ_QK_MZB', 'OKZ_QK_F', 'OKZ_QK_P', 'OKZ'];
+  displayedColumns: string[] = ['WKname', 'Jahr','OKZ_TK_MP','OKZ_TK_Dia',  'OKZ_QK_P','OKZ_QK_MZB', 'OKZ_QK_F',  'OKZ'];
  
 
 	dataSource=this.wkUebersicht; 
