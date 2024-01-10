@@ -12,7 +12,8 @@ export class AnzeigenMstUebersichtService {
   public dbMPUebersichtMst: any;
   public uniqueJahr:string[]=[];
   public uniqueMst:string[]=[];
-
+  public displayColumnNames:string[]=[];
+  public displayedColumns:string[]=[];
   constructor(private httpClient: HttpClient,anzeigeBewertungService:AnzeigeBewertungService) { }
 
 
@@ -24,14 +25,96 @@ export class AnzeigenMstUebersichtService {
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
+    this.erzeugeDisplayedColumnNames();
+     this.erzeugeDisplayColumnNames();
      console.log(this.mstUebersicht);
+     console.log(this.displayColumnNames);
+     console.log(this.displayedColumns);
   }
 
    getBwMSTUebersicht() {
      return this.httpClient.get('http://localhost:3000/bwMstUebersicht');
   }
+  erzeugeDisplayColumnNames(){
+    this.displayColumnNames=[];
+    this.displayColumnNames.push('Wasserköper');
+    this.displayColumnNames.push('Messstelle');
+    for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
+      this.displayColumnNames.push(this.uniqueJahr[a])  
 
+  }}
+  erzeugeDisplayedColumnNames(){
+  this.displayedColumns=[];
+  this.displayedColumns.push('wk');
+  this.displayedColumns.push('mst');
+for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
 
+  switch (this.uniqueJahr.length){
+
+    case 1: {
+      this.displayedColumns.push('sp1');
+      break;
+    }
+    case 2: {
+      this.displayedColumns.push('sp1','sp2');
+      break;
+    }
+    case 3: {
+      this.displayedColumns.push('sp1','sp2','sp3');
+      break;
+    }
+    case 4: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4');
+      break;
+    }
+    case 5: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5');
+      break;
+    }
+    case 6: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6');
+      break;
+    }
+    case 7: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7');
+      break;
+    }
+    case 8: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8');
+      break;
+    }
+    case 9: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9');
+      break;
+    }
+    case 10: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10');
+      break;
+    }
+    case 11: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11');
+      break;
+    }
+    case 12: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12');
+      break;
+    }
+    case 13: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13');
+      break;
+    }
+    case 14: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','sp14');
+      break;
+    }
+    case 15: {
+      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','sp14','sp15');
+      break;
+    }
+    
+  }
+}
+  }
   async callBwUebersicht() {
 
     await this.getBwMSTUebersicht().forEach(formen_ => {
@@ -49,10 +132,10 @@ export class AnzeigenMstUebersichtService {
     return 0;
   }
   compareJahr(a, b) {
-    if (a.jahr < b.jahr) {
+    if (a.jahr > b.jahr) {
       return -1;
     }
-    if (a.jahr > b.jahr) {
+    if (a.jahr < b.jahr) {
       return 1;
     }
     return 0;
@@ -75,7 +158,7 @@ export class AnzeigenMstUebersichtService {
       let array:string[]=[];
       for (let i = 0, l = this.dbMPUebersichtMst.length; i < l; i += 1) {
   
-        array.push(this.dbMPUebersichtMst[i].Jahr);
+        array.push(this.dbMPUebersichtMst[i].jahr);
   
            
       }
@@ -101,16 +184,17 @@ export class AnzeigenMstUebersichtService {
 
     for (let a = 0, l = this.uniqueMst.length; a < l; a += 1) {
 
-      let dbBewertungMSTTemp0: any = this.dbMPUebersichtMst.filter(excelspalten => excelspalten.wk_id === this.uniqueMst[a]);
+      let dbBewertungMSTTemp0: any = this.dbMPUebersichtMst.filter(excelspalten => excelspalten.namemst === this.uniqueMst[a]);
       let dbBewertungMSTTemp: any =dbBewertungMSTTemp0.sort(this.compareJahr);
 
       this.mstUebersichtKl = {} as MstUebersicht;
       if (dbBewertungMSTTemp.length>0){
-
+        
+        this.mstUebersichtKl.wk=dbBewertungMSTTemp[0].wk_name;
+        this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
 
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
-          this.mstUebersichtKl.mst=dbBewertungMSTTemp[i].namemst;
-          this.mstUebersichtKl.wk=dbBewertungMSTTemp[i].wk_name;
+         
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){
 
           case 0: {

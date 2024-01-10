@@ -1,7 +1,18 @@
-<div class="mat-elevation-z8 table">
-	<table  cdk-table [dataSource]="mstUebersicht" class="table">
+<div class="mat-elevation-z8 table" > 
+	<table  cdk-table [dataSource]="pros[0]" class="table">
         <!--'wk', 'mst','sp1','sp2',  'sp3','sp4', 'sp5',  'sp6' -->
-		<ng-container cdkColumnDef="wk">
+
+		
+			<ng-container *ngFor="let colName of pros[2]; index as i;" [matColumnDef]="colName">
+			  <th mat-header-cell *matHeaderCellDef mat-sort-header> {{pros[1][i]}} </th>
+			  <td mat-cell *matCellDef="let element"> {{element[colName]}} </td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="pros[2]"></tr>
+			<tr mat-row *matRowDef="let row; columns: pros[2];"></tr>
+		 
+		
+			<!-- displayedColumns -->
+		 <!-- <ng-container cdkColumnDef="wk">
 		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-wk"> Wasserkörper </th>
 		  <td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.wk}} 
 			</td>
@@ -14,12 +25,12 @@
 			  
 		  </ng-container>
 	
-		<ng-container cdkColumnDef="sp1" >
-			<th  cdk-header-cell *cdkHeaderCellDef class="header-table"> 2005 </th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.sp1}} </td>
+		<ng-container cdkColumnDef="2001" >
+			<th  cdk-header-cell *cdkHeaderCellDef class="header-table"> 2001 </th>
+			<td  cdk-cell *cdkCellDef="let element"[style.background-color]="getColor(element.sp1)" class="Zelle"> {{element.sp1}} </td>
 			
-		  </ng-container>
-		<ng-container cdkColumnDef="sp2">
+		  </ng-container> -->
+		<!--<ng-container cdkColumnDef="sp2">
 		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> 2006 </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element.sp2}} </td>
 		  
@@ -32,18 +43,18 @@
 			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table" >2008</th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element.sp4}} </td>
 		  </ng-container>
-		<!-- Symbol Column -->
+	
 		<ng-container cdkColumnDef="sp5">
 		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> 2009 </th>
 		  <td  cdk-cell *cdkCellDef="let element"> {{element.sp5}} </td>
-		</ng-container>
+		</ng-container> 
 	
           <ng-container cdkColumnDef="sp6">
 			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table">2010</th>
 			<td  cdk-cell *cdkCellDef="let element"> {{element.sp6}} </td>
-		  </ng-container>
-		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+		  </ng-container> -->
+		  <!-- <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> -->
 		 
 	  </table>
 	  

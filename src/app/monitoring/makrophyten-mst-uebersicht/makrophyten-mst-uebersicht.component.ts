@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component,Input } from '@angular/core';
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
 
 @Component({
@@ -7,9 +8,18 @@ import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
   styleUrls: ['./makrophyten-mst-uebersicht.component.css']
 })
 export class MakrophytenMstUebersichtComponent {
-  @Input()  mstUebersicht: MstUebersicht[] = [];	
+@Input()  pros:any [] = [];	
 
+  constructor(private Farbebewertg: FarbeBewertungService) { }
 
-  displayedColumns: string[] = ['wk', 'mst','sp1','sp2',  'sp3','sp4', 'sp5',  'sp6'];
-  dataSource=this.mstUebersicht;
+  displayColumnNames:string[]=this.pros[1]//['wk','mst','2001'];
+  displayedColumns: string[] = this.pros[2];//['wk','mst','2001'];
+  // thi
+  dataSource=this.pros[0];
+  
+getColor(OZK){
+  return this.Farbebewertg.getColor(OZK);
+   
+}
+
 }

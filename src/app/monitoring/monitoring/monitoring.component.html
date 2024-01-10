@@ -48,12 +48,13 @@
   <app-uebersicht-tabelle [wkUebersicht]="wkUebersicht"></app-uebersicht-tabelle>
 </mat-card>
 
-
 <div class="card" *ngIf="MakrophytenMstAnzeige == true" style="vertical-align: top;">
-  <mat-card class="example-card">
-    <app-makrophyten-mst-uebersicht [mstUebersicht]="mstUebersicht"></app-makrophyten-mst-uebersicht>
-  </mat-card>
+<mat-card class="example-card">
+  <app-makrophyten-mst-uebersicht [pros]="props"></app-makrophyten-mst-uebersicht>
+</mat-card>
 </div>
+
+
 
 <div class="card" *ngIf="MakrophytenAnzeige == true" style="vertical-align: top;">
   <mat-card class="example-card">

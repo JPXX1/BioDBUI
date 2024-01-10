@@ -9,7 +9,8 @@ import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 })
 
 export class MakorphytenTabelleComponent {
-  @Input()  mstMakrophyten: MstMakrophyten[] = [];	
+  @Input()  mstMakrophyten: MstMakrophyten[] = [];
+  	
   displayedColumns: string[] = ['mst', 'jahr','taxon','wert',  'einheit','taxonzusatz', 'letzte_aenderung',  'tiefe_m'];
  
   // mst: string;
