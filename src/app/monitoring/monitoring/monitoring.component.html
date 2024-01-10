@@ -1,56 +1,62 @@
 <span>
-    <div style="margin-left:50px">
-<button mat-button (click)="handleUebersicht()">Übersicht</button>
+  <div style="margin-left:50px">
+    <button mat-button (click)="handleUebersicht()">Übersicht</button>
 
 
-<button mat-button  (click)="handleMakrophytenClick()">Makrophyten</button>
-<!-- <mat-menu #belowMenu="matMenu" yPosition="below">
+    <button mat-button (click)="handleMakrophytenClick()">Makrophyten</button>
+    <!-- <mat-menu #belowMenu="matMenu" yPosition="below">
   <button mat-menu-item>Item 1</button>
   <button mat-menu-item>Item 2</button>
 </mat-menu> -->
 
-<button mat-button [matMenuTriggerFor]="beforeMenu">Diatomeen</button>
-<mat-menu #beforeMenu="matMenu" xPosition="before">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu>
+    <button mat-button [matMenuTriggerFor]="beforeMenu">Diatomeen</button>
+    <mat-menu #beforeMenu="matMenu" xPosition="before">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
 
 
-<button mat-button [matMenuTriggerFor]="afterMenu">Phytoplankton</button>
-<mat-menu #afterMenu="matMenu" xPosition="after">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu>
+    <button mat-button [matMenuTriggerFor]="afterMenu">Phytoplankton</button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
 
-<button mat-button [matMenuTriggerFor]="afterMenu">Fische</button>
-<mat-menu #afterMenu="matMenu" xPosition="after">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu>
+    <button mat-button [matMenuTriggerFor]="afterMenu">Fische</button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
 
-<button mat-button [matMenuTriggerFor]="afterMenu">Makrozoobenthos</button>
-<mat-menu #afterMenu="matMenu" xPosition="after">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu>
+    <button mat-button [matMenuTriggerFor]="afterMenu">Makrozoobenthos</button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
 
-<mat-radio-group aria-label="Select an option" style="margin-left: 50px;">
-    <mat-radio-button value="1">Wasserkörper</mat-radio-button>
-    <mat-radio-button value="2">Messstellen</mat-radio-button>
-  </mat-radio-group>
-</div>
+
+
+    <button mat-button (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
+   
+  </div>
 
 
 
 </span>
 
 <mat-card class="example-card">
-<app-uebersicht-tabelle [wkUebersicht]="wkUebersicht"></app-uebersicht-tabelle>
+  <app-uebersicht-tabelle [wkUebersicht]="wkUebersicht"></app-uebersicht-tabelle>
 </mat-card>
 
-<div class="card" *ngIf="MakrophytenAnzeige == true" style="vertical-align: top;">
-<mat-card class="example-card">
 
-  <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
+<div class="card" *ngIf="MakrophytenMstAnzeige == true" style="vertical-align: top;">
+  <mat-card class="example-card">
+    <app-makrophyten-mst-uebersicht [mstUebersicht]="mstUebersicht"></app-makrophyten-mst-uebersicht>
+  </mat-card>
+</div>
+
+<div class="card" *ngIf="MakrophytenAnzeige == true" style="vertical-align: top;">
+  <mat-card class="example-card">
+    <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
   </mat-card>
 </div>

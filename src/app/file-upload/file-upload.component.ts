@@ -150,8 +150,11 @@ export class FileUploadComponent implements OnInit {
 
 			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
 			}else 
-
-			if (this.MessDataOrgi.length>0){
+			
+			{
+			
+			if (this.valExceltabsService.NrVerfahren===1){
+			if (this.MessDataOrgi.length>0 ){
 				await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 				await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
 				
@@ -161,9 +164,25 @@ export class FileUploadComponent implements OnInit {
 				{this.InfoBox="Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
 
 
-				{this.InfoBox="Der Import wird durchgeführt.";this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
+				{this.InfoBox="Der Import wird durchgeführt.";
+				this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}
+				else 
+				{this.InfoBox="Bitte erst eine Importdatei hochladen."} }else 
+				console.log(this.valExceltabsService.NrVerfahren);
+				if (this.valExceltabsService.NrVerfahren===2){
+					if (this.xlsxImportPhylibService.vorhanden===true)
+				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+				if (this.xlsxImportPhylibService.vorhandenMst===true)
+				{this.InfoBox="Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+
+
+				{this.InfoBox="Der Import wird durchgeführt.";
+				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);};}
+				else 
+				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
+				}}
 		
-			}}
+			}
 
 
 			async addfile()     

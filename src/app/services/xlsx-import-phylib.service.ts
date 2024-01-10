@@ -806,7 +806,21 @@ console.log(this.mstindex);
 				return "Datenimport erfolgreich durchgeführt."
 			}
 	}
-
+	//Phylib ExportDatei
+	importBewertungIntoDB(jahr: string, probenehmer: string): string {
+		//this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
+		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
+		if (this.vorhanden === true) {
+			return "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
+		} else
+			if (this.vorhandenMst === true) {
+				return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
+			} else {
+				//this.importMesswerteIntoDB(jahr, probenehmer);
+				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
+				return "Datenimport erfolgreich durchgeführt."
+			}
+	}
 	importMesswerteIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
@@ -826,6 +840,19 @@ console.log(this.mstindex);
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
 		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+			var a = a + 1;
+
+
+			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,"1");
+
+		}
+	}
+
+	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
+		let jahrtemp: string;
+		jahrtemp = ("15.07." + jahr);
+		console.log(jahrtemp);
+		for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
 			var a = a + 1;
 
 

@@ -1,0 +1,51 @@
+<div class="mat-elevation-z8 table">
+	<table  cdk-table [dataSource]="mstUebersicht" class="table">
+        <!--'wk', 'mst','sp1','sp2',  'sp3','sp4', 'sp5',  'sp6' -->
+		<ng-container cdkColumnDef="wk">
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-wk"> Wasserkörper </th>
+		  <td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.wk}} 
+			</td>
+			
+		</ng-container>
+		<ng-container cdkColumnDef="mst">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr" > Mst</th>
+			<td  cdk-cell *cdkCellDef="let element"class="spalte-jahr"> {{element.mst}} 
+			  </td>
+			  
+		  </ng-container>
+	
+		<ng-container cdkColumnDef="sp1" >
+			<th  cdk-header-cell *cdkHeaderCellDef class="header-table"> 2005 </th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.sp1}} </td>
+			
+		  </ng-container>
+		<ng-container cdkColumnDef="sp2">
+		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> 2006 </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element.sp2}} </td>
+		  
+		</ng-container>
+		<ng-container cdkColumnDef="sp3">
+			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table">2007</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.sp3}} </td>
+		  </ng-container>
+		<ng-container cdkColumnDef="sp4">
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table" >2008</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.sp4}} </td>
+		  </ng-container>
+		<!-- Symbol Column -->
+		<ng-container cdkColumnDef="sp5">
+		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> 2009 </th>
+		  <td  cdk-cell *cdkCellDef="let element"> {{element.sp5}} </td>
+		</ng-container>
+	
+          <ng-container cdkColumnDef="sp6">
+			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table">2010</th>
+			<td  cdk-cell *cdkCellDef="let element"> {{element.sp6}} </td>
+		  </ng-container>
+		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+		 
+	  </table>
+	  
+		
+	</div>
