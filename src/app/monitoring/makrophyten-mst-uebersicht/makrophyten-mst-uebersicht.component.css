@@ -1,0 +1,39 @@
+.Zelle{
+
+    text-align: center;
+   
+    width: 10px;
+    border-color: grey;
+   
+    border-width: 1px;
+  }
+  
+
+  .spalte-jahr{
+    text-align: center;
+    width: 60px;
+    border-color: grey;
+   
+ 
+    border-width: 1px;
+  }
+  .spalte-wk{
+    text-align: left;
+    width: 120px;
+    border-color: grey;
+   
+    border-width: 1px;
+  }
+
+  .header-table-wk{
+    text-align: left;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
+  }
+  .header-table-jahr{
+    text-align: center;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
+  }

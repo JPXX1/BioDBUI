@@ -47,7 +47,7 @@ export class AnzeigenMstUebersichtService {
   this.displayedColumns=[];
   this.displayedColumns.push('wk');
   this.displayedColumns.push('mst');
-for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
+
 
   switch (this.uniqueJahr.length){
 
@@ -112,7 +112,7 @@ for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
       break;
     }
     
-  }
+  
 }
   }
   async callBwUebersicht() {
