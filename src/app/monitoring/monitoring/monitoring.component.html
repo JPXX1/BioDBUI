@@ -1,15 +1,15 @@
 <span>
-  <div style="margin-left:50px">
+  <div style="margin-left:200px">
     <button mat-button (click)="handleUebersicht()">Übersicht</button>
 
 
-    <button mat-button (click)="handleMakrophytenClick()">Makrophyten</button>
-    <!-- <mat-menu #belowMenu="matMenu" yPosition="below">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu> -->
+    <button mat-button [matMenuTriggerFor]="afterMenu">Makrophyten</button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
+  <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
+  <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button>
+</mat-menu>
 
-    <button mat-button [matMenuTriggerFor]="beforeMenu">Diatomeen</button>
+    <button mat-button [matMenuTriggerFor]="afterMenu">Diatomeen</button>
     <mat-menu #beforeMenu="matMenu" xPosition="before">
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
@@ -34,10 +34,15 @@
       <button mat-menu-item>Item 2</button>
     </mat-menu>
 
-
-
-    <button mat-button (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
    
+    <mat-form-field>
+      <input [(ngModel)]="value" matInput placeholder="Filter" autocomplete="off"  (input)="onValueChangeFilter(value)">
+          <button mat-icon-button matSuffix (click)="clearSearchFilter()" *ngIf="value">
+          <mat-icon>close</mat-icon>
+      </button>
+  </mat-form-field>
+    
+    
   </div>
 
 

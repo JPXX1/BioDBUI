@@ -22,7 +22,7 @@ export class MonitoringComponent implements OnInit{
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
   public props: any[]=[];
-
+  value = ''
   constructor(private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { 
 	}
@@ -32,6 +32,13 @@ export class MonitoringComponent implements OnInit{
 		await this. anzeigeBewertungService.ngOnInit();
     this.wkUebersicht=this.anzeigeBewertungService.wkUebersicht;
 	}
+  clearSearchFilter(){
+    this.value='';
+  }
+
+  onValueChangeFilter(value: string) {
+    console.log(value);
+  }
   handleUebersicht(){
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=false;
