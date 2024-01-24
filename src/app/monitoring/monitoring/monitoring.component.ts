@@ -14,7 +14,8 @@ import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
   styleUrls: ['./monitoring.component.css']
 })
 export class MonitoringComponent implements OnInit{
-  public wkUebersicht: WkUebersicht[] = [];//Wasserkoerper
+  // public wkUebersicht: WkUebersicht[] = [];//Wasserkoerper
+  FilterwkUebersicht: WkUebersicht[] = [];
   public mstMakrophyten:MstMakrophyten[]=[];//Taxa
   public mstUebersicht:MstUebersicht[]=[];//MstBewertungKreuztabelle
   public MakrophytenAnzeige:boolean=false;
@@ -22,7 +23,7 @@ export class MonitoringComponent implements OnInit{
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
   public props: any[]=[];
-  value = ''
+  value = '';valueJahr = ''
   constructor(private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { 
 	}
@@ -30,14 +31,55 @@ export class MonitoringComponent implements OnInit{
   
   async ngOnInit() {
 		await this. anzeigeBewertungService.ngOnInit();
-    this.wkUebersicht=this.anzeigeBewertungService.wkUebersicht;
+    this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
+    
 	}
   clearSearchFilter(){
     this.value='';
+    this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
+    if (this.MakrophytenMstAnzeige===true){
+     this.handleMakrophytenMPClick();
+    }
   }
+  clearSearchJahrFilter(){
+    this.valueJahr='';
+    this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
+    if (this.MakrophytenMstAnzeige===true){
+     this.handleMakrophytenMPClick();
+    }
+  }
+  onValueChangeJahrFilter(valueJahr: string){
 
-  onValueChangeFilter(value: string) {
-    console.log(value);
+
+  }
+  async onValueChangeFilter(value: string) {
+    this.anzeigeBewertungService.filtertxt=value;
+    //await this.anzeigeBewertungService.filterdaten;
+    
+
+
+    if (!value){
+      this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
+    }else {
+      this.FilterwkUebersicht=[];
+      await Promise.all(
+        this.anzeigeBewertungService.wkUebersicht.map(async (f) => {
+                  
+            
+           
+            if (f.WKname.includes(value)){
+           
+            this.FilterwkUebersicht.push(f);}else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
+        })
+    )
+    
+    
+    
+    
+    }
+    if (this.MakrophytenMstAnzeige===true){
+      await this.handleMakrophytenMPClick();
+    }
   }
   handleUebersicht(){
     this.MakrophytenAnzeige=false;
@@ -45,14 +87,14 @@ export class MonitoringComponent implements OnInit{
   }
   async handleMakrophytenClick(){
   await this.anzeigeBewertungMPService.callBwMstMP();
-  this.anzeigeBewertungMPService.datenUmwandeln();
+  this.anzeigeBewertungMPService.datenUmwandeln(this.value);
   this.MakrophytenAnzeige=true;
   this.MakrophytenMstAnzeige=false;
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
   }
 
   async handleMakrophytenMPClick(){
-    await this.anzeigenMstUebersichtService.call();
+    await this.anzeigenMstUebersichtService.call(this.value);
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.props=[];

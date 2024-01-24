@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { WkUebersicht } from '../interfaces/wk-uebersicht';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class AnzeigeBewertungService {
   public dbBewertungWk: any;
+  public filtertxt:string;
   public dbStamWk: any;
   public InfoBox: string = "";
   public wkUebersicht: WkUebersicht[] = [];
+  //public FilterwkUebersicht: WkUebersicht[] = [];
   public _uebersicht: WkUebersicht;
   constructor(private httpClient: HttpClient) { }
 
@@ -20,6 +23,7 @@ export class AnzeigeBewertungService {
     await this.callStamWK();
    await this.callBwUebersicht();
      this.datenUmwandeln();
+     //this.filterdaten();
      console.log(this.wkUebersicht);
   }
 
@@ -57,6 +61,32 @@ export class AnzeigeBewertungService {
     return 0;
   }
 
+
+// async filterdaten(){
+//   this.FilterwkUebersicht=[];
+// if (!this.filtertxt){
+//   this.FilterwkUebersicht = this.wkUebersicht;
+// }else {
+//   await Promise.all(
+//     this.wkUebersicht.map(async (f) => {
+//         // const count = await getCountTask(f.id); 
+//         // if (count <= 3) return; //don't want this one.       
+//         let obj = {} as WkUebersicht;
+//         if (f.WKname===this.filtertxt)
+//         //this.FilterwkUebersicht.push(f);
+        
+//         obj.WKname = f.WKname;
+//         obj.Jahr = f.Jahr;
+//         // obj.status = 'Great';
+//         this.FilterwkUebersicht.push(f);
+//     })
+// )
+
+
+
+
+// }
+// }
 
 
 

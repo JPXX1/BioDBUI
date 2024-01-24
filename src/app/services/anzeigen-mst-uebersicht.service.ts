@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MstUebersicht } from '../interfaces/mst-uebersicht';
 import { AnzeigeBewertungService } from './anzeige-bewertung.service';
-
+import { WkUebersicht } from '../interfaces/wk-uebersicht';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,14 +14,16 @@ export class AnzeigenMstUebersichtService {
   public uniqueMst:string[]=[];
   public displayColumnNames:string[]=[];
   public displayedColumns:string[]=[];
+  public FilterwkUebersicht: WkUebersicht[] = [];
   constructor(private httpClient: HttpClient,anzeigeBewertungService:AnzeigeBewertungService) { }
 
 
 
-  async call() {
+  async call(filter:string) {
 
  
    await this.callBwUebersicht();
+   if (filter){await this.filterMst(filter)}
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
@@ -43,6 +45,26 @@ export class AnzeigenMstUebersichtService {
       this.displayColumnNames.push(this.uniqueJahr[a])  
 
   }}
+
+  async filterMst(filter:string){
+   
+    let temp: any = this.dbMPUebersichtMst;
+
+    this.dbMPUebersichtMst = [];
+
+    await Promise.all(
+      temp.map(async (f) => {
+                
+          
+         
+          if (f.wk_name.includes(filter)){
+         
+          this.dbMPUebersichtMst.push(f);}else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
+      })
+  )
+   console.log (this.dbMPUebersichtMst);
+   
+  }
   erzeugeDisplayedColumnNames(){
   this.displayedColumns=[];
   this.displayedColumns.push('wk');
@@ -122,24 +144,24 @@ export class AnzeigenMstUebersichtService {
      // console.log(formen_);
     });
   }
-  compareMst(a, b) {
-    if (a.namemst < b.namemst) {
-      return -1;
-    }
-    if (a.namemst > b.namemst) {
-      return 1;
-    }
-    return 0;
-  }
-  compareJahr(a, b) {
-    if (a.jahr > b.jahr) {
-      return -1;
-    }
-    if (a.jahr < b.jahr) {
-      return 1;
-    }
-    return 0;
-  }
+  // compareMst(a, b) {
+  //   if (a.namemst < b.namemst) {
+  //     return -1;
+  //   }
+  //   if (a.namemst > b.namemst) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // }
+  // compareJahr(a, b) {
+  //   if (a.jahr > b.jahr) {
+  //     return -1;
+  //   }
+  //   if (a.jahr < b.jahr) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // }
   uniqueMstSortCall(){
 
     let array:string[]=[];
@@ -149,8 +171,11 @@ export class AnzeigenMstUebersichtService {
      
            
     } 
-    let temp =  [...new Set(array)] ;
-    this.uniqueMst=temp.sort(this.compareJahr);
+
+
+
+    const temp =  [...new Set(array)] ;
+    this.uniqueMst=temp.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   }
 
     uniqueJahrSortCall(){
@@ -164,7 +189,9 @@ export class AnzeigenMstUebersichtService {
       }
       
       let temp =  [...new Set(array)] ;
-      this.uniqueJahr =temp.sort(this.compareJahr);
+      this.uniqueJahr =temp
+
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     }
 
       anwelcherStelleStehtdasJahr(temp:string):number{
@@ -178,14 +205,26 @@ export class AnzeigenMstUebersichtService {
         }
       return r;
       }
-  datenUmwandeln(){
+
+
+
+      mstUebersichtFiltern(){
+        for (let a = 0, l = this.mstUebersicht.length; a < l; a += 1) {
+
+          
+        let tempFilterwkUebersicht: any = this.FilterwkUebersicht.filter(excelspalten => excelspalten.WKname === this.mstUebersicht[a].wk);
+         
+      if (!tempFilterwkUebersicht){
+      }}}
+  
+      datenUmwandeln(){
  
-   
+        this.mstUebersicht=[];
 
     for (let a = 0, l = this.uniqueMst.length; a < l; a += 1) {
-
+      
       let dbBewertungMSTTemp0: any = this.dbMPUebersichtMst.filter(excelspalten => excelspalten.namemst === this.uniqueMst[a]);
-      let dbBewertungMSTTemp: any =dbBewertungMSTTemp0.sort(this.compareJahr);
+      let dbBewertungMSTTemp: any =dbBewertungMSTTemp0.sort();
 
       this.mstUebersichtKl = {} as MstUebersicht;
       if (dbBewertungMSTTemp.length>0){
@@ -194,7 +233,7 @@ export class AnzeigenMstUebersichtService {
         this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
 
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
-         
+        
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){
 
           case 0: {
@@ -261,9 +300,9 @@ export class AnzeigenMstUebersichtService {
         }
 
         if (i+1 === l){this.mstUebersicht.push(this.mstUebersichtKl);} //letzter Wert }}}}
-
+      }
     
   }
 }
     }
-  }}
+  }

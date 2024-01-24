@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MstMakrophyten } from '../interfaces/mst-makrophyten';
-import { WkUebersicht } from '../interfaces/wk-uebersicht';
+
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +26,16 @@ export class AnzeigeBewertungMPService {
    
   });
 }
-datenUmwandeln(){
-  this.mstMakrophyten=[];
 
+
+datenUmwandeln(FilterMst:string){
+  this.mstMakrophyten=[];
+  
   
   for (let i = 0, l = this.dbBewertungMst.length; i < l; i += 1) {
 
     this.mstMakrophytenKl= {} as MstMakrophyten;
+   let wk:string=this.dbBewertungMst[i].wk_name;
     this.mstMakrophytenKl.mst=this.dbBewertungMst[i].namemst;
     this.mstMakrophytenKl.jahr=this.dbBewertungMst[i].jahr;
     this.mstMakrophytenKl.cf=this.dbBewertungMst[i].cf;
@@ -43,10 +46,12 @@ datenUmwandeln(){
    this.mstMakrophytenKl.wert=this.dbBewertungMst[i].wert;
    this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m
 
-    this.mstMakrophyten.push(this.mstMakrophytenKl);
+   if (!FilterMst){ this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
+    if ( wk.includes(FilterMst)){
+      this.mstMakrophyten.push(this.mstMakrophytenKl);}}
       
 }
-
+this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) ||  a.tiefe_m.localeCompare(b.tiefe_m) ||  a.taxon.localeCompare(b.taxon));
 }
 
 }

@@ -36,13 +36,12 @@
 
    
     <mat-form-field>
-      <input [(ngModel)]="value" matInput placeholder="Filter" autocomplete="off"  (input)="onValueChangeFilter(value)">
+      <input [(ngModel)]="value" matInput placeholder="Filter Wasserkörper" autocomplete="off"  (input)="onValueChangeFilter(value)">
           <button mat-icon-button matSuffix (click)="clearSearchFilter()" *ngIf="value">
           <mat-icon>close</mat-icon>
       </button>
   </mat-form-field>
-    
-    
+
   </div>
 
 
@@ -50,7 +49,7 @@
 </span>
 
 <mat-card class="example-card">
-  <app-uebersicht-tabelle [wkUebersicht]="wkUebersicht"></app-uebersicht-tabelle>
+  <app-uebersicht-tabelle [wkUebersicht]="FilterwkUebersicht"></app-uebersicht-tabelle>
 </mat-card>
 
 <div class="card" *ngIf="MakrophytenMstAnzeige == true" style="vertical-align: top;">
