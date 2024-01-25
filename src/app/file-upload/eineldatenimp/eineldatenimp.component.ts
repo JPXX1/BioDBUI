@@ -1,5 +1,5 @@
 import { Component,Input } from '@angular/core';
-
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 @Component({
   selector: 'app-eineldatenimp',
   templateUrl: './eineldatenimp.component.html',
@@ -8,11 +8,14 @@ import { Component,Input } from '@angular/core';
 export class EineldatenimpComponent {
 
 
-	
+  constructor(private Farbebewertg: FarbeBewertungService) { }	
   @Input()  Einzeldat:messdata[]=[];	
-  displayedColumns: string[] = ['mst', 'probe','tiefe', 'taxon', 'form', 'wert', 'einheit'];
+  displayedColumns: string[] = ['mst', 'probe','tiefe', 'taxon', 'form', 'wert', 'einheit','rl'];
  
-
+  getColor(OZK){
+    return this.Farbebewertg.getColorRL(OZK);
+     
+  }
 	dataSource=this.Einzeldat; 
 }
 
@@ -29,4 +32,5 @@ interface messdata{
   MstOK:boolean;
   OK:boolean;
   _AnzahlTaxa: number;
+  _RoteListeD: string;
 }

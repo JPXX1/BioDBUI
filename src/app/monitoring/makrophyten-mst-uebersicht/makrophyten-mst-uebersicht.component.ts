@@ -1,6 +1,6 @@
 import { Component,Input } from '@angular/core';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
-import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
+
 
 @Component({
   selector: 'app-makrophyten-mst-uebersicht',

@@ -263,12 +263,14 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 	}
 console.log(this.mstindex);	
 }
+
+
 	async Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number) {
 		let array: Messwerte[] = []; this.uebersicht = []; this.MessDataOrgi = [];
 		//let reader = new FileReader();
 		await this.holeMst();
 		var sheets;
-		var Messstelle: string; var Probe: string; var Taxon; var Form: string; var Messwert; var Einheit; var Tiefe; var cf;
+		var Messstelle: string; var Probe: string; var Taxon; var Form: string; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
 		let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
 		// var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
 		let bidmst; let bidpara; let bideinh; let bwert;
@@ -373,158 +375,7 @@ console.log(this.mstindex);
 								}
 		
 							}
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							
-							//++
-							
-						// 	if (i === 'Ökoregion') {
-						// 			Oekoregion = obj[index][i];
-						// 			let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 			if (
-						// 				veggrenze.length !== 0) {
-						// 				bidpara = veggrenze[0].id;
-						// 			}
-						// 			bideinh = 13;
-						// 			bwert = Oekoregion;
-						// 			this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 		}
-
-						// 	if (i === 'Makrophytenverödung') {
-						// 		Makrophytenveroedung = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Makrophytenveroedung;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-
-						// 	if (i === 'Begründung') {
-						// 		Begruendung = obj[index][i];
-
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Begruendung;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-
-						// 	}
-						// 	if (i === 'Helophytendominanz') {
-						// 		Helophytendominanz = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Helophytendominanz;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-
-						// 	}
-						// 	if (i === 'Diatomeentyp') {
-						// 		Diatomeentyp = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Diatomeentyp;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-						// 	if (i === 'Phytobenthostyp') {
-						// 		Phytobenthostyp = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Phytobenthostyp;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-						// 	if (i === 'Makrophytentyp') {
-						// 		Makrophytentyp = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Makrophytentyp;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-						// 	if (i === 'WRRL-Typ') {
-						// 		WRRLTyp = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = WRRLTyp;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-
-						// 	if (i === 'Gesamtdeckungsgrad') {
-						// 		Gesamtdeckungsgrad = obj[index][i];
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 1; bwert = Gesamtdeckungsgrad;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-
-						// 	if (i === 'Vegetationsgrenze') {
-						// 		Veggrenze = obj[index][i];
-
-						// 		let veggrenze = this.parameterabiot.filter(formen => formen.importname == i);
-
-						// 		if (
-						// 			veggrenze.length !== 0) {
-						// 			bidpara = veggrenze[0].id;
-						// 		}
-						// 		bideinh = 13;
-						// 		bwert = Veggrenze;
-						// 		this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
-						// 	}
-					
+								
 						 }
 					}
 				}
@@ -547,11 +398,11 @@ console.log(this.mstindex);
 							if (i == 'Messstelle') {
 
 								if (index > 0) { this.groupNAch();//console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-									array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1 });
-									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1 });
+									array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 									// this.groupNAch(aMessstelle,  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1",mstOK, true, false);
 									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
-									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;
+									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
 									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
 								}
 
@@ -582,7 +433,7 @@ console.log(this.mstindex);
 								//ok=false;
 								Taxon = obj[index][i];
 								let taxon_ = this.arten.filter(arten => arten.taxon == Taxon);
-								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; ok = false; } else {
+								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; ok = false;RLD=taxon_[0].rld } else {
 									ok = false;
 									var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
 									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; }

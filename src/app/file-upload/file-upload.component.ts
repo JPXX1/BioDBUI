@@ -83,27 +83,11 @@ export class FileUploadComponent implements OnInit {
 
 
 
-
-	// customSort(event: SortEvent) {
-    //     event.data.sort((data1, data2) => {
-    //         let value1 = data1[event.field];
-    //         let value2 = data2[event.field];
-    //         let result = null;
-
-    //         if (value1 == null && value2 != null) result = -1;
-    //         else if (value1 != null && value2 == null) result = 1;
-    //         else if (value1 == null && value2 == null) result = 0;
-    //         else if (typeof value1 === 'string' && typeof value2 === 'string') result = value1.localeCompare(value2);
-    //         else result = value1 < value2 ? -1 : value1 > value2 ? 1 : 0;
-
-    //         return event.order * result;
-    //     });}
 	// OnClick of button Upload 
 	onUpload() {
 		this.loading = !this.loading;
 		this.mstimptab=true;  
-		//console.log(this.file); 
-		//this.startconvertExcelToJson(this.file);
+		
 
 		this.shortLink='FF';
 		
@@ -111,8 +95,7 @@ export class FileUploadComponent implements OnInit {
 			(event: any) => {
 				if (typeof (event) === 'object') {
 
-					// Short link via api response 
-					//this.shortLink = event.link;
+				
 
 					this.loading = false; // Flag variable 
 				}
@@ -246,16 +229,7 @@ export class FileUploadComponent implements OnInit {
 				  default:
 					// code block
 				} 
-
-			
-
-
-
-		  
-				 
-		}    
-		
-	
+			}    
 	};
 displayableColumns(idverfahren:number){
 	// if (idverfahren===1){
@@ -278,23 +252,6 @@ displayableColumns(idverfahren:number){
 		console.log(row);
 	}
 	
-	
-	// length = 100;
-	// pageSize = 10;
-	// pageSizeOptions: number[] = [5, 10, 25];
-	// // MatPaginator Output
-	// pageEvent: PageEvent;
-
-	// setPageSizeOptions(setPageSizeOptionsInput: string) {
-	//   this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);}
-
-	//displayedColumns2: string[] = ['Nr','Messstelle', 'Taxa', 'Wert', 'Einheit'];
-	// displayedColumns: string[] = ['Nr','Messstelle', 'MPtyp','VegGrenze','AnzahlTaxa', 'Mst_bekannt', 'Fehler'];
-	
-	//dataSource=[{nr:1,mst:'mst',anzahl:1,sp3:'1',sp4:'1',sp5:'1',sp6:'1',sp7:'1',sp8:'1',sp9:'1',sp10:'1',sp11:'1',sp12:'1',sp13:'1'}];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
-	//dataSoure=this.uebersicht;
-	
-	//this.uebersicht;//this.MessDataGr;
 	
 
 }

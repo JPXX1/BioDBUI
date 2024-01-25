@@ -1,10 +1,10 @@
-import { Component,OnInit,ViewChild } from '@angular/core';
+import { Component,OnInit,Renderer2 } from '@angular/core';
 import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
 import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
 import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebersicht.service';
-
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
 
 
@@ -24,15 +24,16 @@ export class MonitoringComponent implements OnInit{
   public displayedColumns:string[]=[]; 
   public props: any[]=[];
   value = '';valueJahr = ''
-  constructor(private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
+  constructor(private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { 
 	}
 
-  
+
   async ngOnInit() {
 		await this. anzeigeBewertungService.ngOnInit();
+    this.FilterwkUebersicht=[];
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
-    
+    this.getButtonAktivUebersicht();
 	}
   clearSearchFilter(){
     this.value='';
@@ -41,17 +42,7 @@ export class MonitoringComponent implements OnInit{
      this.handleMakrophytenMPClick();
     }
   }
-  clearSearchJahrFilter(){
-    this.valueJahr='';
-    this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
-    if (this.MakrophytenMstAnzeige===true){
-     this.handleMakrophytenMPClick();
-    }
-  }
-  onValueChangeJahrFilter(valueJahr: string){
 
-
-  }
   async onValueChangeFilter(value: string) {
     this.anzeigeBewertungService.filtertxt=value;
     //await this.anzeigeBewertungService.filterdaten;
@@ -84,6 +75,8 @@ export class MonitoringComponent implements OnInit{
   handleUebersicht(){
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=false;
+    this.getButtonAktivUebersicht();
+   
   }
   async handleMakrophytenClick(){
   await this.anzeigeBewertungMPService.callBwMstMP();
@@ -91,7 +84,8 @@ export class MonitoringComponent implements OnInit{
   this.MakrophytenAnzeige=true;
   this.MakrophytenMstAnzeige=false;
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
-  }
+  this.getButtonAktivColorMP();
+}
 
   async handleMakrophytenMPClick(){
     await this.anzeigenMstUebersichtService.call(this.value);
@@ -102,5 +96,20 @@ export class MonitoringComponent implements OnInit{
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
     this.props.push(this.anzeigenMstUebersichtService.displayedColumns);
     console.log(this.props);
-    }
+    this.getButtonAktivColorMP();
+  }
+
+  getButtonAktivColorMP() {
+    const el = document.getElementById('mpButton');
+    this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
+    const ee = document.getElementById('uebersichtButton');
+    this._renderer2.removeStyle(ee,'background-color');  
+   // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
+  }
+  getButtonAktivUebersicht() {
+    const el = document.getElementById('mpButton');
+    this._renderer2.removeStyle(el,'background-color');  
+    const ee = document.getElementById('uebersichtButton');
+    this._renderer2.setStyle(ee, 'background-color', 'rgb(20,220,220)'); 
+  }
 }

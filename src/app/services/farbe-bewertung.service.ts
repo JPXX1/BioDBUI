@@ -21,4 +21,26 @@ export class FarbeBewertungService {
           return 'withe';
     }
   }
+  getColorRL(RL) {
+    switch (RL) {
+      case '0':
+        return 'rgb(226, 0, 26)';
+      case '1':
+        return 'rgb(0, 158, 224)';
+      case '2':
+        return 'rgb(0, 144, 54)';
+      case '3':
+          return 'rgb(255, 255, 0)';
+       case 'V':
+        return 'rgb(226, 0, 26)';
+        default:
+          return 'withe';
+    }
+  }
+  getButtonAktivColor(aktiv:Number){
+  if (aktiv===1)  {return 'rgb(220,220,220)';}
+  else
+  {return 'withe';}
+
+  }
 }

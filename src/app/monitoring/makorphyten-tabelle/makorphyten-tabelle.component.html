@@ -2,46 +2,53 @@
 	<table  cdk-table [dataSource]="mstMakrophyten" class="table">
         <!-- 'mst', 'jahr','taxon','wert',  'einheit','taxonzusatz', 'letzte_aenderung',  'tiefe_m' -->
 		<ng-container cdkColumnDef="mst">
-		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-wk"> Messstelle </th>
+		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr"> Messstelle </th>
 		  <td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.mst}} 
 			</td>
 			
 		</ng-container>
 		<ng-container cdkColumnDef="jahr">
 			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr" > Jahr</th>
-			<td  cdk-cell *cdkCellDef="let element"class="spalte-jahr"> {{element.jahr}} 
+			<td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element.jahr}} 
 			  </td>
 			  
 		  </ng-container>
 	
 		<ng-container cdkColumnDef="taxon" >
-			<th  cdk-header-cell *cdkHeaderCellDef class="header-table"> Taxon </th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.taxon}} </td>
+			<th  cdk-header-cell *cdkHeaderCellDef class="header-table-wk"> Taxon </th>
+			<td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.taxon}} </td>
 			
 		  </ng-container>
 		<ng-container cdkColumnDef="wert">
-		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> Deckung </th>
-		  <td  cdk-cell *cdkCellDef="let element"> {{element.wert}} </td>
+		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table-jahr"> Deckung </th>
+		  <td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element.wert}} </td>
 		  
 		</ng-container>
 		<ng-container cdkColumnDef="einheit">
-			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table">Einheit</th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.einheit}} </td>
+			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table-jahr">Einheit</th>
+			<td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.einheit}} </td>
 		  </ng-container>
 		<ng-container cdkColumnDef="taxonzusatz">
-			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table" >Form</th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.taxonzusatz}} </td>
+			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr" >Form</th>
+			<td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element.taxonzusatz}} </td>
 		  </ng-container>
 		<!-- Symbol Column -->
-		<ng-container cdkColumnDef="letzte_aenderung">
-		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table"> letzte_aenderung </th>
-		  <td  cdk-cell *cdkCellDef="let element"> {{element.letzte_aenderung}} </td>
+		<ng-container cdkColumnDef="RoteListeD">
+		  <th  cdk-header-cell *cdkHeaderCellDef   class="header-table-jahr"> Rote Liste (D) </th>
+    	  <td  cdk-cell *cdkCellDef="let element" [style.background-color]="getColor(element.roteListeD)"class="spalte-rl"> {{element.roteListeD}} </td>
 		</ng-container>
 	
           <ng-container cdkColumnDef="tiefe_m">
-			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table">Tiefe (m)</th>
-			<td  cdk-cell *cdkCellDef="let element"> {{element.tiefe_m}} </td>
+			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table-jahr">Tiefe (m)</th>
+			<td  cdk-cell *cdkCellDef="let element" class="spalte-rl"> {{element.tiefe_m}} </td>
 		  </ng-container>
+
+		  <ng-container cdkColumnDef="letzteAenderung">
+			<th  cdk-header-cell *cdkHeaderCellDef   class="header-table-jahr">letzte Änderung</th>
+			<td  cdk-cell *cdkCellDef="let element"  class="spalte-rl"> {{element.letzte_aenderung}} </td>
+		  </ng-container>
+
+
 		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
 		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
 		 

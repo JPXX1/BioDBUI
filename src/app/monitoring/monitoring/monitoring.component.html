@@ -1,9 +1,16 @@
+<script language="javascript" type="text/javascript">
+  document.querySelectorAll(".button").forEach((el) => {
+    el.addEventListener("click", () => {
+      el.classList.toggle("active");
+    });
+  });</script>
 <span>
+ 
   <div style="margin-left:200px">
-    <button mat-button (click)="handleUebersicht()">Übersicht</button>
+    <button id="uebersichtButton" mat-button (click)="handleUebersicht()">Übersicht</button>
 
 
-    <button mat-button [matMenuTriggerFor]="afterMenu">Makrophyten</button>
+    <button mat-button id="mpButton" [matMenuTriggerFor]="afterMenu" >Makrophyten</button>
     <mat-menu #afterMenu="matMenu" xPosition="after">
   <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
   <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button>

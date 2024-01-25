@@ -5,6 +5,7 @@ export interface MstMakrophyten {
     firma: string;
     jahr: number;
     taxon: string;
+    roteListeD:string;
     letzte_aenderung: string;
     wert: string;
     cf: boolean;

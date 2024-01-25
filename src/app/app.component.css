@@ -3,10 +3,6 @@
     border-radius: var(--panel-border-width);
     padding: var(--panel-border-width);
   }
-  .visitedLinkColor{
-    color : rgb(255, 115, 0);  }
-    .a:visited {
-      color: pink;
-      background-color: transparent;
-      text-decoration: none;
-    }
+  .linkcolor{
+    color:rgba(14, 14, 241, 0.986);
+}

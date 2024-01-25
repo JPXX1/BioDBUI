@@ -12,4 +12,5 @@ export interface Messwerte {
     MstOK:boolean;
     OK:boolean;
     _AnzahlTaxa: number;
+    _RoteListeD: string;
 }

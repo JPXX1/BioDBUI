@@ -91,7 +91,7 @@ export class AnzeigeBewertungService {
 
 
    datenUmwandeln() {
-
+    this.wkUebersicht=[];
      for (let i = 0, l = this.dbStamWk.length; i < l; i += 1) {
 
       let jahrstart:number;

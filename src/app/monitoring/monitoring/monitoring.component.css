@@ -7,3 +7,15 @@
   .example-form-field {
     width: 400px;
   }
+
+  .button {
+    /* padding: 4px 8px;
+    border: 2px solid black;
+    border-radius: 5px; */
+    background-color: white;
+   }
+   
+   .button.active {
+    border-color: red;
+    background-color: 'RGB(240,240,240)';
+   }

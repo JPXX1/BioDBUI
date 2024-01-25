@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
-
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 
 @Component({
   selector: 'app-makorphyten-tabelle',
@@ -10,8 +10,8 @@ import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 
 export class MakorphytenTabelleComponent {
   @Input()  mstMakrophyten: MstMakrophyten[] = [];
-  	
-  displayedColumns: string[] = ['mst', 'jahr','taxon','wert',  'einheit','taxonzusatz', 'letzte_aenderung',  'tiefe_m'];
+  constructor(private Farbebewertg: FarbeBewertungService) { }	
+  displayedColumns: string[] = ['mst', 'jahr','taxon','wert',  'einheit','taxonzusatz', 'RoteListeD',  'tiefe_m','letzteAenderung'];
  
   // mst: string;
   // taxonzusatz: string;
@@ -24,4 +24,9 @@ export class MakorphytenTabelleComponent {
   // tiefe_m: string;
   // einheit: string;
 	dataSource=this.mstMakrophyten; 
+
+  getColor(OZK){
+    return this.Farbebewertg.getColorRL(OZK);
+     
+  }
 }

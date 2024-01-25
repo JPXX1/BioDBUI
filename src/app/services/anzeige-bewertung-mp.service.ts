@@ -38,13 +38,15 @@ datenUmwandeln(FilterMst:string){
    let wk:string=this.dbBewertungMst[i].wk_name;
     this.mstMakrophytenKl.mst=this.dbBewertungMst[i].namemst;
     this.mstMakrophytenKl.jahr=this.dbBewertungMst[i].jahr;
+    this.mstMakrophytenKl.roteListeD=this.dbBewertungMst[i].rld;
     this.mstMakrophytenKl.cf=this.dbBewertungMst[i].cf;
     this.mstMakrophytenKl.einheit=this.dbBewertungMst[i].einheit;
    this.mstMakrophytenKl.firma=this.dbBewertungMst[i].firma;
    this.mstMakrophytenKl.taxonzusatz=this.dbBewertungMst[i].taxonzusatz;
    this.mstMakrophytenKl.taxon=this.dbBewertungMst[i].taxon;
    this.mstMakrophytenKl.wert=this.dbBewertungMst[i].wert;
-   this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m
+   this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m;
+   this.mstMakrophytenKl.letzte_aenderung=this.dbBewertungMst[i].letzte_aenderung;
 
    if (!FilterMst){ this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
     if ( wk.includes(FilterMst)){

@@ -1,14 +1,64 @@
-.header {
-    height: 20px;
-    width: 80px;
-    border: 1px solid rgba(0, 0, 0, 0.048);
-    font-size: 15px ;
-    background-color: rgb(203, 236, 15);
+
+
+  .Zelle{
+
+    text-align: center;
+   
+    width: 10px;
+    border-color: grey;
+   
+    border-width: 1px;
   }
-  .header-arten {
-    height: 20px;
-    width: 255px;
-    border: 1px solid rgba(0, 0, 0, 0.048);
-    font-size: 15px ;
-    background-color: rgb(203, 236, 15);
+  
+
+  .spalte-jahr{
+    text-align: center;
+    width: 60px;
+    border-color: grey;
+    border-width: 1px;}
+    .spalte-arten{
+      text-align: center;
+      width: 150px;
+      border-color: grey;
+
+  border-width: 1px;
+}  
+    .spalte-rl{
+        text-align: center;
+        width: 120px;
+        border-color: grey;
+ 
+    border-width: 1px;
+  }
+  .spalte-arten{
+    text-align: left;
+    width: 220px;
+    border-color: grey;
+
+border-width: 1px;
+}
+  .spalte-wk{
+    text-align: left;
+    width: 220px;
+    border-color: grey;
+   
+    border-width: 1px;
+  }
+  .header-table-rl{
+    text-align: center;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
+  }
+  .header-table-wk{
+    text-align: left;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
+  }
+  .header-table-jahr{
+    text-align: center;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
   }
