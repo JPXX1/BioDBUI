@@ -181,7 +181,7 @@ export class XlsxImportPhylibService {
 				}
 			}
 		})
-	console.log(this.messstellenImp);this.dynamicColumns.push('actions');}
+	console.log(this.messstellenImp);this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
 
 schalteSpalte(Spalte:string,wert:string){
 
@@ -401,7 +401,7 @@ console.log(this.mstindex);
 									array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
 									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 									// this.groupNAch(aMessstelle,  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1",mstOK, true, false);
-									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
+									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;
 									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
 									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
 								}
@@ -433,10 +433,10 @@ console.log(this.mstindex);
 								//ok=false;
 								Taxon = obj[index][i];
 								let taxon_ = this.arten.filter(arten => arten.taxon == Taxon);
-								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; ok = false;RLD=taxon_[0].rld } else {
+								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; RLD=taxon_[0].rld } else {
 									ok = false;
 									var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
-									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; }
+									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
 
 
 								}
@@ -512,7 +512,8 @@ console.log(this.mstindex);
 		let _sp11: string=this._uebersicht.sp11;
 		let _sp12: string=this._uebersicht.sp12;
 		let _sp13: string=this._uebersicht.sp13;
-		let _fehler1: boolean=this._uebersicht.fehler1;let  _fehler2: boolean=this._uebersicht.fehler2;
+		let _fehler1: boolean=this._uebersicht.fehler1;
+		let  _fehler2: boolean=this._uebersicht.fehler2;
 		let _fehler3: boolean=this._uebersicht.fehler3;
 		console.log(this._uebersicht);
 		if (mst!==undefined){
@@ -724,12 +725,16 @@ console.log(this.mstindex);
 				
 				if (idVerfahren===1){
 					this.displayColumnNames.push('Messwerte');
+					this.displayColumnNames.push('fehler1');
+					this.displayColumnNames.push('fehler2');
+					this.displayColumnNames.push('fehler3');
 				this.dynamicColumns.push('anzahl');
 				}
 			}
 		}
+		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');this.dynamicColumns.push('fehler3');
 		if (idVerfahren===1){
-		this.dynamicColumns.push('actions');}
+			this.dynamicColumns.push('actions');}
 	}
 }
 

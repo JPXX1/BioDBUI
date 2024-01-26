@@ -16,19 +16,42 @@
     
 
   }
-  .table {
-    width: 100%;
+  /* .table {
+    width: 45%;
     vertical-align: top;
-    background-color: rgb(203, 236, 15);
-  }
+    background-color: withe;
+  } */
   .grid-container {
     display: grid;
  
   column-gap: 50px;
   }
-  /* .infobox{
-    float:right; 
-    margin-left: 100px;
-    background-color: rgb(253, 251, 220);
-    
-  } */
+ 
+
+
+    .spalte-rl{
+        text-align: center;
+        width: 70px;
+        border-color: grey;
+ /* font-weight: lighter; */
+    border-width: 1px;
+  }
+
+ 
+  .header-table-rl{
+    text-align: center;
+   font-weight:normal;
+ background-color:blanchedalmond;
+ border-color: grey;
+ height: 70px;
+  }
+  .mat-icon{
+    font-size:18px !important; 
+    /* //make it bigger, the default being 24px.  */
+    width:18px;                
+    /* //Do not forget to adjust the  */
+    height:18px;               
+    /* //height and/or the width, as in the demo */
+    line-height: 12px;
+
+}

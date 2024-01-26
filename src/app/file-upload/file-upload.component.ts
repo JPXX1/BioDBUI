@@ -50,7 +50,7 @@ export class FileUploadComponent implements OnInit {
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];//public MessDataGr:Messgroup[]=[];
 	public MessDataImp:Messwerte[]=[];
 	displayColumnNames:string[]=['Nr','Messstelle','Anzahl', 'MPtyp'];
-	dynamicColumns:string[]=['nr','mst','anzahl','sp3','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
+	dynamicColumns:string[]=['nr','mst','anzahl','sp3','fehler1','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
 	
 	
 	
@@ -240,7 +240,8 @@ displayableColumns(idverfahren:number){
 	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
 	this.dataSource.paginator = this.paginator;
-}
+	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
+	}
 	handleRowClick(row){
 		
 		
