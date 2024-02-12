@@ -19,11 +19,11 @@ export class AnzeigenMstUebersichtService {
 
 
 
-  async call(filter:string) {
+  async call(filter:string,min:number,max:number) {
 
  
    await this.callBwUebersicht();
-   if (filter){await this.filterMst(filter)}
+   if (filter){await this.filterMst(filter,min,max)}
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
@@ -46,7 +46,7 @@ export class AnzeigenMstUebersichtService {
 
   }}
 
-  async filterMst(filter:string){
+  async filterMst(filter:string,min:number,max:number){
    
     let temp: any = this.dbMPUebersichtMst;
 
@@ -57,9 +57,10 @@ export class AnzeigenMstUebersichtService {
                 
           
          
-          if (f.wk_name.includes(filter)){
+          if (f.wk_name.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
-          this.dbMPUebersichtMst.push(f);}else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
+          this.dbMPUebersichtMst.push(f);}
+          // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
       })
   )
    console.log (this.dbMPUebersichtMst);

@@ -28,7 +28,7 @@ export class AnzeigeBewertungMPService {
 }
 
 
-datenUmwandeln(FilterMst:string){
+datenUmwandeln(FilterMst:string,min:number,max:number){
   this.mstMakrophyten=[];
   
   
@@ -48,8 +48,8 @@ datenUmwandeln(FilterMst:string){
    this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m;
    this.mstMakrophytenKl.letzte_aenderung=this.dbBewertungMst[i].letzte_aenderung;
 
-   if (!FilterMst){ this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
-    if ( wk.includes(FilterMst)){
+   if (!FilterMst && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
+    if ( wk.includes(FilterMst) && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){
       this.mstMakrophyten.push(this.mstMakrophytenKl);}}
       
 }

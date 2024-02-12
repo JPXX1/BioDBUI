@@ -397,13 +397,14 @@ console.log(this.mstindex);
 
 							if (i == 'Messstelle') {
 
-								if (index > 0) { this.groupNAch();//console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
+								if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
 									array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
 									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 									// this.groupNAch(aMessstelle,  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1",mstOK, true, false);
 									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;
 									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
 									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+									this.groupNAch();
 								}
 
 								mst = obj[index][i];
@@ -453,7 +454,7 @@ console.log(this.mstindex);
 								//console.log(id_taxonzus);
 
 								if (taxonzus !== null) { Form = taxonzus[0].id_taxonzus; aForm = employeeName; }
-								ok = false;
+								//ok = false;
 							}
 							if (i == 'Messwert') {
 								Messwert = obj[index][i];
@@ -558,8 +559,8 @@ console.log(this.mstindex);
 						
 
 						
-						if (this.uebersicht[i].fehler1 == false) { _fehler1_ = false; } else { _fehler1_ = true }
-						if (this.uebersicht[i].fehler2 == false) { _fehler2_ = false; } else { _fehler2_ = true; };
+						if (this.uebersicht[i].fehler1 === false) { _fehler1_ = false; } else { _fehler1_ = true; }
+						if (this.uebersicht[i].fehler2 === false || _fehler2===false ) { _fehler2_ = false; } else {}
 						if (this.uebersicht[i].anzahl === 0) { _fehler3_ = true; } else { _fehler3_ = false; };
 						
 
@@ -567,7 +568,7 @@ console.log(this.mstindex);
 
 
 						this.uebersicht.splice(i, 1);//löscht vorhandenen DS
-						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2, fehler3: _fehler3});
+						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
 						 console.log(this.uebersicht)

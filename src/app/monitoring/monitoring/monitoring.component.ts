@@ -23,7 +23,9 @@ export class MonitoringComponent implements OnInit{
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
   public props: any[]=[];
-  value = '';valueJahr = ''
+  value = '';valueJahr = '';
+  min:number=2010;
+  max:number=2026; 
   constructor(private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { 
 	}
@@ -42,31 +44,42 @@ export class MonitoringComponent implements OnInit{
      this.handleMakrophytenMPClick();
     }
   }
+  updateSetting(min:number,max:number,value: string) {
+    this.min = min;
+    this.max=max;
+this.onValueChangeFilter(value); 
+  }
 
+
+  
   async onValueChangeFilter(value: string) {
+    this.value=value;
     this.anzeigeBewertungService.filtertxt=value;
     //await this.anzeigeBewertungService.filterdaten;
     
-
+    this.FilterwkUebersicht=[];
 
     if (!value){
-      this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
-    }else {
-      this.FilterwkUebersicht=[];
+      // this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
       await Promise.all(
         this.anzeigeBewertungService.wkUebersicht.map(async (f) => {
-                  
+        
+            if ((f.Jahr>=this.min && f.Jahr<=this.max)){
+           
+            this.FilterwkUebersicht.push(f);}
             
+        })  )   
+    
+    }else {
+     
+      await Promise.all(
+        this.anzeigeBewertungService.wkUebersicht.map(async (f) => {
+        
+            if (f.WKname.includes(value) && (f.Jahr>=this.min && f.Jahr<=this.max)){
            
-            if (f.WKname.includes(value)){
-           
-            this.FilterwkUebersicht.push(f);}else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
-        })
-    )
-    
-    
-    
-    
+            this.FilterwkUebersicht.push(f);}
+            //else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
+        })  )   
     }
     if (this.MakrophytenMstAnzeige===true){
       await this.handleMakrophytenMPClick();
@@ -80,7 +93,7 @@ export class MonitoringComponent implements OnInit{
   }
   async handleMakrophytenClick(){
   await this.anzeigeBewertungMPService.callBwMstMP();
-  this.anzeigeBewertungMPService.datenUmwandeln(this.value);
+  this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.min,this.max);
   this.MakrophytenAnzeige=true;
   this.MakrophytenMstAnzeige=false;
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
@@ -88,7 +101,7 @@ export class MonitoringComponent implements OnInit{
 }
 
   async handleMakrophytenMPClick(){
-    await this.anzeigenMstUebersichtService.call(this.value);
+    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max);
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.props=[];

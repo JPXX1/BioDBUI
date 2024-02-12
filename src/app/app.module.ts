@@ -35,8 +35,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { UebersichtTabelleComponent } from './monitoring/uebersicht-tabelle/uebersicht-tabelle.component';
 import { MakorphytenTabelleComponent } from './monitoring/makorphyten-tabelle/makorphyten-tabelle.component';
 import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-uebersicht/makrophyten-mst-uebersicht.component';
-//import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-uebersicht/makrophyten-mst-uebersicht.component';
-
+import {MatSliderModule} from '@angular/material/slider';
 const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
 	{ path: 'datenimport', component: FileUploadComponent },
@@ -48,7 +47,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent,    
 ], 
-imports: [ MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 
