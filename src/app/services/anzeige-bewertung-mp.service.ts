@@ -48,7 +48,8 @@ datenUmwandeln(FilterMst:string,min:number,max:number){
    this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m;
    this.mstMakrophytenKl.letzte_aenderung=this.dbBewertungMst[i].letzte_aenderung;
 
-   if (!FilterMst && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
+   if (!FilterMst && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ 
+    this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
     if ( wk.includes(FilterMst) && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){
       this.mstMakrophyten.push(this.mstMakrophytenKl);}}
       

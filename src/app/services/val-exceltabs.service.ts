@@ -116,7 +116,22 @@ let tabs="";
 
         this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
 
-      }
+      }else {
+        try {
+          for (let i = 0, l =valexceltabsfilter.length; i < l; i += 1) {
+            this.ValExcelSpalten(valexceltabsfilter[i].namentabs);
+            this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
+            if (this.NrVerfahren > 0) {
+              throw new Error("Number is 4");
+            }
+            console.log(  this.NrVerfahren);
+          };
+        } catch (error) {
+         // console.error(error.message);
+        }
+
+
+       }
 
     }
  
@@ -146,6 +161,7 @@ let tabs="";
     })}
   }
   ValExcelSpalten(namentabs:string){
+    this.VorhandeneVerfahren=[];
   let valspaltenfiter=null;let valtabname=namentabs;
   if (namentabs==="indifferent"){ 
     valspaltenfiter= this.valspalten.filter(excelspalten => excelspalten.name_exceltab === namentabs);}

@@ -1,8 +1,7 @@
 import { Component, OnInit,Output ,ViewChild,Injectable} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
-
-
+import {PerlodesimportService} from '../services/perlodesimport.service';
 import { Messwerte } from '../interfaces/messwerte';
 import { Uebersicht } from '../interfaces/uebersicht';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
@@ -12,6 +11,7 @@ import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+
 
 
 
@@ -61,7 +61,7 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
+	constructor(private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
 	}
 	panelOpenState = false;
 	ngOnInit() {
@@ -205,7 +205,7 @@ export class FileUploadComponent implements OnInit {
 						
 						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
 						
-		this.dataSource.sort = this.sort;
+						this.dataSource.sort = this.sort;
 					break;
 				  case 2:
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
@@ -218,7 +218,8 @@ export class FileUploadComponent implements OnInit {
 						
 						break;
 					case 3:
-					// code block
+						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ "). ";
+					this.perlodesimportService.startimport(workbook);
 					break;
 					case 4:
 					// code block
@@ -232,13 +233,20 @@ export class FileUploadComponent implements OnInit {
 			}    
 	};
 displayableColumns(idverfahren:number){
-	// if (idverfahren===1){
+	
 	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,0);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
 
-	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
+	
+	if (idverfahren===1 || idverfahren===2){
+		this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
+	 }else if (idverfahren===3) {
+		this.uebersicht = this.perlodesimportService.uebersicht;
+		this.dataSource = new MatTableDataSource(this.perlodesimportService.uebersicht);
+
+	 }
 	this.dataSource.paginator = this.paginator;
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
 	}

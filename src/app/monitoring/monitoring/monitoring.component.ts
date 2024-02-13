@@ -81,8 +81,12 @@ this.onValueChangeFilter(value);
             //else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
         })  )   
     }
+    console.log(this.MakrophytenMstAnzeige);
     if (this.MakrophytenMstAnzeige===true){
       await this.handleMakrophytenMPClick();
+      
+    }else if (this.MakrophytenAnzeige===true){
+      await this.handleMakrophytenClick();
     }
   }
   handleUebersicht(){
@@ -92,18 +96,20 @@ this.onValueChangeFilter(value);
    
   }
   async handleMakrophytenClick(){
-  await this.anzeigeBewertungMPService.callBwMstMP();
-  this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.min,this.max);
+ 
   this.MakrophytenAnzeige=true;
   this.MakrophytenMstAnzeige=false;
+  await this.anzeigeBewertungMPService.callBwMstMP();
+  this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.min,this.max);
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
   this.getButtonAktivColorMP();
 }
 
   async handleMakrophytenMPClick(){
-    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max);
+   
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
+    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
