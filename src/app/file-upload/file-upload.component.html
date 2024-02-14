@@ -97,7 +97,7 @@ Currently I am {{panelOpenState ? 'open' : 'closed'}}
 
 
               <th mat-header-cell *matHeaderCellDef  class="header-table-rl"> {{displayColumnNames[i]}} </th>
-              <td mat-cell *matCellDef="let element" class="spalte-rl"> {{element[colName]}} </td>
+              <td mat-cell *matCellDef="let element"  [style.background-color]="getColorFehler(element.fehler1,element.fehler2)" class="spalte-rl"> {{element[colName]}} </td>
             </ng-container>
 
           </ng-container>

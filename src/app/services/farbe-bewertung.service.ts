@@ -37,6 +37,25 @@ export class FarbeBewertungService {
           return 'withe';
     }
   }
+  getColorArtfehltinDB(Wert:String) {
+    if (Wert.includes("ID_ART nicht bekannt")){
+
+      return 'rgb(226, 0, 26)';}
+      else
+  {return 'withe';}
+
+  
+    }
+    
+    getColorFehler(Wert1:boolean,Wert2:boolean) {
+      if (Wert1===false || Wert2===false){
+  
+        return 'rgb(226, 0, 26)';}
+        else
+    { return 'withe';}
+  
+    
+      }
   getButtonAktivColor(aktiv:Number){
   if (aktiv===1)  {return 'rgb(220,220,220)';}
   else

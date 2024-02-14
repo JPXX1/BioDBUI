@@ -573,7 +573,7 @@ console.log(this.mstindex);
 						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
-						 console.log(this.uebersicht)
+						 //console.log(this.uebersicht)
 						break;
 					}
 				}
@@ -726,17 +726,24 @@ console.log(this.mstindex);
 			this.dynamicColumns.push(valspaltenfiter[i].namespalteng)
 			if(valspaltenfiter[i].spalte_messstelle===true){
 				
-				if (idVerfahren===1){
+				if (idVerfahren===1 ){
 					this.displayColumnNames.push('Messwerte');
 					this.displayColumnNames.push('fehler1');
 					this.displayColumnNames.push('fehler2');
 					this.displayColumnNames.push('fehler3');
-				this.dynamicColumns.push('anzahl');
+					this.dynamicColumns.push('anzahl');
 				}
 			}
 		}
+		if  (idVerfahren===3 ){
+			this.displayColumnNames.push('Messwerte');
+			this.displayColumnNames.push('fehler1');
+					this.displayColumnNames.push('fehler2');
+					this.displayColumnNames.push('fehler3');
+					this.dynamicColumns.push('anzahl');
+		}
 		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');this.dynamicColumns.push('fehler3');
-		if (idVerfahren===1){
+		if (idVerfahren===1 || idVerfahren===3){
 			this.dynamicColumns.push('actions');}
 	}
 }

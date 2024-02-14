@@ -11,7 +11,7 @@ import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 
 
 
@@ -61,7 +61,7 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
+	constructor(private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
 	}
 	panelOpenState = false;
 	ngOnInit() {
@@ -195,6 +195,7 @@ export class FileUploadComponent implements OnInit {
 						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
 						this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
+						this.xlsxImportPhylibService.uebersicht=[];
 						await this.xlsxImportPhylibService.Phylibimport(workbook,this.valExceltabsService.valspalten,0,1,this.valExceltabsService.NrVerfahren);
 						// Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number)
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
@@ -211,6 +212,7 @@ export class FileUploadComponent implements OnInit {
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
+						this.xlsxImportPhylibService.uebersicht=[];
 						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
 						
 						
@@ -218,8 +220,12 @@ export class FileUploadComponent implements OnInit {
 						
 						break;
 					case 3:
-						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ "). ";
-					this.perlodesimportService.startimport(workbook);
+						this.xlsxImportPhylibService.uebersicht=[];this.xlsxImportPhylibService.MessDataOrgi=[];
+						await this.perlodesimportService.startimport(workbook);
+						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
+						this.xlsxImportPhylibService.uebersicht.sort
+					this.displayableColumns(3);
 					break;
 					case 4:
 					// code block
@@ -239,14 +245,14 @@ displayableColumns(idverfahren:number){
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
 
 	
-	if (idverfahren===1 || idverfahren===2){
+	//if (idverfahren===1 || idverfahren===2){
 		this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
-	 }else if (idverfahren===3) {
-		this.uebersicht = this.perlodesimportService.uebersicht;
-		this.dataSource = new MatTableDataSource(this.perlodesimportService.uebersicht);
+	// }else if (idverfahren===3) {
+	//	this.uebersicht = this.perlodesimportService.uebersicht;
+	//	this.dataSource = new MatTableDataSource(this.perlodesimportService.uebersicht);
 
-	 }
+	// }
 	this.dataSource.paginator = this.paginator;
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
 	}
@@ -261,7 +267,10 @@ displayableColumns(idverfahren:number){
 		console.log(row);
 	}
 	
-	
+	getColorFehler(Wert1:boolean,Wert2:boolean){
+
+		return this.Farbebewertg.getColorFehler(Wert1,Wert2);
+	  }
 
 }
 

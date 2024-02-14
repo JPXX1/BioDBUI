@@ -16,6 +16,12 @@ export class EineldatenimpComponent {
     return this.Farbebewertg.getColorRL(OZK);
      
   }
+
+ 
+  getColorFehler(Wert:String){
+
+    return this.Farbebewertg.getColorArtfehltinDB(Wert);
+  }
 	dataSource=this.Einzeldat; 
 }
 

@@ -28,28 +28,34 @@ export class PerlodesimportService {
 
 
 async startimport(workbook){
-
+  this.arten=[];
 await  this.xlsxImportPhylibService.holeMst();
-this.callartenMZB();
+await this.callartenMZB();
 await this.Perlodesimport(workbook)
 //this.xlsxImportPhylibService.mst;
 }
 
 
 
-    callartenMZB() {
+    // callartenMZB() {
 		
-      this.getArtenMZB().subscribe(arten_ => {
-        this.arten = arten_;
-        //console.log(this.arten);
-        //return einheiten;
-      }, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
+    //   this.getArtenMZB().subscribe(arten_ => {
+    //     this.arten = arten_;
+    //     //console.log(this.arten);
+    //     //return einheiten;
+    //   }, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
+    // }
+  
+  	async callartenMZB() {
+      // this.workbookInit(datum,Probenehmer)
+      await this.getArtenMZB().forEach(value => {
+        this.arten = value;
+        console.log('observable -> ' + value);
+      });
     }
   
-  
-  
     async Perlodesimport(workbook) {
-      let array: Messwerte[] = []; this.uebersicht = []; this.MessDataOrgi = [];
+      let array: Messwerte[] = []; this.uebersicht = []; this.xlsxImportPhylibService.MessDataOrgi = [];
       //let reader = new FileReader();
     
       var sheets;
@@ -57,10 +63,10 @@ await this.Perlodesimport(workbook)
       let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
       // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
       let bidmst; let bidpara; let bideinh; let bwert;
-      let mstOK: boolean; let ok: boolean;
+      let mstOK: boolean; let ok: boolean; let typ:string;let nutzung:string;let taxaliste:string;
       let XL_row_object;
       let json_Messstelle;
-      this._uebersicht= {} as Uebersicht;
+     
       let mst: string;
   
       //welche Spalte in der Übersicht
@@ -89,11 +95,11 @@ await this.Perlodesimport(workbook)
             if (obj[index] !== null) {
               for (var i in obj[index]) {
                 //console.log(val + " / " + obj[index][i] + ": " + i);
-  
+                console.log(obj.length)
                 o = o + 1;
                 //Messstellen
                 if (index===0){
-                  if (i!=='ID_ART'){
+                  if (i!=='ID_ART' && i!=='Taxon_name'){
 
 
 
@@ -114,75 +120,77 @@ await this.Perlodesimport(workbook)
                     aMessstelle = mst;
                     mstOK = false
                   }
-  
-                  //Messstelle = obj[index][i];
+                 
+                    typ = obj[index+0][i];
+                    taxaliste=obj[index+1][i];
+                   nutzung=obj[index+2][i];
+
+                  //}
                 }
-
-
-                    this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
-                    this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
+                this._uebersicht= {} as Uebersicht;
+               if ( mst!== undefined){
+                
+                    //this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                    this._uebersicht.mst=aMessstelle;this._uebersicht.sp3=typ;this._uebersicht.sp4=taxaliste;this._uebersicht.sp5=nutzung;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
                     this.xlsxImportPhylibService._uebersicht=this._uebersicht;
                     this.xlsxImportPhylibService.groupNAch();
                   }
 
-               
-                //Typen
-                if (index===1){
-                  Taxon = obj[index][i];
-                  if (i!=='Typ'){
-
-
-
-                  }
-
                 }
+               
                 // if (i == 'Messstelle') {
   
-                //   if (index > 0) { //console.log("Insert into dat_einzeldaten (id_taxon, id_einheit, id_probe, id_mst, id_taxonzus, id_pn, datumpn, id_messprogr, id_abundanz,cf,wert) values (" + Taxon + "," + Einheit + "," + Probe + "," + Messstelle + "," + Form + "," + Einheit + "," + cf + ",'" + Messwert + "');"); 
-                //     array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
-                //     this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
-                //     // this.groupNAch(aMessstelle,  "1", "1", "1", "1", "1", "1", "1", "1", "1", "1","1",mstOK, true, false);
-                //     this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;
-                //     Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
-                //     aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
-                //    // this.groupNAch();
-                //   }
-  
-                //   mst = obj[index][i];
-                //   //aMessstelle=mst;
-                //   //taxonzus=new Taxonzus();
-                //   let mstee = this.mst.filter(messstellen => messstellen.namemst == mst);
-  
-                //   //console.log(mst);
-  
-                //   if (
-                //     mstee.length !== 0) {
-                //       mstOK = true;
-                //     mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
-                //   }
-                //   else {
-                //     aMessstelle = mst;
-                //     mstOK = false
-                //   }
-  
-                //   //Messstelle = obj[index][i];
-                // }
-                if (i == 'Probe') {
-                  aProbe = obj[index][i];
-                  Probe = '11';
-                }
-                if (i == 'Taxon') {
-                  //ok=false;
-                  Taxon = obj[index][i];
-                  let taxon_ = this.arten.filter(arten => arten.taxon == Taxon);
-                  if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; RLD=taxon_[0].rld } else {
-                    ok = false;
-                    var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
-                    if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
-  
-  
+                  if (index > 2) { 
+                   
+
+                   
+                   
+                      
+                     
+                      
+                      if (i!=='ID_ART' && i!=='TAXON_NAME'){
+                      aMessstelle=i;
+                      Messwert=obj[index][i];
+                      aTiefe=0;
+                      aProbe='-';
+                      aForm='-';
+                      aEinheit='Ind./m²';
+                      if (Messwert>0){
+                      Taxon = obj[index]['ID_ART'];
+
+                      //Taxon = obj[index][TAXON_NAME];
+                      let taxon_ = this.arten.filter(arten => arten.id_art == Taxon);
+                      if (taxon_.length > 0) {
+                         Taxon = taxon_[0].id_taxon; 
+                         aTaxon = taxon_[0].taxonname_perlodes; RLD=taxon_[0].rld } 
+                         else {
+                        ok = false;
+                        aTaxon=Taxon+'/'+obj[index]['TAXON_NAME']+'ID_ART nicht bekannt';
+                        // var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
+                        // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
+      
+                      }
+                      this._uebersicht= {} as Uebersicht;
+                     // array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+                      this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                      //this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+								
+                      this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;
+                      this.xlsxImportPhylibService._uebersicht=this._uebersicht;
+                      this.xlsxImportPhylibService.groupNAch();
+                      Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
+                      aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+                  
+                    }}
+
+
+
+                    
+                 
+                    
                   }
-                }
+  
+                      
                 
                 
                 
