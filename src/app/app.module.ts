@@ -16,7 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
 import { AppRoutingModule } from './app-routing.module';
 import { EineldatenimpComponent } from './file-upload/eineldatenimp/eineldatenimp.component';
-
+import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -47,7 +47,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent,    
 ], 
-imports: [ MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
 ], 

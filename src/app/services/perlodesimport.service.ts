@@ -58,12 +58,12 @@ await this.Perlodesimport(workbook)
       let array: Messwerte[] = []; this.uebersicht = []; this.xlsxImportPhylibService.MessDataOrgi = [];
       //let reader = new FileReader();
     
-      var sheets;
-      var Messstelle: string; var Probe: string; var Taxon; var Form: string; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
+      // var sheets;
+      var Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
       let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
       // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
       let bidmst; let bidpara; let bideinh; let bwert;
-      let mstOK: boolean; let ok: boolean; let typ:string;let nutzung:string;let taxaliste:string;
+      let importp:string;let mstOK: boolean; let ok: boolean; let typ:string;let nutzung:string;let taxaliste:string;
       let XL_row_object;
       let json_Messstelle;
      
@@ -129,9 +129,14 @@ await this.Perlodesimport(workbook)
                 }
                 this._uebersicht= {} as Uebersicht;
                if ( mst!== undefined){
-                
+                if (mstOK===false) {importp="";}else{
+                  importp="checked";}
                     //this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
-                    this._uebersicht.mst=aMessstelle;this._uebersicht.sp3=typ;this._uebersicht.sp4=taxaliste;this._uebersicht.sp5=nutzung;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
+                    this._uebersicht.mst=aMessstelle;this._uebersicht.sp3=typ;this._uebersicht.sp4=taxaliste;
+                    this._uebersicht.sp5=nutzung;this._uebersicht.fehler1=mstOK;
+                    this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
+                    this._uebersicht.import1=importp;
+					
                     this.xlsxImportPhylibService._uebersicht=this._uebersicht;
                     this.xlsxImportPhylibService.groupNAch();
                   }
@@ -155,14 +160,35 @@ await this.Perlodesimport(workbook)
                       aProbe='-';
                       aForm='-';
                       aEinheit='Ind./m²';
+                      //für array und  this.MessDataImp (ImortMesswerte)
+                      Einheit=3;
+                      Form=6;
+                      Probe=11;
+                      Tiefe=1;
+                      cf=false;
                       if (Messwert>0){
                       Taxon = obj[index]['ID_ART'];
-
+                      
+                      //Mst für import
+                      let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == i);
+  
+      
+                      if (
+                        mstee.length !== 0) {
+                          mstOK = true;
+                        mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                      }
+                      else {
+                        aMessstelle = i;
+                        mstOK = false
+                      }
+                     
                       //Taxon = obj[index][TAXON_NAME];
                       let taxon_ = this.arten.filter(arten => arten.id_art == Taxon);
                       if (taxon_.length > 0) {
                          Taxon = taxon_[0].id_taxon; 
-                         aTaxon = taxon_[0].taxonname_perlodes; RLD=taxon_[0].rld } 
+                         aTaxon = taxon_[0].taxonname_perlodes; RLD=taxon_[0].rld;
+                         ok = true; } 
                          else {
                         ok = false;
                         aTaxon=Taxon+'/'+obj[index]['TAXON_NAME']+'ID_ART nicht bekannt';
@@ -170,12 +196,15 @@ await this.Perlodesimport(workbook)
                         // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
       
                       }
+                      importp="checked";
+                      if (ok===false || mstOK===false) {importp="";}
+
                       this._uebersicht= {} as Uebersicht;
-                     // array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+                      array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
                       this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
-                      //this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
-								
-                      this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;
+                     
+                      this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;
+                      this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;this._uebersicht.import1=importp;
                       this.xlsxImportPhylibService._uebersicht=this._uebersicht;
                       this.xlsxImportPhylibService.groupNAch();
                       Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
@@ -201,7 +230,7 @@ await this.Perlodesimport(workbook)
           //of(array);
         
           this.uebersicht=this.xlsxImportPhylibService.uebersicht;
-      // this.MessDataImp = array;
+       this.MessDataImp = array;
       
         }}
   

@@ -16,4 +16,5 @@ export interface Uebersicht {
         fehler1:boolean;
         fehler2:boolean;
         fehler3:boolean;
+		import1:string;
 }
