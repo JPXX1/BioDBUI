@@ -655,8 +655,8 @@ console.log(this.mstindex);
 		});
 	}
 	importIntoDB(jahr: string, probenehmer: string): string {
-		this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
-		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
+		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
+		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 		if (this.vorhanden === true) {
 			return "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
 		} else

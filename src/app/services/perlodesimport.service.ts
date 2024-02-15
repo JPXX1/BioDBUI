@@ -230,7 +230,7 @@ await this.Perlodesimport(workbook)
           //of(array);
         
           this.uebersicht=this.xlsxImportPhylibService.uebersicht;
-       this.MessDataImp = array;
+       this.xlsxImportPhylibService.MessDataImp = array;
       
         }}
   

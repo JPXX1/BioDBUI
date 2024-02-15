@@ -115,6 +115,15 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	async pruefeObMesswerteschonVorhanden(){
+		this.jahr=this.child1.selected;this.probenehmer=this.childPN.selectedPN;
+
+		if (!this.jahr){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
+			}else{
+
+			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
+			}else 
+			
+			{
 		if (this.MessDataOrgi.length>0){
 		await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 		
@@ -122,7 +131,7 @@ export class FileUploadComponent implements OnInit {
 		{this.InfoBox="mist"} else
 		{this.InfoBox="allet jut"};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 
-	}
+			}}}
 	async	importIntoDB(){
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
@@ -136,7 +145,7 @@ export class FileUploadComponent implements OnInit {
 			
 			{
 			
-			if (this.valExceltabsService.NrVerfahren===1){
+			if (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3){
 			if (this.MessDataOrgi.length>0 ){
 				await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 				await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
