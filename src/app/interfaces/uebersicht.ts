@@ -13,8 +13,8 @@ export interface Uebersicht {
 		sp11:string;
 		sp12:string;
 		sp13:string;
-        fehler1:boolean;
-        fehler2:boolean;
-        fehler3:boolean;
+        fehler1:string;
+        fehler2:string;
+        fehler3:string;
 		import1:string;
 }

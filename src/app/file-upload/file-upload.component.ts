@@ -236,8 +236,13 @@ export class FileUploadComponent implements OnInit {
 						this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
 					break;
-					case 4:
-					// code block
+					case 4://MZB export
+					this.xlsxImportPhylibService.uebersicht=[];
+					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
+					// this.xlsxImportPhylibService.uebersicht=[];
+					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
+					
+					this.displayableColumns(4);
 					break;
 					case 5:
 					// code block
@@ -248,8 +253,10 @@ export class FileUploadComponent implements OnInit {
 			}    
 	};
 displayableColumns(idverfahren:number){
+	let tab:number;
+	if (idverfahren===4) {tab=2;}else{tab=0;}
 	
-	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,0);
+	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
 

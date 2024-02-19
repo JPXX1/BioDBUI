@@ -104,7 +104,7 @@ export class XlsxImportPhylibService {
 		this.messstellenImp = [];
 		tab = tab - 1;
 		let XL_row_object;
-		let json_Messstelle; var Messstelle: string; let mstOK: boolean;
+		let json_Messstelle; var Messstelle: string; let mstOK: string;
 		let bidmst; let bidpara; let bideinh; let bwert;
 		// for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
 			const valspaltenfiteranzeige = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1 && excelspalten.id_tab === tab);
@@ -135,16 +135,16 @@ export class XlsxImportPhylibService {
 							
 							if (
 								mstee.length !== 0) {
-								mstOK = true;
+								mstOK = "";
 								bidmst = mstee[0].id_mst;
 							}
 							else {
 
-								mstOK = false
+								mstOK = "checked";
 							}
 
 						}
-						this._uebersicht.mst=Messstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;
+						this._uebersicht.mst=Messstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
 				
 						
 						
@@ -188,7 +188,7 @@ export class XlsxImportPhylibService {
 schalteSpalte(Spalte:string,wert:string){
 
 	// this._uebersicht=null;this._uebersicht= {} as Uebersicht;
-	console.log()
+	// console.log()
 	switch(Spalte) { 
 		case "sp3": { 
 			this._uebersicht.sp3= wert;
@@ -276,7 +276,7 @@ console.log(this.mstindex);
 		let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
 		// var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
 		let bidmst; let bidpara; let bideinh; let bwert;
-		let mstOK: boolean; let ok: boolean;
+		let mstOK: string; let ok: string;
 		let XL_row_object;
 		let json_Messstelle;
 		this._uebersicht= {} as Uebersicht;
@@ -328,13 +328,13 @@ console.log(this.mstindex);
 
 									if (
 										mstee.length !== 0) {
-										mstOK = true;
+										mstOK = "";
 										importp="checked";
 										bidmst = mstee[0].id_mst;
 									}
 									else {
 
-										mstOK = false;
+										mstOK = "checked";
 										importp="";
 									}
 
@@ -342,7 +342,7 @@ console.log(this.mstindex);
 								}	
 								
 								
-								this._uebersicht.mst=Messstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=true;this._uebersicht.fehler3=true;this._uebersicht.import1=importp;
+								this._uebersicht.mst=Messstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";this._uebersicht.import1=importp;
 					
 							} else
 								
@@ -402,8 +402,8 @@ console.log(this.mstindex);
 									array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
 									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 									
-									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3=true;this._uebersicht.import1=importp;
-									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = true; mstOK = true;RLD=null;
+									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3="";this._uebersicht.import1=importp;
+									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = "";RLD=null;
 									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
 									this.groupNAch();
 								}
@@ -417,12 +417,12 @@ console.log(this.mstindex);
 
 								if (
 									mstee.length !== 0) {
-										mstOK = true;importp="checked";
+										mstOK = "";importp="checked";
 									mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
 								}
 								else {
 									aMessstelle = mst;
-									mstOK = false;
+									mstOK = "checked";importp="";
 								}
 								
 									
@@ -437,10 +437,10 @@ console.log(this.mstindex);
 								Taxon = obj[index][i];
 								let taxon_ = this.arten.filter(arten => arten.taxon == Taxon);
 								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; RLD=taxon_[0].rld;
-									ok = true;  } else {
-									ok = false;
+									ok = "";  } else {
+									ok = "checked";
 									var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
-									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
+									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon;}
 
 
 								}
@@ -516,9 +516,9 @@ console.log(this.mstindex);
 		let _sp11: string=this._uebersicht.sp11;
 		let _sp12: string=this._uebersicht.sp12;
 		let _sp13: string=this._uebersicht.sp13;
-		let _fehler1: boolean=this._uebersicht.fehler1;
-		let  _fehler2: boolean=this._uebersicht.fehler2;
-		let _fehler3: boolean=this._uebersicht.fehler3;
+		let _fehler1: string=this._uebersicht.fehler1;
+		let  _fehler2: string=this._uebersicht.fehler2;
+		let _fehler3: string=this._uebersicht.fehler3;
 		let importp:string=this._uebersicht.import1;
 		console.log(this._uebersicht);
 		if (mst!==undefined){
@@ -559,20 +559,20 @@ console.log(this.mstindex);
 						if (this.uebersicht[i].sp11!==undefined){var _sp11_: string = this.uebersicht[i].sp11};
 						if (this.uebersicht[i].sp12!==undefined){var _sp12_: string = this.uebersicht[i].sp12};
 						if (this.uebersicht[i].sp13!==undefined){var _sp13_: string = this.uebersicht[i].sp13};
-						let _fehler1_:boolean;
-						let _fehler2_:boolean;
-						let _fehler3_:boolean;
+						let _fehler1_:string;
+						let _fehler2_:string;
+						let _fehler3_:string;
 						let _importp:string;
 						
 
 						
-						if (this.uebersicht[i].fehler1 === false) { _fehler1_ = false; } else { _fehler1_ = true; }
-						if (this.uebersicht[i].fehler2 === false || _fehler2===false ) { _fehler2_ = false; } else {}
+						if (this.uebersicht[i].fehler1 === "checked") { _fehler1_ = "checked"; } else { _fehler1_ = ""; }
+						if (this.uebersicht[i].fehler2 === "checked" || _fehler2==="checked" ) { _fehler2_ = "checked"; } else {}
 						
-						if (this.uebersicht[i].anzahl === 0) { _fehler3_ = true; } else { _fehler3_ = false; };
+						if (this.uebersicht[i].anzahl === 0) { _fehler3_ = "checked"; } else { _fehler3_ = ""; };
 						if (importp!==undefined && this.uebersicht[i].import1!==undefined){
 						if (importp === "" || this.uebersicht[i].import1==="" ) { _importp = ""; } else {_importp="checked";}
-						
+						if (_fehler1_==="checked"  ||_fehler2==="checked" ){_importp = "";}
 						}
 
 
@@ -580,14 +580,14 @@ console.log(this.mstindex);
 						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_,import1:_importp});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
-						 //console.log(this.uebersicht)
+						 //
 					
 					}
 				
 			}
 
 		}}
-
+		console.log(this.uebersicht);
 	}
 
 
@@ -724,10 +724,14 @@ console.log(this.mstindex);
 	}
 	
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){
-		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === idVerfahren && excelspalten.anzeige_tab2_tab1 === 1 && excelspalten.id_tab === idtab);
+		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === idVerfahren && (excelspalten.anzeige_tab2_tab1 === 1||excelspalten.anzeige_tab2_tab1 ===4) && excelspalten.id_tab === idtab);
 		this.displayColumnNames=[];this.dynamicColumns=[];
 		this.displayColumnNames.push('Nr');
 				this.dynamicColumns.push('nr');
+				if  (idVerfahren===4 ){
+					this.displayColumnNames.push('Mst');
+					this.dynamicColumns.push('mst');
+				}
 		for (let i = 0, l = valspaltenfiter.length; i < l; i += 1) {
 			this.displayColumnNames.push(valspaltenfiter[i].anzeigename);
 			this.dynamicColumns.push(valspaltenfiter[i].namespalteng)
@@ -737,7 +741,7 @@ console.log(this.mstindex);
 					this.displayColumnNames.push('Messwerte');
 					this.displayColumnNames.push('fehler1');
 					this.displayColumnNames.push('fehler2');
-					this.displayColumnNames.push('fehler3');
+					// this.displayColumnNames.push('fehler3');
 					//this.displayColumnNames.push('Import');
 					this.dynamicColumns.push('anzahl');
 				}
@@ -747,11 +751,12 @@ console.log(this.mstindex);
 			this.displayColumnNames.push('Messwerte');
 			this.displayColumnNames.push('fehler1');
 					this.displayColumnNames.push('fehler2');
-					this.displayColumnNames.push('fehler3');
+					// this.displayColumnNames.push('fehler3');
 					//this.displayColumnNames.push('Import');
 					this.dynamicColumns.push('anzahl');
 		}
-		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');this.dynamicColumns.push('fehler3');this.dynamicColumns.push('import1');
+		
+		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');;this.dynamicColumns.push('import1');
 		if (idVerfahren===1 || idVerfahren===3){
 			this.dynamicColumns.push('actions');}
 	}

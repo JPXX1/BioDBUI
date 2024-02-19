@@ -59,7 +59,7 @@ let tabs="";
     for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
      const tabNeu=workbook.SheetNames[i]
       if (i+1<l){
-        tabs=tabNeu+";";
+        tabs=tabs+tabNeu+";";
       }else if(i+1===l){
         tabs=tabs+tabNeu;
 

@@ -35,8 +35,8 @@ interface messdata{
   _Messwert: string;
   _Einheit: string;
   _cf: string;
-  MstOK:boolean;
-  OK:boolean;
+  MstOK:string;
+  OK:string;
   _AnzahlTaxa: number;
   _RoteListeD: string;
 }
