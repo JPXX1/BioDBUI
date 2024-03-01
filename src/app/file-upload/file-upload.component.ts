@@ -128,8 +128,8 @@ export class FileUploadComponent implements OnInit {
 		await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 		
 		if (this.xlsxImportPhylibService.vorhanden==true)
-		{this.InfoBox="mist"} else
-		{this.InfoBox="allet jut"};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
+		{this.InfoBox="Daten lassen sich nicht oder nur teilweise importieren."} else
+		{this.InfoBox="Importierbare Daten wurden importiert."};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 
 			}}}
 	async	importIntoDB(){
@@ -147,19 +147,15 @@ export class FileUploadComponent implements OnInit {
 			
 			if (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3){
 			if (this.MessDataOrgi.length>0 ){
-				await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
-				await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
+				// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+				// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
 				
-				if (this.xlsxImportPhylibService.vorhanden===true)
-				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
-				if (this.xlsxImportPhylibService.vorhandenMst===true)
-				{this.InfoBox="Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
-
-
-				{this.InfoBox="Der Import wird durchgeführt.";
+			
+				
+				this.InfoBox="Der Import wird durchgeführt.";
 				this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}
 				else 
-				{this.InfoBox="Bitte erst eine Importdatei hochladen."} }else 
+				
 				console.log(this.valExceltabsService.NrVerfahren);
 				if (this.valExceltabsService.NrVerfahren===2){
 					if (this.xlsxImportPhylibService.vorhanden===true)
@@ -173,8 +169,8 @@ export class FileUploadComponent implements OnInit {
 				else 
 				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
 				}}
-		
 			}
+			
 
 
 			async addfile()     

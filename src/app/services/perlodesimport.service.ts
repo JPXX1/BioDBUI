@@ -92,7 +92,7 @@ export class PerlodesimportService {
               }
               this._uebersicht= {} as Uebersicht;
              if ( mst!== undefined){
-              if (mstOK==="") {importp="";}else{
+              if (mstOK==="checked") {importp="";}else{
                 importp="checked";}
                   //this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
                   this._uebersicht.mst=aMessstelle;
@@ -256,7 +256,11 @@ await this.Perlodesimport(workbook)
                     this._uebersicht.sp5=nutzung;this._uebersicht.fehler1=mstOK;
                     this._uebersicht.fehler2="";this._uebersicht.fehler3="";
                     this._uebersicht.import1=importp;
-					
+     
+
+                  this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+									
+                  
                     this.xlsxImportPhylibService._uebersicht=this._uebersicht;
                     this.xlsxImportPhylibService.groupNAch();
                   }

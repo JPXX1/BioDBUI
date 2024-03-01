@@ -13,7 +13,7 @@ import {ImpPhylibServ} from '/home/jens/angular-file-upload/src/app/services/imp
 
 export class SelectUebersichtImportComponent {
   // @Input()  selectedUebersicht: string;
-
+  displayedColumns: string[] = ['dateiname', 'importiert','verfahren', 'firma','komponente', 'jahr','anzahlmst','anzahlwerte'];
   uebersicht:any=[];
   constructor(private impPhylibServ: ImpPhylibServ) { }
   onSelect(newValue) {

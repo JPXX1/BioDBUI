@@ -15,13 +15,15 @@ export class AnzeigeBewertungMPService {
 
   constructor(private httpClient: HttpClient) { }
 
-
-  getBwMstMP() {
-    return this.httpClient.get('http://localhost:3000/bwMstAbundanzen');
+  
+  getBwMstMP(komp:number) {
+    let params = new HttpParams().set('id',komp);
+    
+    return this.httpClient.get('http://localhost:3000/bwMstAbundanzen', {params});
  }
- async callBwMstMP() {
-
-  await this.getBwMstMP().forEach(formen_ => {
+ async callBwMstMP(komp:number) {
+ 
+  await this.getBwMstMP(komp).forEach(formen_ => {
     this.dbBewertungMst = formen_;
    
   });
@@ -43,10 +45,11 @@ datenUmwandeln(FilterMst:string,min:number,max:number){
     this.mstMakrophytenKl.einheit=this.dbBewertungMst[i].einheit;
    this.mstMakrophytenKl.firma=this.dbBewertungMst[i].firma;
    this.mstMakrophytenKl.taxonzusatz=this.dbBewertungMst[i].taxonzusatz;
-   this.mstMakrophytenKl.taxon=this.dbBewertungMst[i].taxon;
+   this.mstMakrophytenKl.taxon=this.dbBewertungMst[i].taxon + " ("+this.dbBewertungMst[i].dvnr+")";
    this.mstMakrophytenKl.wert=this.dbBewertungMst[i].wert;
    this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m;
    this.mstMakrophytenKl.letzte_aenderung=this.dbBewertungMst[i].letzte_aenderung;
+   this.mstMakrophytenKl.dvnr=this.dbBewertungMst[i].dvnr;
 
    if (!FilterMst && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ 
     this.mstMakrophyten.push(this.mstMakrophytenKl);}else{

@@ -11,4 +11,6 @@ export interface MstMakrophyten {
     cf: boolean;
     tiefe_m: string;
     einheit: string;
+    komponente:number;
+    dvnr:number;
    }

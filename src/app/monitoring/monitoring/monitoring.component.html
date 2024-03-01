@@ -7,55 +7,63 @@
 <span>
  
   <div style="margin-left:200px">
-    <button id="uebersichtButton" mat-button (click)="handleUebersicht()">Übersicht</button>
+    
+    
+    <button mat-button id="mpButton" [matMenuTriggerFor]="uebersicht" >Übersicht</button>
+    <mat-menu #uebersicht="matMenu" xPosition="after">
+    <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
+    <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">ausblenden</button>
+  </mat-menu>
 
 
-   
-    <button mat-button >MP</button>
-    <mat-menu menu="matMenu">
-      <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
-      <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button>
-    </mat-menu>
-    <button mat-button >MP1</button>
-    <mat-menu  xPosition="after">
+    <button mat-button id="mpButton" [matMenuTriggerFor]="afterMenu" >Makrophyten</button>
+    <mat-menu #afterMenu="matMenu" xPosition="after">
   <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
   <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button>
 </mat-menu>
 
-    <button mat-button >Diatomeen</button>
-    <mat-menu #beforeMenu="matMenu" xPosition="before">
+    <button mat-button [matMenuTriggerFor]="diatoms">Diatomeen</button>
+    <mat-menu #diatoms="matMenu" xPosition="before">
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
     </mat-menu>
 
 
-    <button mat-button [matMenuTriggerFor]="afterMenu">Phytoplankton</button>
-    <mat-menu #afterMenu="matMenu" xPosition="after">
+    <button mat-button [matMenuTriggerFor]="pp">Phytoplankton</button>
+    <mat-menu #pp="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
     </mat-menu>
-
-    <button mat-button [matMenuTriggerFor]="afterMenu">Fische</button>
-    <mat-menu #afterMenu="matMenu" xPosition="after">
+    <button mat-button [matMenuTriggerFor]="mzb">Makrozoobenthos</button>
+    <mat-menu #mzb="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
-      <button mat-menu-item>Item 2</button>
+      <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button>
     </mat-menu>
-
-    <button mat-button [matMenuTriggerFor]="afterMenu">Makrozoobenthos</button>
-    <mat-menu #afterMenu="matMenu" xPosition="after">
+    
+    <button mat-button [matMenuTriggerFor]="fische">Fische</button>
+    <mat-menu #fische="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
     </mat-menu>
 
    
+
+   
     <mat-form-field>
-      <input [(ngModel)]="value" matInput placeholder="Filter Wasserkörper" autocomplete="off"  (input)="onValueChangeFilter(value)">
+      <input [(ngModel)]="value" matInput placeholder="Filter Wasserkörper" autocomplete="off" style="margin-left:10px" (input)="onValueChangeFilter(value,Artvalue)">
           <button mat-icon-button matSuffix (click)="clearSearchFilter()" *ngIf="value">
           <mat-icon>close</mat-icon>
       </button>
   </mat-form-field>
 
-  <mat-slider discrete min="2005" max="2026" (change)="updateSetting(min,max,value)" style="margin-left:10px">
+  <mat-form-field>
+    <input [(ngModel)]="Artvalue" matInput placeholder="Filter Art/ DVNr" autocomplete="off" style="margin-left:20px" (input)="onValueChangeFilter(value,Artvalue)">
+        <button mat-icon-button matSuffix (click)="clearSearchFilterArt()" *ngIf="Artvalue">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>
+
+  <mat-slider discrete min="2005" max="2026" (change)="updateSetting(min,max,value,Artvalue)" style="margin-left:10px">
     <input [(ngModel)]="min" matSliderStartThumb>
     <input [(ngModel)]="max" matSliderEndThumb>
   </mat-slider>
@@ -65,11 +73,11 @@
 
 
 </span>
-
+<div class="card" *ngIf="UebersichtAnzeigen == true" style="vertical-align: top;">
 <mat-card class="example-card">
   <app-uebersicht-tabelle [wkUebersicht]="FilterwkUebersicht"></app-uebersicht-tabelle>
 </mat-card>
-
+</div>
 <div class="card" *ngIf="MakrophytenMstAnzeige == true" style="vertical-align: top;">
 <mat-card class="example-card">
   <app-makrophyten-mst-uebersicht [pros]="props"></app-makrophyten-mst-uebersicht>
@@ -81,5 +89,11 @@
 <div class="card" *ngIf="MakrophytenAnzeige == true" style="vertical-align: top;">
   <mat-card class="example-card">
     <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
+  </mat-card>
+</div>
+
+<div class="card" *ngIf="MZBAnzeige == true" style="vertical-align: top;">
+  <mat-card class="example-card">
+    <app-makorphyten-tabelle [mstMakrophyten]="mstMZB"></app-makorphyten-tabelle>
   </mat-card>
 </div>

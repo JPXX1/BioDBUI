@@ -2,9 +2,58 @@
   <mat-card>
  
     
-    <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
-      <div *cdkVirtualFor="let item of uebersicht" class="example-item">{{item.dateiname}}</div>
-    </cdk-virtual-scroll-viewport>
+    <!-- <cdk-virtual-scroll-viewport itemSize="550" class="example-viewport"> -->
+      <!-- <div *cdkVirtualFor="let item of uebersicht" class="example-item">{{item.dateiname}}{{item.firma}}</div> -->
+      <table  cdk-table [dataSource]="uebersicht" style="width:90%">
+
+        <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+          
+        <!-- Position Column -->
+        
+        
+       
+        <!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
+        <!-- Weight Column -->
+        <ng-container cdkColumnDef="firma">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header3"> Probenehmer </th>
+          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.firma}} </td>
+          
+          </ng-container>
+        <ng-container cdkColumnDef="jahr">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header2"> Untersuchungsjahr </th>
+          <td  cdk-cell *cdkCellDef="let element"  class="spalte1"> {{element.jahr}} </td>
+          
+        </ng-container>
+        <ng-container cdkColumnDef="dateiname">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header3">Dateiname</th>
+          <td  cdk-cell *cdkCellDef="let element"  class="spalte1"> {{element.dateiname}} </td>
+          </ng-container>
+        <!-- Symbol Column -->
+        <ng-container cdkColumnDef="verfahren">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header3"> Verfahren </th>
+          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.verfahren}} </td>
+        </ng-container>
+        <ng-container cdkColumnDef="komponente">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header3">Komponente</th>
+          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.komponente}} </td>
+          </ng-container>
+          <ng-container cdkColumnDef="importiert">
+          <th  cdk-header-cell *cdkHeaderCellDef  class="header2">importiert</th>
+          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.importiert}} </td>
+          </ng-container>
+          <ng-container cdkColumnDef="anzahlmst">
+            <th  cdk-header-cell *cdkHeaderCellDef  class="header2">importierte Messstellen</th>
+            <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.anzahlmst}} </td>
+            </ng-container>
+            <ng-container cdkColumnDef="anzahlwerte">
+              <th  cdk-header-cell *cdkHeaderCellDef  class="header2">importierte Messwerte</th>
+              <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.anzahlwerte}} </td>
+              </ng-container>
+          <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+        </table>
+    <!-- </cdk-virtual-scroll-viewport> -->
     
   </mat-card>  
  

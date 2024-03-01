@@ -2,6 +2,7 @@ export interface Messgroup {
         
         _Nr:number;
 		_Messstelle: string;
+		
 		_AnzahlTaxa: number;
 		_TypMP:string;
 		_TypDIA:string;

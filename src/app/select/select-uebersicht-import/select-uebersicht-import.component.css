@@ -7,3 +7,31 @@
   .example-item {
     height: 50px;
   }
+  .spalte1{
+    text-align: left;
+   
+    border-color: grey;
+
+border-width: 1px;
+}
+.header1{
+  text-align: middle;
+ 
+  /* border-color: grey; */
+
+/* border-width: 1px; */
+}
+.header2{
+  text-align: middle;
+  width: 50px;
+  /* border-color: grey; */
+
+/* border-width: 1px; */
+}
+.header3{
+  text-align: middle;
+  width: 150px;
+  /* border-color: grey; */
+
+/* border-width: 1px; */
+}
