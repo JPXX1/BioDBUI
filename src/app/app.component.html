@@ -6,7 +6,9 @@
         <mat-icon>menu</mat-icon>
         </button> 
 
-        <span >  <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
+        <span >  
+                <button id="link2" [routerLink]="['/monitoringkarte']" class="linkcolor" mat-button (click)="getlink0()">Monitoringkarte</button>
+                <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
                  <button id="link2" [routerLink]="['/monitoring']" class="linkcolor" mat-button (click)="getlink2()">Monitoringdaten</button>
                  <button id="link3"  mat-button (click)="getlink3()" class="linkcolor">Stammdaten</button>
         </span>
