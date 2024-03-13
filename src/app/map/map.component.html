@@ -1,7 +1,14 @@
-<p>map works!</p>
+
+
+<button mat-button id="mpButton" [matMenuTriggerFor]="karten"  style="margin-left:5%">Karten</button>
+<mat-menu #karten="matMenu" xPosition="after">
+  <button id="bp3" mat-button (click)="startbp3()">BP3</button>
+  <button id="bp2" mat-button (click)="startbp2()">BP2</button>
+  <button id="bp1" mat-button (click)="startbp1()">BP1</button>
+</mat-menu>
 <div class="map-container">
-    <div class="map-frame" style="margin-top:5%;margin-left:5%;width:  90%;height: 90%;">
-      <div id="ol-map" class="map-container"  style="margin-top:7%;margin-left:7%;width: 88%;height: 84%;"></div>
-    </div>
+    <!-- <div class="map-frame" style="margin-top:5%;margin-left:5%;width:  90%;height: 90%;"> -->
+      <div id="ol-map" class="map-container"  style="margin-top:5%;width: 100%;height: 84%;"></div>
+    <!-- </div> -->
   </div>
   
