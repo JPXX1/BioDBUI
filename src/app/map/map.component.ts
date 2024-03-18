@@ -3,84 +3,266 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
-import TileWMS from 'ol/source/TileWMS.js';
-
-import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
-import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS';
-import { last } from 'rxjs';
-
-
+import {Circle, Fill, Stroke, Style} from 'ol/style.js';
+import MousePosition from 'ol/control/MousePosition.js';
+import { toStringHDMS,createStringXY } from 'ol/coordinate.js';
+import { toLonLat } from 'ol/proj.js';
+import {defaults as defaultControls} from 'ol/control.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import Vector from 'ol/source/Vector';
+import VectorSource from 'ol/source/Vector.js';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import Overlay from 'ol/Overlay';
+import OSMXML from 'ol/format/OSMXML.js';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
+ 
+  
+  constructor(private Farbebewertg: FarbeBewertungService) { }
+
+getColor(wert:string){
+ return this.Farbebewertg.getColor(wert);
+}
+
   map: Map;
 
-
   options:String;
-  layer:string='ne:view_geo_wk_oezk_bp3';
+  public fgw = {
+   
+    '1': new Style({
+      stroke: new Stroke({
+        color: this.getColor('1'),
+       
+        width: 2
+      })
+    }),
+    '2': new Style({
+      stroke: new Stroke({
+        color: this.getColor('2'),
+      
+        width: 2
+      })
+    }),
 
+    '3': new Style({
+      stroke: new Stroke({
+        color: this.getColor('3'),
+      
+        width: 2
+      })
+    }),
 
-  view_geo_lw_oezk_bp2 =   new TileLayer({
-    source:new TileWMS({
-      url:'http://localhost:8080/geoserver/WK/wms',
-      params: {'LAYERS': 'WK:view_geo_lw_oezk_bp2', 'TILED': true},
-      serverType:'geoserver',
-      transition:0,
-  
+    '4': new Style({
+      stroke: new Stroke({
+        color:  this.getColor('4'),
+        
+        width: 2
+      })
+    }),
+    '5': new Style({
+      stroke: new Stroke({
+        color:  this.getColor('5'),
+       width: 2
+      })
     })
-  });
-  view_geo_lw_oezk_bp3 =   new TileLayer({
-    source:new TileWMS({
-      url:'http://localhost:8080/geoserver/WK/wms',
-      params: {'LAYERS': 'WK:view_geo_lw_oezk_bp3', 'TILED': true},
-      serverType:'geoserver',
-      transition:0,
-  
+  };
+  public seen = {
+
+    '1': new Style({
+      stroke: new Stroke({
+        color: 'black',
+       
+        width: 1
+      }),
+      fill: new Fill({
+        color: this.getColor('1')
+      })
+    }),
+    '2': new Style({
+      stroke: new Stroke({
+        color: 'black',
+      
+        width: 1
+      }),
+      fill: new Fill({
+        color: this.getColor('2')
+      })
+    }),
+
+    '3': new Style({
+      stroke: new Stroke({
+        color: 'black',
+      
+        width: 1
+      }),
+      fill: new Fill({
+        color: this.getColor('3')
+      })
+    }),
+
+    '4': new Style({
+      stroke: new Stroke({
+        color: 'black',
+        
+        width: 1
+      }),
+      fill: new Fill({
+        color: this.getColor('4')
+      })
+    }),
+    '5': new Style({
+      stroke: new Stroke({
+        color: 'black',
+       width: 3
+      }),
+      fill: new Fill({
+        color: this.getColor('5')
+      })
     })
-  });
-  view_geo_lw_oezk_bp1 =   new TileLayer({
-    source:new TileWMS({
-      url:'http://localhost:8080/geoserver/WK/wms',
-      params: {'LAYERS': 'WK:view_geo_lw_oezk_bp1', 'TILED': true},
-      serverType:'geoserver',
-      transition:0,
+  };
   
-    })
+
+    
+   mousePositionControl = new MousePosition({
+    coordinateFormat: createStringXY(4),
+    projection: 'EPSG:4326',
+    // comment the following two lines to have the mouse position
+    // be placed within the map.
+    className: 'custom-mouse-position',
+    target: document.getElementById('mouse-position'),
   });
-view_geo_wk_oezk_bp2 =   new TileLayer({
-  source:new TileWMS({
-    url:'http://localhost:8080/geoserver/ne/wms',
-    params: {'LAYERS': 'ne:view_geo_wk_oezk_bp2', 'TILED': true},
-    serverType:'geoserver',
-    transition:0,
+ 
+ 
+   
+  
 
-  })
-});
-view_geo_wk_oezk_bp3 =   new TileLayer({
-  source:new TileWMS({
-    url:'http://localhost:8080/geoserver/ne/wms',
-    params: {'LAYERS': 'ne:view_geo_wk_oezk_bp3', 'TILED': true},
-    serverType:'geoserver',
-    transition:0,
 
-  })
-});
-view_geo_wk_oezk_bp1 =   new TileLayer({
-  source:new TileWMS({
-    url:'http://localhost:8080/geoserver/ne/wms',
-    params: {'LAYERS': 'ne:view_geo_wk_oezk_bp1', 'TILED': true},
-    serverType:'geoserver',
-    transition:0,
+  
+  
+  view_geo_lw_oezk_bp2 = new VectorLayer({
 
-  })
+    source: new VectorSource({
+
+      url: 'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
+      format: new GeoJSON(),
+    }),
+    style: (feature) => {
+
+
+      return this.seen[feature.get('wert')];
+    }
+  });
+  view_geo_lw_oezk_bp3 =  new VectorLayer({
+   
+    source: new VectorSource({
+      
+      url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
+  
+      format: new GeoJSON(),
+  
+      
+    })
+    ,
+    style: (feature) => {
+
+
+      return this.seen[feature.get('wert')];
+    }
+  });
+  view_geo_lw_oezk_bp1 =  new VectorLayer({
+   
+    source: new VectorSource({
+      // url: 'https://openlayers.org/data/vector/ecoregions.json',
+      url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
+  // url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+      format: new GeoJSON(),
+   
+     
+      
+    }),
+    style: (feature) => {
+
+
+      return this.seen[feature.get('wert')];
+    }
+    
+  });
+view_geo_wk_oezk_bp2 =  new VectorLayer({
+   
+  source: new VectorSource({
+    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
+// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),
+    
+   
+  // attributions:'geoserver'
+   
+    
+  }),
+  style: (feature) => {
+
+
+    return this.fgw[feature.get('wert')];
+  }
+  
 });
+view_geo_wk_oezk_bp3 =  new VectorLayer({
+   
+  source: new VectorSource({
+    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
+// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),
+    
+   
+  // attributions:'geoserver'
+   
+    
+  }),
+  
+  style: (feature) => {
+
+
+    return this.fgw[feature.get('wert')];
+  }
+});
+view_geo_wk_oezk_bp1 =  new VectorLayer({
+   
+  source: new VectorSource({
+    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
+// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),
+    
+   
+  // attributions:'geoserver'
+   
+     
+  }),
+  style: (feature) => {
+
+
+    return this.fgw[feature.get('wert')];
+  }
+
+
+  
+  
+});
+
+
+
 startbp1(){
   this.map.removeLayer( this.view_geo_wk_oezk_bp3)
   this.map.removeLayer( this.view_geo_wk_oezk_bp2)
-  this.map.addLayer(this.view_geo_wk_oezk_bp1); 
+  this.map.addLayer(this.view_geo_wk_oezk_bp1);
+
   this.map.removeLayer( this.view_geo_lw_oezk_bp3)
   this.map.removeLayer( this.view_geo_lw_oezk_bp2)
   this.map.addLayer(this.view_geo_lw_oezk_bp1); 
@@ -101,99 +283,73 @@ startbp3(){
   this.map.removeLayer( this.view_geo_lw_oezk_bp1)
   this.map.addLayer(this.view_geo_lw_oezk_bp3);
 }
+
+
+
+
   ngOnInit(): void {
-    const parser = new WMTSCapabilities();
-    let options;
+    
    
-    
-    fetch('https://sgx.geodatenzentrum.de/wmts_basemapde/1.0.0/?SERVICE=WMTS&REQUEST=GetCapabilities')
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (text) {
-     
-      const result = parser.read(text);
-       options = optionsFromCapabilities(result, 
-        {
-        layer: 'de_basemapde_web_raster_farbe',
-         matrixSet: 'GLOBAL_WEBMERCATOR',
-        format: 'image/png',
-        // projection: 'EPGS:3857',
-        
-      });
-  
-
-
-
-
-
- 
+    const container = document.getElementById('popup');
+    const content = document.getElementById('popup-content');
+    const closer = document.getElementById('popup-closer');
+    const overlay = new Overlay({
+      element: container,
+      autoPan: true
     });
-
-  
-    
-
-
+ 
     this.map = new Map({
+      overlays: [overlay],
+      controls: defaultControls().extend([this.mousePositionControl]),
       layers: [
         new TileLayer({
           source: new OSM(),
           opacity: 0.7,
         }),
-        // new TileLayer({
-        //   source:new TileWMS({
-        //     url:'http://localhost:8080/geoserver/ne/wms',
-        //     params: {'LAYERS': this.layer, 'TILED': true},
-        //     serverType:'geoserver',
-        //     transition:0,
-
-        //   })
-
-
-        // }),
-        // new TileLayer({
-        //   source:new TileWMS({
-        //     url:'http://localhost:8080/geoserver/WK/wms',
-        //     params: {'LAYERS': 'WK:lwbody', 'TILED': true},
-        //     serverType:'geoserver',
-        //     transition:0,
-
-        //   })
-
-
-        // }),
-        // new TileLayer({
-        //   opacity: 1,
-        //   source: new WMTS(options),
-        // }),
-      ],
+        
+      ], 
+      // layers: [
+      //   new VectorLayer({
+      //     source: new VectorSource({
+      //       format: new GeoJSON(),
+      //       url:'http://localhost:8080/geoserver/b/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=b%3ACALC_LWBODY_WK_DEBE_polygon&maxFeatures=50&outputFormat=application%2Fjson',
+      //       // url: 'http://localhost:8080/geoserver/b/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=b%3ACALC_LWBODY_WK_DEBE_polygon&maxFeatures=50&outputFormat=text%2Fjavascript',
+      //     }),
+      //   }),
+      // ],
+     
       target: 'ol-map',
       view: new View({
         center: [1512406.33, 6880500.21],
         zoom: 10,
       }),
+   
+   
+    });
+
+    
+    this.map.on('singleclick', function (evt: any) {
+      const coordinate = evt.coordinate;
+      const hdms = toStringHDMS(toLonLat(coordinate));
+    
+      content.innerHTML = '<p>Current coordinates are :</p><code>' + hdms +
+        '</code>';
+      overlay.setPosition(coordinate);
     });
 
 
-
-
-
-    // this.map = new Map({
-    //   view: new View({
-    //     center: [0, 0],
-    //     zoom: 1,
-    //   }),
-    //   layers: [
-    //     new TileLayer({
-    //       source: new OSM(),
-    //     }),
-    //   ],
-    //   target: 'ol-map'
-    // });
+    closer.onclick = function () {
+      overlay.setPosition(undefined);
+      closer.blur();
+      return false;
+    };
+    
+   
+    
   }
 
- 
 
+     
 
 
 
