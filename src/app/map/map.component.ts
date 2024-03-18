@@ -30,7 +30,7 @@ getColor(wert:string){
 }
 
   map: Map;
-
+  coordinate
   options:String;
   public fgw = {
    
@@ -127,23 +127,6 @@ getColor(wert:string){
   };
   
 
-    
-   mousePositionControl = new MousePosition({
-    coordinateFormat: createStringXY(4),
-    projection: 'EPSG:4326',
-    // comment the following two lines to have the mouse position
-    // be placed within the map.
-    className: 'custom-mouse-position',
-    target: document.getElementById('mouse-position'),
-  });
- 
- 
-   
-  
-
-
-  
-  
   view_geo_lw_oezk_bp2 = new VectorLayer({
 
     source: new VectorSource({
@@ -177,9 +160,9 @@ getColor(wert:string){
   view_geo_lw_oezk_bp1 =  new VectorLayer({
    
     source: new VectorSource({
-      // url: 'https://openlayers.org/data/vector/ecoregions.json',
+     
       url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
-  // url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+  
       format: new GeoJSON(),
    
      
@@ -195,16 +178,10 @@ getColor(wert:string){
 view_geo_wk_oezk_bp2 =  new VectorLayer({
    
   source: new VectorSource({
-    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+  
     url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
-// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
-    format: new GeoJSON(),
-    
-   
-  // attributions:'geoserver'
-   
-    
-  }),
+
+    format: new GeoJSON(), }),
   style: (feature) => {
 
 
@@ -215,14 +192,11 @@ view_geo_wk_oezk_bp2 =  new VectorLayer({
 view_geo_wk_oezk_bp3 =  new VectorLayer({
    
   source: new VectorSource({
-    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+   
     url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
-// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+
     format: new GeoJSON(),
-    
-   
-  // attributions:'geoserver'
-   
+  
     
   }),
   
@@ -235,9 +209,9 @@ view_geo_wk_oezk_bp3 =  new VectorLayer({
 view_geo_wk_oezk_bp1 =  new VectorLayer({
    
   source: new VectorSource({
-    // url: 'https://openlayers.org/data/vector/ecoregions.json',
+    
     url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
-// url:'http://localhost:8080/geoserver/a/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=a%3Alwbody2&maxFeatures=50&outputFormat=application%2Fjson',
+
     format: new GeoJSON(),
     
    
@@ -289,18 +263,18 @@ startbp3(){
 
   ngOnInit(): void {
     
-   
-    const container = document.getElementById('popup');
-    const content = document.getElementById('popup-content');
-    const closer = document.getElementById('popup-closer');
-    const overlay = new Overlay({
-      element: container,
-      autoPan: true
-    });
+    const status = document.getElementById('status');
+    //  const container = document.getElementById('status');
+    // const content = document.getElementById('popup-content');
+    // const closer = document.getElementById('popup-closer');
+    // const overlay = new Overlay({
+    //    element:  status,
+    //   autoPan: true
+    // });
  
     this.map = new Map({
-      overlays: [overlay],
-      controls: defaultControls().extend([this.mousePositionControl]),
+      //  overlays: [overlay],
+      // controls: defaultControls().extend([this.mousePositionControl]),
       layers: [
         new TileLayer({
           source: new OSM(),
@@ -326,32 +300,55 @@ startbp3(){
    
    
     });
-
-    
-    this.map.on('singleclick', function (evt: any) {
-      const coordinate = evt.coordinate;
-      const hdms = toStringHDMS(toLonLat(coordinate));
-    
-      content.innerHTML = '<p>Current coordinates are :</p><code>' + hdms +
-        '</code>';
-      overlay.setPosition(coordinate);
-    });
-
-
-    closer.onclick = function () {
-      overlay.setPosition(undefined);
-      closer.blur();
-      return false;
-    };
-    
    
+    const selectStyle = new Style({
+      fill: new Fill({
+        color: '#eeeeee',
+      }),
+      stroke: new Stroke({
+        color: 'rgba(255, 255, 255, 1.7)',
+        width: 2,
+      }),
+    });
+    
+    // const status = document.getElementById('status');
+    
+    let selected = null;
+    this.map.on('pointermove', function (e) {
+      if (selected !== null) {
+        selected.setStyle(undefined);
+        selected = null;
+       
+      };
+    
+       this.forEachFeatureAtPixel(e.pixel, function (f) {
+
+        // this.coordinate = e.coordinate; 
+        // const hdms = toStringHDMS(toLonLat(coordinate));
+        
+        selected = f;
+        selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
+        f.setStyle(selectStyle);
+        return true;
+      });
+    
+      if (selected) {
+        status.innerHTML = selected.get('wk_name')+" ("+selected.get('jahr')+"): " +selected.get('wert')+ "<br>" +"Makrophten:"+ "<br>" +"Diatomeen:"+ "<br>" +"Phytoplankton:"+ "<br>" +"MZB:"+ "<br>" +"Fische:";
+       
+      } else {
+        status.innerHTML = '&nbsp;';
+      }
+    });
+ 
+    
+  
+    
     
   }
 
 
      
-
-
+  
 
 
 }
