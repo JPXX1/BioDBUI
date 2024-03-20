@@ -2,19 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import {Circle, Fill, Stroke, Style} from 'ol/style.js';
-import MousePosition from 'ol/control/MousePosition.js';
-import { toStringHDMS,createStringXY } from 'ol/coordinate.js';
-import { toLonLat } from 'ol/proj.js';
-import {defaults as defaultControls} from 'ol/control.js';
+import TileWMS from 'ol/source/TileWMS.js';
+import {Fill, Stroke, Style} from 'ol/style.js';
+import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
+// import {getWidth} from 'ol/extent.js';
+// import {DragBox, Select} from 'ol/interaction.js';
+// import {defaults as defaultControls} from 'ol/control.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import Vector from 'ol/source/Vector';
 import VectorSource from 'ol/source/Vector.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import Overlay from 'ol/Overlay';
-import OSMXML from 'ol/format/OSMXML.js';
+import WMTS from 'ol/source/WMTS.js';
+import {fromLonLat, get as getProjection} from 'ol/proj.js';
+import {getWidth} from 'ol/extent.js';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -24,6 +26,33 @@ export class MapComponent implements OnInit {
  
   
   constructor(private Farbebewertg: FarbeBewertungService) { }
+  source_lw_bp1:VectorSource=new VectorSource({
+    url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(), });
+  source_lw_bp2:VectorSource=new VectorSource({
+    url: 'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),});
+  source_lw_bp3:VectorSource=new VectorSource({
+      url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),});
+  source_rw_bp1:VectorSource=new VectorSource({
+    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
+  format: new GeoJSON(), });
+  source_rw_bp2:VectorSource=new VectorSource({
+      url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(), });
+  source_rw_bp3:VectorSource=new VectorSource({
+       url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
+    format: new GeoJSON(),});
+  sourceBasemap:TileWMS= new TileWMS({
+    url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Ade_basemapde_web_raster_grau&bbox=-446461.42518830835%2C5510197.99206421%2C2465866.739975654%2C7912675.880069686&width=768&height=633&srs=EPSG%3A3857&styles=&format=application/openlayers',
+    params: {'LAYERS': '	ne:de_basemapde_web_raster_grau', 'TILED': true},
+    serverType: 'geoserver',
+    // Countries have transparency, so do not fade tiles:
+    transition: 0,
+  });
+
+
 
 getColor(wert:string){
  return this.Farbebewertg.getColor(wert);
@@ -38,14 +67,14 @@ getColor(wert:string){
       stroke: new Stroke({
         color: this.getColor('1'),
        
-        width: 2
+        width: 4
       })
     }),
     '2': new Style({
       stroke: new Stroke({
         color: this.getColor('2'),
       
-        width: 2
+        width: 4
       })
     }),
 
@@ -53,7 +82,7 @@ getColor(wert:string){
       stroke: new Stroke({
         color: this.getColor('3'),
       
-        width: 2
+        width: 4
       })
     }),
 
@@ -61,13 +90,13 @@ getColor(wert:string){
       stroke: new Stroke({
         color:  this.getColor('4'),
         
-        width: 2
+        width: 4
       })
     }),
     '5': new Style({
       stroke: new Stroke({
         color:  this.getColor('5'),
-       width: 2
+       width: 4
       })
     })
   };
@@ -118,117 +147,70 @@ getColor(wert:string){
     '5': new Style({
       stroke: new Stroke({
         color: 'black',
-       width: 3
+       width: 1
       }),
       fill: new Fill({
         color: this.getColor('5')
       })
     })
+    
   };
   
 
   view_geo_lw_oezk_bp2 = new VectorLayer({
 
-    source: new VectorSource({
-
-      url: 'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
-      format: new GeoJSON(),
-    }),
+    source: this.source_lw_bp2,
     style: (feature) => {
 
 
-      return this.seen[feature.get('wert')];
+      return this.seen[feature.get('Ökz')];
     }
   });
   view_geo_lw_oezk_bp3 =  new VectorLayer({
    
-    source: new VectorSource({
-      
-      url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
-  
-      format: new GeoJSON(),
-  
-      
-    })
+    source: this.source_lw_bp3
     ,
     style: (feature) => {
 
 
-      return this.seen[feature.get('wert')];
+      return this.seen[feature.get('Ökz')];
     }
   });
   view_geo_lw_oezk_bp1 =  new VectorLayer({
    
-    source: new VectorSource({
-     
-      url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
-  
-      format: new GeoJSON(),
-   
-     
-      
-    }),
+    source: this.source_lw_bp1,
     style: (feature) => {
 
 
-      return this.seen[feature.get('wert')];
+      return this.seen[feature.get('Ökz')];
     }
     
   });
+
+  //Fließgewässerlayer
 view_geo_wk_oezk_bp2 =  new VectorLayer({
    
-  source: new VectorSource({
-  
-    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp2&maxFeatures=50&outputFormat=application%2Fjson',
-
-    format: new GeoJSON(), }),
+  source: this.source_rw_bp2,
   style: (feature) => {
 
 
-    return this.fgw[feature.get('wert')];
+    return this.fgw[feature.get('Ökz')];
   }
   
 });
 view_geo_wk_oezk_bp3 =  new VectorLayer({
    
-  source: new VectorSource({
-   
-    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp3&maxFeatures=50&outputFormat=application%2Fjson',
-
-    format: new GeoJSON(),
-  
-    
-  }),
+  source: this.source_rw_bp3,
   
   style: (feature) => {
-
-
-    return this.fgw[feature.get('wert')];
-  }
-});
+  return this.fgw[feature.get('Ökz')];
+  }});
 view_geo_wk_oezk_bp1 =  new VectorLayer({
    
-  source: new VectorSource({
-    
-    url:'http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_geo_wk_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
-
-    format: new GeoJSON(),
-    
-   
-  // attributions:'geoserver'
-   
-     
-  }),
+  source: this.source_rw_bp1,
   style: (feature) => {
-
-
-    return this.fgw[feature.get('wert')];
-  }
-
-
-  
-  
-});
+    return this.fgw[feature.get('Ökz')];
+  }});
 
 
 
@@ -245,6 +227,7 @@ startbp2(){
   this.map.removeLayer( this.view_geo_wk_oezk_bp3);
   this.map.removeLayer( this.view_geo_wk_oezk_bp1);
   this.map.addLayer(this.view_geo_wk_oezk_bp2);
+  
   this.map.removeLayer( this.view_geo_lw_oezk_bp3);
   this.map.removeLayer( this.view_geo_lw_oezk_bp1);
   this.map.addLayer(this.view_geo_lw_oezk_bp2);
@@ -253,6 +236,7 @@ startbp3(){
   this.map.removeLayer( this.view_geo_wk_oezk_bp2)
   this.map.removeLayer( this.view_geo_wk_oezk_bp1)
   this.map.addLayer(this.view_geo_wk_oezk_bp3);
+
   this.map.removeLayer( this.view_geo_lw_oezk_bp2)
   this.map.removeLayer( this.view_geo_lw_oezk_bp1)
   this.map.addLayer(this.view_geo_lw_oezk_bp3);
@@ -262,35 +246,70 @@ startbp3(){
 
 
   ngOnInit(): void {
-    
+
+//     const resolutions = [];
+// const matrixIds = [];
+// const proj3857 = getProjection('EPSG:3857');
+// const maxResolution = getWidth(proj3857.getExtent()) / 256;
+
+// for (let i = 0; i < 20; i++) {
+//   matrixIds[i] = i.toString();
+//   resolutions[i] = maxResolution / Math.pow(2, i);
+// }
+
+//     const tileGrid = new WMTSTileGrid({
+//       origin: [-20037508, 20037508],
+//       resolutions: resolutions,
+//       matrixIds: matrixIds,
+//     });
     const status = document.getElementById('status');
-    //  const container = document.getElementById('status');
-    // const content = document.getElementById('popup-content');
-    // const closer = document.getElementById('popup-closer');
-    // const overlay = new Overlay({
-    //    element:  status,
-    //   autoPan: true
+    // const ign_source = new WMTS({
+    //   url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap',
+    //   layer: 'ne:de_basemapde_web_raster_grau',
+    //   matrixSet: 'GLOBAL_WEBMERCATOR',
+    //   format: 'image/png',
+    //   projection: proj3857,
+    //   tileGrid: tileGrid,
+    //   style: '',
+    //   // attributions:''
+    //     // '<a href="https://www.ign.fr/" target="_blank">' +
+    //     // '<img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" title="Institut national de l\'' +
+    //     // 'information géographique et forestière" alt="IGN"></a>'
+        
     // });
- 
+    
+
+    var view = new View({
+      center: [0, 0],
+      zoom: 2
+    });
+
+    
+    let popup = new Overlay({
+      element: document.getElementById('popup'), 
+     
+    });
     this.map = new Map({
       //  overlays: [overlay],
       // controls: defaultControls().extend([this.mousePositionControl]),
       layers: [
+        
         new TileLayer({
-          source: new OSM(),
-          opacity: 0.7,
+          // extent: [-13884991, 2870341, -7455066, 6338219],
+          source: this.sourceBasemap,
         }),
         
+        
+        
+        
+        
+        // new TileLayer({
+        //   source: ign_source,//new OSM(),
+        //   opacity: 0.7,
+        // }),
+        
       ], 
-      // layers: [
-      //   new VectorLayer({
-      //     source: new VectorSource({
-      //       format: new GeoJSON(),
-      //       url:'http://localhost:8080/geoserver/b/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=b%3ACALC_LWBODY_WK_DEBE_polygon&maxFeatures=50&outputFormat=application%2Fjson',
-      //       // url: 'http://localhost:8080/geoserver/b/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=b%3ACALC_LWBODY_WK_DEBE_polygon&maxFeatures=50&outputFormat=text%2Fjavascript',
-      //     }),
-      //   }),
-      // ],
+    
      
       target: 'ol-map',
       view: new View({
@@ -300,7 +319,14 @@ startbp3(){
    
    
     });
-   
+
+  //  this.map.setView(view);
+   this.map.addOverlay(popup);
+  
+
+  var container = document.getElementById('popup');
+  
+
     const selectStyle = new Style({
       fill: new Fill({
         color: '#eeeeee',
@@ -311,7 +337,7 @@ startbp3(){
       }),
     });
     
-    // const status = document.getElementById('status');
+  
     
     let selected = null;
     this.map.on('pointermove', function (e) {
@@ -323,26 +349,35 @@ startbp3(){
     
        this.forEachFeatureAtPixel(e.pixel, function (f) {
 
-        // this.coordinate = e.coordinate; 
-        // const hdms = toStringHDMS(toLonLat(coordinate));
+        
         
         selected = f;
         selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
         f.setStyle(selectStyle);
         return true;
       });
-    
+      container.innerHTML ='';
       if (selected) {
-        status.innerHTML = selected.get('wk_name')+" ("+selected.get('jahr')+"): " +selected.get('wert')+ "<br>" +"Makrophten:"+ "<br>" +"Diatomeen:"+ "<br>" +"Phytoplankton:"+ "<br>" +"MZB:"+ "<br>" +"Fische:";
+        container.innerHTML =  selected.get('wk_name')+" ("+selected.get('jahr')+") Ökologischer Zustand: " + + selected.get('Ökz')+"<br>"+
+        
+        "<table border=2> <tr ><th font-weight=normal>Makrophten</th> <th>Diatomeen</th><th>Phytoplankton</th><th>Makrozoobenthos</th><th>Fische</th></tr>" +
+         "<tr> <td align=center>" + selected.get('Ökz_tk_mp')+"</td><td align=center>" + selected.get('Ökz_tk_dia')+"</td> <td align=center>" + selected.get('Ökz_qk_p')+"</td><td align=center>" 
+         + selected.get('Ökz_qk_mzb')+"</td> <td align=center>" + selected.get('Ökz_qk_f')+"</td></tr></table/"
+        
+       console.log(container.innerHTML)
+        var coordinate = e.coordinate;
        
+        popup.setPosition(coordinate);
+        popup.setOffset([10,2]);
+       // displayFeatureInfo(e.pixel, coordinate);
       } else {
-        status.innerHTML = '&nbsp;';
+         status.innerHTML = '&nbsp;';
+        container.innerHTML == status.innerHTML;
+        popup.setPosition([0,0]);
+        
       }
     });
  
-    
-  
-    
     
   }
 
