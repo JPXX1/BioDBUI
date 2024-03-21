@@ -1,0 +1,47 @@
+
+<span>
+ 
+    <div style="margin-left:200px">
+        <button mat-button id="mpButton" [matMenuTriggerFor]="messstellen" >Messstellen</button>
+        <mat-menu #messstellen="matMenu" xPosition="after">
+      <!-- <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button> -->
+      <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
+      <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
+    </mat-menu>
+      
+      <button mat-button id="mpButton" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
+      <mat-menu #wasserkoerper="matMenu" xPosition="after">
+      <!-- <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
+      <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">ausblenden</button> -->
+    </mat-menu>
+  
+  
+     
+  
+      <button mat-button [matMenuTriggerFor]="gewaesser">Gewässer</button>
+      <mat-menu #gewaesser="matMenu" xPosition="before">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
+  
+  
+      <button mat-button [matMenuTriggerFor]="probenehmer">Probenehmer</button>
+      <mat-menu #probenehmer="matMenu" xPosition="after">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
+      <button mat-button [matMenuTriggerFor]="taxaliste">Taxaliste</button>
+      <mat-menu #taxaliste="matMenu" xPosition="after">
+        <button mat-menu-item>Item 1</button>
+        <!-- <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button> -->
+      </mat-menu>
+      
+      <button mat-button [matMenuTriggerFor]="nutzer">Nutzer</button>
+      <mat-menu #nutzer="matMenu" xPosition="after">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
+      </div>
+      </span>
+
+      <app-stamm-messstellen ></app-stamm-messstellen>

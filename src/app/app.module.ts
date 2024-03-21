@@ -30,6 +30,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatTableModule} from '@angular/material/table'; 
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MonitoringComponent} from './monitoring/monitoring/monitoring.component'; 
+import { StammdatenComponent } from './stammdaten/stammdaten.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatRadioModule} from '@angular/material/radio';
 import { UebersichtTabelleComponent } from './monitoring/uebersicht-tabelle/uebersicht-tabelle.component';
@@ -38,21 +39,27 @@ import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-
 import {MatSliderModule} from '@angular/material/slider';
 import { MapComponent } from './map/map.component';
 import { MonitoringkarteComponent } from './monitoringkarte/monitoringkarte.component';
+import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 const routes: Routes = [
 	{ path: 'monitoringkarte', component: MonitoringkarteComponent },
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
 	{ path: 'datenimport', component: FileUploadComponent },
 	{ path: 'monitoring', component: MonitoringComponent },
+	{ path: 'stammdaten', component: StammdatenComponent },
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent,    
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent,    
 ], 
 imports: [ MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
-	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule 
+	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
+    ReactiveFormsModule,MatProgressSpinnerModule
 ], 
 providers: [SelectjahrComponent], 
 bootstrap: [AppComponent] 
