@@ -6,6 +6,8 @@ import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp
 import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebersicht.service';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
+import { StammdatenService } from 'src/app/services/stammdaten.service';
+
 
 
 @Component({
@@ -14,6 +16,7 @@ import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
   styleUrls: ['./monitoring.component.css']
 })
 export class MonitoringComponent implements OnInit{
+ 
   // public wkUebersicht: WkUebersicht[] = [];//Wasserkoerper
   FilterwkUebersicht: WkUebersicht[] = [];
   public mstMakrophyten:MstMakrophyten[]=[];//TaxaMP
@@ -31,7 +34,7 @@ export class MonitoringComponent implements OnInit{
   min:number=2010;
   max:number=2026; 
   constructor(private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
-    private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { 
+    private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
 	}
 
 
@@ -146,7 +149,13 @@ async handleMZBClick(){ //Taxadaten MZB
     console.log(this.props);
     this.getButtonAktivColorMP();
   }
+  async  buttonstamm(){
 
+ await this.stammdatenService.start();
+ console.log (this.stammdatenService.mst);
+
+ console.log (this.stammdatenService.messstellenarray);
+  }
   getButtonAktivColorMP() {
     const el = document.getElementById('mpButton');
     this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  

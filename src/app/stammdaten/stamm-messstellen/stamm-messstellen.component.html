@@ -1,9 +1,7 @@
 <div style="margin-bottom: 20px">
     <mat-card>
       <h3>
-        "If you found this example helpful, why not spread the knowledge? Give it
-        an upvote on StackOverflow so others can benefit too! Your support makes a
-        difference in building a helpful community. 🚀"
+      
       </h3>
     </mat-card>
   </div>
@@ -40,7 +38,7 @@
           class="mat-elevation-z8"
         >
           <!-- Position Column -->
-          <ng-container matColumnDef="position">
+          <ng-container matColumnDef="id_mst">
             <th mat-header-cell *matHeaderCellDef>No.</th>
             <td
               mat-cell
@@ -51,39 +49,16 @@
                 <input
                   matInput
                   type="text"
-                  formControlName="position"
+                  formControlName="id_mst"
                   [readonly]="true"
                 />
               </mat-form-field></td
           ></ng-container>
   
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              [formGroup]="element"
-            >
-              <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-              <mat-form-field
-                style="width: 70px"
-                [appearance]="VOForm.get('VORows').value[i].isEditable? 'fill' : 'outline'"
-              >
-                <input
-                  matInput
-                  type="text"
-                  formControlName="name"
-                  [readonly]="VOForm.get('VORows').value[i].isEditable"
-                />
-              </mat-form-field>
-              <!-- </span> -->
-            </td>
-          </ng-container>
-  
+       
           <!-- Weight Column -->
-          <ng-container matColumnDef="weight">
-            <th mat-header-cell *matHeaderCellDef>Weight</th>
+          <ng-container matColumnDef="namemst">
+            <th mat-header-cell *matHeaderCellDef>Messstelle</th>
             <td
               mat-cell
               *matCellDef="let element; let i = index"
@@ -92,43 +67,57 @@
               <!-- [appearance]="true ? 'outline': 'fill'" -->
               <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
               <mat-form-field
-                style="width: 70px"
+                style="width: 100px"
                 [appearance]="VOForm.get('VORows').value[i].isEditable? 'fill' : 'outline'"
               >
                 <input
                   matInput
                   type="text"
-                  formControlName="weight"
+                  formControlName="namemst"
                   [readonly]="VOForm.get('VORows').value[i].isEditable"
                 />
               </mat-form-field>
               <!-- </span> -->
             </td>
           </ng-container>
+  <!-- Weight Column -->
+  <ng-container matColumnDef="ortslage">
+    <th mat-header-cell *matHeaderCellDef>Lagebeschreibung</th>
+    <td
+      mat-cell
+      *matCellDef="let element; let i = index"
+      [formGroup]="element"
+    >
+      <!-- [appearance]="true ? 'outline': 'fill'" -->
+      <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
+      <mat-form-field
+        style="width: 70px"
+        [appearance]="VOForm.get('VORows').value[i].isEditable? 'fill' : 'outline'"
+      >
+        <input
+          matInput
+          type="text"
+          formControlName="ortslage"
+          [readonly]="VOForm.get('VORows').value[i].isEditable"
+        />
+      </mat-form-field>
+      <!-- </span> -->
+    </td>
+  </ng-container>
+         
   
-          <!-- Symbol Column -->
-          <ng-container matColumnDef="symbol">
-            <th mat-header-cell *matHeaderCellDef>Symbol</th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              [formGroup]="element"
-            >
-              <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-              <mat-form-field
-                style="width: 70px"
-                [appearance]="VOForm.get('VORows').value[i].isEditable? 'fill' : 'outline'"
-              >
-                <input
-                  matInput
-                  type="text"
-                  formControlName="symbol"
-                  [readonly]="VOForm.get('VORows').value[i].isEditable"
-                />
-              </mat-form-field>
-              <!-- </span> -->
-            </td>
-          </ng-container>
+  <!-- <ng-container matColumnDef="wk">
+    <th mat-header-cell *matHeaderCellDef>Wasserköper</th>
+    <td  mat-cell
+    *matCellDef="let element; let i = index"
+    [formGroup]="element">
+      <app-select-wasserkoerper
+      [selectedWK]="wk"></app-select-wasserkoerper>
+    </td>
+  </ng-container> -->
+  
+  <!-- Symbol Column -->
+      
   
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
