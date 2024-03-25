@@ -1,23 +1,13 @@
 table {
-    width: 100%;
-  }
-  
-  .mat-paginator-range-label {
-      display: none;
-  }
-  
-  .mat-form-field {
-    font-size: 14px;
-    width: 100%;
-  }
-  
-  
-  /* Border */
-  .mat-form-field-appearance-outline .mat-form-field-outline {
-    color: rgb(255, 255, 255);
-    /* background-color: white; */
-  }
-  /* Font color */
-  input.mat-input-element {
-    color: rgb(0, 0, 0);
-  }
+  width: 100%;
+}
+.header-table-wk{
+
+  border-style: solid;
+  width: 15%;
+}
+.cell-table-wk{
+  text-align: center;
+  width: 150px;
+  border-color: grey;
+  border-width: 1px;}

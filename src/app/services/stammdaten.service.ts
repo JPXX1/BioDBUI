@@ -9,22 +9,44 @@ export class StammdatenService {
   public messstellenarray: MessstellenStam[];
   public mst:any;
   constructor( private httpClient: HttpClient) {}
+  public wk:any;
 
-
-   start(){
+   start2(kat:Boolean){
 this.callBwUebersicht2();
 console.log(this.mst);
- this.filterMst();
+ this.filterMst(kat);
 console.log(this.mst);
   }
-
+  async start(kat:Boolean){
+    await this.callBwUebersicht();
+    console.log(this.mst);
+    await  this.filterMst(kat);
+    console.log(this.mst);
+      }
   getStammMst(){ 
         
     return this.httpClient.get('http://localhost:3000/stamMst');
     }
    
-
-
+    getWk(){
+      return this.httpClient.get('http://localhost:3000/stamWasserkoerper');
+          
+    }
+    
+     
+   async holeSelectDataWK() {
+    // this.getWk().subscribe(formen_ => {
+		// 	this.wk = formen_;
+		// 	// console.log(this.mst);
+		// 	//return einheiten;
+		// }); 
+      await this.getWk().forEach(formen_ => {
+        this.wk  = formen_;
+        console.log(formen_);
+        // return formen_;
+      });  
+    
+     }
     callBwUebersicht2() {
 
     this.getStammMst().subscribe(mst_ => {
@@ -45,7 +67,7 @@ console.log(this.mst);
   
 
 
-async filterMst(){
+async filterMst(kat:Boolean){
    
   let temp: any = this.mst;
 
@@ -55,23 +77,11 @@ async filterMst(){
     temp.map(async (f) => {
               
         
-       
-        // let messstellenStam={} as MessstellenStam;
-        // messstellenStam.namemst=f.namemst;
-        // messstellenStam.eu_cd_sm=f.eu_cd_sm;
-        // messstellenStam.dia_typ=f.dia_typ;
-        // messstellenStam.fliess=f.fliess;
-        // messstellenStam.hw_etrs=f.hw_etrs;
-        // messstellenStam.rw_etrs=f.rw_etrs;
-        // messstellenStam.id_mst=f.id_mst;
-        // messstellenStam.id_wk=f.id_wk;
-        // messstellenStam.idgewaesser=f.idgewaesser;
-        // messstellenStam.mp_typ=f.mp_typ;
-        // messstellenStam.natürlich=f.natürlich;
+     
 
+      if (f.see===kat)
 
-
-        this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,ortslage:f.ortslage,see:f.see,fliess:f.fliess,
+        this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,fliess:f.fliess,
           natürlich:f.natürlich,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
           dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs});
        

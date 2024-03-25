@@ -1,5 +1,5 @@
 import { Component,Input } from '@angular/core';
-import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
+
 import { HttpClient,HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-select-wasserkoerper',
@@ -7,7 +7,7 @@ import { HttpClient,HttpParams } from '@angular/common/http';
   styleUrls: ['./select-wasserkoerper.component.css']
 })
 export class SelectWasserkoerperComponent {
-  @Input() selectedWK: number;
+  @Input() selectedWK: string;
   wk:any=[];
   constructor(private httpClient: HttpClient) { }
 
@@ -28,8 +28,8 @@ getWk(){
    }
 
   onChange(newValue) {
-    console.log(newValue);
-    this.selectedWK = newValue;
+    console.log(newValue.wk_name);
+    this.selectedWK = newValue.wk_name;
    
 }
 }

@@ -4,7 +4,8 @@
     <div style="margin-left:200px">
         <button mat-button id="mpButton" [matMenuTriggerFor]="messstellen" >Messstellen</button>
         <mat-menu #messstellen="matMenu" xPosition="after">
-      <!-- <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button> -->
+          <button mat-menu-item (click)="fgwMst()">FließgewässerMst</button>
+          <button mat-menu-item (click)="seeMst()">SeegewässerMst</button>
       <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
       <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
     </mat-menu>
@@ -43,5 +44,8 @@
       </mat-menu>
       </div>
       </span>
+      <div class="card" *ngIf="MessstellenAnzeige == true" style="vertical-align: top;">
+      <app-stamm-messstellen [messstellenStam]="messstellenStam1"></app-stamm-messstellen>
+      </div>
 
-      <app-stamm-messstellen ></app-stamm-messstellen>
+      

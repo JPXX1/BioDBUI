@@ -1,9 +1,9 @@
-<p>    <mat-select
-    placeholder="4. Probenehmer" 
+<p>      <mat-select [(value)]="selectedWK" style="height: 80px;"
+     
         name="year" [(ngModel)]="selectedWK" (ngModelChange)="onChange($event)" class="example-WK">
      
      
-      <mat-option *ngFor="let p of wk" [value]="wk.id">
+      <mat-option *ngFor="let p of wk" [value]="wk.wk_name">
         {{p.wk_name}}
       </mat-option>
 

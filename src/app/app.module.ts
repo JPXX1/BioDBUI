@@ -44,6 +44,8 @@ import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SelectWasserkoerperComponent } from './select/select-wasserkoerper/select-wasserkoerper.component';
+import { EditStammdatenMstComponent } from './stammdaten/edit-stammdaten-mst/edit-stammdaten-mst.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const routes: Routes = [
 	{ path: 'monitoringkarte', component: MonitoringkarteComponent },
@@ -56,14 +58,14 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent,    
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent,    
 ], 
 imports: [MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
-    ReactiveFormsModule,MatProgressSpinnerModule
+    ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule
 ], 
-providers: [SelectjahrComponent], 
+providers: [SelectjahrComponent,StammMessstellenComponent,EditStammdatenMstComponent], 
 bootstrap: [AppComponent] 
 }) 
 
