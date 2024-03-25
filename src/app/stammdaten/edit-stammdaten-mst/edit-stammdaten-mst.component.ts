@@ -5,6 +5,8 @@ import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {WasserkoerperStam} from 'src/app/interfaces/wasserkoerper-stam';
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
+
 @Component({
   selector: 'app-edit-stammdaten-mst',
   templateUrl: './edit-stammdaten-mst.component.html',
@@ -13,7 +15,10 @@ import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 export class EditStammdatenMstComponent {
   wk:any;
   formInstance: FormGroup;
-  wk_name:string;
+  wk_name1:string;
+  dropdownList:WasserkoerperSelect[]=[];
+  selectedItems:WasserkoerperSelect[]=[];
+  dropdownSettings:IDropdownSettings = {};
  
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
@@ -44,15 +49,49 @@ export class EditStammdatenMstComponent {
       "rw_etrs": new FormControl('', Validators.required)
       
     });
+    // {} as Uebersicht;
+    let mw1: WasserkoerperSelect={} as WasserkoerperSelect;
+    mw1.id=data.mststam.id_wk;
+    mw1.wk_name=data.mststam.wk_name;
+    this.selectedItems.push(mw1);
+    this.wk_name1=mw1.wk_name;
+    this.dropdownSettings = {
+      singleSelection: true,
+      idField: 'id',
+      textField: 'wk_name',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 20,
+      allowSearchFilter: true,
+     
+    };
+
+    // this.wk_name1= data.mststam.wk_name;
+    this.wk=data.wkstam;
+    for (let i = 0, l = this.wk.length; i < l; i += 1) {
+			let mw: WasserkoerperSelect={} as WasserkoerperSelect;
+
+      mw.id=this.wk[i].id;
+      mw.wk_name=this.wk[i].wk_name;
+			
+      this.dropdownList.push(mw);
+			
+    }
+    // this.formInstance.setValue(data.mststam.wk_name);
+     
     
-    this.wk_name= data.mststam.wk_name;
-     
-
-
-    this.formInstance.setValue(data.mststam);
-     
-    this.wk=data.wkstam
-       console.log (this.wk);       
+      //  console.log (this.wk);  
+       
+      //  this.formInstance.get('wk_name').setValue(this.wk_name1);  
+  
+ }
+ onItemSelect(item: any) {
+  console.log(item);
+}
+onSelectAll(items: any) {
+  console.log(items);
+}
+}
                 // ngOnInit(): void {
               
                 // }
@@ -60,7 +99,7 @@ export class EditStammdatenMstComponent {
                 // save(): void {
                 //  // this.dialogRef.close(Object.assign(new MessstellenStam(), this.formInstance.value));
                 // }
-              } 
+              
             
             
 //               ngOnInit(): void {
@@ -74,6 +113,8 @@ export class EditStammdatenMstComponent {
 //                 console.log( this.wk);
               
                 
-//             }        
-            
- }
+//                    
+interface WasserkoerperSelect {
+
+  id:number;
+  wk_name: string;}

@@ -1,6 +1,6 @@
 
 import { NgModule } from '@angular/core'; 
-import { map } from 'rxjs/operators';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
  import { BrowserModule } from '@angular/platform-browser'; 
  import {MatToolbarModule} from '@angular/material/toolbar'; 
 import { RouterModule, Routes } from '@angular/router';
@@ -60,7 +60,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent,    
 ], 
-imports: [MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [ NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule

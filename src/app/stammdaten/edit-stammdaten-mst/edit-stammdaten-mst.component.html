@@ -29,6 +29,25 @@
       </mat-form-field>
     </div>
     <div class="mt-5">
+
+     
+      <!-- <mat-label>Wasserkörper *</mat-label> -->
+      
+      <ng-multiselect-dropdown 
+      
+      [placeholder]="wk_name1"
+  [settings]="dropdownSettings"
+  [data]="dropdownList"
+  [(ngModel)]="selectedItems"
+  (onSelect)="onItemSelect($event)"
+  (onSelectAll)="onSelectAll($event)"
+  
+     >
+		</ng-multiselect-dropdown>
+
+   
+  </div>
+    <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Rechtswert (etrs) *</mat-label>
         <input matInput type="number" name="rw_etrs" formControlName="rw_etrs" />
@@ -41,37 +60,16 @@
     
   
     
-    <div class="mt-5">
-
-     
-        <mat-label>Wasserkörper *</mat-label>
-        
-        
-          <mat-form-field>
-             <mat-select  name="wk_name" [value]="wk_name" formControlName="wk_name">
+    
+          <!-- <mat-form-field>
+             <mat-select  name="wk_name" (placeholder)="wk_name1" (ngModelChange)="onChangeWK($event)" formControlName="wk_name" >
               <mat-option *ngFor="let p of wk" [value]="wk.wk_name">
                 {{p.wk_name}}
               </mat-option>
             </mat-select>
           </mat-form-field>
-     </div>
-      
+       -->
 
-    <!-- <div class="mt-5">
-
-      <mat-form-field class="fullWidth" appearance="outline">
-        <mat-label>Wasserkörper *</mat-label>
-        <mat-select name="wk_name" formControlName="wk_name">
-          <mat-option value="Software Developer">Software Developer</mat-option>
-          <mat-option value="Physician">Physician</mat-option>
-          <mat-option value="Dentist">Dentist</mat-option>
-          <mat-option value="Nurse">Nurse</mat-option>
-        </mat-select>
-        <mat-error *ngIf="formInstance.controls['wk_name']?.errors?.['required']">field required
-        </mat-error>
-      </mat-form-field>
-
-    </div> -->
   </form>
 </div>
 
