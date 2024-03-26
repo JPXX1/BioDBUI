@@ -1,5 +1,5 @@
 import { Component, Inject, Input } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
@@ -17,44 +17,67 @@ export class EditStammdatenMstComponent {
   formInstance: FormGroup;
   wk_name1:string;
   dropdownList:WasserkoerperSelect[]=[];
-  selectedItems:WasserkoerperSelect[]=[];
+  //selectedItems:WasserkoerperSelect[]=[];
   dropdownSettings:IDropdownSettings = {};
  
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
   constructor(public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel) {
+    @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel,private fb: FormBuilder) {
 
 
 
+      this.formInstance = this.fb.group({
+       id_mst: ['', Validators.required],
+       namemst: ['', Validators.required],
+      idgewaesser: ['', Validators.required],
+      gewaessername: ['', Validators.required],
+      ortslage: ['', Validators.required],
+      see: ['', Validators.required],
+      fliess: ['', Validators.required],
+      natürlich: ['', Validators.required],
+      wrrl_typ: ['', Validators.required],
+      id_wk: ['', Validators.required],
+      wk_name: ['', Validators.required],
+      eu_cd_sm: ['', Validators.required],
+      dia_typ: ['', Validators.required],
+      pp_typ: ['', Validators.required],
+      mp_typ: ['', Validators.required],
+      hw_etrs: ['', Validators.required],
+      rw_etrs: ['', Validators.required],
+       
+      });
 
-
-    this.formInstance = new FormGroup({
-      "id_mst":  new FormControl('', Validators.required),
-      "namemst": new FormControl('', Validators.required),
-      "idgewaesser": new FormControl('', Validators.required),
-      "gewaessername": new FormControl('', Validators.required),
-      "ortslage": new FormControl('', Validators.required),
-      "see": new FormControl('', Validators.required),
-      "fliess": new FormControl('', Validators.required),
-      "natürlich": new FormControl('', Validators.required),
-      "wrrl_typ": new FormControl('', Validators.required),
-      "mp_typ": new FormControl('', Validators.required),
-      "id_wk": new FormControl('', Validators.required),
-      "wk_name": new FormControl('', Validators.required),
-      "eu_cd_sm": new FormControl('', Validators.required),
-      "dia_typ": new FormControl('', Validators.required),
-      "pp_typ": new FormControl('', Validators.required),
-      "hw_etrs": new FormControl('', Validators.required),
-      "rw_etrs": new FormControl('', Validators.required)
+    // this.formInstance = new FormGroup({
+      // "id_mst":  new FormControl('', Validators.required),
+      // "namemst": new FormControl('', Validators.required),
+      // "idgewaesser": new FormControl('', Validators.required),
+      // "gewaessername": new FormControl('', Validators.required),
+      // "ortslage": new FormControl('', Validators.required),
+      // "see": new FormControl('', Validators.required),
+      // "fliess": new FormControl('', Validators.required),
+      // "natürlich": new FormControl('', Validators.required),
+      // "wrrl_typ": new FormControl('', Validators.required),
+      // "mp_typ": new FormControl('', Validators.required),
+      // "id_wk": new FormControl('', Validators.required),
+      // "wk_name": new FormControl('', Validators.required),
+      // "eu_cd_sm": new FormControl('', Validators.required),
+      // "dia_typ": new FormControl('', Validators.required),
+      // "pp_typ": new FormControl('', Validators.required),
+      // "hw_etrs": new FormControl('', Validators.required),
+      // "rw_etrs": new FormControl('', Validators.required)
       
-    });
+    // });
+
+    
     // {} as Uebersicht;
     let mw1: WasserkoerperSelect={} as WasserkoerperSelect;
     mw1.id=data.mststam.id_wk;
     mw1.wk_name=data.mststam.wk_name;
-    this.selectedItems.push(mw1);
+    //this.selectedItems.push(mw1);
     this.wk_name1=mw1.wk_name;
+
+    this.formInstance.setValue(data.mststam);
     this.dropdownSettings = {
       singleSelection: true,
       idField: 'id',
@@ -92,6 +115,7 @@ onSelectAll(items: any) {
   console.log(items);
 }
 }
+
                 // ngOnInit(): void {
               
                 // }

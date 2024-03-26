@@ -47,9 +47,13 @@ this.arraybuendel=({mststam:person,wkstam:wk});
 
     // person.wknamen=(this.stammdatenService.wk);
     const dialogRef = this.dialog.open(EditStammdatenMstComponent, {
-      width: '400px',
+      width: '500px',
       data: this.arraybuendel
     });
+    // const dialogRef = this.dialog.open(EditStammdatenMstComponent, {
+    //   width: '400px',
+    //   data: this.arraybuendel
+    // });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

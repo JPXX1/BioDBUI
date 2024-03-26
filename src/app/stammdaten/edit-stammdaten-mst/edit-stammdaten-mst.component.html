@@ -7,9 +7,7 @@
         <mat-label>Messstellenname *</mat-label>
         <input matInput type="text" 
          formControlName="namemst">
-        <mat-error *ngIf="
-        formInstance.controls['namemst']?.errors?.['required']">field required</mat-error>
-      </mat-form-field>
+        </mat-form-field>
     </div>
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
@@ -17,16 +15,14 @@
         <input matInput type="text" 
        formControlName="ortslage" >
        
-        <mat-error *ngIf="
-        formInstance.controls['namemst']?.errors?.['required']">field required</mat-error>
+        
       </mat-form-field>
     </div>
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Hochwert (etrs) *</mat-label>
         <input matInput type="number"  formControlName="hw_etrs"/>
-        <mat-error *ngIf="
-        formInstance.controls['hw_etrs']?.errors?.['required']">field required</mat-error>
+       
       </mat-form-field>
     </div>
     <div class="mt-5">
@@ -39,7 +35,7 @@
       [placeholder]="wk_name1"
   [settings]="dropdownSettings"
   [data]="dropdownList"
-  [(ngModel)]="selectedItems"
+  
   (onSelect)="onItemSelect($event)"
   (onSelectAll)="onSelectAll($event)"
   
@@ -52,24 +48,11 @@
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Rechtswert (etrs) *</mat-label>
         <input matInput type="number" formControlName="rw_etrs"/>
-        <mat-error *ngIf="
-        formInstance.controls['rw_etrs']?.errors?.['required']">field required</mat-error>
+        
       </mat-form-field>
     </div>
     
-    
-    
-  
-    
-    
-          <!-- <mat-form-field>
-             <mat-select  name="wk_name" (placeholder)="wk_name1" (ngModelChange)="onChangeWK($event)" formControlName="wk_name" >
-              <mat-option *ngFor="let p of wk" [value]="wk.wk_name">
-                {{p.wk_name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-       -->
+
 
   </form>
 </div>
