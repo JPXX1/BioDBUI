@@ -6,7 +6,7 @@
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Messstellenname *</mat-label>
         <input matInput type="text" 
-        name="namemst" formControlName="namemst">
+         formControlName="namemst">
         <mat-error *ngIf="
         formInstance.controls['namemst']?.errors?.['required']">field required</mat-error>
       </mat-form-field>
@@ -15,7 +15,8 @@
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Ortslage *</mat-label>
         <input matInput type="text" 
-        name="ortslage" formControlName="ortslage">
+       formControlName="ortslage" >
+       
         <mat-error *ngIf="
         formInstance.controls['namemst']?.errors?.['required']">field required</mat-error>
       </mat-form-field>
@@ -23,7 +24,7 @@
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Hochwert (etrs) *</mat-label>
-        <input matInput type="number" name="hw_etrs" formControlName="hw_etrs" />
+        <input matInput type="number"  formControlName="hw_etrs"/>
         <mat-error *ngIf="
         formInstance.controls['hw_etrs']?.errors?.['required']">field required</mat-error>
       </mat-form-field>
@@ -50,7 +51,7 @@
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Rechtswert (etrs) *</mat-label>
-        <input matInput type="number" name="rw_etrs" formControlName="rw_etrs" />
+        <input matInput type="number" formControlName="rw_etrs"/>
         <mat-error *ngIf="
         formInstance.controls['rw_etrs']?.errors?.['required']">field required</mat-error>
       </mat-form-field>
