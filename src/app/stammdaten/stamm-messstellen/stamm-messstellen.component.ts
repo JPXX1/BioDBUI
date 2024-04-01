@@ -1,8 +1,13 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input,Output, EventEmitter,ViewChild} from '@angular/core';
+import { Sort} from '@angular/material/sort';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {EditStammdatenMstComponent} from '../edit-stammdaten-mst/edit-stammdaten-mst.component';
 import { MatDialog } from '@angular/material/dialog';
+
+
+
+
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 
 // ];
@@ -14,6 +19,11 @@ import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 
 export class StammMessstellenComponent {
   @Input()  messstellenStam: MessstellenStam[] = []; 
+  @Output() newData =new EventEmitter<MessstellenStam>();
+  @Output() sortData1=new EventEmitter<Sort>(); 
+
+ 
+
 arraybuendel:ArraybuendelSel;
   
   displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','actions'];
@@ -24,8 +34,12 @@ arraybuendel:ArraybuendelSel;
    
   }  
 
-     
-      
+  sortData(sort:Sort){
+
+    this.sortData1.emit(sort);
+
+  }
+
      
   delete(person: MessstellenStam)
  {}
@@ -57,9 +71,12 @@ this.arraybuendel=({mststam:person,wkstam:wk});
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-       // this.personsService.edit(result);
-      }
-    });
+
+
+        this.newData.emit(result);
+
+       
+    }});
   }
   
   

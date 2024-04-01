@@ -39,6 +39,7 @@ import { MakorphytenTabelleComponent } from './monitoring/makorphyten-tabelle/ma
 import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-uebersicht/makrophyten-mst-uebersicht.component';
 import {MatSliderModule} from '@angular/material/slider';
 import { MapComponent } from './map/map.component';
+import { MatSortModule} from '@angular/material/sort';
 import { MonitoringkarteComponent } from './monitoringkarte/monitoringkarte.component';
 import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -60,7 +61,7 @@ declarations: [
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent,    
 ], 
-imports: [ NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule

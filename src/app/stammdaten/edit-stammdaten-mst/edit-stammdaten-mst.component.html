@@ -59,7 +59,7 @@
 
 <div class="mt-5" mat-dialog-actions>
   <button mat-raised-button color="primary" 
-  [disabled]="formInstance.dirty && formInstance.errors" 
+  [disabled]="formInstance.dirty && formInstance.errors" (click)="save()"
     cdkFocusInitial>Yes</button>
   <button mat-raised-button mat-dialog-close>No</button>
 

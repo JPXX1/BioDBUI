@@ -114,15 +114,20 @@ export class EditStammdatenMstComponent {
 onSelectAll(items: any) {
   console.log(items);
 }
+
+save(): void {
+ 
+//  console.log(this.formInstance.value)
+ this.dialogRef.close( this.formInstance.value);
+}
 }
 
                 // ngOnInit(): void {
               
                 // }
               
-                // save(): void {
-                //  // this.dialogRef.close(Object.assign(new MessstellenStam(), this.formInstance.value));
-                // }
+               
+  
               
             
             

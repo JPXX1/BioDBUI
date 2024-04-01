@@ -31,7 +31,7 @@ export class MonitoringComponent implements OnInit{
   public props: any[]=[];
   value = '';valueJahr = '';
   Artvalue = '';
-  min:number=2010;
+  min:number=2008;
   max:number=2026; 
   constructor(private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 

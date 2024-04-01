@@ -3,36 +3,36 @@
 
   
 <div class="mat-elevation-z8 table">
-	<table  cdk-table [dataSource]="messstellenStam" class="table">
+	<table  mat-table [dataSource]="messstellenStam" class="table" matSort (matSortChange)="sortData($event)">
 
-		<ng-container cdkColumnDef="id_mst">
-		  <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-wk"> Wasserkörper </th>
-		  <td  cdk-cell *cdkCellDef="let element" class="spalte-wk"> {{element.id_mst}} 
+		<ng-container matColumnDef="id_mst">
+		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id_mst" class="header-table-wk"> Mst-ID </th>
+		  <td  mat-cell *matCellDef="let element" class="spalte-wk"> {{element.id_mst}} 
 			</td>
 			
 		</ng-container>
-		<ng-container cdkColumnDef="namemst">
-			<th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr" > namemst</th>
-			<td  cdk-cell *cdkCellDef="let element"class="spalte-jahr"> {{element.namemst}} 
+		<ng-container matColumnDef="namemst">
+			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="namemst" class="header-table-jahr" > Messstelle</th>
+			<td  mat-cell *matCellDef="let element"class="spalte-jahr"> {{element.namemst}} 
 			  </td>
 			  
 		  </ng-container>
 		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
 		<!-- Weight Column -->
-		<ng-container cdkColumnDef="ortslage" >
-			<th  cdk-header-cell *cdkHeaderCellDef class="header-table"> ortslage </th>
-			<td  cdk-cell *cdkCellDef="let element" class="Zelle"> {{element.ortslage}} </td>
+		<ng-container matColumnDef="ortslage" >
+			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="ortslage" class="header-table"> Ortslage </th>
+			<td  mat-cell *matCellDef="let element" class="Zelle"> {{element.ortslage}} </td>
 			
 		  </ng-container>
-      <ng-container cdkColumnDef="gewaessername" >
-        <th  cdk-header-cell *cdkHeaderCellDef class="header-table"> gewaessername </th>
-        <td  cdk-cell *cdkCellDef="let element" class="Zelle"> {{element.gewaessername}} </td>
+      <ng-container matColumnDef="gewaessername" >
+        <th  mat-header-cell *matHeaderCellDef  mat-sort-header="gewaessername" class="header-table"> Gewässer</th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.gewaessername}} </td>
         
         </ng-container>
         	
-        <ng-container cdkColumnDef="wk_name" >
-          <th  cdk-header-cell *cdkHeaderCellDef class="header-table"> wk_name </th>
-          <td  cdk-cell *cdkCellDef="let element" class="Zelle"> {{element.wk_name}} </td>
+        <ng-container matColumnDef="wk_name" >
+          <th  mat-header-cell *matHeaderCellDef   mat-sort-header="wk_name" class="header-table"> Wasserkörper </th>
+          <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.wk_name}} </td>
           
           </ng-container>
           <ng-container [matColumnDef]="'actions'">
@@ -46,8 +46,8 @@
               </button>
             </td>
           </ng-container>
-		  <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-		  <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+		  <tr  mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		  <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
 		 
 	  </table>
 	  

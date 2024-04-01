@@ -17,6 +17,11 @@ console.log(this.mst);
  this.filterMst(kat);
 console.log(this.mst);
   }
+
+
+
+
+
   async start(kat:Boolean){
     await this.callBwUebersicht();
     console.log(this.mst);

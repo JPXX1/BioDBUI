@@ -26,6 +26,19 @@ export class MapComponent implements OnInit {
  
   
   constructor(private Farbebewertg: FarbeBewertungService) { }
+  source_landesgrenze:TileWMS= new TileWMS({
+    url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Alandesgrenze&bbox=13.088347434997559%2C52.3382453918457%2C13.761159896850586%2C52.67551040649414&width=768&height=384&srs=EPSG%3A4326&styles=&format=application/openlayers',
+    params: {'LAYERS': 'ne:landesgrenze', 'TILED': false},
+    serverType: 'geoserver',
+    // Countries have transparency, so do not fade tiles:
+    transition: 0,
+  });
+  // source_landesgrenze:VectorSource= new VectorSource({
+  // //  url:'https://fbinter.stadt-berlin.de/fb/wfs/data/senstadt/s_wfs_alkis_land?REQUEST=GetCapabilities&SERVICE=wfs',
+  //   url:'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Alandesgrenze&bbox=13.088347434997559%2C52.3382453918457%2C13.761159896850586%2C52.67551040649414&width=768&height=384&srs=EPSG%3A4326&styles=&format=application/openlayers',
+  //   format: new GeoJSON(),});
+
+  
   source_lw_bp1:VectorSource=new VectorSource({
     url:'http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson',
     format: new GeoJSON(), });
@@ -46,7 +59,7 @@ export class MapComponent implements OnInit {
     format: new GeoJSON(),});
   sourceBasemap:TileWMS= new TileWMS({
     url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Ade_basemapde_web_raster_grau&bbox=-446461.42518830835%2C5510197.99206421%2C2465866.739975654%2C7912675.880069686&width=768&height=633&srs=EPSG%3A3857&styles=&format=application/openlayers',
-    params: {'LAYERS': '	ne:de_basemapde_web_raster_grau', 'TILED': true},
+    params: {'LAYERS': 'ne:de_basemapde_web_raster_grau', 'TILED': true},
     serverType: 'geoserver',
     // Countries have transparency, so do not fade tiles:
     transition: 0,
@@ -61,6 +74,10 @@ getColor(wert:string){
   map: Map;
   coordinate
   options:String;
+
+ 
+
+  
   public fgw = {
    
     '1': new Style({
@@ -213,6 +230,15 @@ view_geo_wk_oezk_bp1 =  new VectorLayer({
   }});
 
 
+  // view_landegrenze =  new VectorLayer({
+  //   source: this.source_landesgrenze,
+  //   style: {
+  //     'stroke-width': 4.75,
+  //     'stroke-color': 'pink',
+  //     // 'fill-color': 'rgba(100,100,100,0.25)',
+  //   },
+  // });
+
 
 startbp1(){
   this.map.removeLayer( this.view_geo_wk_oezk_bp3)
@@ -240,6 +266,7 @@ startbp3(){
   this.map.removeLayer( this.view_geo_lw_oezk_bp2)
   this.map.removeLayer( this.view_geo_lw_oezk_bp1)
   this.map.addLayer(this.view_geo_lw_oezk_bp3);
+  //this.map.addLayer(this.view_landegrenze);
 }
 
 
@@ -303,10 +330,14 @@ startbp3(){
         
         
         
-        // new TileLayer({
-        //   source: ign_source,//new OSM(),
-        //   opacity: 0.7,
-        // }),
+        new TileLayer({
+          // style: {
+          //       'stroke-width': 4.75,
+          //       'stroke-color': 'pink',
+          //       // 'fill-color': 'rgba(100,100,100,0.25)',
+          //     },
+          source: this.source_landesgrenze,
+        }),
         
       ], 
     
@@ -318,7 +349,9 @@ startbp3(){
       }),
    
    
-    });
+    })
+    
+    ;
 
   //  this.map.setView(view);
    this.map.addOverlay(popup);

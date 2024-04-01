@@ -44,8 +44,12 @@
       </mat-menu>
       </div>
       </span>
-      <div class="card" *ngIf="MessstellenAnzeige == true" style="vertical-align: top;">
-      <app-stamm-messstellen [messstellenStam]="messstellenStam1"></app-stamm-messstellen>
+      <div class="card" *ngIf="MessstellenAnzeige == true" style="vertical-align: top;"> 
+        <mat-form-field>
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyFilterMessstellen($event)" placeholder="" #input>
+        </mat-form-field>
+      <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)" ></app-stamm-messstellen>
       </div>
 
       
