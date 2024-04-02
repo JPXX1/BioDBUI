@@ -42,6 +42,8 @@ export class StammdatenComponent implements OnInit{
           return compare(a.wk_name, b.wk_name, isAsc);
         case 'gewaessername':
           return compare(a.gewaessername, b.gewaessername, isAsc);
+          case 'repraesent':
+          return compare(a.repraesent, b.repraesent, isAsc);
         default:
           return 0;
       }
@@ -142,6 +144,6 @@ applyFilterMessstellen(event: Event) {
 
   
 }}
-function compare(a: number | string, b: number | string, isAsc: boolean) {
+function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

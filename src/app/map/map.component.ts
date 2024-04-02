@@ -325,11 +325,7 @@ startbp3(){
           // extent: [-13884991, 2870341, -7455066, 6338219],
           source: this.sourceBasemap,
         }),
-        
-        
-        
-        
-        
+       
         new TileLayer({
           // style: {
           //       'stroke-width': 4.75,

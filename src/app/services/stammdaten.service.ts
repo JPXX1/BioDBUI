@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessstellenStam } from '../interfaces/messstellen-stam';
+import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,7 @@ import { HttpClient,HttpParams } from '@angular/common/http';
 export class StammdatenService {
   messstellenStam:MessstellenStam;
   public messstellenarray: MessstellenStam[];
+  public meldemst:MeldeMst[];
   public mst:any;
   constructor( private httpClient: HttpClient) {}
   public wk:any;
@@ -77,22 +79,28 @@ async filterMst(kat:Boolean){
   let temp: any = this.mst;
 
   this.messstellenarray =[];
-
+  this.meldemst =[];
   await Promise.all(
     temp.map(async (f) => {
               
         
      
 
-      if (f.see===kat)
+      if (f.see===kat){
 
-        this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,fliess:f.fliess,
-          natürlich:f.natürlich,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
+      //erzeugt Array mit Meldemessstellen
+      if (f.repraesent_mst===true){
+
+        this.meldemst.push({id_mst: f.id_mst, namemst: f.namemst,repraesent:f.repraesent_mst});
+        console.log(f);
+      }
+        this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,repraesent:f.repraesent_mst,melde_mst_str:f.melde_mst_str,
+          melde_mst:f.melde_mst,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
           dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs});
        
         // this.messstellenarray.push(this.messstellenStam);
         // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
-    })
+}})
 )
  console.log (this.messstellenarray);
  

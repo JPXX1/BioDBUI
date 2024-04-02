@@ -2,6 +2,7 @@ import { Component, Inject, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import { MeldeMst } from 'src/app/interfaces/melde-mst';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {WasserkoerperStam} from 'src/app/interfaces/wasserkoerper-stam';
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
@@ -16,16 +17,19 @@ export class EditStammdatenMstComponent {
   wk:any;
   formInstance: FormGroup;
   wk_name1:string;
+  MeldeMst:string;
   dropdownList:WasserkoerperSelect[]=[];
+  dropdownMeldeMst:MeldeMst[]=[]
   //selectedItems:WasserkoerperSelect[]=[];
   dropdownSettings:IDropdownSettings = {};
+  dropdownMeldeSettings:IDropdownSettings = {};
  
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
   constructor(public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel,private fb: FormBuilder) {
 
-
+      
 
       this.formInstance = this.fb.group({
        id_mst: ['', Validators.required],
@@ -34,8 +38,9 @@ export class EditStammdatenMstComponent {
       gewaessername: ['', Validators.required],
       ortslage: ['', Validators.required],
       see: ['', Validators.required],
-      fliess: ['', Validators.required],
-      natürlich: ['', Validators.required],
+      repraesent: ['', Validators.required],
+      melde_mst: ['', Validators.required],
+      melde_mst_str: ['', Validators.required],
       wrrl_typ: ['', Validators.required],
       id_wk: ['', Validators.required],
       wk_name: ['', Validators.required],
@@ -48,35 +53,16 @@ export class EditStammdatenMstComponent {
        
       });
 
-    // this.formInstance = new FormGroup({
-      // "id_mst":  new FormControl('', Validators.required),
-      // "namemst": new FormControl('', Validators.required),
-      // "idgewaesser": new FormControl('', Validators.required),
-      // "gewaessername": new FormControl('', Validators.required),
-      // "ortslage": new FormControl('', Validators.required),
-      // "see": new FormControl('', Validators.required),
-      // "fliess": new FormControl('', Validators.required),
-      // "natürlich": new FormControl('', Validators.required),
-      // "wrrl_typ": new FormControl('', Validators.required),
-      // "mp_typ": new FormControl('', Validators.required),
-      // "id_wk": new FormControl('', Validators.required),
-      // "wk_name": new FormControl('', Validators.required),
-      // "eu_cd_sm": new FormControl('', Validators.required),
-      // "dia_typ": new FormControl('', Validators.required),
-      // "pp_typ": new FormControl('', Validators.required),
-      // "hw_etrs": new FormControl('', Validators.required),
-      // "rw_etrs": new FormControl('', Validators.required)
-      
-    // });
-
-    
-    // {} as Uebersicht;
+   
     let mw1: WasserkoerperSelect={} as WasserkoerperSelect;
     mw1.id=data.mststam.id_wk;
+    
     mw1.wk_name=data.mststam.wk_name;
     //this.selectedItems.push(mw1);
     this.wk_name1=mw1.wk_name;
+    this.MeldeMst=data.mststam.melde_mst_str;
 
+    
     this.formInstance.setValue(data.mststam);
     this.dropdownSettings = {
       singleSelection: true,
@@ -88,6 +74,28 @@ export class EditStammdatenMstComponent {
       allowSearchFilter: true,
      
     };
+
+    
+this.dropdownMeldeSettings={
+  singleSelection: true,
+  idField: 'id_mst',
+  textField: 'namemst',
+  selectAllText: 'Select All',
+  unSelectAllText: 'UnSelect All',
+  itemsShowLimit: 20,
+  allowSearchFilter: true,
+
+
+}
+for (let a=0,ls=this.data.melde.length; a < ls; a += 1){
+let temp:MeldeMst={} as MeldeMst;
+
+temp.id_mst=this.data.melde[a].id_mst;
+temp.namemst=this.data.melde[a].namemst;
+temp.repraesent=true;
+  this.dropdownMeldeMst.push(temp);
+}
+
 
     // this.wk_name1= data.mststam.wk_name;
     this.wk=data.wkstam;

@@ -2,12 +2,9 @@ import {Component, Input,Output, EventEmitter,ViewChild} from '@angular/core';
 import { Sort} from '@angular/material/sort';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import { MeldeMst } from 'src/app/interfaces/melde-mst';
 import {EditStammdatenMstComponent} from '../edit-stammdaten-mst/edit-stammdaten-mst.component';
 import { MatDialog } from '@angular/material/dialog';
-
-
-
-
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 
 // ];
@@ -18,6 +15,7 @@ import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 })
 
 export class StammMessstellenComponent {
+  @Input()  gewaesser: string="Gewässer"; 
   @Input()  messstellenStam: MessstellenStam[] = []; 
   @Output() newData =new EventEmitter<MessstellenStam>();
   @Output() sortData1=new EventEmitter<Sort>(); 
@@ -26,7 +24,7 @@ export class StammMessstellenComponent {
 
 arraybuendel:ArraybuendelSel;
   
-  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','actions'];
+  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','melde_mst_str','repraesent','actions'];
   dataSource = this.messstellenStam;
  
 
@@ -45,7 +43,9 @@ arraybuendel:ArraybuendelSel;
  {}
    
  
-
+ changeRepraesent(person: MessstellenStam){
+  
+ }
 
   async edit(person: MessstellenStam) {
 
@@ -54,8 +54,8 @@ arraybuendel:ArraybuendelSel;
   console.log(this.stammdatenService.wk)
   let wk=this.stammdatenService.wk
 
-
-this.arraybuendel=({mststam:person,wkstam:wk});
+ 
+this.arraybuendel=({mststam:person,wkstam:wk,melde:this.stammdatenService.meldemst});
 
 
 
@@ -79,8 +79,4 @@ this.arraybuendel=({mststam:person,wkstam:wk});
     }});
   }
   
-  
- 
-
- 
  }

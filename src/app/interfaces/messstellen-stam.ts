@@ -6,8 +6,9 @@ export interface MessstellenStam {
         gewaessername:string;
         ortslage: string;
         see:boolean;
-        fliess:boolean;
-        natürlich:boolean;
+        melde_mst:number;
+        melde_mst_str:string;
+        repraesent:boolean;
         wrrl_typ: number;
         mp_typ: number;
         id_wk: number;

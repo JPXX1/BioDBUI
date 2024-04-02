@@ -25,11 +25,21 @@
        
       </mat-form-field>
     </div>
+
+
+    <div >
+    
+        <mat-label>Repräsentative Messstelle</mat-label>
+        <mat-checkbox formControlName="repraesent" ></mat-checkbox>
+     
+    </div>
+
+    
     <div class="mt-5">
 
      
       <!-- <mat-label>Wasserkörper *</mat-label> -->
-      
+      <mat-label>zugeordneter Wasserkörper</mat-label>
       <ng-multiselect-dropdown 
       
       [placeholder]="wk_name1"
@@ -41,7 +51,20 @@
   
      >
 		</ng-multiselect-dropdown>
+    </div>
+    <div class="mt-5">
+      <mat-label>zugeordnete Meldemessstelle</mat-label>
+    <ng-multiselect-dropdown 
+      
+    [placeholder]="MeldeMst"
+[settings]="dropdownMeldeSettings"
+[data]="dropdownMeldeMst"
 
+(onSelect)="onItemSelect($event)"
+(onSelectAll)="onSelectAll($event)"
+
+   >
+  </ng-multiselect-dropdown>
    
   </div>
     <div class="mt-5">
