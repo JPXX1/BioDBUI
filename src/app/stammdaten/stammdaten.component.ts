@@ -99,27 +99,27 @@ export class StammdatenComponent implements OnInit{
 handleData(result:MessstellenStam){
 
 
-  // let messstellenStam2: MessstellenStam[] = this.messstellenStam1; 
-     
-    
-
       let messstellenStam2: MessstellenStam[] = this.messstellenStam1; 
         for (let i = 0, l = messstellenStam2.length; i < l; i += 1) {
           if (messstellenStam2[i].id_mst===result.id_mst)
         {
-         let temp: MessstellenStam=messstellenStam2[i];
-        let a=messstellenStam2.indexOf(temp);
-        console.log(this.messstellenStam1.length);
-        messstellenStam2.splice(a, 1);//löscht vorhandenen DS
-        console.log(this.messstellenStam1.length);
-        
-       console.log(result);//this.personsService.edit(result);
-       console.log(messstellenStam2.length);
-       this.messstellenStam1= [];//
-      // this.messstellenStam1=messstellenStam2;
-       this.messstellenStam1.push(result);
-      //  break;
-      }else{ this.messstellenStam1.push(messstellenStam2[i]);}}
+                
+                 
+                  
+                  messstellenStam2[i].id_wk=result.id_wk;
+                  messstellenStam2[i].wk_name=result.wk_name;
+                  messstellenStam2[i].melde_mst=result.melde_mst;
+                  messstellenStam2[i].melde_mst_str=result.melde_mst_str;
+                  messstellenStam2[i].namemst=result.namemst;
+                  messstellenStam2[i].ortslage=result.ortslage;
+                  messstellenStam2[i].hw_etrs=result.hw_etrs;
+                  messstellenStam2[i].repraesent=result.repraesent;
+                  messstellenStam2[i].rw_etrs=result.rw_etrs;
+                
+                  this.stammdatenService.speichereMst(result);     
+      }
+      
+    }
 }
 
 applyFilterMessstellen(event: Event) {
@@ -130,17 +130,14 @@ applyFilterMessstellen(event: Event) {
 
   this.messstellenStam1= [];
   for (let i = 0, l = messstellenStam2.length; i < l; i += 1) {
-    if (messstellenStam2[i].namemst.toLocaleLowerCase().includes(filterValue.trim().toLowerCase()) || 
-      messstellenStam2[i].gewaessername.toLocaleLowerCase().includes(filterValue.trim().toLowerCase()) || 
-    messstellenStam2[i].ortslage.toLocaleLowerCase().includes(filterValue.trim().toLowerCase()) ||
-    messstellenStam2[i].wk_name.toLocaleLowerCase().includes(filterValue.trim().toLowerCase())
+    if (messstellenStam2[i].namemst.includes(filterValue) || 
+      messstellenStam2[i].gewaessername.includes(filterValue) || 
+    messstellenStam2[i].ortslage.includes(filterValue) ||
+    messstellenStam2[i].wk_name.includes(filterValue)
     ){
       this.messstellenStam1.push(messstellenStam2[i]);
 
     }}
-  
-
-
 
   
 }}

@@ -108,20 +108,26 @@ temp.repraesent=true;
       this.dropdownList.push(mw);
 			
     }
-    // this.formInstance.setValue(data.mststam.wk_name);
      
-    
-      //  console.log (this.wk);  
-       
-      //  this.formInstance.get('wk_name').setValue(this.wk_name1);  
   
  }
  onItemSelect(item: any) {
   console.log(item);
+  
+  this.formInstance.get('id_wk').setValue=item.id;
+    
+  this.formInstance.get('wk_name').setValue(item.wk_name);  
+
 }
-onSelectAll(items: any) {
-  console.log(items);
+onItemSelectMeldemst(item: any) {
+  console.log(item);
+  
+  this.formInstance.get('melde_mst').setValue(item.id_mst);
+    console.log(this.formInstance.get('melde_mst').value)
+  this.formInstance.get('melde_mst_str').setValue(item.namemst);  
+
 }
+
 
 save(): void {
  

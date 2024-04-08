@@ -42,11 +42,7 @@ console.log(this.mst);
     
      
    async holeSelectDataWK() {
-    // this.getWk().subscribe(formen_ => {
-		// 	this.wk = formen_;
-		// 	// console.log(this.mst);
-		// 	//return einheiten;
-		// }); 
+   
       await this.getWk().forEach(formen_ => {
         this.wk  = formen_;
         console.log(formen_);
@@ -106,6 +102,24 @@ async filterMst(kat:Boolean){
  
 }
 
+speichereMst(messstellenStam:MessstellenStam){
+ 
+  const body = new HttpParams()
+  .set('id_mst',messstellenStam.id_mst)
+  .set('id_wk',messstellenStam.id_wk)
+  .set('melde_mst', messstellenStam.melde_mst)
+  .set('namemst', messstellenStam.namemst)
+  .set('ortslage',messstellenStam.ortslage)
+  .set('repraesent',messstellenStam.repraesent)
+  .set('rw_etrs',messstellenStam.rw_etrs)
+  .set('hw_etrs',messstellenStam.hw_etrs)
+  
 
+
+  
+  this.httpClient.post('http://localhost:3000/insertStammMst', body).subscribe(resp => {
+    console.log("response %o, ", resp);
+  });    
+}
 
 }
