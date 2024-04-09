@@ -50,6 +50,7 @@ export class EditStammdatenMstComponent {
       mp_typ: ['', Validators.required],
       hw_etrs: ['', Validators.required],
       rw_etrs: ['', Validators.required],
+      updated_at: ['', Validators.required],
        
       });
 

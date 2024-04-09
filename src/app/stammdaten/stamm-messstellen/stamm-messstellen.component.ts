@@ -24,7 +24,7 @@ export class StammMessstellenComponent {
 
 arraybuendel:ArraybuendelSel;
   
-  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','melde_mst_str','repraesent','actions'];
+  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','melde_mst_str','repraesent','updated_at','actions'];
   dataSource = this.messstellenStam;
  
 
@@ -61,7 +61,7 @@ this.arraybuendel=({mststam:person,wkstam:wk,melde:this.stammdatenService.meldem
 
     // person.wknamen=(this.stammdatenService.wk);
     const dialogRef = this.dialog.open(EditStammdatenMstComponent, {
-      width: '500px',
+      width: '800px',
       data: this.arraybuendel
     });
     // const dialogRef = this.dialog.open(EditStammdatenMstComponent, {

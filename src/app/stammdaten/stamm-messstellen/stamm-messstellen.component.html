@@ -49,6 +49,12 @@
       <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.melde_mst_str}} </td>
       
       </ng-container>
+      <ng-container matColumnDef="updated_at" >
+        <th  mat-header-cell *matHeaderCellDef   mat-sort-header="updated_at" class="header-table"> letzte Änderung </th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.updated_at}} </td>
+        
+        </ng-container>
+      
   </ng-container>
           <ng-container [matColumnDef]="'actions'">
             <th mat-header-cell *matHeaderCellDef> bearbeiten </th>

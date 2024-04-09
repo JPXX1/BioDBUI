@@ -18,6 +18,7 @@ export interface MessstellenStam {
         pp_typ: number;
         hw_etrs: number;
         rw_etrs: number;
+        updated_at:string;
         // wknamen:[];
         
         

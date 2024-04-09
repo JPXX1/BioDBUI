@@ -92,7 +92,7 @@ async filterMst(kat:Boolean){
       }
         this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,repraesent:f.repraesent_mst,melde_mst_str:f.melde_mst_str,
           melde_mst:f.melde_mst,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
-          dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs});
+          dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs,updated_at:f.updated_at});
        
         // this.messstellenarray.push(this.messstellenStam);
         // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
@@ -101,7 +101,37 @@ async filterMst(kat:Boolean){
  console.log (this.messstellenarray);
  
 }
+//fügt die gesamte Mst ins archiv ein
+archiviereMstStamm(messstellenStam:MessstellenStam){
 
+  const body = new HttpParams()
+  .set('id_mst',messstellenStam.id_mst)
+  .set('namemst', messstellenStam.namemst)
+  .set('idgewaesser',messstellenStam.idgewaesser)
+  .set('ortslage',messstellenStam.ortslage)
+  .set('see',messstellenStam.see)
+  .set('repraesent',messstellenStam.repraesent)
+  .set('wrrl_typ',messstellenStam.wrrl_typ)
+  .set('mp_typ',messstellenStam.mp_typ)
+  .set('id_wk',messstellenStam.id_wk)
+  .set('eu_cd_sm',messstellenStam.eu_cd_sm)
+  .set('dia_typ',messstellenStam.dia_typ)
+  .set('pp_typ',messstellenStam.pp_typ)
+  .set('rw_etrs',messstellenStam.rw_etrs)
+  .set('hw_etrs',messstellenStam.hw_etrs)
+  .set('melde_mst', messstellenStam.melde_mst)
+
+
+  
+  this.httpClient.post('http://localhost:3000/insertArchivStammMst', body).subscribe(resp => {
+    console.log("response %o, ", resp);
+  });
+  
+         
+    
+     //   const { id_mst,namemst, idgewaesser, ortslage, see, repraesent, natürlich, wrrl_typ, mp_typ, id_wk, eu_cd_sm, dia_typ, pp_typ, hw_etrs, rw_etrs, melde_mst } = request.body;
+   
+}
 speichereMst(messstellenStam:MessstellenStam){
  
   const body = new HttpParams()

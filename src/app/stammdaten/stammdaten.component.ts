@@ -44,7 +44,13 @@ export class StammdatenComponent implements OnInit{
           return compare(a.gewaessername, b.gewaessername, isAsc);
           case 'repraesent':
           return compare(a.repraesent, b.repraesent, isAsc);
-        default:
+          case 'updated_at':
+            return compare(a.updated_at, b.updated_at, isAsc);
+          default:
+          
+         
+
+        
           return 0;
       }
     });
@@ -103,8 +109,8 @@ handleData(result:MessstellenStam){
         for (let i = 0, l = messstellenStam2.length; i < l; i += 1) {
           if (messstellenStam2[i].id_mst===result.id_mst)
         {
-                
-                 
+            //archiviere alte Mst-Daten    
+          this.stammdatenService.archiviereMstStamm(messstellenStam2[i]);  
                   
                   messstellenStam2[i].id_wk=result.id_wk;
                   messstellenStam2[i].wk_name=result.wk_name;
@@ -115,8 +121,12 @@ handleData(result:MessstellenStam){
                   messstellenStam2[i].hw_etrs=result.hw_etrs;
                   messstellenStam2[i].repraesent=result.repraesent;
                   messstellenStam2[i].rw_etrs=result.rw_etrs;
+
                 
-                  this.stammdatenService.speichereMst(result);     
+                  //speichere neue Mst-Daten
+                  this.stammdatenService.speichereMst(result); 
+                 
+
       }
       
     }
