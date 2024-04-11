@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import { MeldeMst } from 'src/app/interfaces/melde-mst';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
-import {WasserkoerperStam} from 'src/app/interfaces/wasserkoerper-stam';
+
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
@@ -115,7 +115,7 @@ temp.repraesent=true;
  onItemSelect(item: any) {
   console.log(item);
   
-  this.formInstance.get('id_wk').setValue=item.id;
+  this.formInstance.get('id_wk').setValue(item.id);
     
   this.formInstance.get('wk_name').setValue(item.wk_name);  
 

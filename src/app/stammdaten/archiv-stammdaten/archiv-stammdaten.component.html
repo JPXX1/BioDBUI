@@ -1,0 +1,78 @@
+<div class="container">
+    <h2>Archiv Stand Änderungen</h2>
+    <!-- <form> -->
+
+      <div class="mat-elevation-z8 table">
+        <table  mat-table [dataSource]="dataSource" class="table" >
+      
+          <ng-container matColumnDef="id_mst">
+            <th  mat-header-cell *matHeaderCellDef class="header-table-wk"> Mst-ID </th>
+            <td  mat-cell *matCellDef="let element" class="spalte-wk"> {{element.id_mst}} 
+            </td>
+            
+          </ng-container>
+          <ng-container matColumnDef="namemst">
+            <th  mat-header-cell *matHeaderCellDef  class="header-table-jahr" > Messstelle</th>
+            <td  mat-cell *matCellDef="let element"class="spalte-jahr"> {{element.namemst}} 
+              </td>
+              
+            </ng-container>
+          <!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
+          <!-- Weight Column -->
+          <ng-container matColumnDef="ortslage" >
+            <th  mat-header-cell *matHeaderCellDef   class="header-table"> Ortslage </th>
+            <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.ortslage}} </td>
+            
+            </ng-container>
+            <ng-container matColumnDef="gewaessername" >
+              <th  mat-header-cell *matHeaderCellDef   class="header-table"> Gewässer</th>
+              <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.gewaessername}} </td>
+              
+              </ng-container>
+                
+              <ng-container matColumnDef="wk_name" >
+                <th  mat-header-cell *matHeaderCellDef    class="header-table"> Wasserkörper </th>
+                <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.wk_name}} </td>
+                
+                </ng-container>
+      
+                
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="repraesent_mst">
+          <th  mat-header-cell *matHeaderCellDef    class="header-table"> repräsentative Mst </th>
+          <td mat-cell *matCellDef="let element" class="Zelle">
+            <mat-checkbox [(ngModel)]="element.repraesent_mst" disabled></mat-checkbox>
+            
+          </td>
+
+         
+          <ng-container matColumnDef="melde_mst_str" >
+            <th  mat-header-cell *matHeaderCellDef    class="header-table"> MeldeMst </th>
+            <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.melde_mst_str}} </td>
+            
+            </ng-container>
+            <ng-container matColumnDef="rw_etrs" >
+              <th  mat-header-cell *matHeaderCellDef    class="header-table"> Rechtswert (etrs) </th>
+              <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.rw_etrs}} </td>
+              
+              </ng-container>
+              <ng-container matColumnDef="hw_etrs" >
+                <th  mat-header-cell *matHeaderCellDef    class="header-table"> Hochwert (etrs) </th>
+                <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.hw_etrs}} </td>
+                
+                </ng-container>
+            <ng-container matColumnDef="updated_at" >
+              <th  mat-header-cell *matHeaderCellDef   class="header-table"> letzte Änderung </th>
+              <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.updated_at}} </td>
+              
+              </ng-container>
+            
+        </ng-container>
+              
+            <tr  mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
+           
+          </table>
+      </div>
+    <!-- </form> -->
+  </div>

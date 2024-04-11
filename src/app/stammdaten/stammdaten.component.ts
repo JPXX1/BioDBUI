@@ -64,22 +64,22 @@ export class StammdatenComponent implements OnInit{
    
 
 
-    await  this.stammdatenService.start(true);
-    this.MessstellenAnzeige=true;
+    //await  this.stammdatenService.start(true);
+   // this.MessstellenAnzeige=true;
     //this.messstellenStam.push=this.stammdatenService.messstellenarray;
 
 
 
-    await Promise.all(
-      this.stammdatenService.messstellenarray.map(async (f) => {
+    // await Promise.all(
+    //   this.stammdatenService.messstellenarray.map(async (f) => {
       
-          //if ((f.Jahr>=this.min && f.Jahr<=this.max)){
-         console.log(f.id_mst);
-            this.messstellenStam1.push(f);
-            this.stammMessstellenComponent.dataSource.push(f);
-          //}
+    //       //if ((f.Jahr>=this.min && f.Jahr<=this.max)){
+    //      //console.log(f.id_mst);
+    //        // this.messstellenStam1.push(f);
+    //       //  this.stammMessstellenComponent.dataSource.push(f);
+    //       //}
           
-      })  ) 
+    //   })  ) 
       
   }
 
@@ -111,7 +111,7 @@ handleData(result:MessstellenStam){
         {
             //archiviere alte Mst-Daten    
           this.stammdatenService.archiviereMstStamm(messstellenStam2[i]);  
-                  
+         const updated_at= this.formatDate(Date.now());
                   messstellenStam2[i].id_wk=result.id_wk;
                   messstellenStam2[i].wk_name=result.wk_name;
                   messstellenStam2[i].melde_mst=result.melde_mst;
@@ -121,6 +121,7 @@ handleData(result:MessstellenStam){
                   messstellenStam2[i].hw_etrs=result.hw_etrs;
                   messstellenStam2[i].repraesent=result.repraesent;
                   messstellenStam2[i].rw_etrs=result.rw_etrs;
+                  messstellenStam2[i].updated_at=updated_at;
 
                 
                   //speichere neue Mst-Daten
@@ -132,6 +133,24 @@ handleData(result:MessstellenStam){
     }
 }
 
+
+formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear(),
+      stunden=d.getHours(),
+      min=d.getMinutes();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+  let datum =   day + "."+month + "."+year+ " "+stunden+":"+min
+      return datum;
+  //return [year, month, day].join('-');
+}
+
 applyFilterMessstellen(event: Event) {
   const filterValue = (event.target as HTMLInputElement).value;
 
@@ -140,10 +159,13 @@ applyFilterMessstellen(event: Event) {
 
   this.messstellenStam1= [];
   for (let i = 0, l = messstellenStam2.length; i < l; i += 1) {
-    if (messstellenStam2[i].namemst.includes(filterValue) || 
-      messstellenStam2[i].gewaessername.includes(filterValue) || 
-    messstellenStam2[i].ortslage.includes(filterValue) ||
-    messstellenStam2[i].wk_name.includes(filterValue)
+    let messstellenStamTemp:MessstellenStam=messstellenStam2[i];
+    if (messstellenStamTemp.ortslage==null) {messstellenStamTemp.ortslage=' '}
+    if (messstellenStamTemp.namemst.includes(filterValue) 
+    || 
+    messstellenStamTemp.gewaessername.includes(filterValue) 
+     || messstellenStamTemp.ortslage.includes(filterValue) 
+    // || messstellenStam2[i].wk_name.includes(filterValue)
     ){
       this.messstellenStam1.push(messstellenStam2[i]);
 

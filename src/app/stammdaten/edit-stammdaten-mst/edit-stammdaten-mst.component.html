@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Messstelle bearbeiten</h1>
+<h2>Messstelle bearbeiten</h2>
 
 <div mat-dialog-content>
   <form [formGroup]="formInstance">
@@ -10,7 +10,7 @@
         </mat-form-field>
     </div>
     <div class="mt-5">
-      <mat-form-field class="fullWidth" appearance="outline">
+      <mat-form-field class="fullWidth" style="width: 100%;" appearance="outline">
         <mat-label>Ortslage *</mat-label>
         <input matInput type="text" 
        formControlName="ortslage" >
@@ -18,6 +18,9 @@
         
       </mat-form-field>
     </div>
+    <table>
+      <tr>
+        <td>
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Hochwert (etrs) *</mat-label>
@@ -25,8 +28,19 @@
        
       </mat-form-field>
     </div>
+  </td> 
+  <td>
 
-
+  
+    <div class="mt-5">
+      <mat-form-field class="fullWidth" appearance="outline">
+        <mat-label>Rechtswert (etrs) *</mat-label>
+        <input matInput type="number" formControlName="rw_etrs"/>
+        
+      </mat-form-field>
+    </div>
+  </td>
+  </tr></table>
     <div >
     
         <mat-label>Repräsentative Messstelle</mat-label>
@@ -67,13 +81,7 @@
   </ng-multiselect-dropdown>
    
   </div>
-    <div class="mt-5">
-      <mat-form-field class="fullWidth" appearance="outline">
-        <mat-label>Rechtswert (etrs) *</mat-label>
-        <input matInput type="number" formControlName="rw_etrs"/>
-        
-      </mat-form-field>
-    </div>
+   
     
 
 
@@ -83,7 +91,7 @@
 <div class="mt-5" mat-dialog-actions>
   <button mat-raised-button color="primary" 
   [disabled]="formInstance.dirty && formInstance.errors" (click)="save()"
-    cdkFocusInitial>Yes</button>
-  <button mat-raised-button mat-dialog-close>No</button>
+    cdkFocusInitial>Änderungen speichern</button>
+  <button mat-raised-button mat-dialog-close>Abbrechen</button>
 
 </div>

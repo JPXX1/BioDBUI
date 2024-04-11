@@ -10,6 +10,7 @@ export class StammdatenService {
   public messstellenarray: MessstellenStam[];
   public meldemst:MeldeMst[];
   public mst:any;
+  public archivMst:any;
   constructor( private httpClient: HttpClient) {}
   public wk:any;
 
@@ -21,7 +22,10 @@ console.log(this.mst);
   }
 
 
+async holeArchiv(parameter :number){
+  await this.getArchivMstStamm(parameter);
 
+}
 
 
   async start(kat:Boolean){
@@ -34,7 +38,11 @@ console.log(this.mst);
         
     return this.httpClient.get('http://localhost:3000/stamMst');
     }
-   
+
+    // getArStammMst(){ 
+        
+    //   return this.httpClient.get('http://localhost:3000/stamMst');
+    //   }
     getWk(){
       return this.httpClient.get('http://localhost:3000/stamWasserkoerper');
           
@@ -120,6 +128,7 @@ archiviereMstStamm(messstellenStam:MessstellenStam){
   .set('rw_etrs',messstellenStam.rw_etrs)
   .set('hw_etrs',messstellenStam.hw_etrs)
   .set('melde_mst', messstellenStam.melde_mst)
+  .set('updated_at', messstellenStam.updated_at)
 
 
   
@@ -152,4 +161,25 @@ speichereMst(messstellenStam:MessstellenStam){
   });    
 }
 
+
+
+async getArchivMstStamm(parameter :number){ 
+
+  let params = new HttpParams().set('mstid',parameter);
+  console.log(params.toString())
+  //const params: { id: 1 };
+ // const f= this.httpClient.get('http://localhost:3000/arStammMst', {params});
+
+
+  await this.httpClient.get('http://localhost:3000/arStammMst', {params}).forEach(formen_ => {
+    this.archivMst = formen_;
+    console.log(formen_);
+
+   
+
+
+  });
+
+  
+  }
 }
