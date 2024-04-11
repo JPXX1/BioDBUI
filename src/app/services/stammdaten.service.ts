@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MessstellenStam } from '../interfaces/messstellen-stam';
+import { WasserkoerperStam } from '../interfaces/wasserkoerper-stam';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 @Injectable({
@@ -13,20 +14,29 @@ export class StammdatenService {
   public archivMst:any;
   constructor( private httpClient: HttpClient) {}
   public wk:any;
+  wkStam:WasserkoerperStam;
+  public wkarray:WasserkoerperStam[];
 
-   start2(kat:Boolean){
-this.callBwUebersicht2();
-console.log(this.mst);
- this.filterMst(kat);
-console.log(this.mst);
-  }
+
+
+//    start2(kat:Boolean){
+// this.callBwUebersicht2();
+// console.log(this.mst);
+//  this.filterMst(kat);
+// console.log(this.mst);
+//   }
 
 
 async holeArchiv(parameter :number){
   await this.getArchivMstStamm(parameter);
 
 }
-
+async startwk(kat:Boolean){
+  await this.holeSelectDataWK();
+ 
+  await  this.filterWK(kat);
+  console.log(this.wk);
+    }
 
   async start(kat:Boolean){
     await this.callBwUebersicht();
@@ -44,7 +54,7 @@ async holeArchiv(parameter :number){
     //   return this.httpClient.get('http://localhost:3000/stamMst');
     //   }
     getWk(){
-      return this.httpClient.get('http://localhost:3000/stamWasserkoerper');
+      return this.httpClient.get('http://localhost:3000/stamWK'); //stamWasserkoerper
           
     }
     
@@ -58,16 +68,16 @@ async holeArchiv(parameter :number){
       });  
     
      }
-    callBwUebersicht2() {
+  //   callBwUebersicht2() {
 
-    this.getStammMst().subscribe(mst_ => {
-			this.mst = mst_;
-			// console.log(this.mst);
-			//return einheiten;
-		});
+  //   this.getStammMst().subscribe(mst_ => {
+	// 		this.mst = mst_;
+	// 		// console.log(this.mst);
+	// 		//return einheiten;
+	// 	});
 
 
-	}
+	// }
     async callBwUebersicht() {
 
       await this.getStammMst().forEach(formen_ => {
@@ -77,7 +87,52 @@ async holeArchiv(parameter :number){
     }
   
 
+    async filterWK(kat:Boolean){
 
+   
+      let temp: any = this.wk;
+
+      this.wkarray =[];
+     
+      await Promise.all(
+        temp.map(async (f) => {
+                  
+            
+         
+    
+          if (f.see===kat){
+    
+          //erzeugt Array mit WK
+          
+          
+            this.wkarray.push({ id:f.id,
+              wk_name: f.wk_name,
+              see:f.see,
+              kuenstlich:f.kuenstlich,
+              hmwb:f.hmwb,
+              eu_cd_wb:f.eu_cd_wb,
+              bericht_eu:f.bericht_eu,
+              kuerzel:f.kuerzel,
+              id_gewaesser:f.id_gewaesser,
+              land:f.land,
+              wrrl_typ:f.wrrl_typ,
+              mp_typ:f.mp_typ,
+              dia_typ:f.dia_typ,
+              pp_typ:f.pp_typ,
+              pp_typ_str:f.pp_typ_str,
+              dia_typ_str:f.dia_typ_str,
+              mp_typ_str:f.mp_typ_str,
+              wrrl_typ_str:f.wrrl_typ_str,
+              gewaessername:f.gewaessername,
+              updated_at:f.updated_at});
+           
+            // this.messstellenarray.push(this.messstellenStam);
+            // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
+    }})
+    )
+     //console.log (this.wkarray);
+
+    }
 async filterMst(kat:Boolean){
    
   let temp: any = this.mst;
@@ -167,8 +222,7 @@ async getArchivMstStamm(parameter :number){
 
   let params = new HttpParams().set('mstid',parameter);
   console.log(params.toString())
-  //const params: { id: 1 };
- // const f= this.httpClient.get('http://localhost:3000/arStammMst', {params});
+ 
 
 
   await this.httpClient.get('http://localhost:3000/arStammMst', {params}).forEach(formen_ => {

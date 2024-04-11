@@ -2,8 +2,9 @@ import { Component ,OnInit,ViewChild} from '@angular/core';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {StammMessstellenComponent} from './stamm-messstellen/stamm-messstellen.component';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import {StammWkComponent} from './stamm-wk/stamm-wk.component';
 import { MatSort,Sort} from '@angular/material/sort';
-import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
+import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
 //import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
 
 @Component({
@@ -13,15 +14,17 @@ import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
 })
 export class StammdatenComponent implements OnInit{
   @ViewChild(MatSort) sort: MatSort
-
+  @ViewChild(MatSort) sortWK: MatSort
   constructor(
-    private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent
-  ){this.sortedData = this.messstellenStam1.slice();}
-   public messstellenStam1:MessstellenStam[]=[];//TaxaMP
+    private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent,private stammWkComponent:StammWkComponent
+  ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
+   public messstellenStam1:MessstellenStam[]=[];
+   public wkStam1:WasserkoerperStam[]=[];
   public MessstellenAnzeige:boolean=false;
-  sortedData:MessstellenStam[]=[];
+  public WKAnzeige:boolean=false;
+  sortedData:MessstellenStam[]=[];sortedDataWK:WasserkoerperStam[]=[];
 
-
+//sort Mst
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
     if (!sort.active || sort.direction === '') {
@@ -33,7 +36,7 @@ export class StammdatenComponent implements OnInit{
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'id_mst':
-          return compare(a.id_mst, b.id_mst, isAsc);
+          return compare(a.id_mst, b.id_mst , isAsc) ;
         case 'namemst':
           return compare(a.namemst, b.namemst, isAsc);
         case 'ortslage':
@@ -47,15 +50,44 @@ export class StammdatenComponent implements OnInit{
           case 'updated_at':
             return compare(a.updated_at, b.updated_at, isAsc);
           default:
-          
-         
-
-        
           return 0;
       }
     });
 
 
+
+}
+sortDataWk(sortWK: Sort) {
+  const data = this.wkStam1.slice();
+  if (!sortWK.active || sortWK.direction === '') {
+    this.sortedDataWK = data;
+    return;
+  }
+  this.sortedDataWK=[];
+  this.sortedDataWK = data.sort((a, b) => {
+    const isAsc = sortWK.direction === 'asc';
+    switch (sortWK.active) {
+      case 'id':
+        
+        return compare(a.id, b.id, isAsc);
+      case 'wk_name':
+        return compare(a.wk_name, b.wk_name, isAsc);
+      case 'kuenstlich':
+        return compare(a.kuenstlich, b.kuenstlich, isAsc);
+        case 'hmwb':
+        return compare(a.hmwb, b.hmwb, isAsc);
+      case 'gewaessername':
+        return compare(a.gewaessername, b.gewaessername, isAsc);
+        case 'wrrl_typ_str':
+        return compare(a.wrrl_typ_str, b.wrrl_typ_str, isAsc);
+        case 'updated_at':
+          return compare(a.updated_at, b.updated_at, isAsc);
+        default:
+       return 0;
+    }
+  });
+console.log( this.sortedDataWK);
+this.wkStam1=this.sortedDataWK;
 
 }
   async ngOnInit(){
@@ -87,17 +119,34 @@ export class StammdatenComponent implements OnInit{
  async  seeMst(){
   await  this.stammdatenService.start(true);
     this.MessstellenAnzeige=true;
+    this.WKAnzeige=false;
     console.log (this.stammdatenService.messstellenarray)
     this.messstellenStam1=this.stammdatenService.messstellenarray;
    
 
   }
+  async fgwWk()
+  {await  this.stammdatenService.startwk(false);
+  this.MessstellenAnzeige=false;
+  this.WKAnzeige=true;
+  console.log (this.stammdatenService.wkarray)
+  this.wkStam1=this.stammdatenService.wkarray;}
+  
+  async seeWk()
+  {await  this.stammdatenService.startwk(true);
+  this.MessstellenAnzeige=false;
+  this.WKAnzeige=true;
+  console.log (this.stammdatenService.wkarray)
+  this.wkStam1=this.stammdatenService.wkarray;}
+
+
 
   async fgwMst(){
    await this.stammdatenService.start(false);
    console.log (this.stammdatenService.messstellenarray)
    this.messstellenStam1=this.stammdatenService.messstellenarray;
     this.MessstellenAnzeige=true;
+    this.WKAnzeige=false;
   }
 
 

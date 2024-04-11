@@ -1,0 +1,118 @@
+
+
+
+ 
+  
+<div class="mat-elevation-z8 table">
+	<table  mat-table [dataSource]="wasserkoerperStam" class="table" matSort (matSortChange)="sortData($event)">
+
+		<ng-container matColumnDef="id">
+		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id" class="header-table-wk"> Wk-ID </th>
+		  <td  mat-cell *matCellDef="let element" class="spalte-wk"> {{element.id}} 
+			</td>
+			
+		</ng-container>
+		<ng-container matColumnDef="wk_name">
+			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="wk_name" class="header-table-jahr" > Wasserkörper</th>
+			<td  mat-cell *matCellDef="let element"class="spalte-jahr"> {{element.wk_name}} 
+			  </td>
+			  
+		  </ng-container>
+      <ng-container matColumnDef="gewaessername" >
+        <th  mat-header-cell *matHeaderCellDef   mat-sort-header="gewaessername" class="header-table"> Gewässer </th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.gewaessername}} </td>
+        
+        </ng-container>
+		
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="see">
+            <th  mat-header-cell *matHeaderCellDef   class="header-table"> SeeWK </th>
+            <td mat-cell *matCellDef="let element" class="Zelle">
+            <mat-checkbox [(ngModel)]="element.see" disabled></mat-checkbox>
+        </td>
+        </ng-container>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="kuenstlich">
+            <th  mat-header-cell *matHeaderCellDef   mat-sort-header="kuenstlich" class="header-table"> künstlich </th>
+            <td mat-cell *matCellDef="let element" class="Zelle">
+            <mat-checkbox [(ngModel)]="element.kuenstlich" disabled></mat-checkbox>
+        </td>
+        </ng-container>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="hmwb">
+            <th  mat-header-cell *matHeaderCellDef   mat-sort-header="hmwb" class="header-table"> hmwb </th>
+            <td mat-cell *matCellDef="let element" class="Zelle">
+            <mat-checkbox [(ngModel)]="element.hmwb" disabled></mat-checkbox>
+        </td>
+        </ng-container>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="bericht_eu">
+            <th  mat-header-cell *matHeaderCellDef    class="header-table"> Bericht EU </th>
+            <td mat-cell *matCellDef="let element" class="Zelle">
+            <mat-checkbox [(ngModel)]="element.bericht_eu" disabled></mat-checkbox>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="eu_cd_wb">
+          <th  mat-header-cell *matHeaderCellDef   class="header-table"> eu_cd_wb</th>
+          <td mat-cell *matCellDef="let element" class="Zelle">
+          <mat-checkbox [(ngModel)]="element.eu_cd_wb" disabled></mat-checkbox>
+          </td>
+      </ng-container>
+      <ng-container matColumnDef="land" >
+        <th  mat-header-cell *matHeaderCellDef class="header-table"> Bundesland</th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.land}} </td>
+        
+        </ng-container>
+        	
+        
+
+          <ng-container matColumnDef="wrrl_typ_str" >
+            <th  mat-header-cell *matHeaderCellDef   mat-sort-header="wrrl_typ_str" class="header-table"> WRRL-Typ </th>
+            <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.wrrl_typ_str}} </td>
+            
+            </ng-container>
+    <ng-container matColumnDef="pp_typ_str" >
+      <th  mat-header-cell *matHeaderCellDef    class="header-table"> PP-Typ </th>
+      <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.pp_typ_str}} </td>
+      
+      </ng-container>
+      <ng-container matColumnDef="mp_typ_str" >
+        <th  mat-header-cell *matHeaderCellDef   class="header-table"> MP-Typ </th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.mp_typ_str}} </td>
+        
+        </ng-container>
+        <ng-container matColumnDef="dia_typ_str" >
+            <th  mat-header-cell *matHeaderCellDef    class="header-table"> Dia-Typ </th>
+            <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.dia_typ_str}} </td>
+            
+            </ng-container>
+
+
+      <ng-container matColumnDef="updated_at" >
+        <th  mat-header-cell *matHeaderCellDef   mat-sort-header="updated_at" class="header-table"> letzte Änderung </th>
+        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.updated_at}} </td>
+      </ng-container>
+          <ng-container [matColumnDef]="'actions'">
+            <th mat-header-cell *matHeaderCellDef> bearbeiten </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button (click)="edit(element)">
+                <mat-icon mat-icon-button color='primary'>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" aria-label="Example icon button with a menu icon"
+              class="iconbutton" color="warn" (click)="showArchiv(element)">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+             
+            </td>
+          </ng-container>
+		  <tr  mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		  <tr  mat-row *matRowDef="let row; columns: displayedColumns;"></tr> 
+		 
+	  </table>
+	  
+		
+	</div>
+	
+ 
+
+

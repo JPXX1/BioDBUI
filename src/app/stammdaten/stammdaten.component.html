@@ -12,8 +12,8 @@
       
       <button mat-button id="mpButton" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
       <mat-menu #wasserkoerper="matMenu" xPosition="after">
-      <!-- <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
-      <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">ausblenden</button> -->
+        <button mat-menu-item (click)="fgwWk()">FließgewässerWK</button>
+        <button mat-menu-item (click)="seeWk()">SeegewässerWK</button>
     </mat-menu>
   
   
@@ -50,6 +50,13 @@
           <input matInput (keyup)="applyFilterMessstellen($event)" placeholder="" #input>
         </mat-form-field>
       <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)" ></app-stamm-messstellen>
-      </div>
-
+    </div>
+    <div class="card" *ngIf="WKAnzeige == true" style="vertical-align: top;"> 
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilterMessstellen($event)" placeholder="" #input>
+      </mat-form-field>
+      <app-stamm-wk [wasserkoerperStam]="wkStam1" (sortDataWK)="sortDataWk($event)"></app-stamm-wk>
+      
+    </div>
       

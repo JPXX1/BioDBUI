@@ -4,7 +4,7 @@ import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import { MeldeMst } from 'src/app/interfaces/melde-mst';
 import {EditStammdatenMstComponent} from '../edit-stammdaten-mst/edit-stammdaten-mst.component';
-import {ArchivStammdatenComponent} from '../archiv-stammdaten/archiv-stammdaten.component';
+import {ArchivStammdatenComponent} from '../archiv-stammdaten-mst/archiv-stammdaten.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 
