@@ -1,0 +1,117 @@
+<mat-card>
+<span style="font-size:x-large;font-weight:500;"
+  
+  [innerHTML]="wk_name1"> 
+></span>
+<br> <br> <br>
+<form [formGroup]="formInstanceWK">
+
+  <h5>Namen</h5>
+  <table><tr><td>
+  <div class="mt-5">
+    <mat-form-field class="fullWidth" style="width: 50%;" appearance="outline">
+      <mat-label>WK-Name</mat-label>
+      <input matInput type="text" formControlName="wk_name">
+    </mat-form-field>
+  </div>
+</td>
+<td>
+  <div class="mt-5">
+    <mat-label>Gewässer</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.wkstam.gewaessername" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypGewaesser" (onSelect)="onItemSelectGew($event)">
+    </ng-multiselect-dropdown>
+  </div>
+</td>
+</tr>
+</table>
+<mat-divider></mat-divider>
+<br> <br> <br>
+<h5>Gewässertypen</h5>
+  <table><tr><td>
+  <div class="mt-5">
+    <mat-label>WRRL-Typ</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.wkstam.wrrl_typ_str" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypWRRL" (onSelect)="onItemSelectGew($event)">
+    </ng-multiselect-dropdown>
+  </div>
+</td>
+<td>
+  <div class="mt-5">
+    <mat-label>Diatomeen-Typ</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.wkstam.dia_typ_str" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypDia" (onSelect)="onItemSelectGew($event)">
+    </ng-multiselect-dropdown>
+  </div>
+</td>
+<td>
+  <div class="mt-5">
+    <mat-label>Makrophyten-Typ</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.wkstam.mp_typ_str" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypMP" (onSelect)="onItemSelectGew($event)">
+    </ng-multiselect-dropdown>
+  </div>
+</td>
+  <td>
+  <div class="mt-5">
+    <mat-label>Phytoplankton-Typ</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.wkstam.pp_typ_str" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypPP" (onSelect)="onItemSelectGew($event)" style="width: 20%;">
+    </ng-multiselect-dropdown>
+  </div>
+</td><mat-divider></mat-divider>
+</tr> <br> <br> 
+<h5>Berichterstattung</h5>
+<tr><td>
+  <div class="mt-5">
+    <mat-form-field class="fullWidth" style="width: 100%;" appearance="outline">
+      <mat-label>Land</mat-label>
+      <input matInput type="text" formControlName="land">
+    </mat-form-field>
+  </div>
+</td>
+<td>
+  <div class="mt-5">
+    <mat-form-field class="fullWidth" style="width: 100%;" appearance="outline">
+      <mat-label>eu_cd_wb</mat-label>
+      <input matInput type="text" formControlName="eu_cd_wb">
+    </mat-form-field>
+  </div>
+</td>
+<td>
+  <div>
+    <mat-label>Bericht-EU</mat-label>
+    <mat-checkbox formControlName="bericht_eu"></mat-checkbox>
+  </div>
+</td>
+</tr>
+</table>
+  <table>
+    <tr><td>
+        <div>
+          <mat-label>See/ Fließ</mat-label>
+          <mat-checkbox formControlName="see"></mat-checkbox>
+        </div>
+     </td>
+     <td>
+        <div>
+          <mat-label>HMWB</mat-label>
+          <mat-checkbox formControlName="hmwb"></mat-checkbox>
+        </div>
+      </td><td>
+        <div>
+          <mat-label>künstlich</mat-label>
+          <mat-checkbox formControlName="kuenstlich"></mat-checkbox>
+        </div>
+      </td>
+    
+      </tr>
+      </table>   
+
+      <div class="mt-5" mat-dialog-actions>
+        <button mat-raised-button color="primary" [disabled]="formInstanceWK.dirty && formInstanceWK.errors" (click)="save()"
+          cdkFocusInitial>Änderungen speichern</button>
+        <button mat-raised-button mat-dialog-close>Abbrechen</button>
+      
+      </div>
+</form></mat-card>

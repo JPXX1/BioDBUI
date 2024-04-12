@@ -49,6 +49,9 @@ import { EditStammdatenMstComponent } from './stammdaten/edit-stammdaten-mst/edi
 import { MatDialogModule } from '@angular/material/dialog';
 import { ArchivStammdatenComponent } from './stammdaten/archiv-stammdaten-mst/archiv-stammdaten.component';
 import { StammWkComponent } from './stammdaten/stamm-wk/stamm-wk.component';
+import { EditStammdatenWkComponent } from './stammdaten/edit-stammdaten-wk/edit-stammdaten-wk.component';
+import {MatDividerModule} from '@angular/material/divider';
+import { ArchivStammdatenWkComponent } from './stammdaten/archiv-stammdaten-wk/archiv-stammdaten-wk.component'; 
 StammWkComponent
 
 const routes: Routes = [
@@ -62,9 +65,9 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent,     
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent,     
 ], 
-imports: [MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule

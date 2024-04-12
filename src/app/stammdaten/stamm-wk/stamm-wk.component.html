@@ -26,7 +26,7 @@
 		
         <!-- Checkbox Column -->
         <ng-container matColumnDef="see">
-            <th  mat-header-cell *matHeaderCellDef   class="header-table"> SeeWK </th>
+            <th  mat-header-cell *matHeaderCellDef   class="header-table"> {{gewaesserart}} </th>
             <td mat-cell *matCellDef="let element" class="Zelle">
             <mat-checkbox [(ngModel)]="element.see" disabled></mat-checkbox>
         </td>
@@ -53,9 +53,9 @@
             </td>
         </ng-container>
         <ng-container matColumnDef="eu_cd_wb">
-          <th  mat-header-cell *matHeaderCellDef   class="header-table"> eu_cd_wb</th>
-          <td mat-cell *matCellDef="let element" class="Zelle">
-          <mat-checkbox [(ngModel)]="element.eu_cd_wb" disabled></mat-checkbox>
+          <th  mat-header-cell *matHeaderCellDef   class="header-table"> EU_CD_WB</th>
+          <td mat-cell *matCellDef="let element" class="Zelle">{{element.eu_cd_wb}}
+         
           </td>
       </ng-container>
       <ng-container matColumnDef="land" >

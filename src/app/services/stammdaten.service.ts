@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MessstellenStam } from '../interfaces/messstellen-stam';
 import { WasserkoerperStam } from '../interfaces/wasserkoerper-stam';
+import { TypWrrl } from '../interfaces/typ-wrrl';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 @Injectable({
@@ -10,28 +11,34 @@ export class StammdatenService {
   messstellenStam:MessstellenStam;
   public messstellenarray: MessstellenStam[];
   public meldemst:MeldeMst[];
+  public wrrltyp:TypWrrl[];
+  public diatyp:TypWrrl[];
+  public mptyp:TypWrrl[];
+  public pptyp:TypWrrl[];
+  public gewaesser:TypWrrl[];
   public mst:any;
+  public diatyp_t:any;
+  public mptyp_t:any;
+  public pptyp_t:any;
+  public wrrltyp_t:any;
+  public gewaesser_T:any;
   public archivMst:any;
+  public archivWK:any;
   constructor( private httpClient: HttpClient) {}
   public wk:any;
   wkStam:WasserkoerperStam;
   public wkarray:WasserkoerperStam[];
 
-
-
-//    start2(kat:Boolean){
-// this.callBwUebersicht2();
-// console.log(this.mst);
-//  this.filterMst(kat);
-// console.log(this.mst);
-//   }
-
+  async holeArchivWK(parameter :number){
+    await this.getArchivWKStamm(parameter);
+  
+  }
 
 async holeArchiv(parameter :number){
   await this.getArchivMstStamm(parameter);
 
 }
-async startwk(kat:Boolean){
+async startwk(kat:boolean){
   await this.holeSelectDataWK();
  
   await  this.filterWK(kat);
@@ -44,19 +51,27 @@ async startwk(kat:Boolean){
     await  this.filterMst(kat);
     console.log(this.mst);
       }
-  getStammMst(){ 
-        
+  getStammMst() {
     return this.httpClient.get('http://localhost:3000/stamMst');
-    }
-
-    // getArStammMst(){ 
-        
-    //   return this.httpClient.get('http://localhost:3000/stamMst');
-    //   }
-    getWk(){
-      return this.httpClient.get('http://localhost:3000/stamWK'); //stamWasserkoerper
-          
-    }
+  }
+  getStammDiaTyp() {
+    return this.httpClient.get('http://localhost:3000/stamDiaTypen');
+  }
+  getStammMpTyp() {
+    return this.httpClient.get('http://localhost:3000/stamMpTypen');
+  }
+  getStammPpTyp() {
+    return this.httpClient.get('http://localhost:3000/stamPPTypen');
+  }
+  getStammWrrlTyp() {
+    return this.httpClient.get('http://localhost:3000/stamWRRLTypen');
+  }
+  getStammGewasser() {
+    return this.httpClient.get('http://localhost:3000/stamGewaesser');
+  }
+  getWk() {
+    return this.httpClient.get('http://localhost:3000/stamWK'); //stamWasserkoerper   
+  }
     
      
    async holeSelectDataWK() {
@@ -68,16 +83,7 @@ async startwk(kat:Boolean){
       });  
     
      }
-  //   callBwUebersicht2() {
 
-  //   this.getStammMst().subscribe(mst_ => {
-	// 		this.mst = mst_;
-	// 		// console.log(this.mst);
-	// 		//return einheiten;
-	// 	});
-
-
-	// }
     async callBwUebersicht() {
 
       await this.getStammMst().forEach(formen_ => {
@@ -85,9 +91,78 @@ async startwk(kat:Boolean){
         console.log(formen_);
       });
     }
-  
+    async callDiatyp() {
 
-    async filterWK(kat:Boolean){
+      await this.getStammDiaTyp().forEach(formen_ => {
+        this.diatyp_t = formen_;
+        console.log(formen_);
+      });
+    }
+    async callGewaesser() {
+
+      await this.getStammGewasser().forEach(formen_ => {
+        this.gewaesser_T = formen_;
+        console.log(formen_);
+      });
+    }
+    async callMptyp() {
+
+      await this.getStammMpTyp().forEach(formen_ => {
+        this.mptyp_t = formen_;
+        console.log(formen_);
+      });
+    }
+    async callPptyp() {
+
+      await this.getStammPpTyp().forEach(formen_ => {
+        this.pptyp_t = formen_;
+        console.log(formen_);
+      });
+    }
+    async callWrrltyp() {
+
+      await this.getStammWrrlTyp().forEach(formen_ => {
+        this.wrrltyp_t = formen_;
+        console.log(formen_);
+      });
+    }
+
+    async wandleTypWRRL(){
+      let temp: any = this.wrrltyp_t;
+      this.wrrltyp=[];
+      temp.map(async (f) => {
+        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ})
+      })
+    }
+    async wandleTypDia(){
+      let temp: any = this.diatyp_t;
+      this.diatyp=[];
+      temp.map(async (f) => {
+        this.diatyp.push({id:f.id_dia,typ:f.dia_typ})
+      })
+    }
+    async wandleTypMP(){
+      let temp: any = this.mptyp_t;
+      this.mptyp=[];
+      temp.map(async (f) => {
+        this.mptyp.push({id:f.id,typ:f.mp_typ})
+      })
+    }
+    async wandleTypPP(){
+      let temp: any = this.pptyp_t;
+      this.pptyp=[];
+      temp.map(async (f) => {
+        this.pptyp.push({id:f.id,typ:f.pp_typ})
+      })
+    }
+    async wandleGewaesser(){
+      let temp: any = this.gewaesser_T;
+      this.gewaesser=[];
+      temp.map(async (f) => {
+        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername})
+      })
+    }
+    async filterWK(kat:boolean){
 
    
       let temp: any = this.wk;
@@ -104,10 +179,10 @@ async startwk(kat:Boolean){
     
           //erzeugt Array mit WK
           
-          
+         let gewasserart:boolean=true;
             this.wkarray.push({ id:f.id,
               wk_name: f.wk_name,
-              see:f.see,
+              see:gewasserart,
               kuenstlich:f.kuenstlich,
               hmwb:f.hmwb,
               eu_cd_wb:f.eu_cd_wb,
@@ -164,6 +239,31 @@ async filterMst(kat:Boolean){
  console.log (this.messstellenarray);
  
 }
+
+
+
+//fügt die gesamten WK ins Archiv ein
+archiviereWKStamm(wasserkoerperStam:WasserkoerperStam){
+         const body = new HttpParams()
+        .set('id',wasserkoerperStam.id)
+        .set('wk_name', wasserkoerperStam.wk_name)
+        .set('see',wasserkoerperStam.see)
+       
+        .set('kuenstlich',wasserkoerperStam.kuenstlich)
+        .set('hmwb',wasserkoerperStam.hmwb)
+        .set('bericht_eu',wasserkoerperStam.bericht_eu)
+        .set('id_gewaesser',wasserkoerperStam.id_gewaesser)
+        .set('eu_cd_wb',wasserkoerperStam.eu_cd_wb)
+        .set('land',wasserkoerperStam.land)
+        .set('wrrl_typ',wasserkoerperStam.wrrl_typ)
+        .set('dia_typ',wasserkoerperStam.dia_typ)
+        .set('pp_typ',wasserkoerperStam.pp_typ)
+        .set('mp_typ',wasserkoerperStam.mp_typ)
+        .set('updated_at', wasserkoerperStam.updated_at)
+        this.httpClient.post('http://localhost:3000/insertArchivStammWK', body).subscribe(resp => {
+    console.log("response %o, ", resp);  });
+ }
+
 //fügt die gesamte Mst ins archiv ein
 archiviereMstStamm(messstellenStam:MessstellenStam){
 
@@ -195,6 +295,29 @@ archiviereMstStamm(messstellenStam:MessstellenStam){
     
      //   const { id_mst,namemst, idgewaesser, ortslage, see, repraesent, natürlich, wrrl_typ, mp_typ, id_wk, eu_cd_sm, dia_typ, pp_typ, hw_etrs, rw_etrs, melde_mst } = request.body;
    
+}
+
+speichereWK(wasserkoerperStam:WasserkoerperStam){
+  const body = new HttpParams()
+  .set('id',wasserkoerperStam.id)
+  .set('wk_name',wasserkoerperStam.wk_name)
+  .set('see', wasserkoerperStam.see)
+  .set('kuenstlich', wasserkoerperStam.kuenstlich)
+  .set('hmwb',wasserkoerperStam.hmwb)
+  .set('bericht_eu',wasserkoerperStam.bericht_eu)
+  .set('id_gewaesser',wasserkoerperStam.id_gewaesser)
+  .set('eu_cd_wb',wasserkoerperStam.eu_cd_wb)
+  .set('land',wasserkoerperStam.land)
+  .set('wrrl_typ',wasserkoerperStam.wrrl_typ)
+  .set('mp_typ',wasserkoerperStam.mp_typ)
+  .set('dia_typ',wasserkoerperStam.dia_typ)
+  .set('pp_typ',wasserkoerperStam.pp_typ)
+
+  
+  this.httpClient.post('http://localhost:3000/insertStammWK', body).subscribe(resp => {
+    console.log("response %o, ", resp);
+  });    
+     
 }
 speichereMst(messstellenStam:MessstellenStam){
  
@@ -236,4 +359,24 @@ async getArchivMstStamm(parameter :number){
 
   
   }
+  async getArchivWKStamm(parameter :number){ 
+
+    let params = new HttpParams().set('id',parameter);
+    console.log(params.toString())
+   
+  
+  
+    await this.httpClient.get('http://localhost:3000/arStammWK', {params}).forEach(formen_ => {
+      this.archivWK = formen_;
+      console.log(formen_);
+  
+     
+  
+  
+    });
+  
+    
+    }
+  
+  
 }

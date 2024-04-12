@@ -54,9 +54,9 @@
     <div class="card" *ngIf="WKAnzeige == true" style="vertical-align: top;"> 
       <mat-form-field>
         <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilterMessstellen($event)" placeholder="" #input>
+        <input matInput (keyup)="applyFilterWK($event)" placeholder="" #input>
       </mat-form-field>
-      <app-stamm-wk [wasserkoerperStam]="wkStam1" (sortDataWK)="sortDataWk($event)"></app-stamm-wk>
+      <app-stamm-wk [wasserkoerperStam]="wkStam1" [gewaesserart]="gewaesserart" (sortDataWK)="sortDataWk($event)"  (newDataWK)="handleDataWK($event)"></app-stamm-wk>
       
     </div>
       

@@ -23,7 +23,7 @@ export class StammdatenComponent implements OnInit{
   public MessstellenAnzeige:boolean=false;
   public WKAnzeige:boolean=false;
   sortedData:MessstellenStam[]=[];sortedDataWK:WasserkoerperStam[]=[];
-
+  public gewaesserart:string;
 //sort Mst
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
@@ -92,26 +92,7 @@ this.wkStam1=this.sortedDataWK;
 }
   async ngOnInit(){
 
-   
-   
-
-
-    //await  this.stammdatenService.start(true);
-   // this.MessstellenAnzeige=true;
-    //this.messstellenStam.push=this.stammdatenService.messstellenarray;
-
-
-
-    // await Promise.all(
-    //   this.stammdatenService.messstellenarray.map(async (f) => {
-      
-    //       //if ((f.Jahr>=this.min && f.Jahr<=this.max)){
-    //      //console.log(f.id_mst);
-    //        // this.messstellenStam1.push(f);
-    //       //  this.stammMessstellenComponent.dataSource.push(f);
-    //       //}
-          
-    //   })  ) 
+ 
       
   }
 
@@ -130,14 +111,16 @@ this.wkStam1=this.sortedDataWK;
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
   console.log (this.stammdatenService.wkarray)
-  this.wkStam1=this.stammdatenService.wkarray;}
+  this.wkStam1=this.stammdatenService.wkarray;
+this.gewaesserart="Fließgewässer";}
   
   async seeWk()
   {await  this.stammdatenService.startwk(true);
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
   console.log (this.stammdatenService.wkarray)
-  this.wkStam1=this.stammdatenService.wkarray;}
+  this.wkStam1=this.stammdatenService.wkarray;
+  this.gewaesserart="See";}
 
 
 
@@ -149,8 +132,33 @@ this.wkStam1=this.sortedDataWK;
     this.WKAnzeige=false;
   }
 
+  handleDataWK(result:WasserkoerperStam){
+    let wkStam2:WasserkoerperStam[]=this.wkStam1;
+    for (let i = 0, l = wkStam2.length; i < l; i += 1) {
+      if (wkStam2[i].id===result.id)
+    {
+      //archiviere alte Mst-Daten 
+      this.stammdatenService.archiviereWKStamm(wkStam2[i]); 
 
+      const updated_at= this.formatDate(Date.now());
 
+      wkStam2[i].bericht_eu=result.bericht_eu;
+      wkStam2[i].dia_typ=result.dia_typ;
+      wkStam2[i].mp_typ=result.mp_typ;
+      wkStam2[i].pp_typ=result.pp_typ;
+      wkStam2[i].wrrl_typ=result.wrrl_typ;
+      wkStam2[i].id_gewaesser=result.id_gewaesser;
+      wkStam2[i].hmwb=result.hmwb;
+      wkStam2[i].kuenstlich=result.kuenstlich;
+      wkStam2[i].updated_at=updated_at;
+      wkStam2[i].land=result.land;
+      wkStam2[i].eu_cd_wb=result.eu_cd_wb;
+      wkStam2[i].wk_name=result.wk_name;
+
+       //speichere neue Mst-Daten
+       this.stammdatenService.speichereWK(result); 
+  }
+    }}
 handleData(result:MessstellenStam){
 
 
@@ -219,9 +227,29 @@ applyFilterMessstellen(event: Event) {
       this.messstellenStam1.push(messstellenStam2[i]);
 
     }}
+}
+applyFilterWK(event:Event){
+  const filterValue = (event.target as HTMLInputElement).value;
 
-  
-}}
+  let kwStam2: WasserkoerperStam[] = this.stammdatenService.wkarray;
+
+
+  this.wkStam1= [];
+  for (let i = 0, l = kwStam2.length; i < l; i += 1) {
+    let wkStamTemp:WasserkoerperStam=kwStam2[i];
+    if (wkStamTemp.gewaessername==null) {wkStamTemp.gewaessername=' '}
+    if (wkStamTemp.wk_name.includes(filterValue) 
+    || 
+    wkStamTemp.gewaessername.includes(filterValue) 
+     || wkStamTemp.eu_cd_wb.includes(filterValue) 
+    // || messstellenStam2[i].wk_name.includes(filterValue)
+    ){
+      this.wkStam1.push(kwStam2[i]);
+
+    }}
+  }
+}
+
 function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

@@ -137,27 +137,7 @@ save(): void {
 }
 }
 
-                // ngOnInit(): void {
-              
-                // }
-              
-               
-  
-              
-            
-            
-//               ngOnInit(): void {
-               
-//                 this.wk = this.stammdatenService.holeSelectDataWK();
-//                 // (async () => {
-//                 //   this.wk = await this.stammdatenService.holeSelectDataWK;
-                  
-//                 // })();
-               
-//                 console.log( this.wk);
-              
-                
-//                    
+                    
 interface WasserkoerperSelect {
 
   id:number;
