@@ -11,7 +11,18 @@ export class UebersichtImportService {
   temp:any=[];
   constructor(private httpClient: HttpClient,private impPhylibServ: ImpPhylibServ) { }
 
+  aktualisiereImportdaten(anzahlmst:number,anzahlwerte:number,bemerkung:string,id_imp:number){
 
+    const body = new HttpParams()
+    .set('id_imp',id_imp)
+    .set('bemerkung',bemerkung)
+    .set('anzahlwerte',anzahlwerte)
+    .set('anzahlmst',anzahlmst)
+   
+    this.httpClient.post('http://localhost:3000/updateArchivImport', body).subscribe(resp => {
+   console.log("response %o, ", resp);  });
+
+  }
  async start() {
 // this.callUebersicht2();
 
@@ -29,7 +40,25 @@ export class UebersichtImportService {
   });
  }
 
-
+ loescheDatenMstAbundanz(id_imp:number){
+ 
+    const body = new HttpParams()
+   .set('id_imp',id_imp)
+   
+  
+   this.httpClient.post('http://localhost:3000/deleteMstAbundanz', body).subscribe(resp => {
+  console.log("response %o, ", resp);  });
+  }
+  loescheDatenMstBewertungen(id_imp:number){
+ 
+    const body = new HttpParams()
+   .set('id_imp',id_imp)
+   
+  
+   this.httpClient.post('http://localhost:3000/deleteMstBewertungen', body).subscribe(resp => {
+  console.log("response %o, ", resp);  });
+  }
+ 
  neueImportid(uebersichtImport:UebersichtImport[]):number{
   let UebersichtImport:UebersichtImport;
 let max:number=uebersichtImport[0].id_imp;
@@ -55,28 +84,7 @@ callUebersicht2(){
   });
 }
 
-//  handl2(){
-//   this.uebersicht=[];
-//   for (let a = 0, le = this.temp.length; a < le; a += 1) {
-    
-//     this.uebersicht.push({ dateiname:this.temp[a].dateiname,
-//       verfahren: this.temp[a].verfahren,
-//       komponente:this.temp[a].komponente,
-//       importiert:this.temp[a].importiert,
-//       jahr:this.temp[a].jahr,
-//       probenehmer:this.temp[a].firma,
-//       anzahlmst:this.temp[a].anzahlmst,
-//       anzahlwerte:this.temp[a].anzahlwerte,
-//       bemerkung:this.temp[a].bemerkung,
-//       id_pn:this.temp[a].id_pn,
-//       id_imp:this.temp[a].id_imp,
-//     id_verfahren:this.temp[a].id_verfahren,
-//     import_export:this.temp[a].import_export,
-//     id_komp:this.temp[a].id_komp
-//   });
 
-//   }
-//  }
 async handle(){
   this.uebersicht=[];
   await Promise.all(

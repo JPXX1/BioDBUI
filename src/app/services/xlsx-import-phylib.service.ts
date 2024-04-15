@@ -30,7 +30,7 @@ export class XlsxImportPhylibService {
 	public tempMst: any;
 	public parameterabiot: any;
 	public _uebersicht:Uebersicht;
-	
+	public importierteMesswerte:number;
 	
 	vorhanden: boolean;
 	vorhandenMst: boolean;
@@ -718,7 +718,7 @@ console.log(this.mstindex);
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
-
+		let messwertanzahl:number;
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
 			if (this.uebersicht[a].import1==="checked"){ //import möglich
@@ -733,39 +733,44 @@ console.log(this.mstindex);
 	
 
 		for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
-			//var a = a + 1;
+			messwertanzahl = messwertanzahl + 1;
 
 
 			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, uebersichtimport.id_imp);
  
 
 		}
-	}}}}
+	}}}this.importierteMesswerte=messwertanzahl;}
 
 	importMessstellenIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
 		let jahrtemp: string;
+		let a=0;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
 		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
-			var a = a + 1;
+			a = a + 1;
 
 
 			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
-
+			
 		}
+		this.UebersichtImportService.aktualisiereImportdaten(a,this.importierteMesswerte,"",uebersichtimport.id_imp)
 	}
 
 	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
+		let a=0;
 		for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
-			var a = a + 1;
+			a = a + 1;
 
 
 			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
 
 		}
+
+		this.UebersichtImportService.aktualisiereImportdaten(a,0,"",uebersichtimport.id_imp);
 	}
 	
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){

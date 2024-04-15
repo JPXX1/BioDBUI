@@ -1,6 +1,6 @@
 .example-viewport {
     height: 200px;
-    width: 200px;
+    width: 700px;
     border: 1px solid black;
   }
   
@@ -8,6 +8,7 @@
     height: 50px;
   }
   .spalte1{
+    width: auto;
     text-align: left;
    
     border-color: grey;
@@ -34,4 +35,8 @@ border-width: 1px;
   /* border-color: grey; */
 
 /* border-width: 1px; */
+}
+table {
+
+  width: 70%
 }

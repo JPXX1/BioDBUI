@@ -4,7 +4,7 @@
     
     <!-- <cdk-virtual-scroll-viewport itemSize="550" class="example-viewport"> -->
       <!-- <div *cdkVirtualFor="let item of uebersicht" class="example-item">{{item.dateiname}}{{item.firma}}</div> -->
-      <table  cdk-table [dataSource]="uebersicht" style="width:90%">
+      <table  cdk-table [dataSource]="uebersicht" style="width: 80%;" >
 
         <ng-container cdkColumnDef="probenehmer">
           <th  cdk-header-cell *cdkHeaderCellDef  class="header3"> Probenehmer </th>
@@ -41,6 +41,10 @@
               <th  cdk-header-cell *cdkHeaderCellDef  class="header2">importierte Messwerte</th>
               <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.anzahlwerte}} </td>
               </ng-container>
+              <ng-container cdkColumnDef="bemerkung">
+                <th  cdk-header-cell *cdkHeaderCellDef  class="header2">Bemerkung</th>
+                <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.bemerkung}} </td>
+                </ng-container>
               <ng-container matColumnDef="Bearbeiten">
                 <mat-header-cell *matHeaderCellDef class="header-table-rl">Aktionen</mat-header-cell>
                 <mat-cell *matCellDef="let row">
