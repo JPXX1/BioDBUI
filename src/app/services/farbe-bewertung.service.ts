@@ -38,11 +38,11 @@ export class FarbeBewertungService {
     }
   }
   getColorArtfehltinDB(Wert:String) {
-    if (Wert.includes("ID_ART nicht bekannt")){
+  //   if (Wert.includes("ID_ART nicht bekannt")){
 
-      return 'rgb(226, 0, 26)';}
-      else
-  {return 'withe';}
+  //     return 'rgb(226, 0, 26)';}
+  //     else
+  // {return 'withe';}
 
   
     }

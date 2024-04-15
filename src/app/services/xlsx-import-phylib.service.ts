@@ -5,13 +5,15 @@ import { MstIndex } from '../interfaces/mst-index';
 import { Uebersicht } from '../interfaces/uebersicht';
 import { Messwerte } from '../interfaces/messwerte';
 import { MessstellenImp } from '../interfaces/messstellen-imp';
+import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
+import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class XlsxImportPhylibService {
 
-	constructor(private impPhylibServ: ImpPhylibServ) { }
+	constructor(private impPhylibServ: ImpPhylibServ,private UebersichtImportService:UebersichtImportService) { }
 
 
 	public einheiten: any;
@@ -685,20 +687,20 @@ console.log(this.mstindex);
 			console.log('observable -> ' + this.MWausDB);
 		});
 	}
-	importIntoDB(jahr: string, probenehmer: string): string {
+	importIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport): string {
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
 
 
 		
-				this.importMesswerteIntoDB(jahr, probenehmer);
-				this.importMessstellenIntoDB(jahr, probenehmer);
+				this.importMesswerteIntoDB(jahr, probenehmer,uebersichtimport);
+				this.importMessstellenIntoDB(jahr, probenehmer,uebersichtimport);
 				return "Datenimport erfolgreich durchgeführt."
 			
 	}
 	//Phylib ExportDatei
-	importBewertungIntoDB(jahr: string, probenehmer: string): string {
+	importBewertungIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport): string {
 		//this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 		if (this.vorhanden === true) {
@@ -708,11 +710,11 @@ console.log(this.mstindex);
 				return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
 			} else {
 				//this.importMesswerteIntoDB(jahr, probenehmer);
-				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
+				this.importMessstellenBewertungIntoDB(jahr, probenehmer,uebersichtimport);
 				return "Datenimport erfolgreich durchgeführt."
 			}
 	}
-	importMesswerteIntoDB(jahr: string, probenehmer: string) {
+	importMesswerteIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
@@ -734,13 +736,13 @@ console.log(this.mstindex);
 			//var a = a + 1;
 
 
-			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, "1");
+			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, uebersichtimport.id_imp);
  
 
 		}
 	}}}}
 
-	importMessstellenIntoDB(jahr: string, probenehmer: string) {
+	importMessstellenIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
@@ -748,12 +750,12 @@ console.log(this.mstindex);
 			var a = a + 1;
 
 
-			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,"1");
+			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
 
 		}
 	}
 
-	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
+	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
@@ -761,7 +763,7 @@ console.log(this.mstindex);
 			var a = a + 1;
 
 
-			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,"1");
+			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
 
 		}
 	}

@@ -11,10 +11,12 @@ import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
-
-
-
+import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
+import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
+import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
+// import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 
 
 @Component({
@@ -43,10 +45,13 @@ export class FileUploadComponent implements OnInit {
 	public Datimptab:boolean=false;
 	public newDate: string;
 	public uebersicht:Uebersicht[]=[];
-	
+	public uebersichtImport:UebersichtImport[];
+	public newuebersichtImport:UebersichtImport;
+	ImportIntoDB:boolean=true;
+	pruefen:boolean=true;
 	dataSource: MatTableDataSource<Uebersicht>;
-	
-
+	mstMakrophyten:MstMakrophyten[];
+	ImportDatenAnzeige:boolean=true;
 	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];//public MessDataGr:Messgroup[]=[];
 	public MessDataImp:Messwerte[]=[];
 	displayColumnNames:string[]=['Nr','Messstelle','Anzahl', 'MPtyp'];
@@ -61,28 +66,56 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
+	constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
+
+		
 	}
 	panelOpenState = false;
-	ngOnInit() {
-		// this.jahrsel.ngOnInit
-		// this.jahr=this.jahrsel.Jahr;
+	async ngOnInit() {
+		await this.uebersichtImportService.start();
+		this.uebersichtImport=this.uebersichtImportService.uebersicht;
+		//console.log(this.uebersichtImport);
 	}
 	onValueChange($event){
 		console.log($event)
 		this.newDate=$event;
 	  }
 	
-	  
+	async openexpand(){
+		// console.log();
+	//await this.uebersichtImportService.handle();
+	}  
 	// On file Select 
 	onChange(event) {
 		this.file=event.target.files[0];
-		
+		this.pruefen=true;this.ImportIntoDB=true;
+		this.InfoBox="";
+		this.dataSource=new MatTableDataSource();
 		this.mstimptab=false;  this.Datimptab=false;
+		this.newuebersichtImport= {} as UebersichtImport;
+		this.newuebersichtImport.dateiname=this.file.name;
 	}
+	onDeleteClick(){}
 
+	async handleData(result){
 
+		this.mstMakrophyten=[];
+		
+		// this.MakrophytenAnzeige=true;
+//   this.MakrophytenMstAnzeige=false;
+  //await 
+  if (result.import_export===true){
+  await this.anzeigeBewertungMPService.callImpMstMP(result.id_imp);
+  this.anzeigeBewertungMPService.datenUmwandeln("",2004,2050);
 
+  this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
+
+  console.log( this.mstMakrophyten);
+
+  }
+ 
+	  }
+		
 	// OnClick of button Upload 
 	onUpload() {
 		this.loading = !this.loading;
@@ -95,12 +128,16 @@ export class FileUploadComponent implements OnInit {
 			(event: any) => {
 				if (typeof (event) === 'object') {
 
-				
+					
 
 					this.loading = false; // Flag variable 
 				}
 			}
 		);
+
+		//name uploaddatei in UeberesichtImport;
+		
+	
 	}
 
 
@@ -129,7 +166,7 @@ export class FileUploadComponent implements OnInit {
 		
 		if (this.xlsxImportPhylibService.vorhanden==true)
 		{this.InfoBox="Daten lassen sich nicht oder nur teilweise importieren."} else
-		{this.InfoBox="Importierbare Daten wurden importiert."};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
+		{this.InfoBox="Daten sind zum import bereit.";this.ImportIntoDB=false;};}else {this.InfoBox="Bitte erst eine Importdatei hochladen."} 
 
 			}}}
 	async	importIntoDB(){
@@ -153,7 +190,20 @@ export class FileUploadComponent implements OnInit {
 			
 				
 				this.InfoBox="Der Import wird durchgeführt.";
-				this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);};}
+
+				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
+				this.newuebersichtImport.id_imp=this.uebersichtImportService.neueImportid(this.uebersichtImport);
+				this.newuebersichtImport.id_pn=this.probenehmer;
+				this.newuebersichtImport.jahr=this.jahr;
+				this.newuebersichtImport.anzahlmst=0;
+				this.newuebersichtImport.anzahlwerte=0;
+				this.newuebersichtImport.bemerkung="";
+				
+				this.uebersichtImportService.archiviereNeueImportUebersicht(this.newuebersichtImport);
+
+
+				this.uebersichtImport.push(this.newuebersichtImport);
+				this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,this.newuebersichtImport);};}
 				else 
 				
 				console.log(this.valExceltabsService.NrVerfahren);
@@ -165,7 +215,7 @@ export class FileUploadComponent implements OnInit {
 
 
 				{this.InfoBox="Der Import wird durchgeführt.";
-				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);};}
+				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer,this.newuebersichtImport);};}
 				else 
 				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
 				}}
@@ -174,8 +224,8 @@ export class FileUploadComponent implements OnInit {
 
 
 			async addfile()     
-		{  
-			this.mstimptab=true; this.Datimptab=false;  
+		{  this.pruefen=true;
+			this.mstimptab=true; this.Datimptab=false;  this.ImportIntoDB=true;
 	//	this.file= event.target.files[0];     
 		let fileReader = new FileReader();    
 		fileReader.readAsArrayBuffer(this.file);     
@@ -193,7 +243,13 @@ export class FileUploadComponent implements OnInit {
 			await this.valExceltabsService.ExcelTabsinArray(workbook);	
 			let valexcelspalten: any=this.valExceltabsService.valspalten
 
+			//importUebrsicht ID verfahren festlegen
+			
+			
+
 			console.log(this.valExceltabsService.NrVerfahren);
+
+		this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
 				switch(this.valExceltabsService.NrVerfahren) {
 					
 				  case 1:
@@ -204,47 +260,54 @@ export class FileUploadComponent implements OnInit {
 						await this.xlsxImportPhylibService.Phylibimport(workbook,this.valExceltabsService.valspalten,0,1,this.valExceltabsService.NrVerfahren);
 						// Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number)
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						
+						this.newuebersichtImport.id_komp=1;
 					
 						this.displayableColumns(1);
 						
 						
 						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
-						
+						this.Datimptab=false;
+						this.pruefen=false;
 						this.dataSource.sort = this.sort;
 					break;
 				  case 2:
+					this.newuebersichtImport.id_komp=1;
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
 						this.xlsxImportPhylibService.uebersicht=[];
 						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
 						
-						
+						this.pruefen=false;
 						this.displayableColumns(2);
-						
+						this.Datimptab=false;
 						break;
 					case 3:
+						this.newuebersichtImport.id_komp=3;
 						this.xlsxImportPhylibService.uebersicht=[];this.xlsxImportPhylibService.MessDataOrgi=[];
 						await this.perlodesimportService.startimport(workbook);
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
 						this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
+					this.Datimptab=false;
+					this.pruefen=false;
 					break;
 					case 4://MZB export
 					this.xlsxImportPhylibService.uebersicht=[];
+					this.newuebersichtImport.id_komp=3;
 					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
-					
+					this.Datimptab=false;
 					this.displayableColumns(4);
+					this.pruefen=false;
 					break;
 					case 5:
 					// code block
 					break;
 				  default:
-					// code block
+					this.InfoBox="Keine Importdatei."
 				} 
 			}    
 	};

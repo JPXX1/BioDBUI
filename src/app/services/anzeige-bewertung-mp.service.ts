@@ -28,8 +28,18 @@ export class AnzeigeBewertungMPService {
    
   });
 }
-
-
+async callImpMstMP(komp:number) {
+ 
+  await this.bwMstAbundanzenImportID(komp).forEach(formen_ => {
+    this.dbBewertungMst = formen_;
+   
+  });
+}
+bwMstAbundanzenImportID(komp:number) {
+  let params = new HttpParams().set('id',komp);
+  
+  return this.httpClient.get('http://localhost:3000/bwMstAbundanzenImportID', {params});
+}
 datenUmwandeln(FilterMst:string,min:number,max:number){
   this.mstMakrophyten=[];
   

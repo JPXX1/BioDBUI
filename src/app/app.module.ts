@@ -51,7 +51,9 @@ import { ArchivStammdatenComponent } from './stammdaten/archiv-stammdaten-mst/ar
 import { StammWkComponent } from './stammdaten/stamm-wk/stamm-wk.component';
 import { EditStammdatenWkComponent } from './stammdaten/edit-stammdaten-wk/edit-stammdaten-wk.component';
 import {MatDividerModule} from '@angular/material/divider';
-import { ArchivStammdatenWkComponent } from './stammdaten/archiv-stammdaten-wk/archiv-stammdaten-wk.component'; 
+import { ArchivStammdatenWkComponent } from './stammdaten/archiv-stammdaten-wk/archiv-stammdaten-wk.component';
+import { DialogJaNeinComponent } from './dialog-ja-nein/dialog-ja-nein.component';
+
 StammWkComponent
 
 const routes: Routes = [
@@ -65,7 +67,7 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent,     
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent,      
 ], 
 imports: [MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,

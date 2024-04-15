@@ -6,18 +6,9 @@
       <!-- <div *cdkVirtualFor="let item of uebersicht" class="example-item">{{item.dateiname}}{{item.firma}}</div> -->
       <table  cdk-table [dataSource]="uebersicht" style="width:90%">
 
-        <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-          
-        <!-- Position Column -->
-        
-        
-       
-        <!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
-        <!-- Weight Column -->
-        <ng-container cdkColumnDef="firma">
+        <ng-container cdkColumnDef="probenehmer">
           <th  cdk-header-cell *cdkHeaderCellDef  class="header3"> Probenehmer </th>
-          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.firma}} </td>
+          <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.probenehmer}} </td>
           
           </ng-container>
         <ng-container cdkColumnDef="jahr">
@@ -50,7 +41,24 @@
               <th  cdk-header-cell *cdkHeaderCellDef  class="header2">importierte Messwerte</th>
               <td  cdk-cell *cdkCellDef="let element" class="spalte1"> {{element.anzahlwerte}} </td>
               </ng-container>
-          <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+              <ng-container matColumnDef="Bearbeiten">
+                <mat-header-cell *matHeaderCellDef class="header-table-rl">Aktionen</mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                  <button mat-icon-button color="delete"  class="iconbutton" (click)="onDeleteClick(row)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <button mat-icon-button color="accent" aria-label="Example icon button with a menu icon" class="iconbutton"
+                    color="warn" (click)="handleRowClick(row)">
+                    <mat-icon>open_in_new</mat-icon>
+                  </button>
+                  <section class="example-section">
+              
+              
+                  </section>
+                </mat-cell>
+              </ng-container>
+    
+              <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
           <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
         </table>
     <!-- </cdk-virtual-scroll-viewport> -->

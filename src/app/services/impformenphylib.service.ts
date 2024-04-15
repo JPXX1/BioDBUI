@@ -36,7 +36,7 @@ export class ImpPhylibServ {
       return this.httpClient.get('http://localhost:3000/impMst');
          
      
-         
+        
        }
 
        getimpUebersicht(){
@@ -121,7 +121,7 @@ export class ImpPhylibServ {
         return this.httpClient.get('http://localhost:3000/impArten', {params});
         }
         
-        postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import:string){ 
+        postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import:number){ 
           const body = new HttpParams()
           .set('id_mst',MessstellenImp.id_mst)
           .set('id_para',MessstellenImp.id_para)
@@ -143,7 +143,7 @@ export class ImpPhylibServ {
 
 
 
-        postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:string){
+        postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:number){
 
          
             const body = new HttpParams()
