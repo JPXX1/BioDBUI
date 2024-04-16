@@ -154,6 +154,10 @@ this.gewaesserart="Fließgewässer";}
       wkStam2[i].land=result.land;
       wkStam2[i].eu_cd_wb=result.eu_cd_wb;
       wkStam2[i].wk_name=result.wk_name;
+      wkStam2[i].dia_typ_str=result.dia_typ_str;
+      wkStam2[i].mp_typ_str=result.mp_typ_str;
+      wkStam2[i].wrrl_typ_str=result.wrrl_typ_str;
+      wkStam2[i].pp_typ_str=result.pp_typ_str;
 
        //speichere neue Mst-Daten
        this.stammdatenService.speichereWK(result); 

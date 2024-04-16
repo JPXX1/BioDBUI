@@ -19,11 +19,11 @@ export class AnzeigenMstUebersichtService {
 
 
 
-  async call(filter:string,min:number,max:number) {
+  async call(filter:string,min:number,max:number,komp_id:number) {
 
  
-   await this.callBwUebersicht();
-   if (filter){await this.filterMst(filter,min,max)}
+   await this.callBwUebersicht(komp_id);
+  await this.filterMst(filter,min,max);
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
@@ -34,8 +34,21 @@ export class AnzeigenMstUebersichtService {
      console.log(this.displayedColumns);
   }
 
-   getBwMSTUebersicht() {
-     return this.httpClient.get('http://localhost:3000/bwMstUebersicht');
+   getBwMSTUebersicht(komp_id:number) {
+
+
+
+    // getArtenPhylibMP(parameter :number){ 
+
+      let params = new HttpParams().set('id',komp_id);
+      // console.log(params.toString())
+      //const params: { id: 1 };
+      // return this.httpClient.get('http://localhost:3000/impArten', {params});
+
+
+
+
+     return this.httpClient.get('http://localhost:3000/bwMstUebersicht', {params});
   }
   erzeugeDisplayColumnNames(){
     this.displayColumnNames=[];
@@ -55,13 +68,17 @@ export class AnzeigenMstUebersichtService {
     await Promise.all(
       temp.map(async (f) => {
                 
-          
+          if (!filter){
+            if ((Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
+              this.dbMPUebersichtMst.push(f);}
+          }
+         else {
           if (f.wk_name.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
           this.dbMPUebersichtMst.push(f);}
           // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
-      })
+      }})
   )
    console.log (this.dbMPUebersichtMst);
    
@@ -138,9 +155,9 @@ export class AnzeigenMstUebersichtService {
   
 }
   }
-  async callBwUebersicht() {
+  async callBwUebersicht(komp_id:number) {
 
-    await this.getBwMSTUebersicht().forEach(formen_ => {
+    await this.getBwMSTUebersicht(komp_id).forEach(formen_ => {
       this.dbMPUebersichtMst = formen_;
      // console.log(formen_);
     });

@@ -4,7 +4,9 @@
   [innerHTML]="wk_name1"> 
 ></span>
 <br> <br> <br>
-<form [formGroup]="formInstanceWK">
+<div  class="form-group"style="width: 80%;margin-left:5%">
+<form [formGroup]="formInstanceWK" >
+
 
   <h5>Namen</h5>
   <table><tr><td>
@@ -32,7 +34,7 @@
   <div class="mt-5">
     <mat-label>WRRL-Typ</mat-label>
     <ng-multiselect-dropdown [placeholder]="data.wkstam.wrrl_typ_str" [settings]="dropdownSettingsGew"
-      [data]="dropdownTypWRRL" (onSelect)="onItemSelectGew($event)">
+      [data]="dropdownTypWRRL" (onSelect)="onItemSelectWrrl($event)">
     </ng-multiselect-dropdown>
   </div>
 </td>
@@ -40,7 +42,7 @@
   <div class="mt-5">
     <mat-label>Diatomeen-Typ</mat-label>
     <ng-multiselect-dropdown [placeholder]="data.wkstam.dia_typ_str" [settings]="dropdownSettingsGew"
-      [data]="dropdownTypDia" (onSelect)="onItemSelectGew($event)">
+      [data]="dropdownTypDia" (onSelect)="onItemSelectDia($event)">
     </ng-multiselect-dropdown>
   </div>
 </td>
@@ -48,7 +50,7 @@
   <div class="mt-5">
     <mat-label>Makrophyten-Typ</mat-label>
     <ng-multiselect-dropdown [placeholder]="data.wkstam.mp_typ_str" [settings]="dropdownSettingsGew"
-      [data]="dropdownTypMP" (onSelect)="onItemSelectGew($event)">
+      [data]="dropdownTypMP" (onSelect)="onItemSelectMP($event)">
     </ng-multiselect-dropdown>
   </div>
 </td>
@@ -56,7 +58,7 @@
   <div class="mt-5">
     <mat-label>Phytoplankton-Typ</mat-label>
     <ng-multiselect-dropdown [placeholder]="data.wkstam.pp_typ_str" [settings]="dropdownSettingsGew"
-      [data]="dropdownTypPP" (onSelect)="onItemSelectGew($event)" style="width: 20%;">
+      [data]="dropdownTypPP" (onSelect)="onItemSelectPP($event)" style="width: 20%;">
     </ng-multiselect-dropdown>
   </div>
 </td><mat-divider></mat-divider>
@@ -114,4 +116,4 @@
         <button mat-raised-button mat-dialog-close>Abbrechen</button>
       
       </div>
-</form></mat-card>
+</form></div></mat-card>

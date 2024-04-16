@@ -28,6 +28,7 @@ export class MonitoringComponent implements OnInit{
   public UebersichtAnzeigen:boolean=true;
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
+  private komp_id:number=1;
   public props: any[]=[];
   value = '';valueJahr = '';
   Artvalue = '';
@@ -48,13 +49,13 @@ export class MonitoringComponent implements OnInit{
     this.value='';
     this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
     if (this.MakrophytenMstAnzeige===true){
-     this.handleMakrophytenMPClick();
+     this.handleMakrophytenMPClick(this.komp_id);
     }}
     clearSearchFilterArt(){
       this.Artvalue='';
       this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
       if (this.MakrophytenMstAnzeige===true){
-       this.handleMakrophytenMPClick();
+       this.handleMakrophytenMPClick(this.komp_id);
       }
       if (this.MZBAnzeige===true){
         
@@ -85,7 +86,12 @@ this.onValueChangeFilter(value,Artvalue);
             this.FilterwkUebersicht.push(f);}
             
         })  )   
-    
+        if (this.MakrophytenMstAnzeige===true){
+          await this.handleMakrophytenMPClick(this.komp_id);
+          
+        }else if (this.MakrophytenAnzeige===true){
+          await this.handleMakrophytenClick();
+        }
     }else {
      
       await Promise.all(
@@ -96,14 +102,14 @@ this.onValueChangeFilter(value,Artvalue);
             this.FilterwkUebersicht.push(f);}
             //else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
         })  )   
-    }
+        if (this.MakrophytenMstAnzeige===true){
+          await this.handleMakrophytenMPClick(this.komp_id);
+          
+        }else if (this.MakrophytenAnzeige===true){
+          await this.handleMakrophytenClick();
+        }}
     console.log(this.MakrophytenMstAnzeige);
-    if (this.MakrophytenMstAnzeige===true){
-      await this.handleMakrophytenMPClick();
-      
-    }else if (this.MakrophytenAnzeige===true){
-      await this.handleMakrophytenClick();
-    }
+    
   }
   handleUebersicht(){
     this.MakrophytenAnzeige=false;
@@ -137,17 +143,19 @@ async handleMZBClick(){ //Taxadaten MZB
   this.mstMZB=this.anzeigeBewertungMPService.mstMakrophyten;
   this.getButtonAktivColorMP();
 }
-  async handleMakrophytenMPClick(){
-   
+  async handleMakrophytenMPClick(komp_id:number){
+    this.komp_id=komp_id;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
-    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max);
+    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max,komp_id);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
     this.props.push(this.anzeigenMstUebersichtService.displayedColumns);
     console.log(this.props);
-    this.getButtonAktivColorMP();
+    if (komp_id===1){
+    this.getButtonAktivColorMP();}else{
+      this.getButtonAktivColorMZ();}
   }
   async  buttonstamm(){
 
@@ -156,11 +164,24 @@ async handleMZBClick(){ //Taxadaten MZB
 
  console.log (this.stammdatenService.messstellenarray);
   }
+  getButtonAktivColorMZ() {
+    const el = document.getElementById('mpButton');
+    this._renderer2.removeStyle(el, 'background-color'); 
+    const ee = document.getElementById('uebersichtButton');
+    this._renderer2.removeStyle(ee,'background-color');  
+
+    const elz = document.getElementById('mzButton');
+    this._renderer2.setStyle(elz, 'background-color', 'rgb(20,220,220)');  
+   // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
+  }
   getButtonAktivColorMP() {
     const el = document.getElementById('mpButton');
     this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
     const ee = document.getElementById('uebersichtButton');
     this._renderer2.removeStyle(ee,'background-color');  
+
+    const elz = document.getElementById('mzButton');
+    this._renderer2.removeStyle(elz, 'background-color');
    // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
   }
   getButtonAktivUebersicht() {
@@ -168,5 +189,7 @@ async handleMZBClick(){ //Taxadaten MZB
     this._renderer2.removeStyle(el,'background-color');  
     const ee = document.getElementById('uebersichtButton');
     this._renderer2.setStyle(ee, 'background-color', 'rgb(20,220,220)'); 
+    const elz = document.getElementById('mzButton');
+    this._renderer2.setStyle(elz, 'background-color', 'background-color)');
   }
 }

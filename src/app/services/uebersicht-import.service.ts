@@ -72,7 +72,7 @@ if (max<uebersichtImport[a].id_imp){
   }
 
 console.log(max)
-max=max+1;
+max=Number(max)+1;
   return max;
  }
 callUebersicht2(){
@@ -100,7 +100,7 @@ async handle(){
         komponente:f.komponente,
         importiert:f.importiert,
         jahr:f.jahr,
-        probenehmer:f.probenehmer,
+        probenehmer:f.firma,
         anzahlmst:f.anzahlmst,
         anzahlwerte:f.anzahlwerte,
         bemerkung:f.bemerkung,

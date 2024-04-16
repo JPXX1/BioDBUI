@@ -31,7 +31,7 @@ export class XlsxImportPhylibService {
 	public parameterabiot: any;
 	public _uebersicht:Uebersicht;
 	public importierteMesswerte:number;
-	
+	public uebersichtImport:UebersichtImport;
 	vorhanden: boolean;
 	vorhandenMst: boolean;
 	
@@ -525,7 +525,7 @@ console.log(this.mstindex);
 		if (mst!==undefined){
 		if (this.uebersicht.length == 0) {
 
-			
+			if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
 			
 			 this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
@@ -534,6 +534,8 @@ console.log(this.mstindex);
 
 
 			if (messgroup.length === 0) {
+				//nur BEwertungsdaten=Exportdateien
+				if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
 				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
 			//	this.MessDataGr.push({ _Nr: this.MessDataGr.length + 1, _Messstelle: mst, _AnzahlTaxa: 0, _TypMP: _typmp, _TypDIA: _typdia, _TypWRRL: _typwrrl, _TypPhytoBenthos: _typphytobenth, _UMG: _umg, _Veroedung: _veroedung, _B_veroedung: _b_veroedung, _Helo_dom: _helo_dom, _Oekoreg: _oekoreg, MstOK: mstok, OK: ok, KeineMP: keinemp, gesamtdeckg: _gesamtdeckg },);
@@ -588,7 +590,7 @@ console.log(this.mstindex);
 			}
 
 		}}
-		console.log(this.uebersicht);
+		//console.log(this.uebersicht);
 	}
 
 
@@ -687,20 +689,20 @@ console.log(this.mstindex);
 			console.log('observable -> ' + this.MWausDB);
 		});
 	}
-	importIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport): string {
+	importIntoDB(jahr: string, probenehmer: string): string {
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
 
 
 		
-				this.importMesswerteIntoDB(jahr, probenehmer,uebersichtimport);
-				this.importMessstellenIntoDB(jahr, probenehmer,uebersichtimport);
+				this.importMesswerteIntoDB(jahr, probenehmer);
+				this.importMessstellenIntoDB(jahr, probenehmer);
 				return "Datenimport erfolgreich durchgeführt."
 			
 	}
-	//Phylib ExportDatei
-	importBewertungIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport): string {
+	//Phylib/Perloes ExportDatei
+	importBewertungIntoDB(jahr: string, probenehmer: string): string {
 		//this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 		if (this.vorhanden === true) {
@@ -710,11 +712,11 @@ console.log(this.mstindex);
 				return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
 			} else {
 				//this.importMesswerteIntoDB(jahr, probenehmer);
-				this.importMessstellenBewertungIntoDB(jahr, probenehmer,uebersichtimport);
+				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
 				return "Datenimport erfolgreich durchgeführt."
 			}
 	}
-	importMesswerteIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
+	importMesswerteIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
@@ -736,41 +738,53 @@ console.log(this.mstindex);
 			messwertanzahl = messwertanzahl + 1;
 
 
-			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, uebersichtimport.id_imp);
+			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp);
  
 
 		}
 	}}}this.importierteMesswerte=messwertanzahl;}
 
-	importMessstellenIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
+	importMessstellenIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		let a=0;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
+		
 		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
 			a = a + 1;
 
 
-			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
+			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
 			
 		}
-		this.UebersichtImportService.aktualisiereImportdaten(a,this.importierteMesswerte,"",uebersichtimport.id_imp)
+		this.UebersichtImportService.aktualisiereImportdaten(a,this.importierteMesswerte,"",this.uebersichtImport.id_imp)
 	}
-
-	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string,uebersichtimport:UebersichtImport) {
+	//Import der Bewertugsergebnisse
+	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
 		let a=0;
-		for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
-			a = a + 1;
+		let b=0;
+		// for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
+			
+			for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
+				if (this.uebersicht[a].import1==="checked"){ //import möglich
+					a = a + 1;
+					let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+					let mstID=mstee[0].id_mst;
+					const tmpMWteil=this.messstellenImp.filter(g=>g.id_mst===mstID)
+	
+	
+					if (tmpMWteil.length>0){ 
+						for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
+							b=b+1;
+			this.impPhylibServ.postMessstellenPhylib(tmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
 
-			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,uebersichtimport.id_imp);
+		}}}}
 
-		}
-
-		this.UebersichtImportService.aktualisiereImportdaten(a,0,"",uebersichtimport.id_imp);
+		this.UebersichtImportService.aktualisiereImportdaten(a,b,"",this.uebersichtImport.id_imp);
 	}
 	
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){

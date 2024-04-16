@@ -9,7 +9,7 @@
   <div style="margin-left:200px">
     
     
-    <button mat-button id="mpButton" [matMenuTriggerFor]="uebersicht" >Wasserkörper</button>
+    <button mat-button id="uebersichtButton" [matMenuTriggerFor]="uebersicht" >Wasserkörper</button>
     <mat-menu #uebersicht="matMenu" xPosition="after">
     <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
     <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">ausblenden</button>
@@ -18,7 +18,7 @@
 
     <button mat-button id="mpButton" [matMenuTriggerFor]="afterMenu" >Makrophyten</button>
     <mat-menu #afterMenu="matMenu" xPosition="after">
-  <button mat-menu-item (click)="handleMakrophytenMPClick()">Messstellenübersicht</button>
+  <button mat-menu-item (click)="handleMakrophytenMPClick(1)">Messstellenübersicht</button>
   <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button>
 </mat-menu>
 
@@ -34,16 +34,16 @@
       <button mat-menu-item>Item 1</button>
       <button mat-menu-item>Item 2</button>
     </mat-menu>
-    <button mat-button [matMenuTriggerFor]="mzb">Makrozoobenthos</button>
+    <button mat-button id="mzButton"  [matMenuTriggerFor]="mzb">Makrozoobenthos</button>
     <mat-menu #mzb="matMenu" xPosition="after">
-      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item (click)="handleMakrophytenMPClick(3)">Messstellenübersicht</button>
       <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button>
     </mat-menu>
     
     <button mat-button [matMenuTriggerFor]="fische">Fische</button>
     <mat-menu #fische="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
-      <button mat-menu-item (click)="buttonstamm()">StammdatenMst</button>
+      <button mat-menu-item >Item 2</button>
     </mat-menu>
 
    
