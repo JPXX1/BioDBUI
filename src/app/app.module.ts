@@ -52,7 +52,7 @@ import { StammWkComponent } from './stammdaten/stamm-wk/stamm-wk.component';
 import { EditStammdatenWkComponent } from './stammdaten/edit-stammdaten-wk/edit-stammdaten-wk.component';
 import {MatDividerModule} from '@angular/material/divider';
 import { ArchivStammdatenWkComponent } from './stammdaten/archiv-stammdaten-wk/archiv-stammdaten-wk.component';
-import { DialogJaNeinComponent } from './dialog-ja-nein/dialog-ja-nein.component';
+
 
 StammWkComponent
 

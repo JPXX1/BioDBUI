@@ -2,6 +2,7 @@ export interface MstUebersicht {
 
     wk: string;
     mst: string;
+    repreasent:boolean;
     sp1: string;
     sp2: string;
     sp3: string;

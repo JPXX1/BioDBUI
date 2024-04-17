@@ -6,9 +6,11 @@
   });</script>
 <span>
  
-  <div style="margin-left:200px">
-    
-    
+  <div style="margin-left:160px">
+    <table>
+      <tr>
+      
+      <td>
     <button mat-button id="uebersichtButton" [matMenuTriggerFor]="uebersicht" >Wasserkörper</button>
     <mat-menu #uebersicht="matMenu" xPosition="after">
     <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
@@ -28,7 +30,7 @@
       <button mat-menu-item>Item 2</button>
     </mat-menu>
 
-
+  
     <button mat-button [matMenuTriggerFor]="pp">Phytoplankton</button>
     <mat-menu #pp="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
@@ -39,7 +41,7 @@
       <button mat-menu-item (click)="handleMakrophytenMPClick(3)">Messstellenübersicht</button>
       <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button>
     </mat-menu>
-    
+  
     <button mat-button [matMenuTriggerFor]="fische">Fische</button>
     <mat-menu #fische="matMenu" xPosition="after">
       <button mat-menu-item>Item 1</button>
@@ -48,29 +50,45 @@
 
    
 
-   
+  </td>
+  <td>
     <mat-form-field>
       <input [(ngModel)]="value" matInput placeholder="Filter Wasserkörper" autocomplete="off" style="margin-left:10px" (input)="onValueChangeFilter(value,Artvalue)">
           <button mat-icon-button matSuffix (click)="clearSearchFilter()" *ngIf="value">
           <mat-icon>close</mat-icon>
       </button>
   </mat-form-field>
-
+</td>
+<td>
   <mat-form-field>
     <input [(ngModel)]="Artvalue" matInput placeholder="Filter Art/ DVNr" autocomplete="off" style="margin-left:20px" (input)="onValueChangeFilter(value,Artvalue)">
         <button mat-icon-button matSuffix (click)="clearSearchFilterArt()" *ngIf="Artvalue">
         <mat-icon>close</mat-icon>
     </button>
 </mat-form-field>
-
+</td>
+<td>
+  <mat-radio-group aria-label="Select an option">
+   
+    <mat-radio-button value=1  (change)="mstalleauswaehlen(1,value,Artvalue)">alle Messstellen</mat-radio-button>
+    <mat-radio-button value=2 checked (change)="mstalleauswaehlen(2,value,Artvalue)">repräsentative Messstellen (*)</mat-radio-button>
+  </mat-radio-group>
+</td>
+<td>
+ <div style="margin-left:20px;">
   <mat-slider discrete min="2005" max="2026" (change)="updateSetting(min,max,value,Artvalue)" style="margin-left:10px">
     <input [(ngModel)]="min" matSliderStartThumb>
     <input [(ngModel)]="max" matSliderEndThumb>
   </mat-slider>
+  
 
-  </div>
+</div> 
+</td>
+</tr>
+</table>
+</div>
 
-
+ 
 
 </span>
 <div class="card" *ngIf="UebersichtAnzeigen == true" style="vertical-align: top;">

@@ -30,6 +30,9 @@ export class MonitoringComponent implements OnInit{
   public displayedColumns:string[]=[]; 
   private komp_id:number=1;
   public props: any[]=[];
+  public repreasent:number=2;
+ 
+  
   value = '';valueJahr = '';
   Artvalue = '';
   min:number=2008;
@@ -61,6 +64,14 @@ export class MonitoringComponent implements OnInit{
         
       }
   }
+
+  async mstalleauswaehlen(value:number,filter:string,artfilter:string){
+    this.repreasent=value;
+   await this.onValueChangeFilter(filter,artfilter);
+    
+     }
+
+  
   updateSetting(min:number,max:number,value: string,Artvalue: string) {
     this.min = min;
     this.max=max;
@@ -147,7 +158,7 @@ async handleMZBClick(){ //Taxadaten MZB
     this.komp_id=komp_id;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
-    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max,komp_id);
+    await this.anzeigenMstUebersichtService.call(this.value,this.min,this.max,komp_id,this.repreasent);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
