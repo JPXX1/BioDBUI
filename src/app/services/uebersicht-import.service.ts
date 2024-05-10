@@ -61,19 +61,19 @@ export class UebersichtImportService {
  
  neueImportid(uebersichtImport:UebersichtImport[]):number{
   let UebersichtImport:UebersichtImport;
-let max:number=uebersichtImport[0].id_imp;
+let max:number=Number(uebersichtImport[0].id_imp);
 
 
   for (let a = 0, le = uebersichtImport.length; a < le; a += 1) {
-if (max<uebersichtImport[a].id_imp){
-  max=uebersichtImport[a].id_imp;}
+if (max<Number(uebersichtImport[a].id_imp)){
+  max=Number(uebersichtImport[a].id_imp);}
 
 
   }
 
 console.log(max)
-max=Number(max)+1;
-  return max;
+let max2=Number(max)+1;
+  return max2;
  }
 callUebersicht2(){
 
@@ -116,25 +116,56 @@ async handle(){
 //console.log (this.wkarray);
 
 }
-archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport){
-  const body = new HttpParams()
- .set('id_imp',uebersichtImport.id_imp)
- .set('dateiname', uebersichtImport.dateiname)
- .set('id_komp',uebersichtImport.id_komp)
+// archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport){
+//   const body = new HttpParams()
+//  .set('id_imp',uebersichtImport.id_imp)
+//  .set('dateiname', uebersichtImport.dateiname)
+//  .set('id_komp',uebersichtImport.id_komp)
 
- .set('anzahlmst',uebersichtImport.anzahlmst)
- .set('anzahlwerte',uebersichtImport.anzahlwerte)
+//  .set('anzahlmst',uebersichtImport.anzahlmst)
+//  .set('anzahlwerte',uebersichtImport.anzahlwerte)
 
- .set('id_verfahren',uebersichtImport.id_verfahren)
- .set('bemerkung',uebersichtImport.bemerkung)
- .set('jahr',uebersichtImport.jahr)
- .set('id_pn',uebersichtImport.id_pn)
+//  .set('id_verfahren',uebersichtImport.id_verfahren)
+//  .set('bemerkung',uebersichtImport.bemerkung)
+//  .set('jahr',uebersichtImport.jahr)
+//  .set('id_pn',uebersichtImport.id_pn)
 
- this.httpClient.post('http://localhost:3000/insertArchivImport', body).subscribe(resp => {
-console.log("response %o, ", resp);  });
+//  this.httpClient.post('http://localhost:3000/insertArchivImport', body).subscribe(resp => {
+// console.log("response %o, ", resp);  });
+// }
+
+async  archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport):Promise<string> {
+  let url='http://localhost:3000/insertArchivImport';
+
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "text/plain"
+      },
+      body: JSON.stringify({
+        id_imp:uebersichtImport.id_imp,
+        dateiname: uebersichtImport.dateiname,
+        id_komp:uebersichtImport.id_komp,
+       
+        anzahlmst:uebersichtImport.anzahlmst,
+        anzahlwerte:uebersichtImport.anzahlwerte,
+       
+        id_verfahren:uebersichtImport.id_verfahren,
+        bemerkung:uebersichtImport.bemerkung,
+        jahr:uebersichtImport.jahr,
+        id_pn:uebersichtImport.id_pn
+      })    
+    
+    });
+    return await response.text();
+  } catch (error) {
+    console.error('Error posting data:', error);
+    throw error;
+    return  "Fehler";
+  }
 }
-
-
 
   //INSERT INTO public.ar_import (id_imp, dateiname, id_komp, anzahlmst, anzahlwerte, importiert, id_verfahren, bemerkung, jahr, id_pn) VALUES(0, '', 0, 0, 0, now(), 0, '', '', 0);
   

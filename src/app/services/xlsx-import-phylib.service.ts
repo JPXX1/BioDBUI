@@ -439,12 +439,12 @@ console.log(this.mstindex);
 							if (i == 'Taxon') {
 								//ok=false;
 								Taxon = obj[index][i];
-								let taxon_ = this.arten.filter(arten => arten.taxon == Taxon);
+								let taxon_ = this.arten.filter(arten => arten.dvnr == Taxon);
 								if (taxon_.length !== 0) { Taxon = taxon_[0].id_taxon; aTaxon = taxon_[0].taxon; RLD=taxon_[0].rld;
 									ok = "";  } else {
 									ok = "checked";
-									var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
-									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon;}
+									var taxon2 = this.arten.filter(arten => arten.taxon == Taxon);
+									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon;ok = "";  }
 
 
 								}
@@ -504,7 +504,7 @@ console.log(this.mstindex);
 	}
 
 	async groupNAch() {
-
+		console.log(this._uebersicht);
 		let mst: string=this._uebersicht.mst;
 		let _sp3: string=this._uebersicht.sp3;
 		let _sp4: string=this._uebersicht.sp4;
@@ -521,7 +521,7 @@ console.log(this.mstindex);
 		let  _fehler2: string=this._uebersicht.fehler2;
 		let _fehler3: string=this._uebersicht.fehler3;
 		let importp:string=this._uebersicht.import1;
-		console.log(this._uebersicht);
+		
 		if (mst!==undefined){
 		if (this.uebersicht.length == 0) {
 
@@ -590,7 +590,7 @@ console.log(this.mstindex);
 			}
 
 		}}
-		//console.log(this.uebersicht);
+		console.log(this.uebersicht);
 	}
 
 
@@ -689,21 +689,23 @@ console.log(this.mstindex);
 			console.log('observable -> ' + this.MWausDB);
 		});
 	}
-	importIntoDB(jahr: string, probenehmer: string): string {
+	async importIntoDB(jahr: string, probenehmer: string):Promise<string> {
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
 
 
 		
-				this.importMesswerteIntoDB(jahr, probenehmer);
-				this.importMessstellenIntoDB(jahr, probenehmer);
-				return "Datenimport erfolgreich durchgeführt."
+				if (await this.importMesswerteIntoDB(jahr, probenehmer)==="Import der Messwerte erfolgreich." &&
+				await this.importMessstellenIntoDB(jahr, probenehmer)==="Import der Messstellendaten erfolgreich.")
+				{return "Datenimport erfolgreich durchgeführt."} else{
+					return "Datenimport nicht erfolgreich."
+				}
 			
 	}
 	//Phylib/Perloes ExportDatei
 	importBewertungIntoDB(jahr: string, probenehmer: string): string {
-		//this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
+		
 		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 		if (this.vorhanden === true) {
 			return "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
@@ -711,16 +713,17 @@ console.log(this.mstindex);
 			if (this.vorhandenMst === true) {
 				return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
 			} else {
-				//this.importMesswerteIntoDB(jahr, probenehmer);
+				
 				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
 				return "Datenimport erfolgreich durchgeführt."
 			}
 	}
-	importMesswerteIntoDB(jahr: string, probenehmer: string) {
+	async importMesswerteIntoDB(jahr: string, probenehmer: string):Promise<string> {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
 		let messwertanzahl:number;
+		let bemerkung="Import der Messwerte erfolgreich.";
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
 			if (this.uebersicht[a].import1==="checked"){ //import möglich
@@ -736,16 +739,25 @@ console.log(this.mstindex);
 
 		for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
 			messwertanzahl = messwertanzahl + 1;
+			let variable=await this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp)
+			console.log (variable);
+			if (variable!=='Created'){
+
+				bemerkung="Fehler beim Import der Messwerte."
 
 
-			this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp);
+			};
  
 
 		}
-	}}}this.importierteMesswerte=messwertanzahl;}
+	}}}this.importierteMesswerte=messwertanzahl;
 
-	importMessstellenIntoDB(jahr: string, probenehmer: string) {
+return bemerkung;
+}
+
+	async importMessstellenIntoDB(jahr: string, probenehmer: string):Promise<string> {
 		let jahrtemp: string;
+		let bemerkung="Import der Messstellendaten erfolgreich.";
 		let a=0;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
@@ -754,10 +766,14 @@ console.log(this.mstindex);
 			a = a + 1;
 
 
-			this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
+			if (await this.impPhylibServ.postMessstellenPhylib(this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp)==="Fehler"){
+
+				bemerkung="Fehler beim Import der Messtellendaten."	
+			}
 			
 		}
 		this.UebersichtImportService.aktualisiereImportdaten(a,this.importierteMesswerte,"",this.uebersichtImport.id_imp)
+	return bemerkung;
 	}
 	//Import der Bewertugsergebnisse
 	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {

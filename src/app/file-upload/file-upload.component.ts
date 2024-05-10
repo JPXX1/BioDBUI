@@ -1,4 +1,4 @@
-import { Component, OnInit,Output ,ViewChild,Injectable} from '@angular/core';
+import { Component, OnInit,Output ,ViewChild,Injectable,EventEmitter} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
 import {PerlodesimportService} from '../services/perlodesimport.service';
@@ -16,9 +16,11 @@ import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service'
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
-// import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
-
-
+import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import {StammdatenService} from 'src/app/services/stammdaten.service';
+// import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
+import {MessstelleAendernComponent} from 'src/app/file-upload/messstelle-aendern/messstelle-aendern.component'
+import { MatDialog } from '@angular/material/dialog';
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
@@ -30,7 +32,8 @@ export class FileUploadComponent implements OnInit {
 	@ViewChild(SelectProbenehmerComponent, {static: false}) childPN: SelectProbenehmerComponent;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
-
+	@Output() newData =new EventEmitter<MessstellenStam>();
+	// arraybuendel:ArraybuendelSel;
 	InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
@@ -66,7 +69,9 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService) { 
+	constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,
+		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
 		
 	}
@@ -212,7 +217,7 @@ export class FileUploadComponent implements OnInit {
 				
 				this.archivImportErzeugen();
 				
-				this.InfoBox=this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);
+				 this.InfoBox=await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;};}
 				else 
@@ -330,6 +335,68 @@ export class FileUploadComponent implements OnInit {
 				} 
 			}    
 	};
+
+	async edit(person: Uebersicht) {
+
+		// console.log(this.xlsxImportPhylibService.MessDataImp)
+		// let mststam1:MessstellenStam[]=this.stammdatenService.messstellenarray;
+		
+		
+		await this.stammdatenService.callBwUebersicht();
+		await this.stammdatenService.filterMst(true);
+	
+	  //console.log(this.stammdatenService.wk)
+	  let name_alt:string=person.mst;
+		
+		let aMst = this.stammdatenService.messstellenarray.find(i => i.namemst === name_alt);
+		let mst_id_alt=aMst.id_mst;
+	
+	
+	
+		// person.wknamen=(this.stammdatenService.wk);
+		const dialogRef = this.dialog.open(MessstelleAendernComponent, {
+		  width: '800px',
+		  data: this.stammdatenService.messstellenarray
+		});
+	 
+	  
+		dialogRef.afterClosed().subscribe(result => {
+		  if (result) {
+			let mst_id_neu=result.id_mst;
+			// let Uebersicht =this.xlsxImportPhylibService.uebersicht.filter(dd=>dd.mst===person.mst)
+			let a = this.xlsxImportPhylibService.uebersicht.findIndex(i => i.mst === person.mst);
+			this.xlsxImportPhylibService.uebersicht[a].mst=result.namemst
+			//let b=this.MessData.findIndex(i => i._Messstelle === person.mst);
+
+			for (let i = 0, l = this.MessDataOrgi.length; i < l; i += 1) {
+		console.log(this.MessDataOrgi[i]._Messstelle)
+				if (this.MessDataOrgi[i]._Messstelle===name_alt){
+
+					this.MessDataOrgi[i]._Messstelle=result.namemst;
+				}
+				
+			}
+
+			for (let b = 0, l = this.xlsxImportPhylibService.messstellenImp.length; b < l; b += 1) {
+				if (this.xlsxImportPhylibService.messstellenImp[b].id_mst===mst_id_alt){
+
+					this.xlsxImportPhylibService.messstellenImp[b].id_mst=result.id_mst;
+				}
+			}
+
+			console.log(this.xlsxImportPhylibService.MessDataImp)
+			for (let c = 0, l = this.xlsxImportPhylibService.MessDataImp.length;c < l; c += 1) {
+
+				
+				if (Number(this.xlsxImportPhylibService.MessDataImp[c]._Messstelle)===mst_id_alt){
+
+					this.xlsxImportPhylibService.MessDataImp[c]._Messstelle=mst_id_neu;
+				}
+			}
+			
+	
+		}});
+	  }
 displayableColumns(idverfahren:number){
 	let tab:number;
 	if (idverfahren===4) {tab=2;}else{tab=0;}

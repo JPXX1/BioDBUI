@@ -1,4 +1,4 @@
-import {Component, Input,Output, EventEmitter,ViewChild} from '@angular/core';
+import {Component, Input,Output, EventEmitter} from '@angular/core';
 import { Sort} from '@angular/material/sort';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
