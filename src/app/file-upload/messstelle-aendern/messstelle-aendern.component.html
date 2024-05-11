@@ -1,18 +1,11 @@
-<h2>Messstelle bearbeiten</h2>
+<span style="font-size:x-large;font-weight:500;"
+  
+  [innerHTML]="Mst_name"> 
+></span>
 
 <div mat-dialog-content>
-  <form [formGroup]="formInstance">
-    <div class="mt-5">
-      <mat-form-field class="fullWidth" appearance="outline">
-        <mat-label>Messstellenname *</mat-label>
-        <input matInput type="text" formControlName="namemst">
-      </mat-form-field>
-    </div>
-
-
-
-
-
+  <form [formGroup]="formInstance" style="height: 500px;">
+    
     <div class="mt-5">
       <mat-label>andere Messstelle auswählen</mat-label>
       <ng-multiselect-dropdown [placeholder]="MeldeMst" [settings]="dropdownMeldeSettings" [data]="dropdownMeldeMst"

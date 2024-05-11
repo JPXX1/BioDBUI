@@ -80,7 +80,7 @@
           </mat-panel-title>
   
         </mat-expansion-panel-header>
-        <p><app-select-uebersicht-import [uebersicht]="uebersichtImport"  (importID)="handleData($event)" style="width:480%"></app-select-uebersicht-import></p>
+        <p><app-select-uebersicht-import [uebersicht]="uebersichtImport" (sortDataue)="sortData($event)" (importID)="handleData($event)" style="width:480%"></app-select-uebersicht-import></p>
       </mat-expansion-panel>
     </mat-accordion>
 

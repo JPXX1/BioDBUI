@@ -593,7 +593,18 @@ console.log(this.mstindex);
 		console.log(this.uebersicht);
 	}
 
-
+	doppelteMesswerte(): boolean {
+		let antwort: boolean = false;
+		const laengeArrOrg: number = this.MessDataImp.length;
+	  
+		const uniqueSet = new Set(this.MessDataImp);
+		const laengeArrDistinct: number = uniqueSet.size;
+	  
+		antwort = laengeArrOrg > laengeArrDistinct;
+	  
+		return antwort;
+	  }
+	  
 	async pruefeObMesswerteschonVorhanden(jahr: string, probenehmer: string) {
 		this.uebersichtGeprueft=this.uebersicht;
 		let jahrtemp: string; this.vorhanden = false;

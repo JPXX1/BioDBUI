@@ -2,8 +2,9 @@ import { Component, Inject, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern';
 import { MeldeMst } from 'src/app/interfaces/melde-mst';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
+// import {StammdatenService} from 'src/app/services/stammdaten.service';
 
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -15,10 +16,11 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class MessstelleAendernComponent {
 
-
+  Mst_name:string;
+  
   wk:any;
   formInstance: FormGroup;
-  wk_name1:string;
+  
   MeldeMst:string;
   dropdownList:WasserkoerperSelect[]=[];
   dropdownMeldeMst:MeldeMst[]=[]
@@ -29,30 +31,30 @@ export class MessstelleAendernComponent {
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
   constructor(public dialogRef: MatDialogRef<MessstelleAendernComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: MessstellenStam[],private fb: FormBuilder) {
+    @Inject(MAT_DIALOG_DATA) public data: ArraybuendelMstaendern,private fb: FormBuilder) {
 
       
 
       this.formInstance = this.fb.group({
         id_mst: ['', Validators.required],
         namemst: ['', Validators.required],
-       idgewaesser: ['', Validators.required],
-       gewaessername: ['', Validators.required],
-       ortslage: ['', Validators.required],
-       see: ['', Validators.required],
-       repraesent: ['', Validators.required],
-       melde_mst: ['', Validators.required],
-       melde_mst_str: ['', Validators.required],
-       wrrl_typ: ['', Validators.required],
-       id_wk: ['', Validators.required],
-       wk_name: ['', Validators.required],
-       eu_cd_sm: ['', Validators.required],
-       dia_typ: ['', Validators.required],
-       pp_typ: ['', Validators.required],
-       mp_typ: ['', Validators.required],
-       hw_etrs: ['', Validators.required],
-       rw_etrs: ['', Validators.required],
-       updated_at: ['', Validators.required],
+      //  idgewaesser: ['', Validators.required],
+      //  gewaessername: ['', Validators.required],
+      //  ortslage: ['', Validators.required],
+      //  see: ['', Validators.required],
+      //  repraesent: ['', Validators.required],
+      //  melde_mst: ['', Validators.required],
+      //  melde_mst_str: ['', Validators.required],
+      //  wrrl_typ: ['', Validators.required],
+      //  id_wk: ['', Validators.required],
+      //  wk_name: ['', Validators.required],
+      //  eu_cd_sm: ['', Validators.required],
+      //  dia_typ: ['', Validators.required],
+      //  pp_typ: ['', Validators.required],
+      //  mp_typ: ['', Validators.required],
+      //  hw_etrs: ['', Validators.required],
+      //  rw_etrs: ['', Validators.required],
+      //  updated_at: ['', Validators.required],
       
        
       });
@@ -67,7 +69,7 @@ export class MessstelleAendernComponent {
     // this.MeldeMst=data.mststam.melde_mst_str;
 
     
-    // this.formInstance.setValue(data.mststam);
+  //  this.formInstance.na;
     // this.dropdownSettings = {
     //   singleSelection: true,
     //   idField: 'id',
@@ -79,7 +81,7 @@ export class MessstelleAendernComponent {
      
     // };
 
-    
+    this.Mst_name="Messstelle '" + this.data.namemst+ "' ändern.";
 this.dropdownMeldeSettings={
   singleSelection: true,
   idField: 'id_mst',
@@ -91,11 +93,11 @@ this.dropdownMeldeSettings={
 
 
 }
-for (let a=0,ls=this.data.length; a < ls; a += 1){
+for (let a=0,ls=this.data.mststam.length; a < ls; a += 1){
 let temp:MessstellenStam={} as MessstellenStam;
 
-temp.id_mst=this.data[a].id_mst;
-temp.namemst=this.data[a].namemst;
+temp.id_mst=this.data.mststam[a].id_mst;
+temp.namemst=this.data.mststam[a].namemst;
 
   this.dropdownMeldeMst.push(temp);
 }

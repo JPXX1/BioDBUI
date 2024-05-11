@@ -10,7 +10,7 @@ import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component';
 import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort,Sort} from '@angular/material/sort';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
@@ -18,7 +18,7 @@ import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
-// import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
+import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern';
 import {MessstelleAendernComponent} from 'src/app/file-upload/messstelle-aendern/messstelle-aendern.component'
 import { MatDialog } from '@angular/material/dialog';
 @Component({
@@ -160,24 +160,26 @@ export class FileUploadComponent implements OnInit {
 	}
 	
 	async pruefeObMesswerteschonVorhanden(){
-		this.jahr=this.child1.selected;this.probenehmer=this.childPN.selectedPN;
+		this.jahr = this.child1.selected; this.probenehmer = this.childPN.selectedPN;
 
-		if (!this.jahr){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
-			}else{
+		if (!this.jahr) {
+			this.InfoBox = "Bitte erst das Untersuchungsjahr auswählen.";
+		} else {
 
-			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
-			}else 
-			
-			{
-		if ((this.MessDataOrgi.length>0 && (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3))|| this.xlsxImportPhylibService.messstellenImp.length>0){
-		await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
-		
-		if (this.xlsxImportPhylibService.vorhanden==true)
-		{this.InfoBox="Daten lassen sich nicht oder nur teilweise importieren."} else
-		{this.InfoBox="Daten sind zum import bereit.";this.ImportIntoDB=false;};}else {
-			this.InfoBox="Bitte erst eine Importdatei hochladen."} 
+			if (!this.probenehmer) {
+				this.InfoBox = "Bitte erst den Probenehmer auswählen.";
+			} else {
+				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
+					await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);
 
-			}}}
+					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." } else { if (this.xlsxImportPhylibService.doppelteMesswerte()===true){"Die Importdatei enthält mind. einen doppelten Messwert."} else {this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; }};
+				} else {
+					this.InfoBox = "Bitte erst eine Importdatei hochladen."
+				}
+
+			}
+		}
+	}
 
 			archivImportErzeugen(){
 
@@ -218,6 +220,7 @@ export class FileUploadComponent implements OnInit {
 				this.archivImportErzeugen();
 				
 				 this.InfoBox=await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);
+				 return;
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;};}
 				else 
@@ -235,16 +238,53 @@ export class FileUploadComponent implements OnInit {
 				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				this.archivImportErzeugen();
 				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
+				return;
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;
+				
 			};}
 				else 
 				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
 				}}
 			}
-			
+		//sortiert Importübersicht 	
+	sortData(sort: Sort) {
+		const data = this.uebersichtImport.slice();
+		if (!sort.active || sort.direction === '') {
+			this.uebersichtImport = data;
+			return;
+		} this.uebersichtImport = [];
+		this.uebersichtImport = data.sort((a, b) => {
+			const isAsc = sort.direction === 'asc';
+			switch (sort.active) {
+				case 'probenehmer':
+					return compare(a.probenehmer, b.probenehmer, isAsc);
+				case 'dateiname':
+					var upperA = a.dateiname.toUpperCase();
+    				var upperB = b.dateiname.toUpperCase();
+					return compare(upperA, upperB, isAsc);
+				case 'verfahren':
+					return compare(a.verfahren, b.verfahren, isAsc);
+				case 'komponente':
+					return compare(a.komponente, b.komponente, isAsc);
+				case 'jahr':
+					return compare(a.jahr, b.jahr, isAsc);
+				case 'importiert':
 
+					const importiertA = Date.parse(b.importiert);
+					const importiertB = Date.parse(a.importiert);
+					return compare(importiertA, importiertB, isAsc);
 
+				case 'bemerkung':
+					return compare(a.bemerkung, b.bemerkung, isAsc);
+
+				default:
+					return 0;
+			}
+		});
+	}
+
+	
 			async addfile()     
 		{  this.pruefen=true;
 			this.mstimptab=true; this.Datimptab=false;  this.ImportIntoDB=true;
@@ -351,13 +391,15 @@ export class FileUploadComponent implements OnInit {
 		let aMst = this.stammdatenService.messstellenarray.find(i => i.namemst === name_alt);
 		let mst_id_alt=aMst.id_mst;
 	
-	
+		let temp:ArraybuendelMstaendern;
+		temp=({mststam:this.stammdatenService.messstellenarray,namemst:person.mst});
+		
 	
 		// person.wknamen=(this.stammdatenService.wk);
 		const dialogRef = this.dialog.open(MessstelleAendernComponent, {
-		  width: '800px',
-		  data: this.stammdatenService.messstellenarray
-		});
+		  width: '800px',height: '800px',
+		  data: temp
+		  });
 	 
 	  
 		dialogRef.afterClosed().subscribe(result => {
@@ -435,6 +477,17 @@ displayableColumns(idverfahren:number){
 
 }
 
-
+function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
+	return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
 	
+//   function compare(a, b, isAsc) {
+//     if (a < b) {
+//         return isAsc ? -1 : 1;
+//     }
+//     if (a > b) {
+//         return isAsc ? 1 : -1;
+//     }
+//     return 0;
+// }
 

@@ -18,6 +18,7 @@ export class StammdatenComponent implements OnInit{
   constructor(
     private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent,private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
+  
    public messstellenStam1:MessstellenStam[]=[];
    public wkStam1:WasserkoerperStam[]=[];
   public MessstellenAnzeige:boolean=false;
