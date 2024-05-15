@@ -114,7 +114,7 @@ export class FileUploadComponent implements OnInit {
   //await 
   if (result.import_export===true){
   await this.anzeigeBewertungMPService.callImpMstMP(result.id_imp);
-  this.anzeigeBewertungMPService.datenUmwandeln("",2004,2050);
+  this.anzeigeBewertungMPService.datenUmwandeln("","",2004,2050);
 
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
 
@@ -172,7 +172,11 @@ export class FileUploadComponent implements OnInit {
 				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
 					await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);
 
-					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." } else { if (this.xlsxImportPhylibService.doppelteMesswerte()===true){"Die Importdatei enthält mind. einen doppelten Messwert."} else {this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; }};
+					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;} else { 
+						if (this.xlsxImportPhylibService.doppelteMesswerte()===true)
+						{this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
+						console.log(this.InfoBox)} else 
+						{this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; }};
 				} else {
 					this.InfoBox = "Bitte erst eine Importdatei hochladen."
 				}

@@ -40,14 +40,14 @@ bwMstAbundanzenImportID(komp:number) {
   
   return this.httpClient.get('http://localhost:3000/bwMstAbundanzenImportID', {params});
 }
-datenUmwandeln(FilterMst:string,min:number,max:number){
+datenUmwandeln(FilterMst:string,art:string,min:number,max:number){
   this.mstMakrophyten=[];
   
   
   for (let i = 0, l = this.dbBewertungMst.length; i < l; i += 1) {
 
     this.mstMakrophytenKl= {} as MstMakrophyten;
-   let wk:string=this.dbBewertungMst[i].wk_name;
+   let wk:string=this.dbBewertungMst[i].namemst;
     this.mstMakrophytenKl.mst=this.dbBewertungMst[i].namemst;
     this.mstMakrophytenKl.jahr=this.dbBewertungMst[i].jahr;
     this.mstMakrophytenKl.roteListeD=this.dbBewertungMst[i].rld;
@@ -60,14 +60,31 @@ datenUmwandeln(FilterMst:string,min:number,max:number){
    this.mstMakrophytenKl.tiefe_m=this.dbBewertungMst[i].tiefe_m;
    this.mstMakrophytenKl.letzte_aenderung=this.dbBewertungMst[i].letzte_aenderung;
    this.mstMakrophytenKl.dvnr=this.dbBewertungMst[i].dvnr;
+//Filtern MSt
+if (!FilterMst && !art )
 
-   if (!FilterMst && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ 
-    this.mstMakrophyten.push(this.mstMakrophytenKl);}else{
+   {if ((Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){ 
+    this.mstMakrophyten.push(this.mstMakrophytenKl);}}
+    
+    
+    
+    else if (!art) {
     if ( wk.includes(FilterMst) && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){
       this.mstMakrophyten.push(this.mstMakrophytenKl);}}
+    else if (!FilterMst){
+
+      if ( this.mstMakrophytenKl.taxon.includes(art) && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){
+        this.mstMakrophyten.push(this.mstMakrophytenKl);}
+
+    }else{
+
+      if ( wk.includes(FilterMst) &&this.mstMakrophytenKl.taxon.includes(art) && (Number(this.mstMakrophytenKl.jahr)>=min && Number(this.mstMakrophytenKl.jahr)<=max)){
+        this.mstMakrophyten.push(this.mstMakrophytenKl);}
+    }
       
 }
 this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) ||  a.tiefe_m.localeCompare(b.tiefe_m) ||  a.taxon.localeCompare(b.taxon));
 }
+
 
 }

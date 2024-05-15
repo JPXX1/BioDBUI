@@ -15,7 +15,7 @@ export class XlsxImportPhylibService {
 
 	constructor(private impPhylibServ: ImpPhylibServ,private UebersichtImportService:UebersichtImportService) { }
 
-
+	public MstDoppelteDS:string;
 	public einheiten: any;
 	public mst: any;
 	public formen: any;
@@ -294,15 +294,15 @@ console.log(this.mstindex);
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import_spalte === true);
 		const valspaltenfiterMst = valspalten.filter(excelspalten => excelspalten.spalte_messstelle === true &&  excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1);
 
-			for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1)   {
+			for (let a = 0, l = workbook.SheetNames.length; a < l; a += 1)   {
 
 
 
 			//console.log(workbook.SheetNames[i]);
-			XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[i]]);
+			XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[a]]);
 			json_Messstelle = JSON.stringify(XL_row_object);
 			const obj = JSON.parse(json_Messstelle);
-			if (i === valtabfiterMst[0].id_tab) {
+			if (a === valtabfiterMst[0].id_tab) {
 				await obj.forEach((val, index) => {
 					if (obj[index] !== null) {
 
@@ -385,9 +385,9 @@ console.log(this.mstindex);
 
 				)
 			}
-			if (workbook.SheetNames[i] == 'Messwerte') {
+			if (workbook.SheetNames[a] == 'Messwerte') {
 
-				console.log(this.uebersicht);
+				//console.log(this.uebersicht);
 				// Here is your object
 				let o: number = 1;
 				obj.forEach((val, index) => {
@@ -444,7 +444,7 @@ console.log(this.mstindex);
 									ok = "";  } else {
 									ok = "checked";
 									var taxon2 = this.arten.filter(arten => arten.taxon == Taxon);
-									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon;ok = "";  }
+									if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon;ok = ""; Taxon = taxon2[0].id_taxon;RLD=taxon2[0].rld;  }
 
 
 								}
@@ -487,18 +487,27 @@ console.log(this.mstindex);
 
 							}
 							if (i == 'cf') {
+								var cftemp = obj[index][i];
+								if  (cftemp===0){
 
-								cf = true;
+									cf = false
+
+								}else {  cf = true;}
+								
 
 
-							} else { cf = false }
+							} 
 						}
 					}
+					
 				})
 
 				//of(array);
 			}
 		}
+									array.push({ _Nr: array.length+1, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+									this.MessDataOrgi.push({ _Nr: array.length+1, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+								
 		this.MessDataImp = array;
 		
 	}
@@ -594,14 +603,56 @@ console.log(this.mstindex);
 	}
 
 	doppelteMesswerte(): boolean {
+		let MstDoppelteDSTemp:string[]=[];
 		let antwort: boolean = false;
-		const laengeArrOrg: number = this.MessDataImp.length;
-	  
-		const uniqueSet = new Set(this.MessDataImp);
-		const laengeArrDistinct: number = uniqueSet.size;
-	  
+		let TempSet:String[]  = [];
+		let Temp2Set:{Mst:string,temp:string}[]  = [];
+		let laengeArrDistinct: number;
+		let laengeArrOrg: number = this.MessDataImp.length;
+		for (let a = 0, le = this.MessDataImp.length; a < le; a += 1) {
+
+			const temp:string=this.MessDataImp[a]._Messstelle +","+this.MessDataImp[a]._Einheit +","+this.MessDataImp[a]._Form+this.MessDataImp[a]._Taxon +","+this.MessDataImp[a]._Tiefe;
+			TempSet.push(temp);
+			console.log(temp)
+			Temp2Set.push({Mst:this.MessDataImp[a]._Messstelle,temp:temp});
+		}
+
+const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index)
+		
+				laengeArrDistinct=  distinctArr.length;
+		
+		
+		
 		antwort = laengeArrOrg > laengeArrDistinct;
-	  
+		
+		if (antwort) {
+		for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
+			
+			const ds=TempSet.filter(g=>g===Temp2Set[i].temp);
+			if (ds.length>1){
+
+				const mstee = this.mst.filter(messstellen => messstellen.id_mst == Temp2Set[i].Mst);
+				MstDoppelteDSTemp.push(mstee[0].namemst);
+			
+			// console.log(this.MstDoppelteDS);
+			}
+
+		}}
+
+
+		const distinctArr2=MstDoppelteDSTemp.filter((value,index,self)=>self.indexOf(value)===index)
+
+		distinctArr2.length>0
+		{
+			
+		this.MstDoppelteDS="(Mst: ";
+		for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
+		this.MstDoppelteDS=this.MstDoppelteDS+distinctArr2[f] + "; ";
+		}
+		this.MstDoppelteDS=this.MstDoppelteDS+")";
+
+
+	}
 		return antwort;
 	  }
 	  
@@ -638,7 +689,7 @@ console.log(this.mstindex);
 			// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
 
 			const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
-			console.log("combi", combi)
+			//console.log("combi", combi)
 
 			if (combi.length > 0) {
 				this.vorhanden = true;
@@ -854,5 +905,7 @@ return bemerkung;
 }
 
 
-
+function onlyUnique(value, index, array) {
+	return array.indexOf(value) === index;
+  }
 

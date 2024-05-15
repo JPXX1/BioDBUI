@@ -19,11 +19,11 @@ export class AnzeigenMstUebersichtService {
 
 
 
-  async call(filter:string,min:number,max:number,komp_id:number,repreasent:number) {
+  async call(filter:string,art:string,min:number,max:number,komp_id:number,repreasent:number) {
 
  
    await this.callBwUebersicht(komp_id);
-  await this.filterMst(filter,min,max,repreasent);
+  await this.filterMst(filter,art,min,max,repreasent);
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
@@ -59,7 +59,7 @@ export class AnzeigenMstUebersichtService {
 
   }}
 
-  async filterMst(filter:string,min:number,max:number,repreasent:number){
+  async filterMst(filter:string,art:string,min:number,max:number,repreasent:number){
    
     let temp: any = this.dbMPUebersichtMst;
 
@@ -75,7 +75,7 @@ export class AnzeigenMstUebersichtService {
               this.dbMPUebersichtMst.push(f);}
           } else {this.dbMPUebersichtMst.push(f);}}}
          else {
-          if (f.wk_name.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
+          if (f.ms.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
             if(repreasent===2){
               if(f.repraesent===true){

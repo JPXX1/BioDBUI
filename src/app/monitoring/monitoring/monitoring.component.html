@@ -11,10 +11,10 @@
       <tr>
       
       <td>
-    <button mat-button id="uebersichtButton" [matMenuTriggerFor]="uebersicht" >Wasserkörper</button>
-    <mat-menu #uebersicht="matMenu" xPosition="after">
-    <button id="uebersichtButton" mat-button (click)="handleUebersicht()">anzeigen</button>
-    <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">ausblenden</button>
+    <button mat-button id="uebersichtButton" [matMenuTriggerFor]="uebersicht" >Bericht-EU</button>
+    <mat-menu #uebersicht="matMenu" xPosition="before">
+    <button id="uebersichtButton" mat-button (click)="handleUebersichtWK()">Wasserkörper</button>
+    <button id="uebersichtButton" mat-button (click)="ausblendenUebersicht()">Messstellen</button>
   </mat-menu>
 
 
@@ -26,15 +26,15 @@
 
     <button mat-button [matMenuTriggerFor]="diatoms">Diatomeen</button>
     <mat-menu #diatoms="matMenu" xPosition="before">
-      <button mat-menu-item>Item 1</button>
-      <button mat-menu-item>Item 2</button>
+      <button mat-menu-item>Messstellenübersicht</button>
+      <button mat-menu-item>Taxadaten</button>
     </mat-menu>
 
   
     <button mat-button [matMenuTriggerFor]="pp">Phytoplankton</button>
     <mat-menu #pp="matMenu" xPosition="after">
-      <button mat-menu-item>Item 1</button>
-      <button mat-menu-item>Item 2</button>
+      <button mat-menu-item>Messstellenübersicht</button>
+      <button mat-menu-item>Taxadaten</button>
     </mat-menu>
     <button mat-button id="mzButton"  [matMenuTriggerFor]="mzb">Makrozoobenthos</button>
     <mat-menu #mzb="matMenu" xPosition="after">
@@ -53,7 +53,7 @@
   </td>
   <td>
     <mat-form-field>
-      <input [(ngModel)]="value" matInput placeholder="Filter Wasserkörper" autocomplete="off" style="margin-left:10px" (input)="onValueChangeFilter(value,Artvalue)">
+      <input [(ngModel)]="value" matInput [placeholder]=FilterWKname autocomplete="off" style="margin-left:10px" (input)="onValueChangeFilter(value,Artvalue)">
           <button mat-icon-button matSuffix (click)="clearSearchFilter()" *ngIf="value">
           <mat-icon>close</mat-icon>
       </button>
