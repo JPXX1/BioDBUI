@@ -135,13 +135,13 @@ export class ImpPhylibServ {
               body: JSON.stringify({
                 id_mst: MessstellenImp.id_mst,
                 id_para: MessstellenImp.id_para,
-                id_import: MessstellenImp.id_import,
-                id_pn: MessstellenImp.id_pn,
-                datum: MessstellenImp.datum,
+                id_import: id_import,
+                id_pn: Probenehmer,
+                datum: datum,
                 id_einh:MessstellenImp.id_einh,
                 wert:MessstellenImp.wert
               })    
-            
+            //this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp
             });
             return await response.text();
           } catch (error) {
@@ -178,7 +178,7 @@ export class ImpPhylibServ {
 
         
 
-      async  postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:number) :Promise<string>{
+      async  postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:number) :Promise<number>{
         let url='http://localhost:3000/insertPhylibMesswerte';
         let bodytext;
         
@@ -210,7 +210,7 @@ export class ImpPhylibServ {
         } catch (error) {
           console.error('Error posting data:', error);
           throw error;
-          return  "Fehler";
+          return  500;
         }
       }
        

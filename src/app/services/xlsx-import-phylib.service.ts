@@ -31,9 +31,11 @@ export class XlsxImportPhylibService {
 	public parameterabiot: any;
 	public _uebersicht:Uebersicht;
 	public importierteMesswerte:number;
+	public importierteMst:number;
 	public uebersichtImport:UebersichtImport;
 	vorhanden: boolean;
 	vorhandenMst: boolean;
+	public bemerkungImpMW:string="";
 	
 	public MessData: Messwerte[] = []; public MessDataOrgi: Messwerte[] = []; //public MessDataGr: Messgroup[] = []; 
 	public MessDataImp: Messwerte[] = []; public messstellenImp: MessstellenImp[] = [];
@@ -602,6 +604,21 @@ console.log(this.mstindex);
 		console.log(this.uebersicht);
 	}
 
+anzahlMstImp():number{
+let anzahlmst:number=0;
+let TempSet:number[]  = [];
+for (let a = 0, le = this.messstellenImp.length; a < le; a += 1) {
+	
+	const temp:number=this.messstellenImp[a].id_mst ;
+	TempSet.push(temp);
+}
+const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index)
+		
+anzahlmst=  distinctArr.length;
+
+return anzahlmst;
+}
+
 	doppelteMesswerte(): boolean {
 		let MstDoppelteDSTemp:string[]=[];
 		let antwort: boolean = false;
@@ -755,11 +772,11 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
-
-
+		let importMW=await this.importMesswerteIntoDB(jahr, probenehmer);
+		let importMSt=await this.importMessstellenIntoDB(jahr, probenehmer);
 		
-				if (await this.importMesswerteIntoDB(jahr, probenehmer)==="Import der Messwerte erfolgreich." &&
-				await this.importMessstellenIntoDB(jahr, probenehmer)==="Import der Messstellendaten erfolgreich.")
+				if (importMW==="Import der Messwerte erfolgreich." &&
+				importMSt==="Import der Messstellendaten erfolgreich.")
 				{return "Datenimport erfolgreich durchgeführt."} else{
 					return "Datenimport nicht erfolgreich."
 				}
@@ -769,22 +786,26 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 	importBewertungIntoDB(jahr: string, probenehmer: string): string {
 		
 		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
-		if (this.vorhanden === true) {
-			return "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
-		} else
+		let rueckgabe:string="";
+		if (this.vorhanden === true || this.vorhandenMst === true) {
+
+			if (this.vorhanden === true){
+				rueckgabe= "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
+		} 
 			if (this.vorhandenMst === true) {
-				return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
-			} else {
+				rueckgabe= "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
+			}} else {
 				
 				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
-				return "Datenimport erfolgreich durchgeführt."
+				rueckgabe= "Datenimport erfolgreich durchgeführt."
 			}
+			return rueckgabe;
 	}
 	async importMesswerteIntoDB(jahr: string, probenehmer: string):Promise<string> {
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
-		let messwertanzahl:number;
+		let messwertanzahl:number=0;
 		let bemerkung="Import der Messwerte erfolgreich.";
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
@@ -801,9 +822,9 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 
 		for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
 			messwertanzahl = messwertanzahl + 1;
-			let variable=await this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp)
+			let variable:number=await this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp)
 			console.log (variable);
-			if (variable!=='Created'){
+			if (variable!==201){
 
 				bemerkung="Fehler beim Import der Messwerte."
 
@@ -813,7 +834,7 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 
 		}
 	}}}this.importierteMesswerte=messwertanzahl;
-
+	this.bemerkungImpMW=bemerkung;
 return bemerkung;
 }
 
@@ -822,9 +843,11 @@ return bemerkung;
 		let bemerkung="Import der Messstellendaten erfolgreich.";
 		let a=0;
 		jahrtemp = ("15.07." + jahr);
-		console.log(jahrtemp);
-		
-		for (let i = 0, l = this.MessDataImp.length; i < l; i += 1) {
+		console.log(this.messstellenImp.length);
+		console.log(this.messstellenImp);
+
+		this.importierteMst=this.anzahlMstImp(); 
+		for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
 			a = a + 1;
 
 
@@ -834,7 +857,7 @@ return bemerkung;
 			}
 			
 		}
-		this.UebersichtImportService.aktualisiereImportdaten(a,this.importierteMesswerte,"",this.uebersichtImport.id_imp)
+		this.UebersichtImportService.aktualisiereImportdaten(this.importierteMst,this.importierteMesswerte,bemerkung + " "+this.bemerkungImpMW,this.uebersichtImport.id_imp)
 	return bemerkung;
 	}
 	//Import der Bewertugsergebnisse
