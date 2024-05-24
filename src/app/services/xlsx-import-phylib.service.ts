@@ -569,8 +569,8 @@ console.log(this.mstindex);
 						if (this.uebersicht[i].sp6!==undefined){_sp6 = this.uebersicht[i].sp6};
 						if (this.uebersicht[i].sp7!==undefined){var _sp7_: string = this.uebersicht[i].sp7}else{var _sp7_=_sp7};
 						if (this.uebersicht[i].sp8!==undefined){var _sp8_: string = this.uebersicht[i].sp8}else{var _sp8_=_sp8};
-						if (this.uebersicht[i].sp9!==undefined){var _sp9_: string = this.uebersicht[i].sp9};
-						if (this.uebersicht[i].sp10!==undefined){var _sp10_: string = this.uebersicht[i].sp10};
+						if (this.uebersicht[i].sp9!==undefined){var _sp9_: string = this.uebersicht[i].sp9}else{var _sp9_=_sp9};
+						if (this.uebersicht[i].sp10!==undefined){var _sp10_: string = this.uebersicht[i].sp10}else{var _sp10_=_sp10};
 						if (this.uebersicht[i].sp11!==undefined){var _sp11_: string = this.uebersicht[i].sp11};
 						if (this.uebersicht[i].sp12!==undefined){var _sp12_: string = this.uebersicht[i].sp12};
 						if (this.uebersicht[i].sp13!==undefined){var _sp13_: string = this.uebersicht[i].sp13};
@@ -940,7 +940,7 @@ return bemerkung;
 					// this.dynamicColumns.push('anzahl');
 		}
 		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');;this.dynamicColumns.push('import1');
-		if (idVerfahren===1 || idVerfahren===3){
+		if (idVerfahren===1 || idVerfahren===3 || idVerfahren===5){
 			this.dynamicColumns.push('actions');}
 	}
 }

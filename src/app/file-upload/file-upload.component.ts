@@ -318,7 +318,7 @@ export class FileUploadComponent implements OnInit {
 			//importUebrsicht ID verfahren festlegen
 			
 			
-
+			
 			console.log(this.valExceltabsService.NrVerfahren);
 			this.xlsxImportPhylibService.uebersicht=[];
 			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
@@ -340,7 +340,7 @@ export class FileUploadComponent implements OnInit {
 						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
 						this.Datimptab=false;
 						this.pruefen=false;
-						this.dataSource.sort = this.sort;
+						// this.dataSource.sort = this.sort;
 					break;
 				  case 2:
 					this.newuebersichtImport.id_komp=1;
@@ -352,7 +352,7 @@ export class FileUploadComponent implements OnInit {
 						
 						this.pruefen=false;
 						this.displayableColumns(2);
-						this.dataSource.sort=this.sort;
+						// this.dataSource.sort=this.sort;
 						this.Datimptab=false;
 						break;
 					case 3:
@@ -362,9 +362,9 @@ export class FileUploadComponent implements OnInit {
 						await this.perlodesimportService.startimport(workbook);
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
-						this.xlsxImportPhylibService.uebersicht.sort
+						// this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
-					this.dataSource.sort=this.sort;
+					// this.dataSource.sort=this.sort;
 					this.Datimptab=false;
 					this.pruefen=false;
 					break;
@@ -372,12 +372,12 @@ export class FileUploadComponent implements OnInit {
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.newuebersichtImport.id_komp=3;
 					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
-					this.dataSource.sort=this.sort;// this.xlsxImportPhylibService.uebersicht=[];
+					// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					
 					this.Datimptab=false;
 					this.displayableColumns(4);
-					this.dataSource.sort=this.sort;
+					// this.dataSource.sort=this.sort;
 					this.pruefen=false;
 					break;
 					case 5:
@@ -386,18 +386,19 @@ export class FileUploadComponent implements OnInit {
 					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					this.Datimptab=false;
 					this.displayableColumns(5);
-					this.dataSource.sort=this.sort;
+					// this.dataSource.sort=this.sort;
 					
 					this.pruefen=false;
 					break;
 				  default:
 					this.InfoBox="Keine Importdatei."
-				} 
+				}
+				 this.dataSource.sort=this.sort;
 			}    
 	};
 
 	async edit(person: Uebersicht) {
-
+		let mst_id_alt
 		// console.log(this.xlsxImportPhylibService.MessDataImp)
 		// let mststam1:MessstellenStam[]=this.stammdatenService.messstellenarray;
 		
@@ -409,7 +410,8 @@ export class FileUploadComponent implements OnInit {
 	  let name_alt:string=person.mst;
 		
 		let aMst = this.stammdatenService.messstellenarray.find(i => i.namemst === name_alt);
-		let mst_id_alt=aMst.id_mst;
+		if (aMst)
+		{ mst_id_alt=aMst.id_mst;}
 	
 		let temp:ArraybuendelMstaendern;
 		temp=({mststam:this.stammdatenService.messstellenarray,namemst:person.mst});
@@ -428,6 +430,10 @@ export class FileUploadComponent implements OnInit {
 			// let Uebersicht =this.xlsxImportPhylibService.uebersicht.filter(dd=>dd.mst===person.mst)
 			let a = this.xlsxImportPhylibService.uebersicht.findIndex(i => i.mst === person.mst);
 			this.xlsxImportPhylibService.uebersicht[a].mst=result.namemst
+			this.xlsxImportPhylibService.uebersicht[a].fehler1=''; 
+			if (this.xlsxImportPhylibService.uebersicht[a].fehler2!=="checked" && this.xlsxImportPhylibService.uebersicht[a].fehler3!=="checked")
+				{this.xlsxImportPhylibService.uebersicht[a].import1="checked";}
+			
 			//let b=this.MessData.findIndex(i => i._Messstelle === person.mst);
 
 			for (let i = 0, l = this.MessDataOrgi.length; i < l; i += 1) {

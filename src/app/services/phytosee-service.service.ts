@@ -45,13 +45,27 @@ export class PhytoseeServiceService {
             bwert=obj[index][i];
             const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => excelspalten.spalten_name === i);
             if (valspaltenfiter2.length === 1) {
+
+
+           
+                let mst = obj[index]['GewässernameWB'];
+                 let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.gewaessername === mst && messstellen.repraesent_mst===true);
+                
+                 if (mstee.length>0){
+                 this._uebersicht.mst=mstee[0].namemst;
+                 mstOK = "";}
+                 else {
+                  this._uebersicht.mst=obj[index]['GewässernameWB']
+                	mstOK = "checked";}
+                 
+               
              
            
               this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
-				
+              
               this.xlsxImportPhylibService._uebersicht=this._uebersicht;
-
               this.xlsxImportPhylibService.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert);
+              
               this.xlsxImportPhylibService.groupNAch();
             }
 
@@ -59,14 +73,7 @@ export class PhytoseeServiceService {
               //   Typ_Nr= obj[index][i];
               // }
 
-             if (i.includes('Gewässername')){
-               let mst = obj[index]['GewässernameWB'];
-                let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.gewaessername === mst && messstellen.repraesent_mst===true);
-                if (!mstee){
-                this._uebersicht.mst=mstee[0].namemst;}
-                else {this._uebersicht.mst=""}
-                
-              }
+          
 
               // if (i==='N_MSST'){
 
