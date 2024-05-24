@@ -15,6 +15,7 @@ export class ValExceltabsService {
   public Verfahren:string="";
   public NrVerfahren:number;
   public Exceltabsimpalle:string="";
+  public ExceltabsimpVier:string="";
   
   constructor(private impPhylibServ: ImpPhylibServ) { }
   VorhandeneVerfahren:number[]=[];
@@ -56,9 +57,14 @@ export class ValExceltabsService {
 
   exceltabsauslesen(workbook){
 let tabs="";
+let tabsvier="";
     for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
      const tabNeu=workbook.SheetNames[i]
       if (i+1<l){
+        if (i<3){
+          tabsvier=tabsvier+tabNeu+";";
+        }
+        if (i===3){ tabsvier=tabsvier+tabNeu;}
         tabs=tabs+tabNeu+";";
       }else if(i+1===l){
         tabs=tabs+tabNeu;
@@ -66,7 +72,7 @@ let tabs="";
       }
 
     }
-
+    this.ExceltabsimpVier=tabsvier;
     this.Exceltabsimpalle=tabs;
   }
 
@@ -103,7 +109,11 @@ let tabs="";
 
         console.log(this.NrVerfahren);
       }
-
+      else if (valexceltabsfilter[0].ident_kriterium === 5 &&  valexceltabsfilter[0].namentabs===this.ExceltabsimpVier) {
+        
+        this.NrVerfahren =valexceltabsfilter[0].id_verfahren;
+        console.log( this.NrVerfahren );
+      }
 
     }
       //wenn mehr als ein Tab vorhanden ist
@@ -111,12 +121,19 @@ let tabs="";
 
       
       //Phylibimportdatei Prüfung anhand der Tab-Benennung
+      let valexceltabsfilter4=valexceltabsfilter.filter(exceltabs=>exceltabs.namentabs===this.ExceltabsimpVier);
       let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
       if (valexceltabsfilter2.length === 1) {
 
         this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
 
-      }else {
+      }//Phytosee-Export 
+      else   if (valexceltabsfilter4.length === 1) {this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
+
+      }
+      
+      
+      else {
         try {
           for (let i = 0, l =valexceltabsfilter.length; i < l; i += 1) {
             this.ValExcelSpalten(valexceltabsfilter[i].namentabs);

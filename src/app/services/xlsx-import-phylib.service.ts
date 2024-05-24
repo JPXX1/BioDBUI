@@ -55,6 +55,7 @@ export class XlsxImportPhylibService {
 		}, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
 	}
 	
+
 	
 	async ngOnInit() {
 
@@ -890,10 +891,20 @@ return bemerkung;
 	
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === idVerfahren && (excelspalten.anzeige_tab2_tab1 === 1||excelspalten.anzeige_tab2_tab1 ===4) && excelspalten.id_tab === idtab);
+		
+		valspaltenfiter.sort((a,b)=>{return compare(a.namespalteng,b.namespalteng,true)});
+
+
+
 		this.displayColumnNames=[];this.dynamicColumns=[];
 		this.displayColumnNames.push('Nr');
 				this.dynamicColumns.push('nr');
 				if  (idVerfahren===4 ){
+					this.displayColumnNames.push('Mst');
+					this.dynamicColumns.push('mst');
+				}
+
+				if (idVerfahren===5){
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
 				}
@@ -920,7 +931,14 @@ return bemerkung;
 					//this.displayColumnNames.push('Import');
 					this.dynamicColumns.push('anzahl');
 		}
-		
+		if  (idVerfahren===5){
+			// this.displayColumnNames.push('Gewässername');
+			this.displayColumnNames.push('fehler1');
+					this.displayColumnNames.push('fehler2');
+					// this.displayColumnNames.push('fehler3');
+			this.displayColumnNames.push('Import');
+					// this.dynamicColumns.push('anzahl');
+		}
 		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');;this.dynamicColumns.push('import1');
 		if (idVerfahren===1 || idVerfahren===3){
 			this.dynamicColumns.push('actions');}
@@ -932,3 +950,6 @@ function onlyUnique(value, index, array) {
 	return array.indexOf(value) === index;
   }
 
+  function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
+	return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }

@@ -21,6 +21,8 @@ import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern';
 import {MessstelleAendernComponent} from 'src/app/file-upload/messstelle-aendern/messstelle-aendern.component'
 import { MatDialog } from '@angular/material/dialog';
+import {PhytoseeServiceService} from 'src/app/services/phytosee-service.service';
+
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
@@ -70,7 +72,7 @@ export class FileUploadComponent implements OnInit {
 	// Inject service 
 	
 	constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
-		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,
+		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
 		
@@ -251,7 +253,11 @@ export class FileUploadComponent implements OnInit {
 				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
 				}}
 			}
-		//sortiert Importübersicht 	
+			sortData2(){
+
+
+			}
+			//sortiert Importübersicht 	
 	sortData(sort: Sort) {
 		const data = this.uebersichtImport.slice();
 		if (!sort.active || sort.direction === '') {
@@ -314,15 +320,15 @@ export class FileUploadComponent implements OnInit {
 			
 
 			console.log(this.valExceltabsService.NrVerfahren);
-
-		this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
+			this.xlsxImportPhylibService.uebersicht=[];
+			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
 				switch(this.valExceltabsService.NrVerfahren) {
 					
 				  case 1:
 						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
 						this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
-						this.xlsxImportPhylibService.uebersicht=[];
+						
 						await this.xlsxImportPhylibService.Phylibimport(workbook,this.valExceltabsService.valspalten,0,1,this.valExceltabsService.NrVerfahren);
 						// Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number)
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
@@ -341,38 +347,48 @@ export class FileUploadComponent implements OnInit {
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
-						this.xlsxImportPhylibService.uebersicht=[];
+						// this.xlsxImportPhylibService.uebersicht=[];
 						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
 						
 						this.pruefen=false;
 						this.displayableColumns(2);
+						this.dataSource.sort=this.sort;
 						this.Datimptab=false;
 						break;
 					case 3:
 						this.newuebersichtImport.id_komp=3;
-						this.xlsxImportPhylibService.uebersicht=[];this.xlsxImportPhylibService.MessDataOrgi=[];
+						// this.xlsxImportPhylibService.uebersicht=[];
+						this.xlsxImportPhylibService.MessDataOrgi=[];
 						await this.perlodesimportService.startimport(workbook);
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
 						this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
+					this.dataSource.sort=this.sort;
 					this.Datimptab=false;
 					this.pruefen=false;
 					break;
 					case 4://MZB export
-					this.xlsxImportPhylibService.uebersicht=[];
+					// this.xlsxImportPhylibService.uebersicht=[];
 					this.newuebersichtImport.id_komp=3;
 					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
-					// this.xlsxImportPhylibService.uebersicht=[];
+					this.dataSource.sort=this.sort;// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					
 					this.Datimptab=false;
 					this.displayableColumns(4);
-					
+					this.dataSource.sort=this.sort;
 					this.pruefen=false;
 					break;
 					case 5:
 					// code block
+					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
+					this.Datimptab=false;
+					this.displayableColumns(5);
+					this.dataSource.sort=this.sort;
+					
+					this.pruefen=false;
 					break;
 				  default:
 					this.InfoBox="Keine Importdatei."
@@ -443,9 +459,10 @@ export class FileUploadComponent implements OnInit {
 	
 		}});
 	  }
+
 displayableColumns(idverfahren:number){
 	let tab:number;
-	if (idverfahren===4) {tab=2;}else{tab=0;}
+	if (idverfahren===4 || idverfahren===5) {tab=2;} else {tab=0;}
 	
 	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
