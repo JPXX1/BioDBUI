@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {ImpPhylibServ} from '/home/jens/angular-file-upload/src/app/services/impformenphylib.service';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import { HttpClient,HttpParams } from '@angular/common/http';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class UebersichtImportService {
   uebersicht:UebersichtImport[];
   temp:any=[];
+  private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,private impPhylibServ: ImpPhylibServ) { }
 
   aktualisiereImportdaten(anzahlmst:number,anzahlwerte:number,bemerkung:string,id_imp:number){
@@ -19,7 +20,7 @@ export class UebersichtImportService {
     .set('anzahlwerte',anzahlwerte)
     .set('anzahlmst',anzahlmst)
    
-    this.httpClient.post('http://localhost:3000/updateArchivImport', body).subscribe(resp => {
+    this.httpClient.post(`${this.apiUrl}/updateArchivImport`, body).subscribe(resp => {
    console.log("response %o, ", resp);  });
 
   }
@@ -46,7 +47,7 @@ export class UebersichtImportService {
    .set('id_imp',id_imp)
    
   
-   this.httpClient.post('http://localhost:3000/deleteMstAbundanz', body).subscribe(resp => {
+   this.httpClient.post(`${this.apiUrl}/deleteMstAbundanz`, body).subscribe(resp => {
   console.log("response %o, ", resp);  });
   }
   loescheDatenMstBewertungen(id_imp:number){
@@ -55,7 +56,7 @@ export class UebersichtImportService {
    .set('id_imp',id_imp)
    
   
-   this.httpClient.post('http://localhost:3000/deleteMstBewertungen', body).subscribe(resp => {
+   this.httpClient.post(`${this.apiUrl}/deleteMstBewertungen`, body).subscribe(resp => {
   console.log("response %o, ", resp);  });
   }
  
@@ -130,12 +131,12 @@ async handle(){
 //  .set('jahr',uebersichtImport.jahr)
 //  .set('id_pn',uebersichtImport.id_pn)
 
-//  this.httpClient.post('http://localhost:3000/insertArchivImport', body).subscribe(resp => {
+//  this.httpClient.post('http://localhost:3000/api/insertArchivImport', body).subscribe(resp => {
 // console.log("response %o, ", resp);  });
 // }
 
 async  archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport):Promise<string> {
-  let url='http://localhost:3000/insertArchivImport';
+  let url=`${this.apiUrl}/insertArchivImport`;
 
   
   try {

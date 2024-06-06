@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MstMakrophyten } from '../interfaces/mst-makrophyten';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class AnzeigeBewertungMPService {
   public mstMakrophyten: MstMakrophyten[] = [];
   public mstMakrophytenKl: MstMakrophyten;
   public dbBewertungMst: any;
-
+  private apiUrl = environment.apiUrl;
 
 
   constructor(private httpClient: HttpClient) { }
@@ -19,7 +19,7 @@ export class AnzeigeBewertungMPService {
   getBwMstMP(komp:number) {
     let params = new HttpParams().set('id',komp);
     
-    return this.httpClient.get('http://localhost:3000/bwMstAbundanzen', {params});
+    return this.httpClient.get(`${this.apiUrl}/bwMstAbundanzen`, {params});
  }
  async callBwMstMP(komp:number) {
  
@@ -38,7 +38,7 @@ async callImpMstMP(komp:number) {
 bwMstAbundanzenImportID(komp:number) {
   let params = new HttpParams().set('id',komp);
   
-  return this.httpClient.get('http://localhost:3000/bwMstAbundanzenImportID', {params});
+  return this.httpClient.get(`${this.apiUrl}/bwMstAbundanzenImportID`, {params});
 }
 datenUmwandeln(FilterMst:string,art:string,min:number,max:number){
   this.mstMakrophyten=[];

@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { MstUebersicht } from '../interfaces/mst-uebersicht';
 import { AnzeigeBewertungService } from './anzeige-bewertung.service';
 import { WkUebersicht } from '../interfaces/wk-uebersicht';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +16,7 @@ export class AnzeigenMstUebersichtService {
   public displayColumnNames:string[]=[];
   public displayedColumns:string[]=[];
   public FilterwkUebersicht: WkUebersicht[] = [];
+  private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,anzeigeBewertungService:AnzeigeBewertungService) { }
 
 
@@ -43,12 +45,12 @@ export class AnzeigenMstUebersichtService {
       let params = new HttpParams().set('id',komp_id);
       // console.log(params.toString())
       //const params: { id: 1 };
-      // return this.httpClient.get('http://localhost:3000/impArten', {params});
+      // return this.httpClient.get('http://localhost:3000/api/impArten', {params});
 
 
 
 
-     return this.httpClient.get('http://localhost:3000/bwMstUebersicht', {params});
+     return this.httpClient.get(`${this.apiUrl}/bwMstUebersicht`, {params});
   }
   erzeugeDisplayColumnNames(){
     this.displayColumnNames=[];

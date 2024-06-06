@@ -4,6 +4,7 @@ import { WasserkoerperStam } from '../interfaces/wasserkoerper-stam';
 import { TypWrrl } from '../interfaces/typ-wrrl';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +27,7 @@ export class StammdatenService {
   public archivWK:any;
   constructor( private httpClient: HttpClient) {}
   public wk:any;
+  private apiUrl = environment.apiUrl;
   wkStam:WasserkoerperStam;
   public wkarray:WasserkoerperStam[];
 
@@ -52,25 +54,25 @@ async startwk(kat:boolean){
     console.log(this.mst);
       }
   getStammMst() {
-    return this.httpClient.get('http://localhost:3000/stamMst');
+    return this.httpClient.get(`${this.apiUrl}/stamMst`);
   }
   getStammDiaTyp() {
-    return this.httpClient.get('http://localhost:3000/stamDiaTypen');
+    return this.httpClient.get(`${this.apiUrl}/stamDiaTypen`);
   }
   getStammMpTyp() {
-    return this.httpClient.get('http://localhost:3000/stamMpTypen');
+    return this.httpClient.get(`${this.apiUrl}/stamMpTypen`);
   }
   getStammPpTyp() {
-    return this.httpClient.get('http://localhost:3000/stamPPTypen');
+    return this.httpClient.get(`${this.apiUrl}/stamPPTypen`);
   }
   getStammWrrlTyp() {
-    return this.httpClient.get('http://localhost:3000/stamWRRLTypen');
+    return this.httpClient.get(`${this.apiUrl}/stamWRRLTypen`);
   }
   getStammGewasser() {
-    return this.httpClient.get('http://localhost:3000/stamGewaesser');
+    return this.httpClient.get(`${this.apiUrl}/stamGewaesser`);
   }
   getWk() {
-    return this.httpClient.get('http://localhost:3000/stamWK'); //stamWasserkoerper   
+    return this.httpClient.get(`${this.apiUrl}/stamWK`); //stamWasserkoerper   
   }
     
      
@@ -260,7 +262,7 @@ archiviereWKStamm(wasserkoerperStam:WasserkoerperStam){
         .set('pp_typ',wasserkoerperStam.pp_typ)
         .set('mp_typ',wasserkoerperStam.mp_typ)
         .set('updated_at', wasserkoerperStam.updated_at)
-        this.httpClient.post('http://localhost:3000/insertArchivStammWK', body).subscribe(resp => {
+        this.httpClient.post(`${this.apiUrl}/insertArchivStammWK`, body).subscribe(resp => {
     console.log("response %o, ", resp);  });
  }
 
@@ -287,7 +289,7 @@ archiviereMstStamm(messstellenStam:MessstellenStam){
 
 
   
-  this.httpClient.post('http://localhost:3000/insertArchivStammMst', body).subscribe(resp => {
+  this.httpClient.post(`${this.apiUrl}/insertArchivStammMst`, body).subscribe(resp => {
     console.log("response %o, ", resp);
   });
   
@@ -314,7 +316,7 @@ speichereWK(wasserkoerperStam:WasserkoerperStam){
   .set('pp_typ',wasserkoerperStam.pp_typ)
 
   
-  this.httpClient.post('http://localhost:3000/insertStammWK', body).subscribe(resp => {
+  this.httpClient.post(`${this.apiUrl}/insertStammWK`, body).subscribe(resp => {
     console.log("response %o, ", resp);
   });    
      
@@ -334,7 +336,7 @@ speichereMst(messstellenStam:MessstellenStam){
 
 
   
-  this.httpClient.post('http://localhost:3000/insertStammMst', body).subscribe(resp => {
+  this.httpClient.post(`${this.apiUrl}/insertStammMst`, body).subscribe(resp => {
     console.log("response %o, ", resp);
   });    
 }
@@ -348,7 +350,7 @@ async getArchivMstStamm(parameter :number){
  
 
 
-  await this.httpClient.get('http://localhost:3000/arStammMst', {params}).forEach(formen_ => {
+  await this.httpClient.get(`${this.apiUrl}/arStammMst`, {params}).forEach(formen_ => {
     this.archivMst = formen_;
     console.log(formen_);
 
@@ -366,7 +368,7 @@ async getArchivMstStamm(parameter :number){
    
   
   
-    await this.httpClient.get('http://localhost:3000/arStammWK', {params}).forEach(formen_ => {
+    await this.httpClient.get(`${this.apiUrl}/arStammWK`, {params}).forEach(formen_ => {
       this.archivWK = formen_;
       console.log(formen_);
   

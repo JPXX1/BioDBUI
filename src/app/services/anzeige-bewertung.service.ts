@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { WkUebersicht } from '../interfaces/wk-uebersicht';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ export class AnzeigeBewertungService {
   public dbStamWk: any;
   public InfoBox: string = "";
   public wkUebersicht: WkUebersicht[] = [];
+  private apiUrl = environment.apiUrl;
   //public FilterwkUebersicht: WkUebersicht[] = [];
   public _uebersicht: WkUebersicht;
   constructor(private httpClient: HttpClient) { }
@@ -28,11 +29,11 @@ export class AnzeigeBewertungService {
   }
 
    getBwWKUebersicht() {
-     return this.httpClient.get('http://localhost:3000/bwWasserkoerper');
+     return this.httpClient.get(`${this.apiUrl}/bwWasserkoerper`);
   }
 
    getStamWasserkoerper() {
-    return this.httpClient.get('http://localhost:3000/stamWasserkoerper');
+    return this.httpClient.get(`${this.apiUrl}/stamWasserkoerper`);
   }
 
   async callStamWK() {

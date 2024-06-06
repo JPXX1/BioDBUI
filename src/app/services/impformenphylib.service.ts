@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { Messwerte } from '../interfaces/messwerte';
 import { Observable,throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 import { MessstellenImp } from '../interfaces/messstellen-imp';
 @Injectable({
   providedIn: 'root'
 })
 export class ImpPhylibServ {
+  private apiUrl = environment.apiUrl;
   myVariable: any;
   constructor(private httpClient: HttpClient) { }
  
   getFormen(){ 
-  
- return this.httpClient.get('http://localhost:3000/impformenphylib');
+    return this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
+//  return this.httpClient.get('${this.apiUrl}/impformenphylib');
     
 
     
@@ -22,42 +23,42 @@ export class ImpPhylibServ {
 
   getTiefen(){
 
-    //var temp=this.httpClient.get('http://localhost:3000/imptiefenphylib');
-    return this.httpClient.get('http://localhost:3000/imptiefenphylib');
+    //var temp=this.httpClient.get('${this.apiUrl}/imptiefenphylib');
+    return this.httpClient.get(`${this.apiUrl}/imptiefenphylib`);
     
   }
   getEinheiten(){ 
   
-    return this.httpClient.get('http://localhost:3000/impeinheitenphylib');
+    return this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
        
    
        
      }
      getMst(): Observable<any>{ 
-      // return this.httpClient.get('http://localhost:3000/imptiefenphylib');
-      return this.httpClient.get('http://localhost:3000/impMst');
+      // return this.httpClient.get('${this.apiUrl}/imptiefenphylib');
+      return this.httpClient.get(`${this.apiUrl}/impMst`);
          
      
         
        }
 
        getimpUebersicht(){
-        return this.httpClient.get('http://localhost:3000/impUebersicht');
+        return this.httpClient.get(`${this.apiUrl}/impUebersicht`);
        }
        getProbenehmer(){
-        return this.httpClient.get('http://localhost:3000/impProbenehmer');
+        return this.httpClient.get(`${this.apiUrl}/impProbenehmer`);
         
        }
        getJahr(){
-        return this.httpClient.get('http://localhost:3000/impJahr');
+        return this.httpClient.get(`${this.apiUrl}/impJahr`);
         
        }
        getArtenPhylibMPtets() {
 
-              return this.httpClient.get('http://localhost:3000/impArten2');}
+              return this.httpClient.get(`${this.apiUrl}/impArten2`);}
       getParameterAbiot() {
 
-                return this.httpClient.get('http://localhost:3000/impParaAbiot');}
+                return this.httpClient.get(`${this.apiUrl}/impParaAbiot`);}
 
 
   
@@ -67,7 +68,7 @@ export class ImpPhylibServ {
                 .set('datumpn',datum)       
            ;
                
-              return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte2', {params: params}); 
+              return this.httpClient.get(`${this.apiUrl}/kontrollPhylibMesswerte2`, {params: params}); 
               
               }
       kontrollPhylibMessstellen(datum:string,Probenehmer:string): Observable<any>{
@@ -76,7 +77,7 @@ export class ImpPhylibServ {
                 .set('datum',datum)       
            ;
                
-         return this.httpClient.get('http://localhost:3000/kontrollPhylibMessstellen', {params: params}); 
+         return this.httpClient.get(`${this.apiUrl}/kontrollPhylibMessstellen`, {params: params}); 
               
               }
       kontrollPhylibMesswerte(MessDataImp:Messwerte,datum:string,Probenehmer:string,id_import:string){
@@ -93,7 +94,7 @@ export class ImpPhylibServ {
         .set('cf',MessDataImp._cf)
         .set('wert',MessDataImp._Messwert);
        
-      return this.httpClient.get('http://localhost:3000/kontrollPhylibMesswerte', {params: params}); 
+      return this.httpClient.get(`${this.apiUrl}/kontrollPhylibMesswerte`, {params: params}); 
       
       }
       
@@ -103,27 +104,27 @@ export class ImpPhylibServ {
       getvalVerfahren(): Observable<any>{
 
 
-        return this.httpClient.get('http://localhost:3000/valVerfahren');}
+        return this.httpClient.get(`${this.apiUrl}/valVerfahren`);}
 
       getvalExceltabs(): Observable<any>{
 
 
-      return this.httpClient.get('http://localhost:3000/valExceltabs');}
+      return this.httpClient.get(`${this.apiUrl}/valExceltabs`);}
       
       getvalExcelSpalten(): Observable<any>{
 
 
-        return this.httpClient.get('http://localhost:3000/valExcelspalten');}
+        return this.httpClient.get(`${this.apiUrl}/valExcelspalten`);}
 
        getArtenPhylibMP(parameter :number){ 
 
         let params = new HttpParams().set('id',parameter);
         console.log(params.toString())
         //const params: { id: 1 };
-        return this.httpClient.get('http://localhost:3000/impArten', {params});
+        return this.httpClient.get(`${this.apiUrl}/impArten`, {params});
         }
         async  postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import):Promise<string> {
-          let url='http://localhost:3000/insertPhylibMessstellen';
+          let url=`${this.apiUrl}/insertPhylibMessstellen`;
      
           
           try {
@@ -166,7 +167,7 @@ export class ImpPhylibServ {
      
       
 
-      //   await this.httpClient.post('http://localhost:3000/insertPhylibMessstellen', body,{observe: 'response'}).pipe(
+      //   await this.httpClient.post('${this.apiUrl}/insertPhylibMessstellen', body,{observe: 'response'}).pipe(
       //     catchError(err => {
       //       console.error(err);
             
@@ -179,7 +180,7 @@ export class ImpPhylibServ {
         
 
       async  postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:number) :Promise<number>{
-        let url='http://localhost:3000/insertPhylibMesswerte';
+        let url=`${this.apiUrl}/insertPhylibMesswerte`;
         let bodytext;
         
         try {
@@ -235,7 +236,7 @@ export class ImpPhylibServ {
  
          
         //    console.log(MessDataImp)
-        //    await this.httpClient.post('http://localhost:3000/insertPhylibMesswerte', body,{observe: 'response'}).subscribe(resp=> {
+        //    await this.httpClient.post('${this.apiUrl}/insertPhylibMesswerte', body,{observe: 'response'}).subscribe(resp=> {
         //      console.log("response %o, ", resp);
         //       return resp.status;
         //      response=resp.status;

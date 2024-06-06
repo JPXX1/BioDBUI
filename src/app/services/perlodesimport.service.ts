@@ -5,6 +5,7 @@ import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
 import * as XLSX from 'xlsx';
 import { Uebersicht } from '../interfaces/uebersicht';
 import { MessstellenImp } from '../interfaces/messstellen-imp';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +13,9 @@ export class PerlodesimportService {
   public InfoBox: string = "";
   public arten: any;
   public messwerte:Messwerte[];
-  
+
+  private apiUrl = environment.apiUrl;
+
   public MessData: Messwerte[] = []; public MessDataOrgi: Messwerte[] = []; //public MessDataGr: Messgroup[] = []; 
 	public MessDataImp: Messwerte[] = []; public messstellenImp: MessstellenImp[] = [];
 	public uebersicht:Uebersicht[]=[];
@@ -23,7 +26,7 @@ export class PerlodesimportService {
 
   getArtenMZB(){ 
         
-    return this.httpClient.get('http://localhost:3000/impArtenMZB');
+    return this.httpClient.get(`${this.apiUrl}/impArtenMZB`);
     }
 
 
