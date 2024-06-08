@@ -25,7 +25,11 @@
         <button mat-menu-item>Item 2</button>
       </mat-menu>
   
-  
+      <button mat-button [matMenuTriggerFor]="Typen">Typen</button>
+      <mat-menu #Typen="matMenu" xPosition="after">
+        <button mat-menu-item mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
       <button mat-button [matMenuTriggerFor]="probenehmer">Probenehmer</button>
       <mat-menu #probenehmer="matMenu" xPosition="after">
         <button mat-menu-item>Item 1</button>
@@ -60,3 +64,6 @@
       
     </div>
       
+    <div class="card" *ngIf="TypWrrlAnzeige == true" style="vertical-align: top;">
+      <app-editable-table-typwrrl></app-editable-table-typwrrl>
+    </div>

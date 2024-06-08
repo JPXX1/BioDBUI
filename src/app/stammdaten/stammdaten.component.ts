@@ -18,7 +18,7 @@ export class StammdatenComponent implements OnInit{
   constructor(
     private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent,private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
-  
+  TypWrrlAnzeige:boolean=false;
    public messstellenStam1:MessstellenStam[]=[];
    public wkStam1:WasserkoerperStam[]=[];
   public MessstellenAnzeige:boolean=false;
@@ -107,8 +107,16 @@ this.wkStam1=this.sortedDataWK;
    
 
   }
+
+  async wrrlTyp(){
+
+this.TypWrrlAnzeige=true;
+  }
   async fgwWk()
-  {await  this.stammdatenService.startwk(false);
+ 
+  {
+    this.TypWrrlAnzeige=false;
+    await  this.stammdatenService.startwk(false);
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
   console.log (this.stammdatenService.wkarray)

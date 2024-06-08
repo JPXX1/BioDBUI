@@ -5,6 +5,7 @@ import { TypWrrl } from '../interfaces/typ-wrrl';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -68,6 +69,8 @@ async startwk(kat:boolean){
   getStammWrrlTyp() {
     return this.httpClient.get(`${this.apiUrl}/stamWRRLTypen`);
   }
+
+ 
   getStammGewasser() {
     return this.httpClient.get(`${this.apiUrl}/stamGewaesser`);
   }
@@ -128,40 +131,48 @@ async startwk(kat:boolean){
         console.log(formen_);
       });
     }
-
-    async wandleTypWRRL(){
+    async wandleTypWRRLAlle(){
       let temp: any = this.wrrltyp_t;
       this.wrrltyp=[];
       temp.map(async (f) => {
-        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ})
+      if (f.seefliess!==null){
+        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess})}
+      })
+    }
+    async wandleTypWRRL(see:boolean){
+      let temp: any = this.wrrltyp_t;
+      this.wrrltyp=[];
+      temp.map(async (f) => {
+        if (f.seefliess===see || f.seefliess===null){
+        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess})}
       })
     }
     async wandleTypDia(){
       let temp: any = this.diatyp_t;
       this.diatyp=[];
       temp.map(async (f) => {
-        this.diatyp.push({id:f.id_dia,typ:f.dia_typ})
+        this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess})
       })
     }
     async wandleTypMP(){
       let temp: any = this.mptyp_t;
       this.mptyp=[];
       temp.map(async (f) => {
-        this.mptyp.push({id:f.id,typ:f.mp_typ})
+        this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess})
       })
     }
     async wandleTypPP(){
       let temp: any = this.pptyp_t;
       this.pptyp=[];
       temp.map(async (f) => {
-        this.pptyp.push({id:f.id,typ:f.pp_typ})
+        this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess})
       })
     }
     async wandleGewaesser(){
       let temp: any = this.gewaesser_T;
       this.gewaesser=[];
       temp.map(async (f) => {
-        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername})
+        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:true})
       })
     }
     async filterWK(kat:boolean){
@@ -184,7 +195,7 @@ async startwk(kat:boolean){
          let gewasserart:boolean=true;
             this.wkarray.push({ id:f.id,
               wk_name: f.wk_name,
-              see:gewasserart,
+              see:f.see,
               kuenstlich:f.kuenstlich,
               hmwb:f.hmwb,
               eu_cd_wb:f.eu_cd_wb,

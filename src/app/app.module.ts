@@ -53,6 +53,7 @@ import { EditStammdatenWkComponent } from './stammdaten/edit-stammdaten-wk/edit-
 import {MatDividerModule} from '@angular/material/divider';
 import { ArchivStammdatenWkComponent } from './stammdaten/archiv-stammdaten-wk/archiv-stammdaten-wk.component';
 import { MessstelleAendernComponent } from './file-upload/messstelle-aendern/messstelle-aendern.component';
+import { EditableTableTypwrrlComponent } from './stammdaten/editable-table-typwrrl/editable-table-typwrrl.component';
 
 
 StammWkComponent
@@ -68,7 +69,7 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent,      
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent,      
 ], 
 imports: [MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
