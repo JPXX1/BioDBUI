@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    align-items: center;
+  }
+  
+  button {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap; /* Ensures the button content stays in one line */
+    margin-left: 10px;
+  }
+  

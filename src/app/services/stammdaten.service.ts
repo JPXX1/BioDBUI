@@ -5,7 +5,7 @@ import { TypWrrl } from '../interfaces/typ-wrrl';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom ,Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -132,47 +132,60 @@ async startwk(kat:boolean){
       });
     }
     async wandleTypWRRLAlle(){
+      
       let temp: any = this.wrrltyp_t;
       this.wrrltyp=[];
       temp.map(async (f) => {
       if (f.seefliess!==null){
-        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess})}
+        let fliess:boolean;
+      if (f.seefliess===true){fliess=false;}
+      if (f.seefliess===false){fliess=true;}
+        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess,fliess:fliess})}
       })
     }
     async wandleTypWRRL(see:boolean){
+      let fliess:boolean;
+      if (see===true){fliess=false;}
+      if (see===false){fliess=true;}
       let temp: any = this.wrrltyp_t;
       this.wrrltyp=[];
       temp.map(async (f) => {
         if (f.seefliess===see || f.seefliess===null){
-        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess})}
+        this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess,fliess:fliess})}
       })
     }
     async wandleTypDia(){
+      let fliess:boolean;
       let temp: any = this.diatyp_t;
       this.diatyp=[];
       temp.map(async (f) => {
-        this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess})
+        this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess,fliess:fliess})
       })
     }
     async wandleTypMP(){
+      let fliess:boolean;
       let temp: any = this.mptyp_t;
       this.mptyp=[];
       temp.map(async (f) => {
-        this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess})
+        this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess,fliess:fliess})
       })
     }
     async wandleTypPP(){
+      let fliess:boolean;
       let temp: any = this.pptyp_t;
       this.pptyp=[];
       temp.map(async (f) => {
-        this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess})
+        this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})
       })
     }
     async wandleGewaesser(){
+      let fliess:boolean;let see:boolean;
       let temp: any = this.gewaesser_T;
       this.gewaesser=[];
       temp.map(async (f) => {
-        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:true})
+        if (f.katgorie==='f'){fliess=true;see=false;}
+        if (f.katgorie==='s'){fliess=false;see=true;}
+        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:true,fliess:fliess})
       })
     }
     async filterWK(kat:boolean){
@@ -390,6 +403,23 @@ async getArchivMstStamm(parameter :number){
   
     
     }
+    
+
+    addRowTypWRRL(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addTypWrrl`, data);
+    }
+
+    
+    aktualisiereWrrlTyp(typwrrl:string,id:number,seefliess:boolean){
+
+      const body = new HttpParams()
+      .set('id',id)
+      .set('wrrl_typ',typwrrl)
+      .set('seefliess',seefliess)
+      
+     
+      this.httpClient.post(`${this.apiUrl}/updateStamWrrlTyp`,body).subscribe(resp => {
+     console.log("response %o, ", resp);  });
   
-  
+    }
 }

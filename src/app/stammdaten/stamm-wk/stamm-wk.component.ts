@@ -22,7 +22,7 @@ export class StammWkComponent {
   constructor( public dialog: MatDialog,private stammdatenService:StammdatenService) {
     
   }  
-  displayedColumns: string[] = ['id', 'wk_name', 'see','kuenstlich','hmwb','bericht_eu','eu_cd_wb','land','pp_typ_str','dia_typ_str','wrrl_typ_str','mp_typ_str','gewaessername','updated_at','actions'];
+  displayedColumns: string[] = ['id', 'wk_name', 'kuenstlich','hmwb','bericht_eu','eu_cd_wb','land','pp_typ_str','dia_typ_str','wrrl_typ_str','mp_typ_str','gewaessername','updated_at','actions'];
   dataSource = this.wasserkoerperStam;
   arraybuendelWK:ArraybuendelWK;
   archivWK:WasserkoerperStam[] = [];

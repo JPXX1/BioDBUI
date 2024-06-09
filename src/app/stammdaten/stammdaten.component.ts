@@ -102,6 +102,7 @@ this.wkStam1=this.sortedDataWK;
   await  this.stammdatenService.start(true);
     this.MessstellenAnzeige=true;
     this.WKAnzeige=false;
+    this.TypWrrlAnzeige=false;
     console.log (this.stammdatenService.messstellenarray)
     this.messstellenStam1=this.stammdatenService.messstellenarray;
    
@@ -109,7 +110,8 @@ this.wkStam1=this.sortedDataWK;
   }
 
   async wrrlTyp(){
-
+    this.MessstellenAnzeige=false;
+    this.WKAnzeige=false;
 this.TypWrrlAnzeige=true;
   }
   async fgwWk()
@@ -119,6 +121,7 @@ this.TypWrrlAnzeige=true;
     await  this.stammdatenService.startwk(false);
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
+  this.TypWrrlAnzeige=false;
   console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
 this.gewaesserart="Fließgewässer";}
@@ -127,6 +130,7 @@ this.gewaesserart="Fließgewässer";}
   {await  this.stammdatenService.startwk(true);
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
+  this.TypWrrlAnzeige=false;
   console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
   this.gewaesserart="See";}
