@@ -1,0 +1,54 @@
+<!-- src/app/editable-table-typwrrl/editable-table-typwrrl.component.html -->
+
+<div fxLayout="row" fxLayoutAlign="start center">
+    <span fxLayoutGap="8px">Gewässer direkt in der Tabelle bearbeiten</span>
+    <button  (click)="new()">
+      neues Gewässer anlegen
+    </button>
+  </div>
+  
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef  mat-sort-header="id"> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+    
+      <!-- Typ Column -->
+      <ng-container matColumnDef="typ">
+        <th mat-header-cell *matHeaderCellDef  mat-sort-header="typ"> Gewässer </th>
+        <td mat-cell *matCellDef="let element" contenteditable (blur)="updateValue(element, 'typ', $event)"> 
+          {{element.typ}} 
+        </td>
+      </ng-container>
+    
+      <!-- FGW See Column -->
+      <ng-container matColumnDef="seefliess">
+        <th mat-header-cell *matHeaderCellDef> See </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox [checked]="element.seefliess" (change)="updateSee(element, 'seefliess', $event)"></mat-checkbox>
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="fliess">
+        <th mat-header-cell *matHeaderCellDef> FGW </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox [checked]="element.fliess" (change)="updateFliess(element, 'fliess', $event)"></mat-checkbox>
+        </td>
+      </ng-container>
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Änderungen speichern </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="save(element)">
+            <mat-icon>save</mat-icon>
+          </button>
+         
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    
+  

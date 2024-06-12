@@ -178,14 +178,15 @@ async startwk(kat:boolean){
         this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})
       })
     }
-    async wandleGewaesser(){
+    async wandleGewaesser(gewaesserbearbeiten:boolean){
       let fliess:boolean;let see:boolean;
       let temp: any = this.gewaesser_T;
       this.gewaesser=[];
       temp.map(async (f) => {
-        if (f.katgorie==='f'){fliess=true;see=false;}
-        if (f.katgorie==='s'){fliess=false;see=true;}
-        this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:true,fliess:fliess})
+        if (f.kategorie==='f'){fliess=true;see=false;}else
+        if (f.kategorie==='s'){fliess=false;see=true;}
+        if ((gewaesserbearbeiten===true && f.gewaessername!=='n.b.')|| (gewaesserbearbeiten===false))
+        {this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:see,fliess:fliess})}
       })
     }
     async filterWK(kat:boolean){
@@ -404,7 +405,9 @@ async getArchivMstStamm(parameter :number){
     
     }
     
-
+    addRowGewaesser(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addGewaesser`, data);
+    }
     addRowTypWRRL(data: any): Observable<any> {
       return this.httpClient.post<any>(`${this.apiUrl}/addTypWrrl`, data);
     }
@@ -419,6 +422,19 @@ async getArchivMstStamm(parameter :number){
       
      
       this.httpClient.post(`${this.apiUrl}/updateStamWrrlTyp`,body).subscribe(resp => {
+     console.log("response %o, ", resp);  });
+  
+    }
+    aktualisiereGewaesser(gewaessername:string,id:number,seefliess:boolean){
+      let kat:string;
+      if (seefliess===true){kat='s'}else{kat='f'}
+      const body = new HttpParams()
+      .set('id',id)
+      .set('name',gewaessername)
+      .set('kategorie',kat)
+      
+     
+      this.httpClient.post(`${this.apiUrl}/updateStamGewaesser`,body).subscribe(resp => {
      console.log("response %o, ", resp);  });
   
     }

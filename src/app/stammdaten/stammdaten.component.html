@@ -21,13 +21,13 @@
   
       <button mat-button [matMenuTriggerFor]="gewaesser">Gewässer</button>
       <mat-menu #gewaesser="matMenu" xPosition="before">
-        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item  (click)="gewaesser1()">Gewässer</button>
         <button mat-menu-item>Item 2</button>
       </mat-menu>
   
       <button mat-button [matMenuTriggerFor]="Typen">Typen</button>
       <mat-menu #Typen="matMenu" xPosition="after">
-        <button mat-menu-item mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
+        <button mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
         <button mat-menu-item>Item 2</button>
       </mat-menu>
       <button mat-button [matMenuTriggerFor]="probenehmer">Probenehmer</button>
@@ -41,11 +41,7 @@
         <!-- <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button> -->
       </mat-menu>
       
-      <button mat-button [matMenuTriggerFor]="nutzer">Nutzer</button>
-      <mat-menu #nutzer="matMenu" xPosition="after">
-        <button mat-menu-item>Item 1</button>
-        <button mat-menu-item>Item 2</button>
-      </mat-menu>
+      
       </div>
       </span>
       <div class="card" *ngIf="MessstellenAnzeige == true" style="vertical-align: top;"> 
@@ -66,4 +62,7 @@
       
     <div class="card" *ngIf="TypWrrlAnzeige == true" style="vertical-align: top;">
       <app-editable-table-typwrrl></app-editable-table-typwrrl>
+    </div>
+    <div class="card" *ngIf="GewaesserAnzeige == true" style="vertical-align: top;">
+      <app-editable-table-gewaesser></app-editable-table-gewaesser>
     </div>

@@ -24,6 +24,7 @@ export class StammdatenComponent implements OnInit{
    public wkStam1:WasserkoerperStam[]=[];
   public MessstellenAnzeige:boolean=false;
   public WKAnzeige:boolean=false;
+  public GewaesserAnzeige:boolean=false;
   sortedData:MessstellenStam[]=[];sortedDataWK:WasserkoerperStam[]=[];
   public gewaesserart:string;
 //sort Mst
@@ -111,7 +112,12 @@ this.wkStam1=this.sortedDataWK;
    
 
   }
-
+async gewaesser1(){
+  this.MessstellenAnzeige=false;
+    this.WKAnzeige=false;
+this.TypWrrlAnzeige=false;
+this.GewaesserAnzeige=true;
+}
   async wrrlTyp(){
     this.MessstellenAnzeige=false;
     this.WKAnzeige=false;

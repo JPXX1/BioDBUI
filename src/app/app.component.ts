@@ -56,4 +56,17 @@ export class AppComponent {
     this._renderer2.removeStyle(ef,'background-color'); 
 
   }
+
+  getlink4(){
+    const em = document.getElementById('link0');
+    this._renderer2.removeStyle(em, 'background-color'); 
+    const el = document.getElementById('link4');
+    this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
+    const ee = document.getElementById('link1');
+    this._renderer2.removeStyle(ee,'background-color');  
+    const ef = document.getElementById('link2');
+    this._renderer2.removeStyle(ef,'background-color'); 
+    const eg = document.getElementById('link3');
+    this._renderer2.removeStyle(ef,'background-color'); 
+  }
 }

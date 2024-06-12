@@ -1,4 +1,5 @@
-<div class="panel">
+<div class="fixed-menu-container">
+<!-- <div class="panel" > -->
   <p>
     <mat-toolbar>
      
@@ -11,13 +12,13 @@
                 <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
                  <button id="link2" [routerLink]="['/monitoring']" class="linkcolor" mat-button (click)="getlink2()">Monitoringdaten</button>
                  <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor" mat-button (click)="getlink3()">Stammdaten</button>
-                 <button id="link4" [routerLink]="['/register']" class="linkcolor" mat-button (click)="getlink3()">Register</button>
+                 <button id="link5" [routerLink]="['/admin']"   mat-button (click)="getlink4()">Administration</button>
         </span>
     </mat-toolbar>
   </p>
    
-
-  </div> 
+</div>
+  <!-- </div>  -->
 
 
 <router-outlet></router-outlet>

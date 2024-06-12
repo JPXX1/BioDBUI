@@ -1,6 +1,8 @@
 <div class="register-container">
     <form (ngSubmit)="register()">
       <div class="form-group">
+        <label style="font-size: large;">neuen Nutzer anlegen</label>
+        <p></p>
         <label for="username">Username</label>
         <input
           type="text"
@@ -29,7 +31,7 @@
           </button>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="submit" class="btn btn-primary">Nutzer anlegen</button>
     </form>
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}

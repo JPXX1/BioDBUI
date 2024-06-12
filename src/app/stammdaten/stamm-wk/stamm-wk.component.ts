@@ -41,7 +41,7 @@ export class StammWkComponent {
     await this.stammdatenService.callMptyp();
     await this.stammdatenService.callWrrltyp();
     await this.stammdatenService.callPptyp();
-    await this.stammdatenService.wandleGewaesser();
+    await this.stammdatenService.wandleGewaesser(false);
     await this.stammdatenService.wandleTypDia();
     await this.stammdatenService.wandleTypMP();
     await this.stammdatenService.wandleTypPP();
