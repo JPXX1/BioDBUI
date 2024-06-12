@@ -35,6 +35,14 @@ export class MapComponent implements OnInit {
     // Countries have transparency, so do not fade tiles:
     transition: 0,
   });
+
+  legendItems = [
+    { color: this.getColor('1'), label: 'sehr gut (1)' },
+    { color: this.getColor('2'), label: 'gut (2)' },
+    { color: this.getColor('3'), label: 'mäßig (3)' },
+    { color: this.getColor('4'), label: 'befriedigend (4)' },
+    { color: this.getColor('5'), label: 'ungenügend (5)' }
+  ];
   // source_landesgrenze:VectorSource= new VectorSource({
   // //  url:'https://fbinter.stadt-berlin.de/fb/wfs/data/senstadt/s_wfs_alkis_land?REQUEST=GetCapabilities&SERVICE=wfs',
   //   url:'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Alandesgrenze&bbox=13.088347434997559%2C52.3382453918457%2C13.761159896850586%2C52.67551040649414&width=768&height=384&srs=EPSG%3A4326&styles=&format=application/openlayers',

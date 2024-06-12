@@ -20,4 +20,27 @@
     font-weight: normal;
    
   }
- 
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 100;
+  }
+  
+  .legend h3 {
+    margin-top: 0;
+  }
+  
+  .legend-key {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+  
+  .legend-label {
+    display: inline;
+  }
