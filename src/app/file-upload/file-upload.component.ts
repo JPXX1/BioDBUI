@@ -22,7 +22,8 @@ import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern
 import {MessstelleAendernComponent} from 'src/app/file-upload/messstelle-aendern/messstelle-aendern.component'
 import { MatDialog } from '@angular/material/dialog';
 import {PhytoseeServiceService} from 'src/app/services/phytosee-service.service';
-
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
@@ -71,7 +72,7 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+	constructor (private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
 		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
@@ -79,10 +80,13 @@ export class FileUploadComponent implements OnInit {
 	}
 	panelOpenState = false;
 	async ngOnInit() {
+		if (!this.authService.isLoggedIn()) {
+			this.router.navigate(['/login']);
+        } else{
 		await this.uebersichtImportService.start();
 		this.uebersichtImport=this.uebersichtImportService.uebersicht;
 		//console.log(this.uebersichtImport);
-	}
+	}}
 	onValueChange($event){
 		console.log($event)
 		this.newDate=$event;
@@ -501,7 +505,9 @@ displayableColumns(idverfahren:number){
 
 		return this.Farbebewertg.getColorFehler(Wert1,Wert2);
 	  }
-
+	 
+	
+	
 }
 
 function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {

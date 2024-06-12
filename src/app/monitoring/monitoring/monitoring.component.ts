@@ -7,7 +7,8 @@ import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebe
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
 import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
 import { StammdatenService } from 'src/app/services/stammdaten.service';
-
+import { AuthService } from 'src/app/auth/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -37,18 +38,21 @@ export class MonitoringComponent implements OnInit{
   Artvalue = '';
   min:number=2008;
   max:number=2026; 
-  constructor(private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
+  constructor(private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
 	}
 
 
   async ngOnInit() {
+    if (!this.authService.isLoggedIn()) {
+			this.router.navigate(['/login']);
+        } else{
 		await this. anzeigeBewertungService.ngOnInit();
     this.FilterwkUebersicht=[];
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
-	}
+	}}
   clearSearchFilter(){
     this.value='';
     if ( !this.MZBAnzeige && this.MakrophytenAnzeige===true)

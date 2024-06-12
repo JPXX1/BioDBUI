@@ -17,6 +17,8 @@ import Overlay from 'ol/Overlay';
 import WMTS from 'ol/source/WMTS.js';
 import {fromLonLat, get as getProjection} from 'ol/proj.js';
 import {getWidth} from 'ol/extent.js';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -25,7 +27,7 @@ import {getWidth} from 'ol/extent.js';
 export class MapComponent implements OnInit {
  
   
-  constructor(private Farbebewertg: FarbeBewertungService) { }
+  constructor(private router: Router,private authService: AuthService,private Farbebewertg: FarbeBewertungService) { }
   source_landesgrenze:TileWMS= new TileWMS({
     url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Alandesgrenze&bbox=13.088347434997559%2C52.3382453918457%2C13.761159896850586%2C52.67551040649414&width=768&height=384&srs=EPSG%3A4326&styles=&format=application/openlayers',
     params: {'LAYERS': 'ne:landesgrenze', 'TILED': false},
@@ -65,7 +67,7 @@ export class MapComponent implements OnInit {
     transition: 0,
   });
 
-
+  
 
 getColor(wert:string){
  return this.Farbebewertg.getColor(wert);
@@ -274,21 +276,9 @@ startbp3(){
 
   ngOnInit(): void {
 
-//     const resolutions = [];
-// const matrixIds = [];
-// const proj3857 = getProjection('EPSG:3857');
-// const maxResolution = getWidth(proj3857.getExtent()) / 256;
-
-// for (let i = 0; i < 20; i++) {
-//   matrixIds[i] = i.toString();
-//   resolutions[i] = maxResolution / Math.pow(2, i);
-// }
-
-//     const tileGrid = new WMTSTileGrid({
-//       origin: [-20037508, 20037508],
-//       resolutions: resolutions,
-//       matrixIds: matrixIds,
-//     });
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+        } 
     const status = document.getElementById('status');
     // const ign_source = new WMTS({
     //   url: 'http://localhost:8080/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap',

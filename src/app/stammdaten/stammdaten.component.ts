@@ -5,7 +5,8 @@ import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {StammWkComponent} from './stamm-wk/stamm-wk.component';
 import { MatSort,Sort} from '@angular/material/sort';
 import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
-//import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
+import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-stammdaten',
@@ -15,7 +16,7 @@ import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
 export class StammdatenComponent implements OnInit{
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatSort) sortWK: MatSort
-  constructor(
+  constructor(private router: Router,private authService: AuthService,
     private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent,private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
   TypWrrlAnzeige:boolean=false;
@@ -93,7 +94,9 @@ this.wkStam1=this.sortedDataWK;
 }
   async ngOnInit(){
 
- 
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+        } 
       
   }
 
