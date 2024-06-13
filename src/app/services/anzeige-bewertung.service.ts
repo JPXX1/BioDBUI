@@ -17,7 +17,11 @@ export class AnzeigeBewertungService {
   public _uebersicht: WkUebersicht;
   constructor(private httpClient: HttpClient) { }
 
-
+  public value:string = '';
+   public valueJahr:string = '';
+   public Artvalue:string = '';
+  min:number=2016;
+  max:number=2026; 
 
   async ngOnInit() {
 

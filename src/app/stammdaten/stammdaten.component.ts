@@ -27,6 +27,7 @@ export class StammdatenComponent implements OnInit{
   public GewaesserAnzeige:boolean=false;
   sortedData:MessstellenStam[]=[];sortedDataWK:WasserkoerperStam[]=[];
   public gewaesserart:string;
+  public PPTypAnzeige:boolean=false;
 //sort Mst
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
@@ -104,8 +105,10 @@ this.wkStam1=this.sortedDataWK;
 
  async  seeMst(){
   await  this.stammdatenService.start(true);
+  this.PPTypAnzeige=false;
     this.MessstellenAnzeige=true;
     this.WKAnzeige=false;
+    this.GewaesserAnzeige=false;
     this.TypWrrlAnzeige=false;
     console.log (this.stammdatenService.messstellenarray)
     this.messstellenStam1=this.stammdatenService.messstellenarray;
@@ -113,6 +116,7 @@ this.wkStam1=this.sortedDataWK;
 
   }
 async gewaesser1(){
+  this.PPTypAnzeige=false;
   this.MessstellenAnzeige=false;
     this.WKAnzeige=false;
 this.TypWrrlAnzeige=false;
@@ -120,12 +124,23 @@ this.GewaesserAnzeige=true;
 }
   async wrrlTyp(){
     this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
     this.WKAnzeige=false;
+    this.PPTypAnzeige=false;
 this.TypWrrlAnzeige=true;
+  }
+
+  async ppTyp(){
+    this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.WKAnzeige=false;
+this.TypWrrlAnzeige=false;
+    this.PPTypAnzeige=true;
   }
   async fgwWk()
  
-  {
+  {this.PPTypAnzeige=false;
+    this.GewaesserAnzeige=false;
     this.TypWrrlAnzeige=false;
     await  this.stammdatenService.startwk(false);
   this.MessstellenAnzeige=false;
@@ -138,6 +153,8 @@ this.gewaesserart="Fließgewässer";}
   async seeWk()
   {await  this.stammdatenService.startwk(true);
   this.MessstellenAnzeige=false;
+  this.PPTypAnzeige=false;
+  this.GewaesserAnzeige=false;
   this.WKAnzeige=true;
   this.TypWrrlAnzeige=false;
   console.log (this.stammdatenService.wkarray)
@@ -151,6 +168,9 @@ this.gewaesserart="Fließgewässer";}
    console.log (this.stammdatenService.messstellenarray)
    this.messstellenStam1=this.stammdatenService.messstellenarray;
     this.MessstellenAnzeige=true;
+    this.PPTypAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.TypWrrlAnzeige=false;
     this.WKAnzeige=false;
   }
 

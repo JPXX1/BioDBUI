@@ -40,8 +40,8 @@ export class MapComponent implements OnInit {
     { color: this.getColor('1'), label: 'sehr gut (1)' },
     { color: this.getColor('2'), label: 'gut (2)' },
     { color: this.getColor('3'), label: 'mäßig (3)' },
-    { color: this.getColor('4'), label: 'befriedigend (4)' },
-    { color: this.getColor('5'), label: 'ungenügend (5)' }
+    { color: this.getColor('4'), label: 'unbefriedigend (4)' },
+    { color: this.getColor('5'), label: 'schlecht (5)' }
   ];
   // source_landesgrenze:VectorSource= new VectorSource({
   // //  url:'https://fbinter.stadt-berlin.de/fb/wfs/data/senstadt/s_wfs_alkis_land?REQUEST=GetCapabilities&SERVICE=wfs',

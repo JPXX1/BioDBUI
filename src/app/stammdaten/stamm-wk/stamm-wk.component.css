@@ -12,3 +12,28 @@ table {
     border-color: grey;
     border-width: 1px;
     font-size: large;}
+
+    .sticky-header {
+      width: 100%;
+      overflow: auto;
+      height: 400px; /* Adjust the height as needed */
+    }
+    
+    .sticky-header th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: white; /* Ensure the header background is white for better visibility */
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
+    }
+    
+    .sticky-header th.header-table-wk {
+      /* Add specific styles for your header cells if needed */
+    }
+    
+    .sticky-header th.header-table-jahr {
+      /* Add specific styles for your header cells if needed */
+    }
+    
+    /* You can add more specific styles for other headers if necessary */
+    

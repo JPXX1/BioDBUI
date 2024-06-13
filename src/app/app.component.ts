@@ -1,4 +1,5 @@
-import { Component,Renderer2} from '@angular/core';
+import { Component,Renderer2,ViewChild,ElementRef,HostListener} from '@angular/core';
+
 // import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
@@ -7,11 +8,29 @@ import { Component,Renderer2} from '@angular/core';
 })
 export class AppComponent {
   // @ViewChild('link1') link1: ElementRef;
-  // @ViewChild('link2') link2: ElementRef;
+  // klebriges Menü
+  @ViewChild('stickyMenu') menuElement: ElementRef;
   title = 'WRRL BioDatenBank Senat Berlin';
-
+sticky:boolean=false;
+menuPosition: any;
   constructor(private _renderer2: Renderer2,){}
- 
+
+  //klebriges Menü
+  
+  ngAfterViewInit(){
+    this.menuPosition = this.menuElement.nativeElement.offsetTop
+}
+
+//klebriges Menü
+@HostListener('window:scroll', ['$event'])
+    handleScroll(){
+        const windowScroll = window.pageYOffset;
+        if(windowScroll >= this.menuPosition){
+            this.sticky = true;
+        } else {
+            this.sticky = false;
+        }
+    }
   getlink0() {
     const em = document.getElementById('link0');
     this._renderer2.setStyle(em, 'background-color', 'rgb(20,220,220)')

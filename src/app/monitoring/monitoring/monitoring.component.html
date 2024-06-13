@@ -60,19 +60,21 @@
   </mat-form-field>
 </td>
 <td>
+  <div *ngIf="FilterAnzeige == true" >
   <mat-form-field>
     <input [(ngModel)]="Artvalue" matInput placeholder="Filter Art/ DVNr" autocomplete="off" style="margin-left:20px" (input)="onValueChangeFilter(value,Artvalue)">
         <button mat-icon-button matSuffix (click)="clearSearchFilterArt()" *ngIf="Artvalue">
         <mat-icon>close</mat-icon>
     </button>
 </mat-form-field>
+</div>
 </td>
 <td>
-  <mat-radio-group aria-label="Select an option">
+  <!-- <mat-radio-group aria-label="Select an option">
    
     <mat-radio-button value=1  (change)="mstalleauswaehlen(1,value,Artvalue)">alle Messstellen</mat-radio-button>
     <mat-radio-button value=2 checked (change)="mstalleauswaehlen(2,value,Artvalue)">repräsentative Messstellen (*)</mat-radio-button>
-  </mat-radio-group>
+  </mat-radio-group> -->
 </td>
 <td>
  <div style="margin-left:20px;">

@@ -4,7 +4,7 @@
  
   
 <div class="mat-elevation-z8 table">
-	<table  mat-table [dataSource]="wasserkoerperStam" class="table" matSort (matSortChange)="sortData($event)">
+	<table  mat-table [dataSource]="wasserkoerperStam" class="table sticky-header" matSort (matSortChange)="sortData($event)">
 
 		<ng-container matColumnDef="id">
 		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id" class="header-table-wk"> Wk-ID </th>

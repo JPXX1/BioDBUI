@@ -1,5 +1,5 @@
 export interface MstMakrophyten {
-   
+    gewaessername:string;
     mst: string;
     taxonzusatz: string;
     firma: string;

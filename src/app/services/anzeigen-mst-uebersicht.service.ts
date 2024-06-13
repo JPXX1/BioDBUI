@@ -7,6 +7,8 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+
+//Artdaten
 export class AnzeigenMstUebersichtService {
   public mstUebersicht: MstUebersicht[] = [];
   public mstUebersichtKl: MstUebersicht;
@@ -18,22 +20,22 @@ export class AnzeigenMstUebersichtService {
   public FilterwkUebersicht: WkUebersicht[] = [];
   private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,anzeigeBewertungService:AnzeigeBewertungService) { }
+public Artvalue:string;
+public value:string;
 
-
-
-  async call(filter:string,art:string,min:number,max:number,komp_id:number,repreasent:number) {
+  async call(filter:string,art:string,min:number,max:number,komp_id:number) {
 
  
    await this.callBwUebersicht(komp_id);
-  await this.filterMst(filter,art,min,max,repreasent);
+  await this.filterMst(filter,art,min,max);
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
     this.erzeugeDisplayedColumnNames();
      this.erzeugeDisplayColumnNames();
-     console.log(this.mstUebersicht);
-     console.log(this.displayColumnNames);
-     console.log(this.displayedColumns);
+    //  console.log(this.mstUebersicht);
+    //  console.log(this.displayColumnNames);
+    //  console.log(this.displayedColumns);
   }
 
    getBwMSTUebersicht(komp_id:number) {
@@ -61,7 +63,7 @@ export class AnzeigenMstUebersichtService {
 
   }}
 
-  async filterMst(filter:string,art:string,min:number,max:number,repreasent:number){
+  async filterMst(filter:string,art:string,min:number,max:number){
    
     let temp: any = this.dbMPUebersichtMst;
 
@@ -72,17 +74,11 @@ export class AnzeigenMstUebersichtService {
                 
           if (!filter){
             if ((Number(f.jahr)>=min && Number(f.jahr)<=max)){
-              if(repreasent===2){
-                if(f.repraesent===true){
-              this.dbMPUebersichtMst.push(f);}
-          } else {this.dbMPUebersichtMst.push(f);}}}
+              {this.dbMPUebersichtMst.push(f);}}}
          else {
           if (f.ms.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
-            if(repreasent===2){
-              if(f.repraesent===true){
-            this.dbMPUebersichtMst.push(f);}
-        } else {this.dbMPUebersichtMst.push(f);}}
+             {this.dbMPUebersichtMst.push(f);}}
           // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
       }})
   )

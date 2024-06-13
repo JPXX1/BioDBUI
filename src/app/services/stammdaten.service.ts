@@ -170,13 +170,16 @@ async startwk(kat:boolean){
         this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess,fliess:fliess})
       })
     }
-    async wandleTypPP(){
+    async wandleTypPP(pptypbearbeiten:boolean){
       let fliess:boolean;
       let temp: any = this.pptyp_t;
       this.pptyp=[];
       temp.map(async (f) => {
+        if (f.seefliess===true){fliess=false;}
+        if (f.seefliess===false){fliess=true;}
+        if (f.pp_typ!=='kein Typ' && pptypbearbeiten===true){
         this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})
-      })
+    }})
     }
     async wandleGewaesser(gewaesserbearbeiten:boolean){
       let fliess:boolean;let see:boolean;
@@ -412,16 +415,18 @@ async getArchivMstStamm(parameter :number){
       return this.httpClient.post<any>(`${this.apiUrl}/addTypWrrl`, data);
     }
 
-    
+    addRowPPWRRL(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addPPWrrl`, data);
+    }
     aktualisiereWrrlTyp(typwrrl:string,id:number,seefliess:boolean){
 
       const body = new HttpParams()
       .set('id',id)
-      .set('wrrl_typ',typwrrl)
+      .set('pp_typ',typwrrl)
       .set('seefliess',seefliess)
       
      
-      this.httpClient.post(`${this.apiUrl}/updateStamWrrlTyp`,body).subscribe(resp => {
+      this.httpClient.post(`${this.apiUrl}/updateStamPPTyp`,body).subscribe(resp => {
      console.log("response %o, ", resp);  });
   
     }

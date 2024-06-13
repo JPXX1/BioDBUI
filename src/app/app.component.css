@@ -6,9 +6,11 @@
   .linkcolor{
     color:rgba(14, 14, 241, 0.986);
 }
-fixed-menu-container {
+
+.sticky{
   position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000; /* Stellen Sie sicher, dass das Menü über anderen Inhalten liegt */
+  top: 0;
+  overflow: hidden;
+  z-index: 10;
+  margin-bottom: 50px;
 }

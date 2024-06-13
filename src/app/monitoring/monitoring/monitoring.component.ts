@@ -1,4 +1,4 @@
-import { Component,OnInit,Renderer2 } from '@angular/core';
+import { Component,OnInit,Renderer2,ViewChild } from '@angular/core';
 import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
 import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
@@ -29,14 +29,17 @@ export class MonitoringComponent implements OnInit{
   public UebersichtAnzeigen:boolean=true;
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
+  public FilterAnzeige:boolean=false;
   private komp_id:number=1;
   public props: any[]=[];
   public repreasent:number=2;
  public FilterWKname:string;
-  
+
+
+ 
   value = '';valueJahr = '';
   Artvalue = '';
-  min:number=2008;
+  min:number=2016;
   max:number=2026; 
   constructor(private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
@@ -52,32 +55,38 @@ export class MonitoringComponent implements OnInit{
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
+    this.onValueChangeFilter( '','');
 	}}
   clearSearchFilter(){
     this.value='';
-    if ( !this.MZBAnzeige && this.MakrophytenAnzeige===true)
+    if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
  
   {
     
       
-       this.handleMakrophytenMPClick(this.komp_id);
+       this.handleMakrophytenClick();
       
      }
-     else if (!this.MakrophytenAnzeige && this.MakrophytenAnzeige===false && this.UebersichtAnzeigen===false) {
+     else if (this.MZBAnzeige===true && this.MakrophytenAnzeige===false && this.UebersichtAnzeigen===false) {
       this.handleMZBClick();} 
      else if (this.UebersichtAnzeigen===true)
 
 
 
     
-    {this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;}
+    {
+      if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
+      
+      this.onValueChangeFilter('','');
+      //this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
+    }
     }
 
 
 
 
     clearSearchFilterArt(){
-      this.Artvalue='';
+      this.Artvalue='';this.anzeigenMstUebersichtService.Artvalue=''
       
       //Taxadaten
 if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
@@ -85,7 +94,7 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
   {
     
       
-       this.handleMakrophytenMPClick(this.komp_id);
+       this.handleMakrophytenClick();
       
      }
      else {
@@ -94,6 +103,13 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
   }
 
 
+   
+      
+  
+  
+  
+  
+  
 
   FilterWKnameSetzenWK(wkmst:string){
 
@@ -118,6 +134,9 @@ this.onValueChangeFilter(value,Artvalue);
 
   
   async onValueChangeFilter(value: string, Artvalue: string) {
+    this.anzeigeBewertungService.value=value;
+    this.anzeigenMstUebersichtService.value=value;
+    this.anzeigenMstUebersichtService.Artvalue=Artvalue;
     this.value = value; this.Artvalue = Artvalue;
     this.anzeigeBewertungService.filtertxt = value;
     //await this.anzeigeBewertungService.filterdaten;
@@ -178,10 +197,12 @@ this.onValueChangeFilter(value,Artvalue);
   }
   handleUebersichtWK(){
     this.FilterWKnameSetzenWK("wk")
+    // if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
     this.MZBAnzeige=false;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=false;
     this.UebersichtAnzeigen=true;
+    this.FilterAnzeige=false;
     this.getButtonAktivUebersicht();
    
   }
@@ -190,38 +211,45 @@ this.onValueChangeFilter(value,Artvalue);
     this.MakrophytenMstAnzeige=true;
     this.UebersichtAnzeigen=false;
    // this.getButtonAktivUebersicht();
-   
+   this.FilterAnzeige=true;
   }
   async handleMakrophytenClick(){ //Taxadaten MP
+    this.FilterAnzeige=true;
   this.MakrophytenMstAnzeige=false;
-  this.MakrophytenAnzeige=true;
+  this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
   this.UebersichtAnzeigen=false;
     this.FilterWKnameSetzenWK("mst");
-  this.MakrophytenAnzeige=true;
+  
   this.MZBAnzeige=false;
-  this.MakrophytenMstAnzeige=false;
+  
   await this.anzeigeBewertungMPService.callBwMstMP(1);
-  this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.Artvalue,this.min,this.max);
+  await this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.Artvalue,this.min,this.max);
+  console.log(this.anzeigeBewertungMPService.mstMakrophyten);
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
   this.getButtonAktivColorMP();
-}
+  this.MakrophytenAnzeige=true;}
 async handleMZBClick(){ //Taxadaten MZB
+  this.MakrophytenAnzeige=false;
+  this.FilterAnzeige=true;
+  this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
   this.FilterWKnameSetzenWK("mst");
   this.MZBAnzeige=true;
   this.UebersichtAnzeigen=false;
+  this.anzeigenMstUebersichtService.value=this.value ;this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
   this.MakrophytenMstAnzeige=false;
   await this.anzeigeBewertungMPService.callBwMstMP(3);
   this.anzeigeBewertungMPService.datenUmwandeln(this.value,this.Artvalue,this.min,this.max);
   this.mstMZB=this.anzeigeBewertungMPService.mstMakrophyten;
-  this.getButtonAktivColorMP();
+  this.getButtonAktivColorMZ();
 }
   async handleMakrophytenMPClick(komp_id:number){
     this.FilterWKnameSetzenWK("mst");
     this.komp_id=komp_id;
+    this.anzeigenMstUebersichtService.value=this.value ;this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.UebersichtAnzeigen=false;
-    await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id,this.repreasent);
+    await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
@@ -264,6 +292,6 @@ async handleMZBClick(){ //Taxadaten MZB
     const ee = document.getElementById('uebersichtButton');
     this._renderer2.setStyle(ee, 'background-color', 'rgb(20,220,220)'); 
     const elz = document.getElementById('mzButton');
-    this._renderer2.setStyle(elz, 'background-color', 'background-color)');
+    this._renderer2.removeStyle(elz, 'background-color');
   }
 }

@@ -1,37 +1,34 @@
-import { Component,  OnInit ,ViewChild,OnChanges,SimpleChanges} from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+
 @Component({
-  selector: 'app-editable-table-gewaesser',
-  templateUrl: './editable-table-gewaesser.component.html',
-  styleUrls: ['./editable-table-gewaesser.component.css']
+  selector: 'app-editable-table-typ-pp',
+  templateUrl: './editable-table-typ-pp.component.html',
+  styleUrls: ['./editable-table-typ-pp.component.css']
 })
-export class EditableTableGewaesserComponent  implements OnInit, OnChanges{
-  constructor(private dataService: StammdatenService) { this.dataSource = new MatTableDataSource(this.dataService.gewaesser)}
-  displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
-  dataSource: MatTableDataSource<TypWrrl>;
-
+export class EditableTableTypPPComponent implements OnInit, OnChanges{
   @ViewChild(MatSort, { static: true }) sort: MatSort;
- 
+  displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
+  dataSource: MatTableDataSource<TypWrrl>=new MatTableDataSource();
 
+  constructor(private dataService: StammdatenService) {}
   async ngOnInit(): Promise<void> {
     //this.dataSource = await this.dataService.getStammWrrlTyp2();
  
     
-    await this.dataService.callGewaesser();
-
-    await this.dataService.wandleGewaesser(true);
-    this.dataSource.data = this.dataService.gewaesser;
-    //console.log(this.dataService.gewaesser);
-    this.dataSource.sort = this.sort;
-   //this.dataSource=this.dataService.gewaesser;
-   
+    await this.dataService.callPptyp();
+    await this.dataService.wandleTypPP(true);
+    console.log(this.dataService.pptyp);
+   this.dataSource.data=this.dataService.pptyp;
+   this.dataSource.sort = this.sort;
   }
+
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['wkUebersicht']) {
-      this.dataSource.data = this.dataService.gewaesser;
+    if (changes['ppTyp']) {
+      this.dataSource.data = this.dataService.pptyp;
     }
   }
   updateValue(element: TypWrrl, field: string, event: any): void {
@@ -55,25 +52,24 @@ export class EditableTableGewaesserComponent  implements OnInit, OnChanges{
     }
   }
   save(element: TypWrrl){//typwrrl:string,id:number,seefliess:boolean
-    this.dataService.aktualisiereGewaesser(element.typ,element.id,element.seefliess)  
+    this.dataService.aktualisiereWrrlTyp(element.typ,element.id,element.seefliess)  
   }
   new(){
    
       const newRowData = {
-        field1: 'neues Gewässer',
-        field2: 's'
+        field1: 'neuer Typ',
+        field2: true
       };
   
-      this.dataService.addRowGewaesser(newRowData).subscribe(
+      this.dataService.addRowPPWRRL(newRowData).subscribe(
         (response) => {
           
           let neuerTyp:TypWrrl= {} as TypWrrl;
        
-          neuerTyp.id=response.idgewaesser;
-          neuerTyp.typ='neues Gewässer';
+          neuerTyp.id=response.id;
+          neuerTyp.typ='neuer Typ';
           neuerTyp.seefliess=true;
           neuerTyp.fliess=false;
-
           const data = this.dataSource.data;
           data.push(neuerTyp);
           this.dataSource.data = data; 

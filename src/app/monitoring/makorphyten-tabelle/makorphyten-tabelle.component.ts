@@ -1,32 +1,37 @@
-import { Component, Input } from '@angular/core';
+// makorphyten-tabelle.component.ts
+import { Component, Input, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
-
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
 @Component({
   selector: 'app-makorphyten-tabelle',
   templateUrl: './makorphyten-tabelle.component.html',
   styleUrls: ['./makorphyten-tabelle.component.css']
 })
+export class MakorphytenTabelleComponent implements OnInit, OnChanges {
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @Input() mstMakrophyten: MstMakrophyten[] = [];
+  dataSource = new MatTableDataSource<MstMakrophyten>();
+  displayedColumns: string[] = ['mst', 'gewaessername','jahr', 'taxon', 'wert', 'einheit', 'taxonzusatz', 'RoteListeD', 'tiefe_m', 'letzteAenderung'];
 
-export class MakorphytenTabelleComponent {
-  @Input()  mstMakrophyten: MstMakrophyten[] = [];
-  constructor(private Farbebewertg: FarbeBewertungService) { }	
-  displayedColumns: string[] = ['mst', 'jahr','taxon','wert',  'einheit','taxonzusatz', 'RoteListeD',  'tiefe_m','letzteAenderung'];
- 
-  // mst: string;
-  // taxonzusatz: string;
-  // firma: string;
-  // jahr: number;
-  // taxon: string;
-  // letzte_aenderung: string;
-  // wert: string;
-  // cf: boolean;
-  // tiefe_m: string;
-  // einheit: string;
-	dataSource=this.mstMakrophyten; 
+  constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private farbeBewertg: FarbeBewertungService) { }
 
-  getColor(OZK){
-    return this.Farbebewertg.getColorRL(OZK);
-     
+  ngOnInit() {
+    this.dataSource.data = this.mstMakrophyten;
+    this.dataSource.sort = this.sort;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['mstMakrophyten']) {
+   if (this.anzeigeBewertungMPService.Artvalue.length===0 && this.anzeigeBewertungMPService.value.length===0 && this.mstMakrophyten.length===0)
+    {this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;}
+   this.dataSource.data = this.mstMakrophyten;
+    }
+  }
+
+  getColor(OZK: string): string {
+    return this.farbeBewertg.getColorRL(OZK);
   }
 }

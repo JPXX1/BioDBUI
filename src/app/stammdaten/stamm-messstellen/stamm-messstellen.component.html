@@ -3,7 +3,7 @@
 
   
 <div class="mat-elevation-z8 table">
-	<table  mat-table [dataSource]="messstellenStam" class="table" matSort (matSortChange)="sortData($event)">
+	<table  mat-table [dataSource]="messstellenStam" class="table sticky-header" matSort (matSortChange)="sortData($event)">
 
 		<ng-container matColumnDef="id_mst">
 		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id_mst" class="header-table-wk"> Mst-ID </th>

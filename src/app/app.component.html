@@ -1,18 +1,21 @@
-<div class="fixed-menu-container">
+<div class="tabs is-centered is-fullwidth" 
+#stickyMenu [class.sticky] = "sticky">
 <!-- <div class="panel" > -->
   <p>
     <mat-toolbar>
      
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" [matMenuTriggerFor]="messstellen">
         <mat-icon>menu</mat-icon>
         </button> 
-
+        <mat-menu #messstellen="matMenu" xPosition="after">
+          <button id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor" mat-button (click)="getlink0()">Monitoringkarte</button>
+          <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
+           <button id="link2" [routerLink]="['/monitoringdaten']" class="linkcolor" mat-button (click)="getlink2()">Monitoringdaten</button>
+           <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor" mat-button (click)="getlink3()">Stammdaten</button>
+           <button id="link5" [routerLink]="['/admin']"   mat-button (click)="getlink4()">Administration</button>
+    </mat-menu>
         <span >  
-                <button id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor" mat-button (click)="getlink0()">Monitoringkarte</button>
-                <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
-                 <button id="link2" [routerLink]="['/monitoring']" class="linkcolor" mat-button (click)="getlink2()">Monitoringdaten</button>
-                 <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor" mat-button (click)="getlink3()">Stammdaten</button>
-                 <button id="link5" [routerLink]="['/admin']"   mat-button (click)="getlink4()">Administration</button>
+                
         </span>
     </mat-toolbar>
   </p>

@@ -19,7 +19,7 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe(
       response => {
         sessionStorage.setItem('token', response.token);
-        this.router.navigate(['/monitoring']);
+        this.router.navigate(['/monitoringdaten']);
       },
       error => {
         this.errorMessage = 'Login failed. Please check your credentials and try again.';

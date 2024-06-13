@@ -7,19 +7,7 @@ import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
   templateUrl: './editable-table-typwrrl.component.html',
   styleUrls: ['./editable-table-typwrrl.component.css']
 })
-// export class EditableTableTypwrrlComponent {
 
-// }
-
-// // src/app/editable-table-typwrrl/editable-table-typwrrl.component.ts
-
-// // import { DataService, TypWrrl } from '../data.service';
-
-// @Component({
-//   selector: 'app-editable-table-typwrrl',
-//   templateUrl: './editable-table-typwrrl.component.html',
-//   styleUrls: ['./editable-table-typwrrl.component.css']
-// })
 export class EditableTableTypwrrlComponent implements OnInit {
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
   dataSource: TypWrrl[] = [];
