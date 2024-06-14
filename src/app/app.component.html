@@ -4,24 +4,22 @@
   <p>
     <mat-toolbar>
      
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" [matMenuTriggerFor]="messstellen">
+      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" [matMenuTriggerFor]="messstellen">
         <mat-icon>menu</mat-icon>
-        </button> 
-        <mat-menu #messstellen="matMenu" xPosition="after">
-          <button id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor" mat-button (click)="getlink0()">Monitoringkarte</button>
-          <button id="link1" [routerLink]="['/datenimport']" class="linkcolor" mat-button (click)="getlink1()">Datenimport</button>
-           <button id="link2" [routerLink]="['/monitoringdaten']" class="linkcolor" mat-button (click)="getlink2()">Monitoringdaten</button>
-           <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor" mat-button (click)="getlink3()">Stammdaten</button>
-           <button id="link5" [routerLink]="['/admin']"   mat-button (click)="getlink4()">Administration</button>
-    </mat-menu>
-        <span >  
-                
-        </span>
+      </button>  
+       <mat-menu #messstellen="matMenu">
+          <button id="link1" [routerLink]="['/datenimport']" class="linkcolor menu-button" mat-button (click)="getlink1()">Datenimport</button>
+          <button id="link2" [routerLink]="['/monitoringdaten']" class="linkcolor menu-button" mat-button (click)="getlink2()">Monitoringdaten</button>
+          <button id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor menu-button" mat-button (click)="getlink0()">Monitoringkarte</button>
+          <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor menu-button" mat-button (click)="getlink3()">Stammdaten</button>
+          <button id="link5" [routerLink]="['/admin']" class="menu-button" mat-button (click)="getlink4()">Administration</button>
+        </mat-menu>
+        <span>{{ selectedMenuItem }}</span>
     </mat-toolbar>
   </p>
    
 </div>
-  <!-- </div>  -->
+ 
 
 
 <router-outlet></router-outlet>

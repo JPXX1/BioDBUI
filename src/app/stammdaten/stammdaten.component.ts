@@ -28,6 +28,8 @@ export class StammdatenComponent implements OnInit{
   sortedData:MessstellenStam[]=[];sortedDataWK:WasserkoerperStam[]=[];
   public gewaesserart:string;
   public PPTypAnzeige:boolean=false;
+  public DiaTypAnzeige:boolean=false;
+  public MpTypAnzeige:boolean=false;
 //sort Mst
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
@@ -61,6 +63,7 @@ export class StammdatenComponent implements OnInit{
 
 
 }
+new(){}
 sortDataWk(sortWK: Sort) {
   const data = this.wkStam1.slice();
   if (!sortWK.active || sortWK.direction === '') {
@@ -104,8 +107,10 @@ this.wkStam1=this.sortedDataWK;
 
 
  async  seeMst(){
+  this.MpTypAnzeige=false;
   await  this.stammdatenService.start(true);
   this.PPTypAnzeige=false;
+  this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=true;
     this.WKAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -116,6 +121,8 @@ this.wkStam1=this.sortedDataWK;
 
   }
 async gewaesser1(){
+  this.MpTypAnzeige=false;
+  this.DiaTypAnzeige=false;
   this.PPTypAnzeige=false;
   this.MessstellenAnzeige=false;
     this.WKAnzeige=false;
@@ -123,14 +130,35 @@ this.TypWrrlAnzeige=false;
 this.GewaesserAnzeige=true;
 }
   async wrrlTyp(){
+    this.MpTypAnzeige=false;
+    this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
     this.WKAnzeige=false;
     this.PPTypAnzeige=false;
 this.TypWrrlAnzeige=true;
   }
-
+  async mpTyp(){ 
+    this.MpTypAnzeige=true;
+    this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.WKAnzeige=false;
+this.TypWrrlAnzeige=false;
+    this.PPTypAnzeige=false;
+    this.DiaTypAnzeige=false;
+  }
+  async diaTyp(){
+    this.MpTypAnzeige=false;
+    this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.WKAnzeige=false;
+this.TypWrrlAnzeige=false;
+    this.PPTypAnzeige=false;
+    this.DiaTypAnzeige=true;
+  }
   async ppTyp(){
+    this.MpTypAnzeige=false;
+    this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
     this.WKAnzeige=false;
@@ -139,7 +167,9 @@ this.TypWrrlAnzeige=false;
   }
   async fgwWk()
  
-  {this.PPTypAnzeige=false;
+  {this.DiaTypAnzeige=false;
+    this.MpTypAnzeige=false;
+    this.PPTypAnzeige=false;
     this.GewaesserAnzeige=false;
     this.TypWrrlAnzeige=false;
     await  this.stammdatenService.startwk(false);
@@ -152,12 +182,14 @@ this.gewaesserart="Fließgewässer";}
   
   async seeWk()
   {await  this.stammdatenService.startwk(true);
+    this.DiaTypAnzeige=false;
+    this.MpTypAnzeige=false;
   this.MessstellenAnzeige=false;
   this.PPTypAnzeige=false;
   this.GewaesserAnzeige=false;
   this.WKAnzeige=true;
   this.TypWrrlAnzeige=false;
-  console.log (this.stammdatenService.wkarray)
+ // console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
   this.gewaesserart="See";}
 
@@ -165,7 +197,9 @@ this.gewaesserart="Fließgewässer";}
 
   async fgwMst(){
    await this.stammdatenService.start(false);
-   console.log (this.stammdatenService.messstellenarray)
+   this.DiaTypAnzeige=false;
+   this.MpTypAnzeige=false;
+   //console.log (this.stammdatenService.messstellenarray)
    this.messstellenStam1=this.stammdatenService.messstellenarray;
     this.MessstellenAnzeige=true;
     this.PPTypAnzeige=false;

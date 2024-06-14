@@ -7,7 +7,7 @@ import { Messwerte } from '../interfaces/messwerte';
 import { MessstellenImp } from '../interfaces/messstellen-imp';
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
-
+import { firstValueFrom } from 'rxjs';
 @Injectable({
 	providedIn: 'root'
 })
@@ -58,35 +58,64 @@ export class XlsxImportPhylibService {
 
 	
 	async ngOnInit() {
-
-		this.impPhylibServ.getFormen().subscribe(formen_ => {
-			this.formen = formen_;
+		try {
+			// Using firstValueFrom to convert the observable to a promise
+			this.formen = await firstValueFrom(this.impPhylibServ.getFormen());
 			console.log(this.formen);
+		  } catch (err) {
+  // Asserting that err is an instance of Error
+  const errorMessage = (err as Error).message;
+  this.InfoBox += " " + errorMessage;
+  console.error('Error fetching formen:', errorMessage);
+}
 
+		
 
+try {
+	// Converting the Observable to a Promise using firstValueFrom
+	this.tiefen = await firstValueFrom(this.impPhylibServ.getTiefen());
+	console.log(this.tiefen);
+  } catch (err: unknown) {
+	// Using a type guard to check and access the error message
+	if (err instanceof Error) {
+	  this.InfoBox += " " + err.message;
+	} else {
+	  this.InfoBox += " An error occurred.";
+	}
+	console.error('Error fetching tiefen:', err);
+  }
 
+		
 
-		}, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
-
-		this.impPhylibServ.getTiefen().subscribe(tief_ => {
-			this.tiefen = tief_;
-			console.log(tief_);
-			//return einheiten;
-		}, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
-		this.impPhylibServ.getEinheiten().subscribe(einheiten_ => {
-			this.einheiten = einheiten_;
+		// await this.impPhylibServ.getTiefen().subscribe(tief_ => {
+		// 	this.tiefen = tief_;
+		// 	console.log(tief_);
+		// 	//return einheiten;
+		// }, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
+		try {
+			this.einheiten = await firstValueFrom(this.impPhylibServ.getEinheiten());
 			console.log(this.einheiten);
-			//return einheiten;
-		}, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
-		//
-
-
-
-		this.impPhylibServ.getParameterAbiot().subscribe(mst_ => {
-			this.parameterabiot = mst_;
-			// console.log(this.mst);
-			//return einheiten;
-		}, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
+		  } catch (err: unknown) {
+			// Using a type guard to check and access the error message
+			if (err instanceof Error) {
+			  this.InfoBox += " " + err.message;
+			} else {
+			  this.InfoBox += " An error occurred.";
+			}
+			console.error('Error fetching tiefen:', err);
+		  }
+		
+		  try {
+			this.parameterabiot = await firstValueFrom(this.impPhylibServ.getParameterAbiot());
+		  } catch (err: unknown) {
+			// Using a type guard to check and access the error message
+			if (err instanceof Error) {
+			  this.InfoBox += " " + err.message;
+			} else {
+			  this.InfoBox += " An error occurred.";
+			}
+			console.error('Error fetching tiefen:', err);
+		  }
 
 
 	}
@@ -463,7 +492,7 @@ console.log(this.mstindex);
 
 								//console.log(id_taxonzus);
 
-								if (taxonzus !== null) { Form = taxonzus[0].id_taxonzus; aForm = employeeName; }
+								if (taxonzus.length >0) { Form = taxonzus[0].id_taxonzus; aForm = employeeName; }
 								//ok = false;
 							}
 							if (i == 'Messwert') {

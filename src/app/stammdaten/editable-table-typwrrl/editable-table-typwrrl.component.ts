@@ -1,16 +1,18 @@
-import { Component,OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
-
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-editable-table-typwrrl',
   templateUrl: './editable-table-typwrrl.component.html',
   styleUrls: ['./editable-table-typwrrl.component.css']
 })
 
-export class EditableTableTypwrrlComponent implements OnInit {
+export class EditableTableTypwrrlComponent implements OnInit, OnChanges {
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
-  dataSource: TypWrrl[] = [];
+  dataSource: MatTableDataSource<TypWrrl>=new MatTableDataSource();//dataSource: TypWrrl[] = [];
 
   constructor(private dataService: StammdatenService) {}
 
@@ -21,8 +23,14 @@ export class EditableTableTypwrrlComponent implements OnInit {
     await this.dataService.callWrrltyp();
     await this.dataService.wandleTypWRRLAlle();
     console.log(this.dataService.wrrltyp);
-   this.dataSource=this.dataService.wrrltyp;
+   this.dataSource.data=this.dataService.wrrltyp;
+   this.dataSource.sort = this.sort;
    
+  }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['wrrlTyp']) {
+      this.dataSource.data = this.dataService.wrrltyp;
+    }
   }
   updateValue(element: TypWrrl, field: string, event: any): void {
 
@@ -63,8 +71,10 @@ export class EditableTableTypwrrlComponent implements OnInit {
           neuerTyp.typ='neuer Typ';
           neuerTyp.seefliess=true;
           neuerTyp.fliess=false;
-          this.dataSource.push(neuerTyp);
-          this.dataSource = [...this.dataSource];
+          const data = this.dataSource.data;
+          data.push(neuerTyp);
+          this.dataSource.data = data;
+          this.dataSource.data = [...this.dataSource.data];
         },
         (error) => {
           console.error('Error adding row:', error);

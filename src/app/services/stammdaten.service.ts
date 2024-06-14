@@ -45,14 +45,14 @@ async startwk(kat:boolean){
   await this.holeSelectDataWK();
  
   await  this.filterWK(kat);
-  console.log(this.wk);
+  //console.log(this.wk);
     }
 
   async start(kat:Boolean){
     await this.callBwUebersicht();
-    console.log(this.mst);
+    //console.log(this.mst);
     await  this.filterMst(kat);
-    console.log(this.mst);
+    //console.log(this.mst);
       }
   getStammMst() {
     return this.httpClient.get(`${this.apiUrl}/stamMst`);
@@ -154,32 +154,50 @@ async startwk(kat:boolean){
         this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess,fliess:fliess})}
       })
     }
-    async wandleTypDia(){
+    async wandleTypDia(diatypbearbeiten:boolean, seefliess:boolean){
       let fliess:boolean;
       let temp: any = this.diatyp_t;
       this.diatyp=[];
       temp.map(async (f) => {
-        this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess,fliess:fliess})
+        if (seefliess===null){
+          if (f.seefliess===true){fliess=false;}
+          if (f.seefliess===false){fliess=true;}
+          if ((f.dia_typ!=='kein Typ' && diatypbearbeiten===true) || diatypbearbeiten===false){
+          this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess,fliess:fliess})}}else{
+            if (f.seefliess===seefliess || f.seefliess===null )
+              {  this.diatyp.push({id:f.id_dia,typ:f.dia_typ,seefliess:f.seefliess,fliess:fliess})}
+          }
       })
-    }
-    async wandleTypMP(){
+      }
+    async wandleTypMP(mptypbearbeiten:boolean, seefliess:boolean){
       let fliess:boolean;
       let temp: any = this.mptyp_t;
       this.mptyp=[];
       temp.map(async (f) => {
-        this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess,fliess:fliess})
+        if (seefliess===null){
+          if (f.seefliess===true){fliess=false;}
+          if (f.seefliess===false){fliess=true;}
+          if ((f.mp_typ!=='kein Typ' && mptypbearbeiten===true) || mptypbearbeiten===false){
+          this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess,fliess:fliess})}}else{
+            if (f.seefliess===seefliess || f.seefliess===null )
+              {  this.mptyp.push({id:f.id,typ:f.mp_typ,seefliess:f.seefliess,fliess:fliess})}
+          }
       })
-    }
-    async wandleTypPP(pptypbearbeiten:boolean){
+      }
+    async wandleTypPP(pptypbearbeiten:boolean, seefliess:boolean){
       let fliess:boolean;
       let temp: any = this.pptyp_t;
       this.pptyp=[];
       temp.map(async (f) => {
+        if (seefliess===null){
         if (f.seefliess===true){fliess=false;}
         if (f.seefliess===false){fliess=true;}
-        if (f.pp_typ!=='kein Typ' && pptypbearbeiten===true){
-        this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})
-    }})
+        if ((f.pp_typ!=='kein Typ' && pptypbearbeiten===true) || pptypbearbeiten===false){
+        this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})}}else{
+          if (f.seefliess===seefliess || f.seefliess===null )
+            {  this.pptyp.push({id:f.id,typ:f.pp_typ,seefliess:f.seefliess,fliess:fliess})}
+        }
+    })
     }
     async wandleGewaesser(gewaesserbearbeiten:boolean){
       let fliess:boolean;let see:boolean;
@@ -418,7 +436,13 @@ async getArchivMstStamm(parameter :number){
     addRowPPWRRL(data: any): Observable<any> {
       return this.httpClient.post<any>(`${this.apiUrl}/addPPWrrl`, data);
     }
-    aktualisiereWrrlTyp(typwrrl:string,id:number,seefliess:boolean){
+    addRowMpWRRL(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addMpWrrl`, data);
+    }
+    addRowDiaWRRL(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addDiaWrrl`, data);
+    }
+    aktualisierePPTyp(typwrrl:string,id:number,seefliess:boolean){
 
       const body = new HttpParams()
       .set('id',id)
@@ -427,6 +451,42 @@ async getArchivMstStamm(parameter :number){
       
      
       this.httpClient.post(`${this.apiUrl}/updateStamPPTyp`,body).subscribe(resp => {
+     console.log("response %o, ", resp);  });
+  
+    }
+    aktualisiereMpTyp(typwrrl:string,id:number,seefliess:boolean){
+
+      const body = new HttpParams()
+      .set('id',id)
+      .set('mp_typ',typwrrl)
+      .set('seefliess',seefliess)
+      
+     
+      this.httpClient.post(`${this.apiUrl}/updateStamMpTyp`,body).subscribe(resp => {
+     console.log("response %o, ", resp);  });
+  
+    }
+    aktualisiereDiaTyp(typwrrl:string,id:number,seefliess:boolean){
+
+      const body = new HttpParams()
+      .set('id_dia',id)
+      .set('dia_typ',typwrrl)
+      .set('seefliess',seefliess)
+      
+     
+      this.httpClient.post(`${this.apiUrl}/updateStamDiaTyp`,body).subscribe(resp => {
+     console.log("response %o, ", resp);  });
+  
+    }
+    aktualisiereWrrlTyp(typwrrl:string,id:number,seefliess:boolean){
+
+      const body = new HttpParams()
+      .set('id',id)
+      .set('wrrl_typ',typwrrl)
+      .set('seefliess',seefliess)
+      
+     
+      this.httpClient.post(`${this.apiUrl}/updateStamWrrlTyp`,body).subscribe(resp => {
      console.log("response %o, ", resp);  });
   
     }

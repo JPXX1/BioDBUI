@@ -89,7 +89,7 @@ this.wk_name1="Wasserkörper '" +data.wkstam.wk_name+ "' (Nr. "+data.wkstam.id+ 
  onItemSelectGew(item: any){
   console.log(item);
   this.formInstanceWK.get('id_gewaesser').setValue(item.id);
-  this.formInstanceWK.get('gewaesser').setValue(item.typ);
+  this.formInstanceWK.get('gewaessername').setValue(item.typ);
  }
  onItemSelectDia(item: any){
   console.log(item);

@@ -14,3 +14,7 @@
   z-index: 10;
   margin-bottom: 50px;
 }
+.menu-button {
+  display: block; /* Makes each button take up the full width and stack vertically */
+  margin: 8px 0;  /* Adds space between buttons */
+}

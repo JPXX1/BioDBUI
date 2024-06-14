@@ -4,12 +4,14 @@ import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
+
 @Component({
-  selector: 'app-editable-table-typ-pp',
-  templateUrl: './editable-table-typ-pp.component.html',
-  styleUrls: ['./editable-table-typ-pp.component.css']
+  selector: 'app-editable-table-mptyp',
+  templateUrl: './editable-table-mptyp.component.html',
+  styleUrls: ['./editable-table-mptyp.component.css']
 })
-export class EditableTableTypPPComponent implements OnInit, OnChanges{
+export class EditableTableMptypComponent  implements OnInit, OnChanges{
+
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
   dataSource: MatTableDataSource<TypWrrl>=new MatTableDataSource();
@@ -19,16 +21,16 @@ export class EditableTableTypPPComponent implements OnInit, OnChanges{
     //this.dataSource = await this.dataService.getStammWrrlTyp2();
  
     
-    await this.dataService.callPptyp();
-    await this.dataService.wandleTypPP(true,null);
-    console.log(this.dataService.pptyp);
-   this.dataSource.data=this.dataService.pptyp;
+    await this.dataService.callMptyp();
+    await this.dataService.wandleTypMP(true,null);
+    console.log(this.dataService.mptyp);
+   this.dataSource.data=this.dataService.mptyp;
    this.dataSource.sort = this.sort;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['ppTyp']) {
-      this.dataSource.data = this.dataService.pptyp;
+    if (changes['mpTyp']) {
+      this.dataSource.data = this.dataService.mptyp;
     }
   }
   updateValue(element: TypWrrl, field: string, event: any): void {
@@ -52,7 +54,7 @@ export class EditableTableTypPPComponent implements OnInit, OnChanges{
     }
   }
   save(element: TypWrrl){//typwrrl:string,id:number,seefliess:boolean
-    this.dataService.aktualisiereWrrlTyp(element.typ,element.id,element.seefliess)  
+    this.dataService.aktualisiereMpTyp(element.typ,element.id,element.seefliess)  
   }
   new(){
    
@@ -61,7 +63,7 @@ export class EditableTableTypPPComponent implements OnInit, OnChanges{
         field2: true
       };
   
-      this.dataService.addRowPPWRRL(newRowData).subscribe(
+      this.dataService.addRowMpWRRL(newRowData).subscribe(
         (response) => {
           
           let neuerTyp:TypWrrl= {} as TypWrrl;

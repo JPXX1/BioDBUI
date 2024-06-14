@@ -1,7 +1,7 @@
 
 <span>
  
-    <div style="margin-left:100px;">
+    <div style="margin-left:180px;">
         <button mat-button id="mpButton" [matMenuTriggerFor]="messstellen" >Messstellen</button>
         <mat-menu #messstellen="matMenu" xPosition="after">
           <button mat-menu-item (click)="fgwMst()">FließgewässerMst</button>
@@ -29,6 +29,8 @@
       <mat-menu #Typen="matMenu" xPosition="after">
         <button mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
         <button mat-menu-item (click)="ppTyp()">Phytoplanktontyp</button>
+        <button mat-menu-item (click)="diaTyp()">Diatomeentyp</button>
+        <button mat-menu-item (click)="mpTyp()">Makrophytentyp</button>
       </mat-menu>
       <button mat-button [matMenuTriggerFor]="probenehmer">Probenehmer</button>
       <mat-menu #probenehmer="matMenu" xPosition="after">
@@ -44,31 +46,51 @@
       
       </div>
       </span>
-      <div class="card" *ngIf="MessstellenAnzeige == true" style="margin-left:100px;vertical-align: top;"> 
-        <mat-form-field>
+      <div class="card" *ngIf="MessstellenAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%"> 
+        <div fxLayout="row" fxLayoutAlign="start center">  
+          <mat-form-field style="width: 30%;">
           <mat-label>Filter</mat-label>
           <input matInput (keyup)="applyFilterMessstellen($event)" placeholder="" #input>
         </mat-form-field>
+       
+         
+          <button  (click)="new()">
+            neue Messstelle anlegen
+          </button>
+        </div>
       <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)" ></app-stamm-messstellen>
     </div>
-    <div class="card" *ngIf="WKAnzeige == true" style="margin-left:100px;vertical-align: top;"> 
-      <mat-form-field>
+
+    <div class="card" *ngIf="WKAnzeige == true" style="margin-left:180px;width: 80%;vertical-align: top;"> 
+      
+        <div fxLayout="row" fxLayoutAlign="start center">  
+          <mat-form-field style="width: 30%;">
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilterWK($event)" placeholder="" #input>
       </mat-form-field>
+      <button  (click)="new()">
+        neuen Wasserkörper anlegen
+      </button>
+        </div>
       <app-stamm-wk [wasserkoerperStam]="wkStam1" [gewaesserart]="gewaesserart" (sortDataWK)="sortDataWk($event)"  (newDataWK)="handleDataWK($event)"></app-stamm-wk>
       
     </div>
       
-    <div class="card" *ngIf="TypWrrlAnzeige == true" style="margin-left:100px;vertical-align: top;">
+    <div class="card" *ngIf="TypWrrlAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
       <app-editable-table-typwrrl></app-editable-table-typwrrl>
     </div>
-    <div class="card" *ngIf="GewaesserAnzeige == true" style="margin-left:100px;vertical-align: top;">
+    <div class="card" *ngIf="GewaesserAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
       <app-editable-table-gewaesser></app-editable-table-gewaesser>
     </div>
 
 
-    <div class="card" *ngIf="PPTypAnzeige == true" style="margin-left:100px;vertical-align: top;">
+    <div class="card" *ngIf="PPTypAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
       <app-editable-table-typ-pp></app-editable-table-typ-pp>
     </div>
+    <div class="card" *ngIf="DiaTypAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
+      <app-editable-table-diatyp></app-editable-table-diatyp>
+    </div>
     
+    <div class="card" *ngIf="MpTypAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
+      <app-editable-table-mptyp></app-editable-table-mptyp>
+    </div>
