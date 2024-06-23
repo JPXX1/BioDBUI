@@ -261,7 +261,7 @@ async handleMZBClick(){ //Taxadaten MZB
   }
   async  buttonstamm(){
 
- await this.stammdatenService.start(true);
+ await this.stammdatenService.start(true,false);
  console.log (this.stammdatenService.mst);
 
  console.log (this.stammdatenService.messstellenarray);

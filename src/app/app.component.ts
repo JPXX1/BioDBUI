@@ -54,4 +54,8 @@ menuPosition: any;
    
     this.selectedMenuItem = 'Administration';
   }
+  getlink5(){
+   
+    this.selectedMenuItem = 'Datenexport';
+  }
 }

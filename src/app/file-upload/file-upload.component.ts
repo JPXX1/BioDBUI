@@ -408,7 +408,7 @@ export class FileUploadComponent implements OnInit {
 		
 		
 		await this.stammdatenService.callBwUebersicht();
-		await this.stammdatenService.filterMst(true);
+		await this.stammdatenService.filterMst(true,false);
 	
 	  //console.log(this.stammdatenService.wk)
 	  let name_alt:string=person.mst;
