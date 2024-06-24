@@ -37,6 +37,9 @@ export class StammdatenService {
     await this.getArchivWKStamm(parameter);
   
   }
+  
+
+
   queryArten(type: string,  ids: number[], yearFrom: number, yearTo: number, selectedItems: number[]): Observable<any> {
    
     return this.httpClient.post<any>(`${this.apiUrl}/queryArten`, { type, ids, yearFrom, yearTo, selectedItems });

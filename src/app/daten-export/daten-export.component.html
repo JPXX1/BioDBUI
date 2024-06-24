@@ -25,8 +25,9 @@
             <mat-select formControlName="selectedComponents" multiple (openedChange)="onMessstellenOpen()">
               <ng-container *ngIf="isMessstellenOpen">
                 <div class="select-buttons">
-                  <button mat-button type="button" (click)="selectAllMessstellen()">Select All</button>
-                  <button mat-button type="button" (click)="deselectAllMessstellen()">Deselect All</button>
+                  <mat-checkbox [checked]="allMessstellenSelected" (change)="toggleAllMessstellen($event.checked)">
+                    Select All
+                  </mat-checkbox>
                 </div>
                 <mat-form-field appearance="fill" class="filter-field">
                   <mat-label>Filter</mat-label>
@@ -53,8 +54,9 @@
             <mat-select formControlName="selectedWasserkorper" multiple (openedChange)="onWasserkorperOpen()">
               <ng-container *ngIf="isWasserkorperOpen">
                 <div class="select-buttons">
-                  <button mat-button type="button" (click)="selectAllWasserkorper()">Select All</button>
-                  <button mat-button type="button" (click)="deselectAllWasserkorper()">Deselect All</button>
+                  <mat-checkbox [checked]="allWasserkorperSelected" (change)="toggleAllWasserkorper($event.checked)">
+                    Select All
+                  </mat-checkbox>
                 </div>
                 <mat-form-field appearance="fill" class="filter-field">
                   <mat-label>Filter</mat-label>
@@ -69,20 +71,29 @@
     </div>
 
     <div class="form-column">
-      <div class="form-field">
-        <mat-form-field appearance="fill">
-          <mat-label>Jahr von</mat-label>
-          <mat-select formControlName="yearFrom">
-            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+     
+      <div style="margin-left:20px;">
+        <mat-slider discrete min="{{minstart}}" max="{{maxstart}}"  style="margin-left:10px">
+          <input formControlName="min" matSliderStartThumb>
+          <input formControlName="max" matSliderEndThumb>
+        </mat-slider>
+        
+      
+      </div> 
+      
 
-      <div class="form-field">
+        
+      
+     
+      <div class="komponente">
         <mat-form-field appearance="fill">
-          <mat-label>Jahr bis</mat-label>
-          <mat-select formControlName="yearTo">
-            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          <mat-label>Komponenten für Messstellenbewertung und Artabundanzen</mat-label>
+          <mat-select formControlName="selectedItems" multiple>
+            <mat-checkbox [checked]="allKomponentenSelected" (change)="toggleAllKomponenten($event.checked)">
+              Select All
+            </mat-checkbox>
+            <hr class="custom-divider">
+            <mat-option *ngFor="let item of items" [value]="item.id">{{ item.komponente }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -90,16 +101,45 @@
 
     <div class="form-column">
       <div class="form-field">
-        <mat-form-field appearance="fill">
-          <mat-label>Komponenten</mat-label>
-          <mat-select formControlName="selectedItems" multiple>
-            <mat-option *ngFor="let item of items" [value]="item.id">{{ item.komponente }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-button-toggle-group formControlName="componentType" multiple>
+          <mat-button-toggle value="artabundanz">Artabundanzen</mat-button-toggle>
+          <mat-button-toggle value="messstellenbewertung">Messstellenbewertung</mat-button-toggle>
+          <mat-button-toggle value="wasserkorperbewertung">Wasserkörperbewertung</mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
-      <div class="form-field">
-        <button mat-raised-button color="primary" type="submit">Submit</button>
+
+  
+
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Daten Abfragen</button>
+        <button mat-raised-button color="primary" type="button" (click)="exportToExcel($event)">Exportiere in eine Exceldatei</button>
       </div>
     </div>
   </div>
 </form>
+
+<hr class="custom-divider">
+
+<mat-tab-group class="tab-group-padding">
+  <mat-tab label="Artabundanzen" *ngIf="ArtenAnzeige == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Messstellenbewertung" *ngIf="BewertungenMstAnzeige == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-makrophyten-mst-uebersicht [pros]="props"></app-makrophyten-mst-uebersicht>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Wasserkörperbewertung" *ngIf="WKUebersichtAnzeigen == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-uebersicht-tabelle [wkUebersicht]="BewertungwkUebersicht"></app-uebersicht-tabelle>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

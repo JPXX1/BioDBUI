@@ -31,33 +31,25 @@ public value:string;
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
-    this.erzeugeDisplayedColumnNames();
-     this.erzeugeDisplayColumnNames();
-    //  console.log(this.mstUebersicht);
-    //  console.log(this.displayColumnNames);
-    //  console.log(this.displayedColumns);
+    this.erzeugeDisplayedColumnNames(false);
+     this.erzeugeDisplayColumnNames(false);
+    
   }
 
-   getBwMSTUebersicht(komp_id:number) {
+   getBwMSTUebersicht(selectedItems: number[]) {
 
 
 
-    // getArtenPhylibMP(parameter :number){ 
-
-      let params = new HttpParams().set('id',komp_id);
-      // console.log(params.toString())
-      //const params: { id: 1 };
-      // return this.httpClient.get('http://localhost:3000/api/impArten', {params});
+  
 
 
-
-
-     return this.httpClient.get(`${this.apiUrl}/bwMstUebersicht`, {params});
+     return this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, {selectedItems});
   }
-  erzeugeDisplayColumnNames(){
+  erzeugeDisplayColumnNames(komponente:boolean){
     this.displayColumnNames=[];
     this.displayColumnNames.push('Wasserköper');
     this.displayColumnNames.push('Messstelle');
+    if (komponente===true){ this.displayColumnNames.push('Komponente');}
     for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
       this.displayColumnNames.push(this.uniqueJahr[a])  
 
@@ -76,7 +68,7 @@ public value:string;
             if ((Number(f.jahr)>=min && Number(f.jahr)<=max)){
               {this.dbMPUebersichtMst.push(f);}}}
          else {
-          if (f.ms.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
+          if (f.namemst.includes(filter) && (Number(f.jahr)>=min && Number(f.jahr)<=max)){
          
              {this.dbMPUebersichtMst.push(f);}}
           // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
@@ -85,11 +77,11 @@ public value:string;
    console.log (this.dbMPUebersichtMst);
    
   }
-  erzeugeDisplayedColumnNames(){
+  erzeugeDisplayedColumnNames(komponente:boolean){
   this.displayedColumns=[];
   this.displayedColumns.push('wk');
   this.displayedColumns.push('mst');
-
+if (komponente===true){ this.displayedColumns.push('komponente');}
 
   switch (this.uniqueJahr.length){
 
@@ -158,30 +150,14 @@ public value:string;
 }
   }
   async callBwUebersicht(komp_id:number) {
-
-    await this.getBwMSTUebersicht(komp_id).forEach(formen_ => {
+let selectedItems:number[] = [];
+selectedItems.push(komp_id);
+    await this.getBwMSTUebersicht(selectedItems).forEach(formen_ => {
       this.dbMPUebersichtMst = formen_;
-     // console.log(formen_);
+    
     });
   }
-  // compareMst(a, b) {
-  //   if (a.namemst < b.namemst) {
-  //     return -1;
-  //   }
-  //   if (a.namemst > b.namemst) {
-  //     return 1;
-  //   }
-  //   return 0;
-  // }
-  // compareJahr(a, b) {
-  //   if (a.jahr > b.jahr) {
-  //     return -1;
-  //   }
-  //   if (a.jahr < b.jahr) {
-  //     return 1;
-  //   }
-  //   return 0;
-  // }
+  
   uniqueMstSortCall(){
 
     let array:string[]=[];
@@ -251,7 +227,7 @@ public value:string;
         
         this.mstUebersichtKl.wk=dbBewertungMSTTemp[0].wk_name;
         this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
-
+        this.mstUebersichtKl.komponente=dbBewertungMSTTemp[0].komponente;
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
         
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){

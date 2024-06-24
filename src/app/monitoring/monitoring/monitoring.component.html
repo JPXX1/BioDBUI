@@ -70,15 +70,11 @@
 </div>
 </td>
 <td>
-  <!-- <mat-radio-group aria-label="Select an option">
-   
-    <mat-radio-button value=1  (change)="mstalleauswaehlen(1,value,Artvalue)">alle Messstellen</mat-radio-button>
-    <mat-radio-button value=2 checked (change)="mstalleauswaehlen(2,value,Artvalue)">repräsentative Messstellen (*)</mat-radio-button>
-  </mat-radio-group> -->
+  
 </td>
 <td>
  <div style="margin-left:20px;">
-  <mat-slider discrete min="2005" max="2026" (change)="updateSetting(min,max,value,Artvalue)" style="margin-left:10px">
+  <mat-slider discrete min="2005" max={{maxstart}} (change)="updateSetting(min,max,value,Artvalue)" style="margin-left:10px">
     <input [(ngModel)]="min" matSliderStartThumb>
     <input [(ngModel)]="max" matSliderEndThumb>
   </mat-slider>

@@ -25,8 +25,9 @@ export class MakorphytenTabelleComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mstMakrophyten']) {
-   if (this.anzeigeBewertungMPService.Artvalue.length===0 && this.anzeigeBewertungMPService.value.length===0 && this.mstMakrophyten.length===0)
-    {this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;}
+      if (this.mstMakrophyten && this.anzeigeBewertungMPService.value && this.anzeigeBewertungMPService.Artvalue) {
+      if (this.anzeigeBewertungMPService.Artvalue.length===0 && this.anzeigeBewertungMPService.value.length===0 && this.mstMakrophyten.length===0)
+    {this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;}}
    this.dataSource.data = this.mstMakrophyten;
     }
   }

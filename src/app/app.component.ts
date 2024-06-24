@@ -19,6 +19,7 @@ menuPosition: any;
   
   ngAfterViewInit(){
     this.menuPosition = this.menuElement.nativeElement.offsetTop
+    this.selectedMenuItem = 'Monitoringdaten';
 }
 
 //klebriges Menü
