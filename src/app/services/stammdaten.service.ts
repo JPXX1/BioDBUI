@@ -19,6 +19,7 @@ export class StammdatenService {
   public pptyp:TypWrrl[];
   public gewaesser:TypWrrl[];
   public mst:any;
+  public komponenten:any;
   public diatyp_t:any;
   public mptyp_t:any;
   public pptyp_t:any;
@@ -36,22 +37,28 @@ export class StammdatenService {
     await this.getArchivWKStamm(parameter);
   
   }
+  
 
+
+  queryArten(type: string,  ids: number[], yearFrom: number, yearTo: number, selectedItems: number[]): Observable<any> {
+   
+    return this.httpClient.post<any>(`${this.apiUrl}/queryArten`, { type, ids, yearFrom, yearTo, selectedItems });
+  }
 async holeArchiv(parameter :number){
   await this.getArchivMstStamm(parameter);
 
 }
-async startwk(kat:boolean){
+async startwk(kat:boolean,allewk:boolean){
   await this.holeSelectDataWK();
  
-  await  this.filterWK(kat);
+  await  this.filterWK(kat,allewk);
   //console.log(this.wk);
     }
 
-  async start(kat:Boolean){
+  async start(kat:Boolean,allemst:boolean){
     await this.callBwUebersicht();
     //console.log(this.mst);
-    await  this.filterMst(kat);
+    await  this.filterMst(kat,allemst);
     //console.log(this.mst);
       }
   getStammMst() {
@@ -70,11 +77,16 @@ async startwk(kat:boolean){
     return this.httpClient.get(`${this.apiUrl}/stamWRRLTypen`);
   }
 
+
+  getKomponenten(){
+    return this.httpClient.get(`${this.apiUrl}/tblkomp`);
+    
+  }
  
   getStammGewasser() {
     return this.httpClient.get(`${this.apiUrl}/stamGewaesser`);
   }
-  getWk() {
+ public  getWk() {
     return this.httpClient.get(`${this.apiUrl}/stamWK`); //stamWasserkoerper   
   }
     
@@ -121,6 +133,15 @@ async startwk(kat:boolean){
 
       await this.getStammPpTyp().forEach(formen_ => {
         this.pptyp_t = formen_;
+        console.log(formen_);
+      });
+    }
+
+  
+    async callKomponenten() {
+
+      await this.getKomponenten().forEach(formen_ => {
+        this.komponenten = formen_;
         console.log(formen_);
       });
     }
@@ -210,7 +231,7 @@ async startwk(kat:boolean){
         {this.gewaesser.push({id:f.idgewaesser,typ:f.gewaessername,seefliess:see,fliess:fliess})}
       })
     }
-    async filterWK(kat:boolean){
+    async filterWK(kat:boolean,allewk:boolean){
 
    
       let temp: any = this.wk;
@@ -222,7 +243,7 @@ async startwk(kat:boolean){
                   
             
          
-    
+    if (allewk===false){
           if (f.see===kat){
     
           //erzeugt Array mit WK
@@ -251,12 +272,32 @@ async startwk(kat:boolean){
            
             // this.messstellenarray.push(this.messstellenStam);
             // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
-    }})
+    }}else{let gewasserart:boolean=true;
+      this.wkarray.push({ id:f.id,
+        wk_name: f.wk_name,
+        see:f.see,
+        kuenstlich:f.kuenstlich,
+        hmwb:f.hmwb,
+        eu_cd_wb:f.eu_cd_wb,
+        bericht_eu:f.bericht_eu,
+        kuerzel:f.kuerzel,
+        id_gewaesser:f.id_gewaesser,
+        land:f.land,
+        wrrl_typ:f.wrrl_typ,
+        mp_typ:f.mp_typ,
+        dia_typ:f.dia_typ,
+        pp_typ:f.pp_typ,
+        pp_typ_str:f.pp_typ_str,
+        dia_typ_str:f.dia_typ_str,
+        mp_typ_str:f.mp_typ_str,
+        wrrl_typ_str:f.wrrl_typ_str,
+        gewaessername:f.gewaessername,
+        updated_at:f.updated_at});}})
     )
      //console.log (this.wkarray);
 
     }
-async filterMst(kat:Boolean){
+async filterMst(kat:Boolean, alleMst:boolean){
    
   let temp: any = this.mst;
 
@@ -267,7 +308,7 @@ async filterMst(kat:Boolean){
               
         
      
-
+if (alleMst===false){
       if (f.see===kat){
 
       //erzeugt Array mit Meldemessstellen
@@ -282,7 +323,9 @@ async filterMst(kat:Boolean){
        
         // this.messstellenarray.push(this.messstellenStam);
         // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
-}})
+}}else { this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,repraesent:f.repraesent_mst,melde_mst_str:f.melde_mst_str,
+  melde_mst:f.melde_mst,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
+  dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs,updated_at:f.updated_at});}})
 )
  console.log (this.messstellenarray);
  

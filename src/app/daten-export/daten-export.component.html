@@ -1,0 +1,145 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="datenexport-form">
+  <div class="form-container">
+    <div class="form-column">
+      <div class="form-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Dropdown auswählen</mat-label>
+          <mat-select formControlName="dropdownSelection">
+            <mat-option value="messstellen">Messstellen</mat-option>
+            <mat-option value="wasserkorper">Wasserkörper</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="form.get('dropdownSelection')?.value === 'messstellen'" class="form-field">
+        <div class="form-field">
+          <mat-radio-group formControlName="messstellenType">
+            <mat-radio-button value="fluss">Fließgewässer</mat-radio-button>
+            <mat-radio-button value="see">Seen</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="form-field expanded">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Messstellen</mat-label>
+            <mat-select formControlName="selectedComponents" multiple (openedChange)="onMessstellenOpen()">
+              <ng-container *ngIf="isMessstellenOpen">
+                <div class="select-buttons">
+                  <mat-checkbox [checked]="allMessstellenSelected" (change)="toggleAllMessstellen($event.checked)">
+                    Select All
+                  </mat-checkbox>
+                </div>
+                <mat-form-field appearance="fill" class="filter-field">
+                  <mat-label>Filter</mat-label>
+                  <input matInput placeholder=" " [formControl]="messstellenFilterControl" />
+                </mat-form-field>
+              </ng-container>
+              <mat-option *ngFor="let component of filteredMessstellen" [value]="component.id_mst">{{ component.namemst }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="form.get('dropdownSelection')?.value === 'wasserkorper'" class="form-field">
+        <div class="form-field">
+          <mat-radio-group formControlName="waterBodyType">
+            <mat-radio-button value="fluss">Fließgewässer</mat-radio-button>
+            <mat-radio-button value="see">Seen</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="form-field expanded">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Wasserkörper</mat-label>
+            <mat-select formControlName="selectedWasserkorper" multiple (openedChange)="onWasserkorperOpen()">
+              <ng-container *ngIf="isWasserkorperOpen">
+                <div class="select-buttons">
+                  <mat-checkbox [checked]="allWasserkorperSelected" (change)="toggleAllWasserkorper($event.checked)">
+                    Select All
+                  </mat-checkbox>
+                </div>
+                <mat-form-field appearance="fill" class="filter-field">
+                  <mat-label>Filter</mat-label>
+                  <input matInput placeholder=" " [formControl]="wasserkorperFilterControl" />
+                </mat-form-field>
+              </ng-container>
+              <mat-option *ngFor="let w of filteredWasserkorper" [value]="w.id">{{ w.wk_name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-column">
+     
+      <div style="margin-left:20px;">
+        <mat-slider discrete min="{{minstart}}" max="{{maxstart}}"  style="margin-left:10px">
+          <input formControlName="min" matSliderStartThumb>
+          <input formControlName="max" matSliderEndThumb>
+        </mat-slider>
+        
+      
+      </div> 
+      
+
+        
+      
+     
+      <div class="komponente">
+        <mat-form-field appearance="fill">
+          <mat-label>Komponenten für Messstellenbewertung und Artabundanzen</mat-label>
+          <mat-select formControlName="selectedItems" multiple>
+            <mat-checkbox [checked]="allKomponentenSelected" (change)="toggleAllKomponenten($event.checked)">
+              Select All
+            </mat-checkbox>
+            <hr class="custom-divider">
+            <mat-option *ngFor="let item of items" [value]="item.id">{{ item.komponente }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="form-column">
+      <div class="form-field">
+        <mat-button-toggle-group formControlName="componentType" multiple>
+          <mat-button-toggle value="artabundanz">Artabundanzen</mat-button-toggle>
+          <mat-button-toggle value="messstellenbewertung">Messstellenbewertung</mat-button-toggle>
+          <mat-button-toggle value="wasserkorperbewertung">Wasserkörperbewertung</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+  
+
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit">Daten Abfragen</button>
+        <button mat-raised-button color="primary" type="button" (click)="exportToExcel($event)">Exportiere in eine Exceldatei</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<hr class="custom-divider">
+
+<mat-tab-group class="tab-group-padding">
+  <mat-tab label="Artabundanzen" *ngIf="ArtenAnzeige == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Messstellenbewertung" *ngIf="BewertungenMstAnzeige == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-makrophyten-mst-uebersicht [pros]="props"></app-makrophyten-mst-uebersicht>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Wasserkörperbewertung" *ngIf="WKUebersichtAnzeigen == true">
+    <div class="card" style="vertical-align: top;">
+      <mat-card class="example-card">
+        <app-uebersicht-tabelle [wkUebersicht]="BewertungwkUebersicht" *ngIf="BewertungwkUebersichtleer== true"></app-uebersicht-tabelle>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

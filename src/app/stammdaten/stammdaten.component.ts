@@ -108,7 +108,7 @@ this.wkStam1=this.sortedDataWK;
 
  async  seeMst(){
   this.MpTypAnzeige=false;
-  await  this.stammdatenService.start(true);
+  await  this.stammdatenService.start(true,false);
   this.PPTypAnzeige=false;
   this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=true;
@@ -172,7 +172,7 @@ this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=false;
     this.GewaesserAnzeige=false;
     this.TypWrrlAnzeige=false;
-    await  this.stammdatenService.startwk(false);
+    await  this.stammdatenService.startwk(false,false);
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
   this.TypWrrlAnzeige=false;
@@ -181,7 +181,7 @@ this.TypWrrlAnzeige=false;
 this.gewaesserart="Fließgewässer";}
   
   async seeWk()
-  {await  this.stammdatenService.startwk(true);
+  {await  this.stammdatenService.startwk(true,false);
     this.DiaTypAnzeige=false;
     this.MpTypAnzeige=false;
   this.MessstellenAnzeige=false;
@@ -196,7 +196,7 @@ this.gewaesserart="Fließgewässer";}
 
 
   async fgwMst(){
-   await this.stammdatenService.start(false);
+   await this.stammdatenService.start(false,false);
    this.DiaTypAnzeige=false;
    this.MpTypAnzeige=false;
    //console.log (this.stammdatenService.messstellenarray)

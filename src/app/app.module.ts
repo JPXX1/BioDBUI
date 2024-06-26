@@ -62,8 +62,9 @@ import { EditableTableGewaesserComponent } from './stammdaten/editable-table-gew
 import { EditableTableTypPPComponent } from './stammdaten/editable-table-typ-pp/editable-table-typ-pp.component';
 import { EditableTableDiatypComponent } from './stammdaten/editable-table-diatyp/editable-table-diatyp.component';
 import { EditableTableMptypComponent } from './stammdaten/editable-table-mptyp/editable-table-mptyp.component';
-
-
+import { DatenExportComponent } from './daten-export/daten-export.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
 
 // StammWkComponent
 
@@ -76,18 +77,20 @@ const routes: Routes = [
 	{ path: 'monitoringdaten', component: MonitoringComponent },
 	{ path: 'stammdaten', component: StammdatenComponent },
 	{ path: 'register', component: RegisterComponent },
-	{path:'admin',component:AdministrationComponent}
+	{path:'admin',component:AdministrationComponent},
+	{path:'datenexport',component:DatenExportComponent}
+	
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent,
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent,
 ], 
-imports: [FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
-    ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule,
+    ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule,MatTabsModule,
 ], 
 providers: [SelectjahrComponent,StammMessstellenComponent,EditStammdatenMstComponent,StammWkComponent], 
 bootstrap: [AppComponent] 

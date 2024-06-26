@@ -4,10 +4,12 @@ import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service'
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-uebersicht-tabelle',
   templateUrl: './uebersicht-tabelle.component.html',
-  styleUrls: ['./uebersicht-tabelle.component.css']
+  styleUrls: ['./uebersicht-tabelle.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UebersichtTabelleComponent {
 

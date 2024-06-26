@@ -5,22 +5,21 @@ import { Injectable } from '@angular/core';
 })
 export class FarbeBewertungService {
 
-  getColor(OZK) {
+  getColor(OZK: string): string {
     switch (OZK) {
       case '1':
         return 'rgb(0, 158, 224)';
       case '2':
         return 'rgb(0, 144, 54)';
-        case '3':
-          return 'rgb(255, 255, 0)';
-          case '4':
+      case '3':
+        return 'rgb(255, 255, 0)';
+      case '4':
         return 'rgb(255, 153, 0)';
-        case '5':
+      case '5':
         return 'rgb(226, 0, 26)';
-        default:
-          return 'withe';
-    }
-  }
+      default:
+        return 'rgb(255, 255, 255)'; // white
+    }}
   getColorRL(RL) {
     switch (RL) {
       case '0':

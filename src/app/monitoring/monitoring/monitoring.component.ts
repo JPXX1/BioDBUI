@@ -36,7 +36,7 @@ export class MonitoringComponent implements OnInit{
  public FilterWKname:string;
 
 
- 
+ maxstart=new Date().getFullYear();
   value = '';valueJahr = '';
   Artvalue = '';
   min:number=2016;
@@ -50,7 +50,7 @@ export class MonitoringComponent implements OnInit{
     if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
         } else{
-		await this. anzeigeBewertungService.ngOnInit();
+		await this.anzeigeBewertungService.ngOnInit();
     this.FilterwkUebersicht=[];
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
     this.getButtonAktivUebersicht();
@@ -261,7 +261,7 @@ async handleMZBClick(){ //Taxadaten MZB
   }
   async  buttonstamm(){
 
- await this.stammdatenService.start(true);
+ await this.stammdatenService.start(true,false);
  console.log (this.stammdatenService.mst);
 
  console.log (this.stammdatenService.messstellenarray);
