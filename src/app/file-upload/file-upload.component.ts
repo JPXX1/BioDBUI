@@ -107,7 +107,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	async openexpand(){
 		this.ImportDatenAnzeige=true;
 		// console.log();
-	//await this.uebersichtImportService.handle();
+	await this.uebersichtImportService.handle();
 	}  
 	// On file Select 
 	onChange(event) {
@@ -198,7 +198,8 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 				console.log(this.valExceltabsService.NrVerfahren)
 				console.log(this.xlsxImportPhylibService.messstellenImp)
 				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
-					await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);
+					if (this.valExceltabsService.NrVerfahren!==5){await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);}
+					else {await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenmitJahr( this.probenehmer);}
 
 					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;} else { 
 						if (this.xlsxImportPhylibService.doppelteMesswerte()===true)
@@ -267,7 +268,11 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 				
 
 				{this.InfoBox="Der Import wird durchgeführt.";
-				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
+					if (this.valExceltabsService.NrVerfahren===5){	this.newuebersichtImport.id_komp=5;}
+				
+					//neue importID,Jahr und Probenehmer erzeugen/anfuegen
+				
+				
 				this.archivImportErzeugen();
 				this.xlsxImportPhylibService.holeMst();
 				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
@@ -409,7 +414,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					// this.dataSource.sort=this.sort;
 					this.pruefen=false;
 					break;
-					case 5:
+					case 5: //PhytoseeExport
 					// code block
 					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren);
 					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";

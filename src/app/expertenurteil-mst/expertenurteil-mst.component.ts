@@ -409,7 +409,7 @@ selectionCheckbox(){
  this.allMessstellenSelected=false;
   this.allWasserkorperSelected=false;
   this.repraesentativeSelected=false;}
-}
+ }
 
   resetDisplayFlags() {
     this.WKUebersichtAnzeigen = false;

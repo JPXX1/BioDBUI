@@ -9,4 +9,5 @@ export interface MessstellenImp {
     id_pn:number;
     wert:string;
     uebersicht:Uebersicht;
+    jahr?: string;
 }

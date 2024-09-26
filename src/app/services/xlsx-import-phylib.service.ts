@@ -221,10 +221,13 @@ try {
 		})
 	console.log(this.messstellenImp);this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
 
-schalteSpalte(Spalte:string,wert:string){
+schalteSpalte(Spalte:string,wert:string,jahr?:string) {
 
 	// this._uebersicht=null;this._uebersicht= {} as Uebersicht;
 	// console.log()
+
+	if (jahr!==undefined){this._uebersicht.jahr=jahr;}
+	
 	switch(Spalte) { 
 		case "sp3": { 
 			this._uebersicht.sp3= wert;
@@ -547,6 +550,7 @@ console.log(this.mstindex);
 	async groupNAch() {
 		console.log(this._uebersicht);
 		let mst: string=this._uebersicht.mst;
+		let jahr: string=this._uebersicht.jahr;
 		let _sp3: string=this._uebersicht.sp3;
 		let _sp4: string=this._uebersicht.sp4;
 		let _sp5: string=this._uebersicht.sp5;
@@ -577,7 +581,7 @@ console.log(this.mstindex);
 			if (messgroup.length === 0) {
 				//nur BEwertungsdaten=Exportdateien
 				if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
-				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
+				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0,jahr:jahr, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
 			//	this.MessDataGr.push({ _Nr: this.MessDataGr.length + 1, _Messstelle: mst, _AnzahlTaxa: 0, _TypMP: _typmp, _TypDIA: _typdia, _TypWRRL: _typwrrl, _TypPhytoBenthos: _typphytobenth, _UMG: _umg, _Veroedung: _veroedung, _B_veroedung: _b_veroedung, _Helo_dom: _helo_dom, _Oekoreg: _oekoreg, MstOK: mstok, OK: ok, KeineMP: keinemp, gesamtdeckg: _gesamtdeckg },);
 			}
@@ -590,6 +594,7 @@ console.log(this.mstindex);
 						var _nr_: number = this.uebersicht[i].nr;
 						var _mst_: string = this.uebersicht[i].mst;
 						var _anzahl_: number = this.uebersicht[i].anzahl + 1;
+						this.uebersicht[i].jahr=jahr;
 						if (this.uebersicht[i].sp3!==undefined){ _sp3 = this.uebersicht[i].sp3};
 						if (this.uebersicht[i].sp4!==undefined){_sp4 = this.uebersicht[i].sp4};
 						if (this.uebersicht[i].sp5!==undefined){
@@ -621,7 +626,7 @@ console.log(this.mstindex);
 
 
 						this.uebersicht.splice(i, 1);//löscht vorhandenen DS
-						this.uebersicht.push({ nr:_nr_, mst: _mst_, anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_,import1:_importp});
+						this.uebersicht.push({ nr:_nr_, mst: _mst_, jahr:jahr,anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_,import1:_importp});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
 						 //
@@ -702,7 +707,49 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 	}
 		return antwort;
 	  }
-	  
+
+	  //wenn in Phytoseeexport Jahre mitgeliefert werden
+	  async pruefeObMesswerteschonVorhandenmitJahr(probenehmer: string) {
+		let jahrtemp: string; this.vorhanden = false;
+		
+		
+		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
+
+		if (this.uebersicht[a].import1==="checked"){ //import möglich
+			jahrtemp = ('15.07.' + this.uebersicht[a].jahr); 
+			await this.holeMesswerteausDB(jahrtemp, probenehmer);
+			
+			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+
+			let mstID=mstee[0].id_mst;
+			const tmpMWteil=this.MWausDB.filter(g=>g.id_mst===mstID)
+
+
+			if (tmpMWteil.length>0){ 
+
+				const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
+
+		for (let i = 0, l = relMW.length; i < l; i += 1) {
+			const mw: Messwerte = relMW[i];
+			
+			
+			// this.mst
+
+			// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
+
+			const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
+			//console.log("combi", combi)
+
+			if (combi.length > 0) {
+				this.vorhanden = true;
+				this.groupNAchPruefung(this.uebersicht[a]);
+
+				i = l;
+			}
+
+		}}}}
+
+	  }
 	async pruefeObMesswerteschonVorhanden(jahr: string, probenehmer: string) {
 		this.uebersichtGeprueft=this.uebersicht;
 		let jahrtemp: string; this.vorhanden = false;
@@ -717,6 +764,8 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
+
+
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
 			let mstID=mstee[0].id_mst;
@@ -905,28 +954,36 @@ return bemerkung;
 	//Import der Bewertugsergebnisse
 	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
-		jahrtemp = ("15.07." + jahr);
+		
 		console.log(jahrtemp);
 		let g=0;
 		let b=0;
 		// for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
-			
-			for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
+			const uebersichtfiltert=this.uebersicht.filter(daten=>daten.import1==="checked")
+			for (let a = 0, le = uebersichtfiltert.length; a < le; a += 1) {
 
-				if (this.uebersicht[a].import1==="checked"){ //import möglich
+				// if (this.uebersicht[a].import1==="checked"){ //import möglich
 					g = g + 1;
-					let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+					let mstee = this.mst.filter(messstellen => messstellen.namemst === uebersichtfiltert[a].mst);
 					if (mstee.length>0){
 					let mstID=mstee[0].id_mst;
 					const tmpMWteil=this.messstellenImp.filter(g=>g.id_mst===mstID)
-	
-	
-					if (tmpMWteil.length>0){ 
-						for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
-							b=b+1;
-			this.impPhylibServ.postMessstellenPhylib(tmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
 
-		}}}}}
+					// Entfernt doppelte Werte aus dem Array
+					const distinctTmpMWteil = Array.from(new Set(tmpMWteil));
+
+					// distinctTmpMWteil enthält jetzt nur noch eindeutige Werte
+	
+					if (distinctTmpMWteil.length>0){ 
+						for (let i = 0, l = distinctTmpMWteil.length; i < l; i += 1) {
+							b=b+1;
+							if (distinctTmpMWteil[i].jahr===undefined){
+								jahrtemp = ("15.07." + jahr);}else{
+									jahrtemp = ("15.07." + distinctTmpMWteil[i].jahr);
+								}
+			this.impPhylibServ.postMessstellenPhylib(distinctTmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
+
+		}}}}
 
 		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
 	}
@@ -949,6 +1006,8 @@ return bemerkung;
 				if (idVerfahren===5){
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
+					this.displayColumnNames.push('Jahr');
+					this.dynamicColumns.push('jahr');
 				}
 		for (let i = 0, l = valspaltenfiter.length; i < l; i += 1) {
 			this.displayColumnNames.push(valspaltenfiter[i].anzeigename);

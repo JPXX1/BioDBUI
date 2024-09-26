@@ -1,6 +1,7 @@
 export interface Uebersicht {
         nr:number;
 		mst: string;
+		jahr?: string;
         anzahl:number;
 		sp3: string;
 		sp4:string;
