@@ -13,4 +13,5 @@ export interface MstMakrophyten {
     einheit: string;
     komponente:number;
     dvnr:number;
+    expurteil:string;
    }

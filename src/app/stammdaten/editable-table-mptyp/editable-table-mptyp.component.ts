@@ -1,22 +1,26 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit ,AfterViewInit,AfterViewChecked} from '@angular/core';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { HelpService } from 'src/app/services/help.service';
 
 @Component({
   selector: 'app-editable-table-mptyp',
   templateUrl: './editable-table-mptyp.component.html',
   styleUrls: ['./editable-table-mptyp.component.css']
 })
-export class EditableTableMptypComponent  implements OnInit, OnChanges{
+export class EditableTableMptypComponent  implements OnInit, OnChanges,AfterViewChecked,AfterViewInit{
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
   dataSource: MatTableDataSource<TypWrrl>=new MatTableDataSource();
 
-  constructor(private dataService: StammdatenService) {}
+  constructor(
+    private dataService: StammdatenService,
+    private helpService: HelpService,
+
+  ) {}
   async ngOnInit(): Promise<void> {
     //this.dataSource = await this.dataService.getStammWrrlTyp2();
  
@@ -27,7 +31,14 @@ export class EditableTableMptypComponent  implements OnInit, OnChanges{
    this.dataSource.data=this.dataService.mptyp;
    this.dataSource.sort = this.sort;
   }
-
+  ngAfterViewChecked() {
+    this.helpService.registerMouseoverEvents();
+  }
+  ngAfterViewInit() {
+    
+    //	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
+      this.helpService.registerMouseoverEvents();}
+  
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mpTyp']) {
       this.dataSource.data = this.dataService.mptyp;

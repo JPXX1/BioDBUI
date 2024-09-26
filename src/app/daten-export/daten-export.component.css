@@ -4,7 +4,7 @@
   gap: 16px;
   margin-top:1%;
   max-width: 100%; /* Verhindert, dass die Breite auf 400px begrenzt wird */
-  margin-left: 10%;
+  margin-left: 5%;
 }
 .tab-group-padding {
   padding-left: 5%;
@@ -76,4 +76,8 @@ width:20%;
 .button-container {
   display: flex;
   gap: 10px; /* Abstand zwischen den Buttons */
+}
+.full-width {
+  width: 150%; /* Oder jede andere gewünschte Breite */
+  min-width: 500px; /* Mindestbreite, um das Label nicht abzuschneiden */
 }

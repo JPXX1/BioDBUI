@@ -23,7 +23,7 @@
             <mat-form-field class="fullWidth" appearance="outline">
               <mat-label>Hochwert (etrs) *</mat-label>
               <input matInput type="number" formControlName="hw_etrs" />
-
+              <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
             </mat-form-field>
           </div>
         </td>
@@ -34,7 +34,7 @@
             <mat-form-field class="fullWidth" appearance="outline">
               <mat-label>Rechtswert (etrs) *</mat-label>
               <input matInput type="number" formControlName="rw_etrs" />
-
+              <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
             </mat-form-field>
           </div>
         </td>
@@ -45,6 +45,12 @@
       <mat-label>Repräsentative Messstelle</mat-label>
       <mat-checkbox formControlName="repraesent"></mat-checkbox>
 
+
+
+      <mat-button-toggle-group aria-label="Toggle between Left and Right" (change)="onToggleFgwSeeChange($event.value === 'left')">
+        <mat-button-toggle value="left" [checked]="seefliess">Seemessstelle</mat-button-toggle>
+        <mat-button-toggle value="right" [checked]="!seefliess">Fließgewässermessstelle</mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
 
 
@@ -58,10 +64,10 @@
       </ng-multiselect-dropdown>
     </div>
     <div class="mt-5">
-      <mat-label>zugeordnete Meldemessstelle</mat-label>
-      <ng-multiselect-dropdown [placeholder]="MeldeMst" [settings]="dropdownMeldeSettings" [data]="dropdownMeldeMst"
-        (onSelect)="onItemSelectMeldemst($event)">
-      </ng-multiselect-dropdown>
+      <mat-label>Gewässer</mat-label>
+    <ng-multiselect-dropdown [placeholder]="data.mststam.gewaessername" [settings]="dropdownSettingsGew"
+      [data]="dropdownTypGewaesser" (onSelect)="onItemSelectGew($event)">
+    </ng-multiselect-dropdown>
 
     </div>
 

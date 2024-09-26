@@ -22,10 +22,10 @@ export class ValExceltabsService {
 
 
 
-
+//Datenabfrage aus Postgres (exceltabs, Excelspalten und ValVerfahren)
 	async callvalexceltabs() {
 
-
+      //holt sich die Exceltabs aus Postgres
       await this.impPhylibServ.getvalExceltabs().forEach(value => {
         this.valexceltabs = value;
         console.log('observable -> ' + value);
@@ -54,7 +54,7 @@ export class ValExceltabsService {
     }
     
   }
-
+//liest die Namen der Exceltabs des importierten Excelfiles aus
   exceltabsauslesen(workbook){
 let tabs="";
 let tabsvier="";
@@ -76,7 +76,22 @@ let tabsvier="";
     this.Exceltabsimpalle=tabs;
   }
 
-
+  countOccurrences(valexceltabsfilter: string): number {
+    // Schritt 1: Splitten der Zeichenkette in einzelne Einträge und in Kleinbuchstaben umwandeln
+    const entries = this.ExceltabsimpVier.split(';')
+      .filter(entry => entry.trim().length > 0)
+      .map(entry => entry.toLowerCase());
+  
+    // Schritt 2: Splitten der valexceltabsfilter-Zeichenkette und in Kleinbuchstaben umwandeln
+    const filterEntries = valexceltabsfilter.split(';')
+      .filter(entry => entry.trim().length > 0)
+      .map(entry => entry.toLowerCase());
+  
+    // Schritt 3: Überprüfen, wie viele dieser Einträge in filterEntries vorkommen
+    const occurrences = entries.filter(entry => filterEntries.includes(entry)).length;
+  
+    return occurrences;
+  }
   async ExcelTabsinArray(workbook) {
     await this.callvalexceltabs();
     
@@ -109,7 +124,7 @@ let tabsvier="";
 
         console.log(this.NrVerfahren);
       }
-      else if (valexceltabsfilter[0].ident_kriterium === 5 &&  valexceltabsfilter[0].namentabs===this.ExceltabsimpVier) {
+      else if (valexceltabsfilter[0].ident_kriterium === 5 &&  this.countOccurrences(valexceltabsfilter[0].namentabs)>1) {
         
         this.NrVerfahren =valexceltabsfilter[0].id_verfahren;
         console.log( this.NrVerfahren );
@@ -121,14 +136,16 @@ let tabsvier="";
 
       
       //Phylibimportdatei Prüfung anhand der Tab-Benennung
-      let valexceltabsfilter4=valexceltabsfilter.filter(exceltabs=>exceltabs.namentabs===this.ExceltabsimpVier);
+    //  let valexceltabsfilter4=valexceltabsfilter.filter(exceltabs=>exceltabs.namentabs===this.ExceltabsimpVier);
+      const valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[0].namentabs);
+
       let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
       if (valexceltabsfilter2.length === 1) {
 
         this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
 
       }//Phytosee-Export 
-      else   if (valexceltabsfilter4.length === 1) {this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
+      else   if (valexceltabsfilter4 === 2) {this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
 
       }
       

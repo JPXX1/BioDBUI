@@ -1,6 +1,7 @@
-import { Component, OnInit,Output ,ViewChild,Injectable,EventEmitter} from '@angular/core';
+import { Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
+import { HelpService } from '../services/help.service';
 import {PerlodesimportService} from '../services/perlodesimport.service';
 import { Messwerte } from '../interfaces/messwerte';
 import { Uebersicht } from '../interfaces/uebersicht';
@@ -24,13 +25,17 @@ import { MatDialog } from '@angular/material/dialog';
 import {PhytoseeServiceService} from 'src/app/services/phytosee-service.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+
 @Component({
 	selector: 'app-file-upload',
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.css']
 })
 @Injectable()
-export class FileUploadComponent implements OnInit {
+export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(SelectjahrComponent, {static: false}) child1: SelectjahrComponent;
 	@ViewChild(SelectProbenehmerComponent, {static: false}) childPN: SelectProbenehmerComponent;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
@@ -62,8 +67,8 @@ export class FileUploadComponent implements OnInit {
 	public MessDataImp:Messwerte[]=[];
 	displayColumnNames:string[]=['Nr','Messstelle','Anzahl', 'MPtyp'];
 	dynamicColumns:string[]=['nr','mst','anzahl','sp3','fehler1','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
-	
-	
+	isHelpActive: boolean = false;
+	helpText: string = '';
 	
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
@@ -72,18 +77,23 @@ export class FileUploadComponent implements OnInit {
 
 	// Inject service 
 	
-	constructor (private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+	constructor ( private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
 		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
 		
 	}
+
 	panelOpenState = false;
 	async ngOnInit() {
 		if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
+			
         } else{
+			this.ImportDatenAnzeige=false;
 		await this.uebersichtImportService.start();
+		this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
+			this.helpService.helpText$.subscribe(text => this.helpText = text);
 		this.uebersichtImport=this.uebersichtImportService.uebersicht;
 		//console.log(this.uebersichtImport);
 	}}
@@ -101,6 +111,7 @@ export class FileUploadComponent implements OnInit {
 	}  
 	// On file Select 
 	onChange(event) {
+		this.ImportDatenAnzeige=false;
 		this.file=event.target.files[0];
 		this.pruefen=true;this.ImportIntoDB=true;
 		this.InfoBox="";
@@ -129,7 +140,15 @@ export class FileUploadComponent implements OnInit {
   }
  
 	  }
-		
+
+	  // löst das mousover für die Hilfe aus
+	  ngAfterViewInit() {
+	
+	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
+		this.helpService.registerMouseoverEvents();}
+
+
+	
 	// OnClick of button Upload 
 	onUpload() {
 		this.loading = !this.loading;
@@ -175,6 +194,9 @@ export class FileUploadComponent implements OnInit {
 			if (!this.probenehmer) {
 				this.InfoBox = "Bitte erst den Probenehmer auswählen.";
 			} else {
+				console.log(this.MessDataOrgi.length)
+				console.log(this.valExceltabsService.NrVerfahren)
+				console.log(this.xlsxImportPhylibService.messstellenImp)
 				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
 					await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);
 
@@ -236,7 +258,7 @@ export class FileUploadComponent implements OnInit {
 				else 
 				
 				console.log(this.valExceltabsService.NrVerfahren);
-				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4){
+				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || this.valExceltabsService.NrVerfahren===5){
 					if (this.xlsxImportPhylibService.vorhanden===true)
 				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
 				if (this.xlsxImportPhylibService.vorhandenMst===true)
@@ -247,6 +269,7 @@ export class FileUploadComponent implements OnInit {
 				{this.InfoBox="Der Import wird durchgeführt.";
 				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				this.archivImportErzeugen();
+				this.xlsxImportPhylibService.holeMst();
 				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
 				return;
 				await this.uebersichtImportService.start();
@@ -300,7 +323,9 @@ export class FileUploadComponent implements OnInit {
 
 	
 			async addfile()     
-		{  this.pruefen=true;
+		{  this.ImportDatenAnzeige=false;
+			
+			this.pruefen=true;
 			this.mstimptab=true; this.Datimptab=false;  this.ImportIntoDB=true;
 	//	this.file= event.target.files[0];     
 		let fileReader = new FileReader();    
@@ -378,7 +403,7 @@ export class FileUploadComponent implements OnInit {
 					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
-					
+					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					this.Datimptab=false;
 					this.displayableColumns(4);
 					// this.dataSource.sort=this.sort;
@@ -386,7 +411,7 @@ export class FileUploadComponent implements OnInit {
 					break;
 					case 5:
 					// code block
-					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren);
 					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					this.Datimptab=false;
 					this.displayableColumns(5);
@@ -450,7 +475,11 @@ export class FileUploadComponent implements OnInit {
 			}
 
 			for (let b = 0, l = this.xlsxImportPhylibService.messstellenImp.length; b < l; b += 1) {
-				if (this.xlsxImportPhylibService.messstellenImp[b].id_mst===mst_id_alt){
+				
+				
+				
+				
+				if (this.xlsxImportPhylibService.messstellenImp[b].uebersicht.mst===name_alt){
 
 					this.xlsxImportPhylibService.messstellenImp[b].id_mst=result.id_mst;
 				}

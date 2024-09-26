@@ -29,7 +29,7 @@ export class AnzeigeBewertungService {
    await this.callBwUebersicht();
      this.datenUmwandeln();
      //this.filterdaten();
-     console.log(this.wkUebersicht);
+     //console.log(this.wkUebersicht);
   }
 
    getBwWKUebersicht() {
@@ -44,7 +44,7 @@ export class AnzeigeBewertungService {
 		// this.workbookInit(datum,Probenehmer)
 		await this.getStamWasserkoerper().forEach(formen_ => {
       this.dbStamWk = formen_;
-			console.log(  formen_);
+			//console.log(  formen_);
 		});
 	}
  
@@ -101,11 +101,11 @@ export class AnzeigeBewertungService {
 
       let jahrstart:number;
       let dbBewertungWkTemp: any = this.dbBewertungWk.filter(excelspalten => excelspalten.wk_id === this.dbStamWk[i].id);
-      console.log(dbBewertungWkTemp);
+      //console.log(dbBewertungWkTemp);
 
       if (dbBewertungWkTemp.length>0){
       let dbBewertungwk = dbBewertungWkTemp.sort(this.compare);
-      console.log(dbBewertungwk);
+     // console.log(dbBewertungwk);
 
       jahrstart=dbBewertungwk[0].jahr;
       this._uebersicht = {} as WkUebersicht

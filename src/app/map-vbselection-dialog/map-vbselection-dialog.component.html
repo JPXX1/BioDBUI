@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Verbreitungskarten</h1>
+<div style="margin-left:20px; margin-top: 20px;" class="helpable" id="auswahl-zeit">
+  <mat-slider discrete min="2005" [max]="maxstart" (change)="updateSetting(min, max)" style="margin-left:10px">
+    <input [(ngModel)]="min" matSliderStartThumb>
+    <input [(ngModel)]="max" matSliderEndThumb>
+  </mat-slider>
+</div>
+<div mat-dialog-content>
+  <!-- Erster MatSelect für Komponenten -->
+  <mat-form-field appearance="fill">
+    <mat-label>Filtern nach Komponente</mat-label>
+    <mat-select [(value)]="id_komponente" class="custom-width" (selectionChange)="onKomponenteSelectionChange(id_komponente)">
+      <mat-option *ngFor="let komponent of dbKomponenten" [value]="komponent.id" style="width:200px;  font-size: 10px;">
+        {{ komponent.komponente }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Zweiter MatSelect für Taxons -->
+  <mat-form-field appearance="fill">
+    <mat-label>Taxon auswählen</mat-label>
+    <mat-select [(value)]="selectedTaxonIds" class="custom-width">
+      <mat-option *ngFor="let taxon of filteredTaxons" [value]="taxon">
+        {{ taxon }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="closeDialog()">Abbrechen</button>
+  <button mat-button (click)="applySelection()">Anwenden</button>
+</div>

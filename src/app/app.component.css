@@ -1,20 +1,41 @@
-.panel {
+/* .panel {
     background: rgba(206, 245, 144, 0.473);
     border-radius: var(--panel-border-width);
     padding: var(--panel-border-width);
-  }
-  .linkcolor{
+  } */
+  /* .linkcolor{
     color:rgba(14, 14, 241, 0.986);
-}
+} */
 
-.sticky{
+.sticky-header {
   position: fixed;
   top: 0;
-  overflow: hidden;
-  z-index: 10;
-  margin-bottom: 50px;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  height: 84px; /* Höhe der Kopfzeile, anpassen entsprechend der tatsächlichen Höhe */
+  overflow: hidden; /* Entfernen der Scroll-Leiste */
+  /* display: flex; Sicherstellen, dass die Inhalte innerhalb des Headers korrekt ausgerichtet sind */
+  /* align-items: center; Vertikale Zentrierung der Inhalte */
 }
+
+
+
 .menu-button {
   display: block; /* Makes each button take up the full width and stack vertically */
   margin: 8px 0;  /* Adds space between buttons */
 }
+/* app.component.css */
+.help-button-active {
+  background-color: lightgray;
+}
+
+.help-button {
+  border: 2px solid rgb(248, 6, 6); /* Roter Rahmen */
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  z-index: 1100;
+  
+}
+

@@ -6,7 +6,15 @@
     bottom: 0;
     margin: 30px;
   }
-  
+  .map-label {
+    position: absolute;
+    top: 0px;
+    left: 60px;
+    background-color: white; /* Weißer Hintergrund */
+    padding: 5px 10px;
+    border: 1px solid #ccc; /* Grauer Rand um das Label */
+    z-index: 100; /* Sicherstellen, dass es über der Karte liegt */
+  }
   .map-frame {
     border: 2px solid black;
     height: 100%;
@@ -43,4 +51,26 @@
   
   .legend-label {
     display: inline;
+  }.example-card {
+    max-width: 80%;
+    margin-left: 200px;
+    margin-top: 15px;
+    background-color: withe;
+  }
+  .example-form-field {
+    width: 400px;
+  }
+
+
+   
+   .button.active {
+    border-color: rgb(0, 225, 255);
+    background-color: 'RGB(240,240,240)';
+   }
+.button{
+   border: 2px solid rgb(128, 126, 126); /* Roter Rahmen */
+   margin-left: 2px;}
+
+   .custom-width {
+    width: 500px; /* Setzt die Breite des spezifischen mat-form-field */
   }

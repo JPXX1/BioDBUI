@@ -1,172 +1,109 @@
+<!-- <div *ngIf="isHelpActive">
+  <p>Hilfe ist aktiviert!</p>
+</div> -->
+
 <div class="grid-container">
-
- 
-
   <mat-card>
     <mat-card-content>
-
       <div class="grid-item">
         <div style="margin-left:50px">
           <table style="background-color: aliceblue;">
             <tr style="vertical-align:top">
               <td>
-                <span style="float:left;vertical-align: top">
+                <span style="float:left;vertical-align: top"  id="file-upload" class="helpable" >
                   <input class="form-control" type="file" (change)="onChange($event)"
                     accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                     class="fileupload">
                 </span>
                 <span style="float:right">
-                  <button (click)="addfile()" class="btn btn-success">
+                  <button (click)="addfile()" id="add-file" class="btn btn-success helpable">
                     2. Upload
                   </button>
                 </span>
               </td>
-
               <td>
-
                 <span style="float:left">
-                  <div style="margin-left:50px"><app-selectjahr [selected]="jahr"></app-selectjahr>
-                  </div>
-
-                  <div style="margin-left:50px"><app-select-probenehmer
-                      [selectedPN]="probenehmer"></app-select-probenehmer>
-                  </div>
+                  <div style="margin-left:50px" class="helpable" id="DD-Jahr"><app-selectjahr [selected]="jahr"></app-selectjahr></div>
+                  <div style="margin-left:50px" class="helpable" id="DD-Probenehmer"><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div>
                 </span>
-
-
               </td>
               <td>
-
-                
-                
-                <button (click)="pruefeObMesswerteschonVorhanden()" [disabled]="pruefen" class="btn btn-success"
-                  style="margin-left:50px">
-                 5. prüfen
+                <button (click)="pruefeObMesswerteschonVorhanden()" id="btn-pruefen" [disabled]="pruefen" class="btn btn-success helpable" style="margin-left:50px">
+                  5. prüfen
                 </button><br>
-                <button (click)="importIntoDB()" [disabled]="ImportIntoDB" class="btn btn-success"  style="margin-left:50px;margin-top:10px">
+                <button (click)="importIntoDB()" [disabled]="ImportIntoDB" class="btn btn-success" style="margin-left:50px;margin-top:10px">
                   6. Import in die Datenbank
                 </button>
               </td>
-
               <span class="infobox">
                 <app-info-box [Info]="InfoBox" class="info" style="margin-left:100px"></app-info-box>
               </span>
-
             </tr>
           </table>
         </div>
       </div>
     </mat-card-content>
   </mat-card>
-
-  <!-- Shareable short link of uploaded file -->
-  <!-- <div class="container text-center jumbotron" *ngIf="shortLink">
-      <h2> Visit Here</h2>
-      <a href="{{shortLink}}">{{shortLink}}</a>
-    </div> -->
-
-  <!--Flag variable is used here-->
-  <!-- <div class="container" *ngIf="loading">
-      <h3>Loading ...</h3>
-    </div> -->
-
-
-  <div class="grid-item" style="width: 90%;margin-left: 2%;">
+  <div class="grid-item" style="width: 90%;margin-left: 2%;" class="helpable" id="panel-importhistorie">
     <mat-accordion>
       <mat-expansion-panel (opened)="panelOpenState = true" (afterExpand)="openexpand()" (afterCollapse)="close()" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title>
-            Importhistorie
-          </mat-panel-title>
-  
+          <mat-panel-title>Importhistorie</mat-panel-title>
         </mat-expansion-panel-header>
         <p><app-select-uebersicht-import [uebersicht]="uebersichtImport" (sortDataue)="sortData($event)" (importID)="handleData($event)" style="width:480%"></app-select-uebersicht-import></p>
       </mat-expansion-panel>
     </mat-accordion>
-
   </div>
-
- 
   <div style="display: flex; flex-grow: grow">
     <div *ngIf="mstimptab == true" style="float: left;width: 45%;margin-left:2%">
-      <!-- <div class="mat-elevation-z8 table" style="float: left;width: 30%;margin-left:2%"> -->
-        <table mat-table [dataSource]="dataSource" matSort>
-
-
-          <ng-container *ngFor="let colName of dynamicColumns; index as i;">
-            <ng-container *ngIf="colName!=='actions' && colName!=='import1' && colName!=='fehler1'  && colName!=='fehler2';" [matColumnDef]="colName">
-
-
-              <th mat-header-cell *matHeaderCellDef  class="header-table-rl" mat-sort-header> {{displayColumnNames[i]}} </th>
-              <td mat-cell *matCellDef="let element"  class="spalte-rl"> {{element[colName]}} </td>
-            </ng-container>
-
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container *ngFor="let colName of dynamicColumns; index as i;">
+          <ng-container *ngIf="colName!=='actions' && colName!=='import1' && colName!=='fehler1'  && colName!=='fehler2';" [matColumnDef]="colName">
+            <th mat-header-cell *matHeaderCellDef class="header-table-rl" mat-sort-header>{{displayColumnNames[i]}}</th>
+            <td mat-cell *matCellDef="let element" class="spalte-rl">{{element[colName]}}</td>
           </ng-container>
-          <ng-container matColumnDef="fehler1">
-           
-            <th mat-header-cell *matHeaderCellDef  class="header-table-rl"> Mst nicht bekannt </th>
-            <td mat-cell *matCellDef="let element"  class="spalte-rl"> 
-              <input type="checkbox" checked="{{element.fehler1}}">
-              <!-- <mat-checkbox class="example-margin" value="{{element.import1}}"> {{element.import1}} </mat-checkbox> -->
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="fehler2">
-           
-            <th mat-header-cell *matHeaderCellDef  class="header-table-rl"> Art nicht bekannt </th>
-            <td mat-cell *matCellDef="let element" class="spalte-rl"> 
-              <input type="checkbox" checked="{{element.fehler2}}" >
-              <!-- <mat-checkbox class="example-margin" value="{{element.import1}}"> {{element.import1}} </mat-checkbox> -->
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef class="header-table-rl" >Aktionen</mat-header-cell>
-            <mat-cell *matCellDef="let row">
-              <button  mat-icon-button color="primary"  color="edit"  (click)="edit(row)" class="iconbutton">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="accent" aria-label="Example icon button with a menu icon"
-                class="iconbutton" color="warn" (click)="handleRowClick(row)">
-                <mat-icon>open_in_new</mat-icon>
-              </button>
-              <section class="example-section">
-                
-                
-              </section>
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="import1">
-           
-            <th mat-header-cell *matHeaderCellDef> importierbar </th>
-            <td mat-cell *matCellDef="let element"> 
-              <input type="checkbox" checked="{{element.import1}}" >
-              <!-- <mat-checkbox class="example-margin" value="{{element.import1}}"> {{element.import1}} </mat-checkbox> -->
-            </td>
-          </ng-container>
-
-
-          <tr mat-header-row *matHeaderRowDef="dynamicColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: dynamicColumns;"></tr>
-
-        </table>
-        <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" aria-label="Select page of users"></mat-paginator>
-      </div>
-    <!-- </div> -->
-
-
+        </ng-container>
+        <ng-container matColumnDef="fehler1">
+          <th mat-header-cell *matHeaderCellDef class="header-table-rl">Mst nicht bekannt</th>
+          <td mat-cell *matCellDef="let element" class="spalte-rl">
+            <input type="checkbox" [checked]="element.fehler1">
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fehler2">
+          <th mat-header-cell *matHeaderCellDef class="header-table-rl">Art nicht bekannt</th>
+          <td mat-cell *matCellDef="let element" class="spalte-rl">
+            <input type="checkbox" [checked]="element.fehler2">
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef class="header-table-rl">Aktionen</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <button mat-icon-button color="primary" (click)="edit(row)" class="iconbutton">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="handleRowClick(row)" class="iconbutton" color="warn">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="import1">
+          <th mat-header-cell *matHeaderCellDef>importierbar</th>
+          <td mat-cell *matCellDef="let element">
+            <input type="checkbox" [checked]="element.import1">
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="dynamicColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: dynamicColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" aria-label="Select page of users"></mat-paginator>
+    </div>
     <div *ngIf="Datimptab == true" style="float: left;vertical-align: top;width: 40%;margin-left:5%">
       <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
-
-
     </div>
+  </div>
 </div>
-</div> 
-
-
 <div class="card" *ngIf="ImportDatenAnzeige == true" style="vertical-align: top;width: 90%;margin-left: 2%;">
   <mat-card class="example-card">
-    <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten" ></app-makorphyten-tabelle>
+    <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
   </mat-card>
 </div>
-
-<router-outlet></router-outlet>

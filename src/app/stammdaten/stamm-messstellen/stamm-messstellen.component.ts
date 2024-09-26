@@ -2,7 +2,7 @@ import {Component, Input,Output, EventEmitter} from '@angular/core';
 import { Sort} from '@angular/material/sort';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
-import { MeldeMst } from 'src/app/interfaces/melde-mst';
+import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
 import {EditStammdatenMstComponent} from '../edit-stammdaten-mst/edit-stammdaten-mst.component';
 import {ArchivStammdatenComponent} from '../archiv-stammdaten-mst/archiv-stammdaten.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,7 +25,7 @@ export class StammMessstellenComponent {
 
 arraybuendel:ArraybuendelSel;
   
-  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','melde_mst_str','repraesent','updated_at','actions'];
+  displayedColumns: string[] = ['id_mst', 'namemst', 'ortslage','gewaessername','wk_name','repraesent','updated_at','actions'];
   dataSource = this.messstellenStam;
  
 
@@ -48,12 +48,13 @@ arraybuendel:ArraybuendelSel;
   async edit(person: MessstellenStam) {
 
     await this.stammdatenService.holeSelectDataWK();
-
-  //console.log(this.stammdatenService.wk)
+    await this.stammdatenService.callGewaesser();
+    await this.stammdatenService.wandleGewaesser(false);
+  console.log(this.stammdatenService.gewaesser)
   let wk=this.stammdatenService.wk;
-
+  let gewaesser:TypWrrl[]=this.stammdatenService.gewaesser;
  
-this.arraybuendel=({mststam:person,wkstam:wk,melde:this.stammdatenService.meldemst});
+this.arraybuendel=({mststam:person,wkstam:wk,melde:this.stammdatenService.meldemst,gewaesser:gewaesser});
 
 
 

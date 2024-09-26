@@ -1,3 +1,4 @@
+/* Styling für den Login-Container */
 .login-container {
   max-width: 400px;
   margin: 0 auto;
@@ -7,6 +8,7 @@
   background-color: #f9f9f9;
 }
 
+/* Formgruppen- und Eingabestile */
 .form-group {
   margin-bottom: 1em;
 }
@@ -37,6 +39,7 @@
   outline: none;
 }
 
+/* Login-Button */
 .btn {
   width: 100%;
   padding: 0.75em;
@@ -52,7 +55,25 @@
   background-color: #0056b3;
 }
 
+/* Fehlermeldung */
 .error-message {
   color: red;
   margin-top: 1em;
+}
+
+/* Register-Button */
+.register-btn {
+  margin-top: 10px; /* Abstand vom Login-Button */
+  width: 100%; /* Gleiche Breite wie der Login-Button */
+  padding: 0.75em; /* Gleiche Größe wie der Login-Button */
+  border: none;
+  border-radius: 3px;
+  background-color: #d3a87c; /* Hellbrauner Hintergrund */
+  color: white; /* Weiße Schrift */
+  font-size: 1em; /* Schriftgröße */
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background-color: #b6865a; /* Dunklerer Braunton beim Hover */
 }

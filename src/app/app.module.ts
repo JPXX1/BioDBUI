@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core'; 
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
  import { BrowserModule } from '@angular/platform-browser'; 
@@ -65,6 +64,13 @@ import { EditableTableMptypComponent } from './stammdaten/editable-table-mptyp/e
 import { DatenExportComponent } from './daten-export/daten-export.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CustomSnackbarComponent } from './custom-snackbar/custom-snackbar.component';
+import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
+
+import { MapVBSelectionDialogComponent } from './map-vbselection-dialog/map-vbselection-dialog.component';
+import { ExpertenurteilMstComponent } from './expertenurteil-mst/expertenurteil-mst.component';
+import { MstExpertenurteilEditComponent } from './mst-expertenurteil-edit/mst-expertenurteil-edit.component';
 
 // StammWkComponent
 
@@ -78,16 +84,17 @@ const routes: Routes = [
 	{ path: 'stammdaten', component: StammdatenComponent },
 	{ path: 'register', component: RegisterComponent },
 	{path:'admin',component:AdministrationComponent},
-	{path:'datenexport',component:DatenExportComponent}
+	{path:'datenexport',component:DatenExportComponent},
+	{path:'bewerten',component:ExpertenurteilMstComponent}
 	
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent,
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent, RegisterDialogComponent,  MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent,
 ], 
-imports: [MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule,MatTabsModule,

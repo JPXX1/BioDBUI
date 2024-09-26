@@ -129,10 +129,10 @@ export class PerlodesimportService {
       
                     bideinh = valspaltenfiter2[0].id_einheit;
                     
-                    this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
                     this.xlsxImportPhylibService.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert);
                     this._uebersicht.mst=i;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
-				
+                    this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+                   
                     this.xlsxImportPhylibService._uebersicht=this._uebersicht;
                     this.xlsxImportPhylibService.groupNAch();
                  

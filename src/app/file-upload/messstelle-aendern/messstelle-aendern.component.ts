@@ -60,26 +60,9 @@ export class MessstelleAendernComponent {
       });
 
    
-    // let mw1: WasserkoerperSelect={} as WasserkoerperSelect;
-    // mw1.id=data.mststam.id_wk;
-    
-    // mw1.wk_name=data.mststam.wk_name;
-    //this.selectedItems.push(mw1);
-    // this.wk_name1=mw1.wk_name;
-    // this.MeldeMst=data.mststam.melde_mst_str;
+
 
     
-  //  this.formInstance.na;
-    // this.dropdownSettings = {
-    //   singleSelection: true,
-    //   idField: 'id',
-    //   textField: 'wk_name',
-    //   selectAllText: 'Select All',
-    //   unSelectAllText: 'UnSelect All',
-    //   itemsShowLimit: 20,
-    //   allowSearchFilter: true,
-     
-    // };
 
     this.Mst_name="Messstelle '" + this.data.namemst+ "' ändern.";
 this.dropdownMeldeSettings={

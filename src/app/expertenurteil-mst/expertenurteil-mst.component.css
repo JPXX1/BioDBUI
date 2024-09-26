@@ -1,0 +1,110 @@
+.datenexport-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top:1%;
+    max-width: 100%; /* Verhindert, dass die Breite auf 400px begrenzt wird */
+    margin-left: 5%;
+  }
+  .tab-group-padding {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1 1 calc(10.333% - 16px); /* Drei Spalten */
+  }
+  
+  .form-field {
+    min-width: 400px; /* Mindestbreite, um sicherzustellen, dass sie nicht zu klein werden */
+  }
+  .komponente{
+  width:20%;
+  
+  }
+  .expanded .full-width {
+    width: calc(66.666% - 16px); /* 2/3 der Spaltenbreite */
+  }
+  
+  .filter-field {
+    width: calc(100% - 16px); /* Filterfeld innerhalb des Dropdowns */
+  }
+  
+  ::ng-deep .custom-panel .mat-select-header {
+    padding: 8px;
+    background: #fff;
+  }
+  
+  ::ng-deep .custom-panel .mat-select-header .mat-form-field {
+    width: calc(100% - 16px);
+  }
+  /* styles.css */
+  .custom-divider {
+    border: 0;
+    height: 3px;
+    background: #ccc; /* Change to desired color */
+    margin: 20px 0; /* Adjust the margin to your preference */
+  }
+  .slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .slider-labels {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    top: -25px;
+  }
+  
+  .slider-label {
+    font-size: 14px;
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 10px; /* Abstand zwischen den Buttons */
+  }
+  .full-width {
+    width: 150%; /* Oder jede andere gewünschte Breite */
+    min-width: 500px; /* Mindestbreite, um das Label nicht abzuschneiden */
+  }
+  ::ng-deep .custom-slider .mat-slider-track-fill {
+    background-color: #4433e2c0; /* Farbe der gefüllten Linie (links vom Daumen) */
+  }
+  
+  ::ng-deep .custom-slider .mat-slider-track-background {
+    background-color: #4433e2c0; /* Farbe der Hintergrundlinie (rechts vom Daumen) */
+  }
+  table {
+    width: 100%;
+  }
+  .header-table-wk{
+  
+    border-style: solid;
+    width: 5%;
+  }
+  .cell-table-wk{
+    text-align: center;
+    width: 150px;
+    border-color: grey;
+    border-width: 1px;
+    font-size: large;}
+    
+    .sticky-header {
+      width: 100%;
+      overflow: auto;
+      height: 400px; /* Adjust the height as needed */
+    }

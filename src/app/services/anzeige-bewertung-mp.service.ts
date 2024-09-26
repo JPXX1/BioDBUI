@@ -59,7 +59,11 @@ async datenUmwandeln(FilterMst: string, art: string, min: number, max: number) {
     this.mstMakrophytenKl.firma = this.dbBewertungMst[i].firma;
     this.mstMakrophytenKl.taxonzusatz = this.dbBewertungMst[i].taxonzusatz;
     this.mstMakrophytenKl.taxon = `${this.dbBewertungMst[i].taxon} (${this.dbBewertungMst[i].dvnr})`;
-    this.mstMakrophytenKl.wert = this.dbBewertungMst[i].wert;
+    
+
+      this.mstMakrophytenKl.wert = this.dbBewertungMst[i].wert;
+    
+   
     this.mstMakrophytenKl.tiefe_m = this.dbBewertungMst[i].tiefe_m;
     this.mstMakrophytenKl.letzte_aenderung = this.dbBewertungMst[i].letzte_aenderung;
     this.mstMakrophytenKl.dvnr = this.dbBewertungMst[i].dvnr;

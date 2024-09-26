@@ -5,7 +5,7 @@ import { TypWrrl } from '../interfaces/typ-wrrl';
 import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { firstValueFrom ,Observable} from 'rxjs';
+import { Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +32,7 @@ export class StammdatenService {
   private apiUrl = environment.apiUrl;
   wkStam:WasserkoerperStam;
   public wkarray:WasserkoerperStam[];
+
 
   async holeArchivWK(parameter :number){
     await this.getArchivWKStamm(parameter);
@@ -133,7 +134,7 @@ async startwk(kat:boolean,allewk:boolean){
 
       await this.getStammPpTyp().forEach(formen_ => {
         this.pptyp_t = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
 
@@ -142,14 +143,14 @@ async startwk(kat:boolean,allewk:boolean){
 
       await this.getKomponenten().forEach(formen_ => {
         this.komponenten = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     async callWrrltyp() {
 
       await this.getStammWrrlTyp().forEach(formen_ => {
         this.wrrltyp_t = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     async wandleTypWRRLAlle(){
@@ -175,6 +176,54 @@ async startwk(kat:boolean,allewk:boolean){
         this.wrrltyp.push({id:f.id,typ:f.wrrl_typ,seefliess:f.seefliess,fliess:fliess})}
       })
     }
+
+    
+   neueMst(seefliess: boolean) {
+
+
+    const messstellenStam_neu: MessstellenStam = {
+      id_mst: 0,
+      namemst: 'neue Messstelle',
+      idgewaesser: 36,
+      gewaessername: '',
+      ortslage: '',
+      see: seefliess,
+      melde_mst: 1,
+      melde_mst_str: '',
+      repraesent: false,
+      wrrl_typ: 5,
+      mp_typ: 4,
+      id_wk: 17,
+      wk_name: '',
+      eu_cd_sm: null,
+      dia_typ: 5,
+      pp_typ: 7,
+      hw_etrs: 5821570,
+      rw_etrs: 393198,
+      updated_at: null,
+    };
+  
+    this.insertNewMstStamm(messstellenStam_neu).subscribe(
+      (response) => {
+        if (response && response.id) {
+          const neueMst: MessstellenStam = { ...messstellenStam_neu };
+          neueMst.id_mst = response.id;
+          this.messstellenarray.push(neueMst);
+        } else {
+          console.error('Response does not contain an id', response);
+        }
+      },
+      (error) => {
+        console.error('Error adding row:', error);
+      }
+    );
+  }
+  
+ 
+ 
+
+   
+    
     async wandleTypDia(diatypbearbeiten:boolean, seefliess:boolean){
       let fliess:boolean;
       let temp: any = this.diatyp_t;
@@ -354,6 +403,27 @@ archiviereWKStamm(wasserkoerperStam:WasserkoerperStam){
         this.httpClient.post(`${this.apiUrl}/insertArchivStammWK`, body).subscribe(resp => {
     console.log("response %o, ", resp);  });
  }
+ //fügt eine neue Mst in Stam_Messstellen ein
+ insertNewMstStamm(messstellenStam: MessstellenStam): Observable<any> {
+  const body = new HttpParams()
+    .set('namemst', messstellenStam.namemst)
+    .set('idgewaesser', messstellenStam.idgewaesser)
+    .set('ortslage', messstellenStam.ortslage)
+    .set('see', messstellenStam.see) // Konvertiere Boolean zu String
+    .set('repraesent', messstellenStam.repraesent) // Konvertiere Boolean zu String
+    .set('wrrl_typ', messstellenStam.wrrl_typ)
+    .set('mp_typ', messstellenStam.mp_typ)
+    .set('id_wk', messstellenStam.id_wk)
+    .set('eu_cd_sm', messstellenStam.eu_cd_sm ? messstellenStam.eu_cd_sm.toString() : '')
+    .set('dia_typ', messstellenStam.dia_typ)
+    .set('pp_typ', messstellenStam.pp_typ)
+    .set('rw_etrs', messstellenStam.rw_etrs)
+    .set('hw_etrs', messstellenStam.hw_etrs)
+    .set('melde_mst', messstellenStam.melde_mst );
+
+  return this.httpClient.post<any>(`${this.apiUrl}/addNewMst`, body);
+}
+
 
 //fügt die gesamte Mst ins archiv ein
 archiviereMstStamm(messstellenStam:MessstellenStam){
@@ -415,12 +485,13 @@ speichereMst(messstellenStam:MessstellenStam){
   const body = new HttpParams()
   .set('id_mst',messstellenStam.id_mst)
   .set('id_wk',messstellenStam.id_wk)
-  .set('melde_mst', messstellenStam.melde_mst)
+  .set('idgewaesser', messstellenStam.idgewaesser)
   .set('namemst', messstellenStam.namemst)
   .set('ortslage',messstellenStam.ortslage)
   .set('repraesent',messstellenStam.repraesent)
   .set('rw_etrs',messstellenStam.rw_etrs)
   .set('hw_etrs',messstellenStam.hw_etrs)
+  .set('see',messstellenStam.see)
   
 
 

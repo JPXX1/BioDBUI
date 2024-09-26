@@ -2,12 +2,12 @@
 
 <div fxLayout="row" fxLayoutAlign="start center">
     <span fxLayoutGap="8px">Makrophyten-Typen direkt in der Tabelle bearbeiten</span>
-    <button  (click)="new()">
+    <button  (click)="new()" class="helpable" id="btn-neuer-MP-Typ">
       neuen Makrophytentyp anlegen
     </button>
   </div>
   
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" class="helpable" id="tbl-MP-Typ">
       <!-- ID Column -->
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef  mat-sort-header> ID </th>

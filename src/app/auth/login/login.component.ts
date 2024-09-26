@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { RegisterDialogComponent } from '../register-dialog/register-dialog.component'; // Importiere die Registrierungsdialog-Komponente
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,7 @@ export class LoginComponent {
   errorMessage = '';
   passwordFieldType: string = 'password';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,private dialog: MatDialog) {}
 
   login() {
     this.authService.login(this.username, this.password).subscribe(
@@ -26,7 +28,9 @@ export class LoginComponent {
       }
     );
   }
-
+  openRegisterPopup() {
+    this.dialog.open(RegisterDialogComponent);
+  }
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }

@@ -198,7 +198,7 @@ try {
 
 							bideinh = valspaltenfiter2[0].id_einheit;
 							
-							this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
+							this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht });
 							this.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert);
 							
 							// if(valspaltenfiteranzeige2[0].anzeige_tab2_tab1 === 1){
@@ -397,10 +397,10 @@ console.log(this.mstindex);
 		
 									bideinh = valspaltenfiter2[0].id_einheit;
 									
-									this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null });
 									this.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert);
 									const mstAusArray=this.mstindex.filter(exc=>exc.index===index)
 									this._uebersicht.mst=mstAusArray[0].mst;this._uebersicht.import1=importp;
+									this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht :this._uebersicht });
 									
 									if (valspaltenfiter2[0].anzeige_tab2_tab1 === 1){
 		
@@ -745,7 +745,19 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 				i = l;
 			}
 
-		}}}}}else {this.vorhanden = false;}
+		}}}}}else {
+			
+			let combi = this.uebersicht.filter(d => d.import1 === "checked");
+			if (combi!==null){
+				if (combi.length>0)
+				{this.vorhanden = false;}	else{
+
+					this.vorhanden = true;}
+			}
+			
+
+
+		}
 		this.uebersicht=this.uebersichtGeprueft;}
 
 
@@ -895,15 +907,16 @@ return bemerkung;
 		let jahrtemp: string;
 		jahrtemp = ("15.07." + jahr);
 		console.log(jahrtemp);
-		let a=0;
+		let g=0;
 		let b=0;
 		// for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
 			
 			for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
 				if (this.uebersicht[a].import1==="checked"){ //import möglich
-					a = a + 1;
+					g = g + 1;
 					let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+					if (mstee.length>0){
 					let mstID=mstee[0].id_mst;
 					const tmpMWteil=this.messstellenImp.filter(g=>g.id_mst===mstID)
 	
@@ -913,9 +926,9 @@ return bemerkung;
 							b=b+1;
 			this.impPhylibServ.postMessstellenPhylib(tmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
 
-		}}}}
+		}}}}}
 
-		this.UebersichtImportService.aktualisiereImportdaten(a,b,"",this.uebersichtImport.id_imp);
+		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
 	}
 	
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){

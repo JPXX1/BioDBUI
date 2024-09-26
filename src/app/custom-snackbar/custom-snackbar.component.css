@@ -1,0 +1,18 @@
+.snackbar-content {
+    position: relative;
+    width: 100%;
+  }
+  
+  .close-button {
+    margin-left:5px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: 2px solid white; /* Weißer Rahmen */
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 4px;
+
+  }

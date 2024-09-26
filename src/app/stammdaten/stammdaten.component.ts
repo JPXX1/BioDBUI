@@ -1,4 +1,4 @@
-import { Component ,OnInit,ViewChild} from '@angular/core';
+import { Component ,OnInit,ViewChild,AfterViewInit,AfterViewChecked} from '@angular/core';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
 import {StammMessstellenComponent} from './stamm-messstellen/stamm-messstellen.component';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
@@ -7,19 +7,31 @@ import { MatSort,Sort} from '@angular/material/sort';
 import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import {CommentService} from 'src/app/services/comment.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { HelpService } from 'src/app/services/help.service';
 
 @Component({
   selector: 'app-stammdaten',
   templateUrl: './stammdaten.component.html',
   styleUrls: ['./stammdaten.component.css']
 })
-export class StammdatenComponent implements OnInit{
+export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecked{
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatSort) sortWK: MatSort
-  constructor(private router: Router,private authService: AuthService,
-    private stammdatenService:StammdatenService,private stammMessstellenComponent:StammMessstellenComponent,private stammWkComponent:StammWkComponent
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private helpService: HelpService,
+    // private commentService: CommentService, 
+    private snackBar: MatSnackBar,
+    private stammdatenService:StammdatenService,
+    private stammMessstellenComponent:StammMessstellenComponent,
+    private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
   TypWrrlAnzeige:boolean=false;
+  isHelpActive: boolean = false;
+  seefliess:boolean;
    public messstellenStam1:MessstellenStam[]=[];
    public wkStam1:WasserkoerperStam[]=[];
   public MessstellenAnzeige:boolean=false;
@@ -30,6 +42,8 @@ export class StammdatenComponent implements OnInit{
   public PPTypAnzeige:boolean=false;
   public DiaTypAnzeige:boolean=false;
   public MpTypAnzeige:boolean=false;
+  helpText: string = '';
+
 //sort Mst
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
@@ -63,7 +77,26 @@ export class StammdatenComponent implements OnInit{
 
 
 }
-new(){}
+ngAfterViewChecked() {
+  this.helpService.registerMouseoverEvents();
+}
+ngAfterViewInit() {
+	
+	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
+		this.helpService.registerMouseoverEvents();}
+
+new(){
+
+
+  this.stammdatenService.neueMst(this.seefliess);
+
+
+  this.messstellenStam1=this.stammdatenService.messstellenarray;
+
+  
+
+
+}
 sortDataWk(sortWK: Sort) {
   const data = this.wkStam1.slice();
   if (!sortWK.active || sortWK.direction === '') {
@@ -101,12 +134,16 @@ this.wkStam1=this.sortedDataWK;
 
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
+        }else{
+          this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
+			this.helpService.helpText$.subscribe(text => this.helpText = text);
         } 
       
   }
 
 
  async  seeMst(){
+  this.seefliess=true;
   this.MpTypAnzeige=false;
   await  this.stammdatenService.start(true,false);
   this.PPTypAnzeige=false;
@@ -176,7 +213,7 @@ this.TypWrrlAnzeige=false;
   this.MessstellenAnzeige=false;
   this.WKAnzeige=true;
   this.TypWrrlAnzeige=false;
-  console.log (this.stammdatenService.wkarray)
+ // console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
 this.gewaesserart="Fließgewässer";}
   
@@ -184,6 +221,7 @@ this.gewaesserart="Fließgewässer";}
   {await  this.stammdatenService.startwk(true,false);
     this.DiaTypAnzeige=false;
     this.MpTypAnzeige=false;
+    this.seefliess=true;
   this.MessstellenAnzeige=false;
   this.PPTypAnzeige=false;
   this.GewaesserAnzeige=false;
@@ -199,6 +237,7 @@ this.gewaesserart="Fließgewässer";}
    await this.stammdatenService.start(false,false);
    this.DiaTypAnzeige=false;
    this.MpTypAnzeige=false;
+   this.seefliess=false;
    //console.log (this.stammdatenService.messstellenarray)
    this.messstellenStam1=this.stammdatenService.messstellenarray;
     this.MessstellenAnzeige=true;
@@ -251,15 +290,15 @@ handleData(result:MessstellenStam){
          const updated_at= this.formatDate(Date.now());
                   messstellenStam2[i].id_wk=result.id_wk;
                   messstellenStam2[i].wk_name=result.wk_name;
-                  messstellenStam2[i].melde_mst=result.melde_mst;
-                  messstellenStam2[i].melde_mst_str=result.melde_mst_str;
+                  messstellenStam2[i].idgewaesser=result.idgewaesser;
+                  messstellenStam2[i].gewaessername=result.gewaessername;
                   messstellenStam2[i].namemst=result.namemst;
                   messstellenStam2[i].ortslage=result.ortslage;
                   messstellenStam2[i].hw_etrs=result.hw_etrs;
                   messstellenStam2[i].repraesent=result.repraesent;
                   messstellenStam2[i].rw_etrs=result.rw_etrs;
                   messstellenStam2[i].updated_at=updated_at;
-
+                
                 
                   //speichere neue Mst-Daten
                   this.stammdatenService.speichereMst(result); 
@@ -293,21 +332,25 @@ applyFilterMessstellen(event: Event) {
 
   let messstellenStam2: MessstellenStam[] = this.stammdatenService.messstellenarray;
 
-
-  this.messstellenStam1= [];
+  this.messstellenStam1 = [];
   for (let i = 0, l = messstellenStam2.length; i < l; i += 1) {
-    let messstellenStamTemp:MessstellenStam=messstellenStam2[i];
-    if (messstellenStamTemp.ortslage==null) {messstellenStamTemp.ortslage=' '}
-    if (messstellenStamTemp.namemst.includes(filterValue) 
-    || 
-    messstellenStamTemp.gewaessername.includes(filterValue) 
-     || messstellenStamTemp.ortslage.includes(filterValue) 
-    // || messstellenStam2[i].wk_name.includes(filterValue)
-    ){
-      this.messstellenStam1.push(messstellenStam2[i]);
+    let messstellenStamTemp: MessstellenStam = messstellenStam2[i];
 
-    }}
+    // Ensure that the properties are not null or undefined before calling 'includes'
+    const namemst = messstellenStamTemp.namemst || ''; // Fallback to empty string if null or undefined
+    const gewaessername = messstellenStamTemp.gewaessername || ''; // Fallback to empty string if null or undefined
+    const ortslage = messstellenStamTemp.ortslage || ''; // Fallback to empty string if null or undefined
+
+    if (
+      namemst.includes(filterValue) ||
+      gewaessername.includes(filterValue) ||
+      ortslage.includes(filterValue)
+    ) {
+      this.messstellenStam1.push(messstellenStamTemp);
+    }
+  }
 }
+
 applyFilterWK(event:Event){
   const filterValue = (event.target as HTMLInputElement).value;
 

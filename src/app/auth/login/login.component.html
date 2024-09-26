@@ -30,7 +30,11 @@
       </div>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
+    <button type="button" class="register-btn" (click)="openRegisterPopup()">Register</button>
   </form>
+
+
+
   <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>

@@ -1,24 +1,53 @@
-
-
-
 <div class="map-container">
-    <!-- <div class="map-frame" style="margin-top:5%;margin-left:5%;width:  90%;height: 90%;"> -->
-      <div id="ol-map" class="map-container"  style="margin-top:5%;margin-bottom:5%;width: 100%;height: 84%;">   <div id="popup" class="popup"></div> </div>
-      <div class="legend">
-        <h3>Legende</h3>
-        <div *ngFor="let item of legendItems">
-          <div class="legend-key" [ngStyle]="{'background-color': item.color}"></div>
-          <div class="legend-label">{{ item.label }}</div>
-        </div>
-      <span id="status" >&nbsp;</span>
-    
-     
-       
+  <div id="ol-map" class="map-container" style="margin-top: 5%; margin-bottom: 5%; width: 100%; height: 84%;">
+    <div id="popup" class="popup"></div>
+    <label id="mapLabel" class="map-label">{{ verbreitung_text }}</label>
   </div>
-  <button mat-button id="mpButton" [matMenuTriggerFor]="karten"  style="margin-left:5%;">Karten</button>
-  <mat-menu #karten="matMenu" xPosition="after">
-    <button id="bp3" mat-button (click)="startbp3()">BP3</button>
-    <button id="bp2" mat-button (click)="startbp2()">BP2</button>
-    <button id="bp1" mat-button (click)="startbp1()">BP1</button>
-  </mat-menu>
-  
+  <div class="legend">
+    <h3>Legende</h3>
+    <div *ngFor="let item of legendItems">
+      <div class="legend-key" [ngStyle]="{'background-color': item.color}"></div>
+      <div class="legend-label">{{ item.label }}</div>
+    </div>
+    <span id="status">&nbsp;</span>
+  </div>
+
+ 
+ 
+  <div style="margin-left: 200px; display: flex; align-items: center;">
+    <button mat-button id="kartButton" [matMenuTriggerFor]="karten" class="helpable button" style="margin-right: 20px;">
+      Bericht-EU
+    </button>
+    <mat-menu #karten="matMenu" xPosition="after" [style.width.px]="600">
+
+      <mat-checkbox [(ngModel)]="isstartbp3Checked" (change)="startbp3(isstartbp3Checked)" [style.width.%]="100">
+        Wasserkörperbewertung 3. Bewirtschaftungsplan
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isstartbp2Checked" (change)="startbp2(isstartbp2Checked)" [style.width.%]="100">
+        Wasserkörperbewertung 2. Bewirtschaftungsplan
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isstartbp1Checked" (change)="startbp1(isstartbp1Checked)" [style.width.%]="100">
+        Wasserkörperbewertung 1. Bewirtschaftungsplan
+      </mat-checkbox>
+      
+    
+    </mat-menu>
+    <button mat-button id="mstButton" [matMenuTriggerFor]="mst" class="helpable button" style="margin-right: 20px;">
+      Messstellen
+    </button>
+    <mat-menu #mst="matMenu" xPosition="after" [style.width.px]="400">
+      
+      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="toggleLayerfgwmst(isFliesgewasserChecked)">
+        Fließgewässermessstellen
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isSeeChecked" (change)="toggleLayerseemst(isSeeChecked)">
+        Seemessstellen
+      </mat-checkbox>
+      <mat-form-field appearance="outline" (click)="$event.stopPropagation()" [style.width.%]="100">
+        <mat-label>Filter nach Name</mat-label>
+        <input matInput [(ngModel)]="messstellenFilter" (input)="filterMessstellen(isFliesgewasserChecked,isSeeChecked)" placeholder="Messstellenname eingeben" />
+      </mat-form-field>
+    </mat-menu>
+    <button id="verbreitung" class="helpable button" mat-button (click)="openDialogVerbreitung()">Verbreitungskarten</button>
+  </div>
+</div>

@@ -6,16 +6,16 @@ import { Injectable } from '@angular/core';
 export class FarbeBewertungService {
 
   getColor(OZK: string): string {
-    switch (OZK) {
-      case '1':
+    switch (true) {
+      case OZK && OZK.startsWith('1'):
         return 'rgb(0, 158, 224)';
-      case '2':
+      case OZK && OZK.startsWith('2'):
         return 'rgb(0, 144, 54)';
-      case '3':
+      case OZK && OZK.startsWith('3'):
         return 'rgb(255, 255, 0)';
-      case '4':
+      case OZK && OZK.startsWith('4'):
         return 'rgb(255, 153, 0)';
-      case '5':
+      case OZK && OZK.startsWith('5'):
         return 'rgb(226, 0, 26)';
       default:
         return 'rgb(255, 255, 255)'; // white

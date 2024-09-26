@@ -2,7 +2,7 @@
 <span>
  
     <div style="margin-left:180px;">
-        <button mat-button id="mpButton" [matMenuTriggerFor]="messstellen" >Messstellen</button>
+        <button mat-button class="helpable button" id="btn-messstellen" [matMenuTriggerFor]="messstellen" >Messstellen</button>
         <mat-menu #messstellen="matMenu" xPosition="after">
           <button mat-menu-item (click)="fgwMst()">FließgewässerMst</button>
           <button mat-menu-item (click)="seeMst()">SeegewässerMst</button>
@@ -10,7 +10,7 @@
       <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
     </mat-menu>
       
-      <button mat-button id="mpButton" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
+      <button mat-button class="helpable button" id="btn-wasserkoerper" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
       <mat-menu #wasserkoerper="matMenu" xPosition="after">
         <button mat-menu-item (click)="fgwWk()">FließgewässerWK</button>
         <button mat-menu-item (click)="seeWk()">SeegewässerWK</button>
@@ -19,34 +19,30 @@
   
      
   
-      <button mat-button [matMenuTriggerFor]="gewaesser">Gewässer</button>
+      <button mat-button class="helpable button" id="btn-gewaesser" [matMenuTriggerFor]="gewaesser">Gewässer</button>
       <mat-menu #gewaesser="matMenu" xPosition="before">
         <button mat-menu-item  (click)="gewaesser1()">Gewässer</button>
         <button mat-menu-item>Item 2</button>
       </mat-menu>
   
-      <button mat-button [matMenuTriggerFor]="Typen">Typen</button>
+      <button mat-button [matMenuTriggerFor]="Typen" class="helpable button" id="btn-Typen">Typen</button>
       <mat-menu #Typen="matMenu" xPosition="after">
         <button mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
         <button mat-menu-item (click)="ppTyp()">Phytoplanktontyp</button>
         <button mat-menu-item (click)="diaTyp()">Diatomeentyp</button>
         <button mat-menu-item (click)="mpTyp()">Makrophytentyp</button>
       </mat-menu>
-      <button mat-button [matMenuTriggerFor]="probenehmer">Probenehmer</button>
+      <button mat-button [matMenuTriggerFor]="probenehmer" class="helpable button" id="btn-probenehmer">Probenehmer</button>
       <mat-menu #probenehmer="matMenu" xPosition="after">
         <button mat-menu-item>Item 1</button>
         <button mat-menu-item>Item 2</button>
       </mat-menu>
-      <button mat-button [matMenuTriggerFor]="taxaliste">Taxaliste</button>
-      <mat-menu #taxaliste="matMenu" xPosition="after">
-        <button mat-menu-item>Item 1</button>
-        <!-- <button mat-menu-item (click)="handleMZBClick()">Taxadaten</button> -->
-      </mat-menu>
+     
       
       
       </div>
       </span>
-      <div class="card" *ngIf="MessstellenAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%"> 
+      <div  class="card helpable" *ngIf="MessstellenAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%"> 
         <div fxLayout="row" fxLayoutAlign="start center">  
           <mat-form-field style="width: 30%;">
           <mat-label>Filter</mat-label>
@@ -54,23 +50,21 @@
         </mat-form-field>
        
          
-          <button  (click)="new()">
+          <button  (click)="new()" class="helpable" id="btn-neue_Messstelle">
             neue Messstelle anlegen
           </button>
         </div>
-      <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)" ></app-stamm-messstellen>
+      <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)"id="tab-messtellen" class="helpable" ></app-stamm-messstellen>
     </div>
 
-    <div class="card" *ngIf="WKAnzeige == true" style="margin-left:180px;width: 80%;vertical-align: top;"> 
+    <div class="card  helpable" *ngIf="WKAnzeige == true" style="margin-left:180px;width: 80%;vertical-align: top;"  id="tab-wasserkoerper" > 
       
         <div fxLayout="row" fxLayoutAlign="start center">  
           <mat-form-field style="width: 30%;">
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilterWK($event)" placeholder="" #input>
       </mat-form-field>
-      <button  (click)="new()">
-        neuen Wasserkörper anlegen
-      </button>
+     
         </div>
       <app-stamm-wk [wasserkoerperStam]="wkStam1" [gewaesserart]="gewaesserart" (sortDataWK)="sortDataWk($event)"  (newDataWK)="handleDataWK($event)"></app-stamm-wk>
       

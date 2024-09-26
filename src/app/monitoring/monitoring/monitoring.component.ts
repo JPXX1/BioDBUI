@@ -1,4 +1,4 @@
-import { Component,OnInit,Renderer2,ViewChild } from '@angular/core';
+import { Component,OnInit,Renderer2,ViewChild,AfterViewInit,AfterViewChecked } from '@angular/core';
 import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
 import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
@@ -9,16 +9,18 @@ import { MstUebersicht } from 'src/app/interfaces/mst-uebersicht';
 import { StammdatenService } from 'src/app/services/stammdaten.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
-
+import {CommentService} from 'src/app/services/comment.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import { HelpService } from 'src/app/services/help.service';
 
 @Component({
   selector: 'app-monitoring',
   templateUrl: './monitoring.component.html',
   styleUrls: ['./monitoring.component.css']
 })
-export class MonitoringComponent implements OnInit{
+export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecked{
  
-  // public wkUebersicht: WkUebersicht[] = [];//Wasserkoerper
+  isHelpActive: boolean = false;
   FilterwkUebersicht: WkUebersicht[] = [];
   public mstMakrophyten:MstMakrophyten[]=[];//TaxaMP
   public mstMZB:MstMakrophyten[]=[];//TaxaMZB
@@ -35,27 +37,42 @@ export class MonitoringComponent implements OnInit{
   public repreasent:number=2;
  public FilterWKname:string;
 
-
+ helpText: string = '';
  maxstart=new Date().getFullYear();
   value = '';valueJahr = '';
   Artvalue = '';
   min:number=2016;
-  max:number=2026; 
-  constructor(private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
+  max:number=this.maxstart; 
+  constructor(private helpService: HelpService,private commentService: CommentService, private snackBar: MatSnackBar,private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
 	}
+  ngAfterViewInit() {
+	
+    //	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
+      this.helpService.registerMouseoverEvents();}
+      ngAfterViewChecked() {
+        this.helpService.registerMouseoverEvents();
+      }
 
 
+  toggleHelp() {
+    this.isHelpActive = !this.isHelpActive;
+  }
   async ngOnInit() {
     if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
         } else{
 		await this.anzeigeBewertungService.ngOnInit();
+    this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
+			this.helpService.helpText$.subscribe(text => this.helpText = text);
     this.FilterwkUebersicht=[];
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
     this.onValueChangeFilter( '','');
+    // Hier () verwenden, um die Methode auszuführen
+    
+    
 	}}
   clearSearchFilter(){
     this.value='';
@@ -214,6 +231,7 @@ this.onValueChangeFilter(value,Artvalue);
    this.FilterAnzeige=true;
   }
   async handleMakrophytenClick(){ //Taxadaten MP
+
     this.FilterAnzeige=true;
   this.MakrophytenMstAnzeige=false;
   this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
@@ -227,7 +245,9 @@ this.onValueChangeFilter(value,Artvalue);
   console.log(this.anzeigeBewertungMPService.mstMakrophyten);
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
   this.getButtonAktivColorMP();
-  this.MakrophytenAnzeige=true;}
+  this.MakrophytenAnzeige=true;
+
+ }
 async handleMZBClick(){ //Taxadaten MZB
   this.MakrophytenAnzeige=false;
   this.FilterAnzeige=true;
@@ -250,6 +270,7 @@ async handleMZBClick(){ //Taxadaten MZB
     this.MakrophytenMstAnzeige=true;
     this.UebersichtAnzeigen=false;
     await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id);
+   // await this.anzeigenMstUebersichtService.callBwUebersichtExp(komp_id);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
@@ -269,7 +290,7 @@ async handleMZBClick(){ //Taxadaten MZB
   getButtonAktivColorMZ() {
     const el = document.getElementById('mpButton');
     this._renderer2.removeStyle(el, 'background-color'); 
-    const ee = document.getElementById('uebersichtButton');
+    const ee = document.getElementById('berichtsEUButton');
     this._renderer2.removeStyle(ee,'background-color');  
 
     const elz = document.getElementById('mzButton');
@@ -279,7 +300,7 @@ async handleMZBClick(){ //Taxadaten MZB
   getButtonAktivColorMP() {
     const el = document.getElementById('mpButton');
     this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
-    const ee = document.getElementById('uebersichtButton');
+    const ee = document.getElementById('berichtsEUButton');
     this._renderer2.removeStyle(ee,'background-color');  
 
     const elz = document.getElementById('mzButton');
@@ -289,7 +310,7 @@ async handleMZBClick(){ //Taxadaten MZB
   getButtonAktivUebersicht() {
     const el = document.getElementById('mpButton');
     this._renderer2.removeStyle(el,'background-color');  
-    const ee = document.getElementById('uebersichtButton');
+    const ee = document.getElementById('berichtsEUButton');
     this._renderer2.setStyle(ee, 'background-color', 'rgb(20,220,220)'); 
     const elz = document.getElementById('mzButton');
     this._renderer2.removeStyle(elz, 'background-color');

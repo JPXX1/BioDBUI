@@ -1,0 +1,13 @@
+.sticky-header {
+    width: 100%;
+    overflow: auto;
+    height: 400px; /* Adjust the height as needed */
+  }
+  
+  .sticky-header th {
+    position: sticky;
+    top: 80px;
+    z-index: 2;
+    background: white; /* Ensure the header background is white for better visibility */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
+  }

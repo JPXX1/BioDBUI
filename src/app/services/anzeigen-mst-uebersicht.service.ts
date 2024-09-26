@@ -26,7 +26,7 @@ public value:string;
   async call(filter:string,art:string,min:number,max:number,komp_id:number) {
 
  
-   await this.callBwUebersicht(komp_id);
+  await this.callBwUebersichtExp(komp_id);
   await this.filterMst(filter,art,min,max);
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
@@ -35,16 +35,22 @@ public value:string;
      this.erzeugeDisplayColumnNames(false);
     
   }
+  // async getBwMSTUebersicht(selectedItems: number[]): Promise<any> {
+  //   try {
+  //     const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
+  //     return response;
+  //   } catch (error) {
+  //     console.error('Fehler beim Abrufen der Übersicht:', error);
+  //     throw error;  // Optional: Weiterleiten des Fehlers, um es an die aufrufende Funktion weiterzugeben
+  //   }
+  // }
 
-   getBwMSTUebersicht(selectedItems: number[]) {
+
+ 
+  //  getBwMSTUebersicht(selectedItems: number[]) {
+  //    return this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, {selectedItems});  }
 
 
-
-  
-
-
-     return this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, {selectedItems});
-  }
   erzeugeDisplayColumnNames(komponente:boolean){
     this.displayColumnNames=[];
     this.displayColumnNames.push('Wasserköper');
@@ -149,14 +155,101 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   
 }
   }
-  async callBwUebersicht(komp_id:number) {
-let selectedItems:number[] = [];
-selectedItems.push(komp_id);
-    await this.getBwMSTUebersicht(selectedItems).forEach(formen_ => {
-      this.dbMPUebersichtMst = formen_;
+  async getBwMSTUebersicht(selectedItems: number[]): Promise<any[]> {
+    const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
     
-    });
+    // Hier sicherstellen, dass die API ein Array zurückgibt
+    if (!Array.isArray(response)) {
+      throw new Error('Die Antwort ist kein Array');
+    }
+    
+    return response;
   }
+
+  
+
+  async callBwUebersicht(komp_id: number) {
+    let selectedItems: number[] = [];
+    selectedItems.push(komp_id);
+  
+    try {
+      const formen_ = await this.getBwMSTUebersicht(selectedItems);
+  
+      // Falls kein Array, konvertiere es zu einem Array
+      const dataArray = Array.isArray(formen_) ? formen_ : [formen_];
+  
+      // Mapping der Daten
+      this.dbMPUebersichtMst = dataArray.map(form => ({
+        wkName: form.wk_name,
+        id: form.id,
+        parameter: form.parameter,
+        idMst: form.id_mst,
+        namemst: form.namemst,
+        repraesent: form.repraesent,
+        idKomp: form.id_komp,
+        komponente: form.komponente,
+        idImport: form.id_import,
+        jahr: form.jahr,
+        letzteAenderung: form.letzte_aenderung,
+        idEinh: form.id_einh,
+        firma: form.firma,
+        wert: form.wert,
+        expertenurteil: form.expertenurteil,
+        begruendung: form.begruendung,
+        expertenurteilChanged: new Date(form.expertenurteil_changed),
+        idNu: form.id_nu,
+        ausblenden:form.ausblenden
+      }));
+  
+     // console.log('Verarbeitete Daten: ', this.dbMPUebersichtMst);
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Übersicht:', error);
+    }
+  }
+  
+  //Bewertung ersetzt um Expertenurteil
+  async callBwUebersichtExp(komp_id: number) {
+    let selectedItems: number[] = [];
+    selectedItems.push(komp_id);
+  
+    try {
+      const formen_ = await this.getBwMSTUebersicht(selectedItems);
+  
+      // Falls kein Array, konvertiere es zu einem Array
+      const dataArray = Array.isArray(formen_) ? formen_ : [formen_];
+  
+      // Mapping der Daten
+      this.dbMPUebersichtMst = dataArray 
+      .filter(form => !form.ausblenden) // Filtere Datensätze aus, bei denen 'ausblenden' true ist
+
+      .map(form => ({
+        wkName: form.wk_name,
+        id: form.id,
+        parameter: form.parameter,
+        idMst: form.id_mst,
+        namemst: form.namemst,
+        repraesent: form.repraesent,
+        idKomp: form.id_komp,
+        komponente: form.komponente,
+        idImport: form.id_import,
+        jahr: form.jahr,
+        letzteAenderung: form.letzte_aenderung,
+        idEinh: form.id_einh,
+        firma: form.firma,
+        // Setze wert auf form.expertenurteil, wenn vorhanden, sonst form.wert
+        wert: ['1', '2', '3', '4', '5'].includes(form.expertenurteil) ?  `${form.expertenurteil} *` : form.wert,
+        expertenurteil: form.expertenurteil,
+        begruendung: form.begruendung,
+        expertenurteilChanged: new Date(form.expertenurteil_changed),
+        idNu: form.id_nu
+      }));
+  
+      // console.log('Verarbeitete Daten: ', this.dbMPUebersichtMst);
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Übersicht:', error);
+    }
+  }
+  
   
   uniqueMstSortCall(){
 
@@ -225,7 +318,7 @@ selectedItems.push(komp_id);
       this.mstUebersichtKl = {} as MstUebersicht;
       if (dbBewertungMSTTemp.length>0){
         
-        this.mstUebersichtKl.wk=dbBewertungMSTTemp[0].wk_name;
+        this.mstUebersichtKl.wk=dbBewertungMSTTemp[0].wkName;
         this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
         this.mstUebersichtKl.komponente=dbBewertungMSTTemp[0].komponente;
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
@@ -233,6 +326,7 @@ selectedItems.push(komp_id);
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){
 
           case 0: {
+            
             this.mstUebersichtKl.sp1 = dbBewertungMSTTemp[i].wert;
             break;
           }

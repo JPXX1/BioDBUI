@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,AfterViewInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { StammdatenService } from '../services/stammdaten.service'; 
-import { MessstellenStam } from '../interfaces/messstellen-stam';
+
 import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
 import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
 import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebersicht.service';
@@ -10,12 +10,20 @@ import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.servi
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import {FarbeBewertungService} from 'src/app/services/farbe-bewertung.service';
+import { Router } from '@angular/router';
+import {CommentService} from 'src/app/services/comment.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+import { HelpService } from '../services/help.service';
+import { AuthService } from '../auth/auth.service';
+
 @Component({
   selector: 'app-daten-export',
   templateUrl: './daten-export.component.html',
   styleUrls: ['./daten-export.component.css']
 })
-export class DatenExportComponent implements OnInit {
+export class DatenExportComponent implements OnInit,AfterViewInit  {
   items = [];
   public props: any[]=[];
   BewertungwkUebersicht: WkUebersicht[] = [];
@@ -42,7 +50,14 @@ export class DatenExportComponent implements OnInit {
   componentTypeControl = new FormControl([]); // For mat-button-toggle-group
   minstart:number=2005;
   maxstart:number= new Date().getFullYear();
-  constructor(private farbeBewertungService:FarbeBewertungService,private anzeigeBewertungService:AnzeigeBewertungService,private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private fb: FormBuilder, private anzeigeBewertungMPService:AnzeigeBewertungMPService,private stammdatenService: StammdatenService) {
+  isHelpActive: boolean = false;
+	helpText: string = '';
+  itemsAbfrage = [
+    { id: 'artabundanz', komponente: 'Artabundanzen' },
+    { id: 'messstellenbewertung', komponente: 'Messstellenbewertung' },
+    { id: 'wasserkorperbewertung', komponente: 'Wasserkörperbewertung' }
+  ];
+  constructor( private authService: AuthService,private sanitizer: DomSanitizer,private commentService: CommentService, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private farbeBewertungService:FarbeBewertungService,private anzeigeBewertungService:AnzeigeBewertungService,private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private fb: FormBuilder, private anzeigeBewertungMPService:AnzeigeBewertungMPService,private stammdatenService: StammdatenService) {
     this.form = this.fb.group({
       min: new FormControl(2010),
       max: new FormControl( new Date().getFullYear()),
@@ -61,15 +76,38 @@ export class DatenExportComponent implements OnInit {
     this.waterBodyTypeControl.valueChanges.subscribe(() => this.filterWaterBodies());
     this.componentTypeControl.valueChanges.subscribe(() => this.onToggleChange()); // Subscribe to value changes
   }
+	  // löst das mousover für die Hilfe aus
+	  ngAfterViewInit() {
+	
+      const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
+      this.helpService.registerMouseoverEvents();}
+
 
   async ngOnInit() {
-    this.loadWasserkorperData();
-    this.loadMessstellenData();
-    this.loadKomponentenData();
-    this.stammdatenService.start(true,true);
-    await this.anzeigeBewertungService.ngOnInit();
+   
+    if (!this.authService.isLoggedIn()) {
+			this.router.navigate(['/login']);
+			
+        } else{
+		
+		this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
+			this.helpService.helpText$.subscribe(text => this.helpText = text);
+      this.loadWasserkorperData();
+      this.loadMessstellenData();
+      this.loadKomponentenData();
+      this.stammdatenService.start(true,true);
+      await this.anzeigeBewertungService.ngOnInit();
+		//console.log(this.uebersichtImport);
+        }
+  
   }
-
+  onSelectionChange(event) {
+    const selectedItems = event.value;
+    // const a=this.form.get('selectedItems')?.
+    if (selectedItems.length > 0 ) {
+      this.form.get('componentType').setValue(['artabundanz']);
+    }
+  }
   async loadWasserkorperData() {
     await this.stammdatenService.startwk(false, true);
     this.wasserkorper = this.stammdatenService.wkarray;
@@ -119,7 +157,7 @@ export class DatenExportComponent implements OnInit {
     const selectedMessstellen = this.filteredMessstellen.filter(m => selectedMessstellenIds.includes(m.id_mst));
 
     const filteredMessstellen = this.messstellen.filter(m =>
-      m.namemst.toLowerCase().includes(filterValue.toLowerCase())
+      m.namemst.includes(filterValue)
     );
 
     if (!filterValue) {
@@ -134,7 +172,7 @@ export class DatenExportComponent implements OnInit {
     const selectedWasserkorper = this.filteredWasserkorper.filter(w => selectedWasserkorperIds.includes(w.id));
 
     const filteredWasserkorper = this.wasserkorper.filter(w =>
-      w.wk_name.toLowerCase().includes(filterValue.toLowerCase())
+      w.wk_name.includes(filterValue)
     );
 
     if (!filterValue) {
@@ -171,10 +209,15 @@ export class DatenExportComponent implements OnInit {
     );
   }
   toggleAllKomponenten(isChecked: boolean): void {
+    if (isChecked) {
+      this.form.get('selectedItems').setValue(this.items.map(item => item.id));
+      this.form.get('componentType').setValue(['artabundanz']); // Initialisieren mit "Artabundanz"
+    } else {
+      this.form.get('selectedItems').setValue([]);
+      this.form.get('componentType').setValue([]);
+    }
     this.allKomponentenSelected = isChecked;
-    this.form.get('selectedItems').setValue(
-      isChecked ? this.items.map(m => m.id) : []
-    );
+  
   }
   toggleAllWasserkorper(isChecked: boolean): void {
     this.allWasserkorperSelected = isChecked;
@@ -252,13 +295,32 @@ if (this.BewertungwkUebersicht.length > 0) {
 }
 //MstBewertung =>Excel
 
-if (this.anzeigenMstUebersichtService.dbMPUebersichtMst != null){  
+if (this.anzeigenMstUebersichtService.dbMPUebersichtMst != null){ 
+  if (this.anzeigenMstUebersichtService.dbMPUebersichtMst.length>0){  
     // Map data to array of arrays for xlsx
-    const worksheetData = this.anzeigenMstUebersichtService.dbMPUebersichtMst.map(item => Object.values(item));
+    const worksheetData = this.anzeigenMstUebersichtService.dbMPUebersichtMst.map(item => [
+      
+      item.wkName,
+      item.namemst,
+      item.komponente,
+      item.parameter,
+      item.jahr,
+      item.wert,
+      item.expertenurteil
 
-    // Add headers
-    const headers = Object.keys(this.anzeigenMstUebersichtService.dbMPUebersichtMst[0]);
-
+    ]);   // Add headers
+    const headers = [
+        'Wasserkörper',
+        'Messstelle',
+        'Komponente',
+        'Parameter',
+        'Untersuchungsjahr',
+        'Wert',
+        'Expertenurteil',
+          
+    ];
+    
+ 
     // Combine headers and data
     const exportData = [headers, ...worksheetData];
 
@@ -280,7 +342,7 @@ if (this.anzeigenMstUebersichtService.dbMPUebersichtMst != null){
     XLSX.utils.book_append_sheet(wb, ws, 'Messstellenbewertung');
 
   
-}
+}}
 //Abundanzen=> Excel
 if (this.mstMakrophyten.length>0){
     // Map data to array of arrays for xlsx
@@ -342,6 +404,56 @@ ws['!cols'] = colWidths;
   
   }
 
+//Stammdaten Messstellen exportieren
+
+if (this.mstMakrophyten.length>0 || this.anzeigenMstUebersichtService.dbMPUebersichtMst!=null ){
+
+  const selectedComponents = this.form.get('selectedComponents')?.value;
+  // const messstellenStam = this.stammdatenService.messstellenarray.filter(item => 
+  //   selectedComponents.some(criteria => criteria === item.id_mst)
+  // );
+  const worksheetData = this.stammdatenService.messstellenarray.filter(item => 
+    selectedComponents.some(criteria => criteria === item.id_mst)).map(item => [
+    item.gewaessername,
+    item.namemst,
+    item.hw_etrs,
+    item.rw_etrs,
+    item.see ? 1 : 0 // Wenn item.see true ist, setze 1, sonst 0
+    
+]);
+
+// Add headers
+const headers = [
+    'Gewässername',
+    'Messstelle',
+    'Hochwert (etrs)',
+    'Rechtswert (etrs)',
+    'See (1) oder Fließgewässer (0)',
+    
+];
+
+// Combine headers and data
+const exportData = [headers, ...worksheetData];
+
+// Convert data to worksheet
+const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(exportData);
+// Set column widths to fit content
+const colWidths = exportData[0].map((_, colIndex) => {
+return {
+    wch: Math.max(...exportData.map(row => (row[colIndex] ? row[colIndex].toString().length : 10))) + 2
+};
+});
+ws['!cols'] = colWidths;
+
+
+
+
+// Append worksheet to workbook
+XLSX.utils.book_append_sheet(wb, ws, 'Stammdaten_Messstellen');
+
+// Write workbook to binary string
+}
+
 if (this.mstMakrophyten.length>0 || this.anzeigenMstUebersichtService.dbMPUebersichtMst!=null  || this.BewertungwkUebersicht!=null )
   {
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
@@ -360,26 +472,42 @@ async onSubmit() {
   const dropdownSelection = this.form.get('dropdownSelection')?.value;
   const selectedItems = this.form.get('selectedItems')?.value;
   const componentType = this.form.get('componentType')?.value;
+  
+  let selectedWasserkorper = this.form.get('selectedWasserkorper')?.value;
+ let  selectedComponents = this.form.get('selectedComponents')?.value;
+
   this.resetDisplayFlags();
   this.clearDataStorage();
 
+
+ if ((!selectedComponents || selectedWasserkorper.length > 0) && dropdownSelection==='wasserkorper') {
+    //wenn nur Wasserkörper im Auswahlmenü ausgewählt sind werden hier die zugeordneten Messstellen abgefragt
+     selectedComponents = await this.lueckenfuellenWKMst(selectedWasserkorper);
+    //  await this.ArtabundanzenAbfragen(selectedComponents,selectedItems, yearFrom, yearTo);
+    //  await this.MstBewertungabfragen(selectedComponents,selectedItems, yearFrom, yearTo);
+   }
+
+
   if (this.componentTypeControl.value.includes("artabundanz")) {
-      await this.ArtabundanzenAbfragen(selectedItems, yearFrom, yearTo);
+     
+      await this.ArtabundanzenAbfragen(selectedComponents,selectedItems, yearFrom, yearTo);
   } 
 
   if (this.componentTypeControl.value.includes("messstellenbewertung")) {
-      await this.MstBewertungabfragen(selectedItems, yearFrom, yearTo);
+    selectedComponents = this.form.get('selectedComponents')?.value;
+      await this.MstBewertungabfragen(selectedComponents,selectedItems, yearFrom, yearTo);
   }
 
   if (this.componentTypeControl.value.includes("wasserkorperbewertung")) {
-    let selectedWasserkorper = this.form.get('selectedWasserkorper')?.value;
+  
     if ((!selectedWasserkorper || selectedWasserkorper.length === 0) && dropdownSelection==='messstellen') {
-      const selectedComponents = this.form.get('selectedComponents')?.value;
+      selectedComponents = this.form.get('selectedComponents')?.value;
         selectedWasserkorper = await this.lueckenfuellen(selectedComponents);
     }
+     selectedComponents = this.form.get('selectedComponents')?.value;
+  
     
-    
-      await this.WKbewertungabfragen(selectedWasserkorper);
+      await this.WKbewertungabfragen(selectedWasserkorper, yearFrom, yearTo);
   }
 }
 
@@ -395,7 +523,7 @@ clearDataStorage() {
   this.BewertungwkUebersicht = [];
 }
 
-
+//von Messstellen->Wasserkörper
   async lueckenfuellen(selectedItems:any[]) {
     let selectedWasserkorper1 = [];
 
@@ -410,9 +538,25 @@ clearDataStorage() {
     const uniqueArray = [...new Set(selectedWasserkorper1)];
     return uniqueArray;
 }
-async ArtabundanzenAbfragen(selectedItems,yearFrom:string,yearTo:string){
+//von Messstellen->Wasserkörper
+async lueckenfuellenWKMst(selectedWasserkorper1:any[]) {
+  let selectedItems = [];
+
+
+      const messstellenStam = this.stammdatenService.messstellenarray.filter(item => 
+        selectedWasserkorper1.some(criteria => criteria === item.id_wk)
+      );
+
+      // Extrahieren der 'id_wk' direkt mit 'map'
+      selectedItems = messstellenStam.map(item => item.id_mst);
+  
+
+  const uniqueArray = [...new Set(selectedItems)];
+  return uniqueArray;
+}
+async ArtabundanzenAbfragen(selectedComponents,selectedItems,yearFrom:string,yearTo:string){
   this.anzeigeBewertungMPService.mstMakrophyten=[];
-  const selectedComponents = this.form.get('selectedComponents')?.value;
+  // 
  await this.stammdatenService.queryArten('messstellen', selectedComponents, Number(yearFrom), Number(yearTo), selectedItems).forEach(
     data => {
          
@@ -428,23 +572,23 @@ async ArtabundanzenAbfragen(selectedItems,yearFrom:string,yearTo:string){
 
 
 
-async MstBewertungabfragen(selectedItems,yearFrom:string,yearTo:string){
+async MstBewertungabfragen(selectedComponents,selectedItems,yearFrom:string,yearTo:string){
   this.anzeigenMstUebersichtService.value='' ;this.anzeigenMstUebersichtService.Artvalue='';
       
   this.BewertungenMstAnzeige=true;
   // importiert MstBewertungen aller ausgewählter komponenten
   
-    await this.anzeigenMstUebersichtService.callBwUebersicht(selectedItems);
+    await this.anzeigenMstUebersichtService.callBwUebersichtExp(selectedItems);
   
-
-  const selectedComponents = this.form.get('selectedComponents')?.value;
+console.log(this.anzeigenMstUebersichtService.dbMPUebersichtMst)
+  // const selectedComponents = this.form.get('selectedComponents')?.value;
   // filtert den Array auf ausgewählte Messstellen
  
   
   const filteredArray = this.anzeigenMstUebersichtService.dbMPUebersichtMst.filter(item => {
-    const match = selectedComponents.some(selected => Number(selected) === Number(item.id_mst));
+    const match = selectedComponents.some(selected => Number(selected) === Number(item.idMst));
     if (!match) {
-        console.log(`No match for item id_mst: ${item.id_mst}`);
+        console.log(`No match for item id_mst: ${item.idMst}`);
     }
     return match;
 });
@@ -470,7 +614,7 @@ this.anzeigenMstUebersichtService.dbMPUebersichtMst = filteredArray;
 }
 
 
-   WKbewertungabfragen(selectedWasserkorper: any[]) {
+   WKbewertungabfragen(selectedWasserkorper: any[],yearFrom:string,yearTo:string) {
     let filteredArray: any[] = [];
     this.BewertungwkUebersicht = [];
     this.BewertungwkUebersichtleer=false;
@@ -480,8 +624,8 @@ this.anzeigenMstUebersichtService.dbMPUebersichtMst = filteredArray;
           filteredArray =  this.anzeigeBewertungService.wkUebersicht.filter(item => 
             selectedWasserkorper.some(criteria => criteria === item.idwk)
           );
- 
-          this.BewertungwkUebersicht = filteredArray;
+          this.BewertungwkUebersicht = filteredArray.filter(item => item.Jahr >= Number(yearFrom) && item.Jahr <= Number(yearTo));
+          // this.BewertungwkUebersicht = filteredArray;
         }
     }
 
