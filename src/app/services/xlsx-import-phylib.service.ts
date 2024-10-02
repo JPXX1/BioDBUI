@@ -617,10 +617,12 @@ console.log(this.mstindex);
 						
 						if (this.uebersicht[i].fehler1 === "checked") { _fehler1_ = "checked"; } else { _fehler1_ = ""; }
 						if (this.uebersicht[i].fehler2 === "checked" || _fehler2==="checked" ) { _fehler2_ = "checked"; } else {}
-						
+						console.log(this.uebersicht[i].import1);
 						if (this.uebersicht[i].anzahl === 0) { _fehler3_ = "checked"; } else { _fehler3_ = ""; };
 						if (importp!==undefined && this.uebersicht[i].import1!==undefined){
-						if (importp === "" || this.uebersicht[i].import1==="" ) { _importp = ""; } else {_importp="checked";}
+						if (importp === "" || this.uebersicht[i].import1==="" ) { 
+							_importp = ""; } else {
+								_importp="checked";}
 						if (_fehler1_==="checked"  ||_fehler2==="checked" ){_importp = "";}
 						}
 
@@ -717,8 +719,8 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
 			jahrtemp = ('15.07.' + this.uebersicht[a].jahr); 
-			await this.holeMesswerteausDB(jahrtemp, probenehmer);
-			
+			await this.holeMesswerteAbiotikausDB(jahrtemp, probenehmer);
+			console.log(this.MWausDB);
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
 			let mstID=mstee[0].id_mst;
@@ -726,28 +728,30 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 
 
 			if (tmpMWteil.length>0){ 
-
-				const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
-
-		for (let i = 0, l = relMW.length; i < l; i += 1) {
-			const mw: Messwerte = relMW[i];
-			
-			
-			// this.mst
-
-			// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
-
-			const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
-			//console.log("combi", combi)
-
-			if (combi.length > 0) {
 				this.vorhanden = true;
 				this.groupNAchPruefung(this.uebersicht[a]);
+				// const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
 
-				i = l;
-			}
+		// for (let i = 0, l = relMW.length; i < l; i += 1) {
+		// 	const mw: Messwerte = relMW[i];
+			
+			
+		// 	// this.mst
 
-		}}}}
+		// 	// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
+
+		// 	const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
+		// 	//console.log("combi", combi)
+
+		// 	if (combi.length > 0) {
+		// 		this.vorhanden = true;
+		// 		this.groupNAchPruefung(this.uebersicht[a]);
+
+		// 		i = l;
+		// 	}
+
+		// }
+	}}}
 
 	  }
 	async pruefeObMesswerteschonVorhanden(jahr: string, probenehmer: string) {
@@ -850,6 +854,14 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
 			this.tempMst = value;
 			console.log('observable -> ' + value);
+		});
+	}
+	
+	async holeMesswerteAbiotikausDB(datum: string, Probenehmer: string) {
+		// this.workbookInit(datum,Probenehmer)
+		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
+			this.MWausDB = value;
+			console.log('observable -> ' + this.MWausDB);
 		});
 	}
 	async holeMesswerteausDB(datum: string, Probenehmer: string) {
@@ -1035,12 +1047,15 @@ return bemerkung;
 		if  (idVerfahren===5){
 			// this.displayColumnNames.push('Gewässername');
 			this.displayColumnNames.push('fehler1');
-					this.displayColumnNames.push('fehler2');
+					// this.displayColumnNames.push('fehler2');
 					// this.displayColumnNames.push('fehler3');
 			this.displayColumnNames.push('Import');
 					// this.dynamicColumns.push('anzahl');
 		}
-		this.dynamicColumns.push('fehler1');this.dynamicColumns.push('fehler2');;this.dynamicColumns.push('import1');
+		this.dynamicColumns.push('fehler1');
+		if (idVerfahren!==5 && idVerfahren!==2 && idVerfahren!==4){
+			this.dynamicColumns.push('fehler2');}
+		this.dynamicColumns.push('import1');
 		if (idVerfahren===1 || idVerfahren===3 || idVerfahren===5){
 			this.dynamicColumns.push('actions');}
 	}

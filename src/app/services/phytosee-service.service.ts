@@ -18,9 +18,10 @@ export class PhytoseeServiceService {
 
   async Phytoseeexport(workbook, valspalten: any, tab: any,verfahrennr:number){
     await this.xlsxImportPhylibService.holeMst();
+    // console.log(this.xlsxImportPhylibService.mst);
     this.xlsxImportPhylibService.displayColumnNames=[];
     this.xlsxImportPhylibService.dynamicColumns=[];
-    
+    this.messstellenImp=[];
 
     let XL_row_object;
     let json_Messstelle;let jahr: string | undefined;
@@ -76,14 +77,24 @@ XL_row_object = XLSX.utils.sheet_to_json(sheet);
            
                 let mst = obj[index]['Gewässername'];
                 if (mst===null){  let mst = obj[index]['GewässernameWB'];}
-                 let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.gewaessername === mst && messstellen.repraesent_mst===true);
+                 let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst === mst);
                 
                  if (mstee.length>0){
                  this._uebersicht.mst=mstee[0].namemst;
+                 bidmst=mstee[0].id_mst;
                  mstOK = "";}
-                 else {
+            
+                 
+
+                  else{
+
+                    let mstee2 = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.name_synonym === mst);
+                if (mstee2.length>0){
+                  this._uebersicht.mst=mstee2[0].namemst;
+                  bidmst=mstee2[0].id_mst;
+                  mstOK = "";}else{
                   this._uebersicht.mst=mst
-                	mstOK = "checked";}
+                	mstOK = "checked";bidmst=null;}}
                  
                   
                  
@@ -119,9 +130,14 @@ XL_row_object = XLSX.utils.sheet_to_json(sheet);
                
            
               this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
+              if (mstOK==="checked"){this._uebersicht.import1="";} else{this._uebersicht.import1="checked";}
+               
+              
               //wenn ein Jahr vorhanden ist wird es in die MessstellenImp eingetragen
-              if (jahr!=='undefined') {this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht,jahr:jahr });}
-                  else{this.messstellenImp.push({ id_mst: bidmst, datum: jahr, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht });}
+              if (jahr!=='undefined') {
+                this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht,jahr:jahr });}
+                  else{
+                    this.messstellenImp.push({ id_mst: bidmst, datum: jahr, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht });}
 							
               this.xlsxImportPhylibService._uebersicht=this._uebersicht;
               this.xlsxImportPhylibService.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert,jahr);

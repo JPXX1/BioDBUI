@@ -25,12 +25,16 @@ export class ValExceltabsService {
 //Datenabfrage aus Postgres (exceltabs, Excelspalten und ValVerfahren)
 	async callvalexceltabs() {
 
-      //holt sich die Exceltabs aus Postgres
+      // holt sich die Exceltabs aus Postgres
       await this.impPhylibServ.getvalExceltabs().forEach(value => {
         this.valexceltabs = value;
         console.log('observable -> ' + value);
       });
-
+      // await this.impPhylibServ.getvalExceltabs().forEach(value => {
+      //   const lowerCaseValue = value.toLowerCase();
+      //   this.valexceltabs = lowerCaseValue;
+      //   console.log('observable -> ' + lowerCaseValue);
+      // });
       await this.impPhylibServ.getvalVerfahren().forEach(value => {
         this.valverfahren = value;
         console.log('observable -> ' + value);
@@ -54,30 +58,34 @@ export class ValExceltabsService {
     }
     
   }
-//liest die Namen der Exceltabs des importierten Excelfiles aus
-  exceltabsauslesen(workbook){
-let tabs="";
-let tabsvier="";
-    for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-     const tabNeu=workbook.SheetNames[i]
-      if (i+1<l){
-        if (i<3){
-          tabsvier=tabsvier+tabNeu+";";
-        }
-        if (i===3){ tabsvier=tabsvier+tabNeu;}
-        tabs=tabs+tabNeu+";";
-      }else if(i+1===l){
-        tabs=tabs+tabNeu;
-
+// Liest die Namen der Exceltabs des importierten Excelfiles aus
+exceltabsauslesen(workbook) {
+  let tabs = "";
+  let tabsvier = "";
+  
+  for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
+    // Holt den Namen des aktuellen Tabs und wandelt ihn in Kleinbuchstaben um
+    const tabNeu = workbook.SheetNames[i].toLowerCase();
+    
+    if (i + 1 < l) {
+      if (i < 3) {
+        tabsvier = tabsvier + tabNeu + ";";
       }
-
+      if (i === 3) {
+        tabsvier = tabsvier + tabNeu;
+      }
+      tabs = tabs + tabNeu + ";";
+    } else if (i + 1 === l) {
+      tabs = tabs + tabNeu;
     }
-    this.ExceltabsimpVier=tabsvier;
-    this.Exceltabsimpalle=tabs;
   }
+  
+  this.ExceltabsimpVier = tabsvier;
+  this.Exceltabsimpalle = tabs;
+}
 
   countOccurrences(valexceltabsfilter: string): number {
-    // Schritt 1: Splitten der Zeichenkette in einzelne Einträge und in Kleinbuchstaben umwandeln
+    // Schritt 1: Splitten der vier ersten Tabs der Excelimportdatei in einzelne Einträge und in Kleinbuchstaben umwandeln
     const entries = this.ExceltabsimpVier.split(';')
       .filter(entry => entry.trim().length > 0)
       .map(entry => entry.toLowerCase());
@@ -93,6 +101,7 @@ let tabsvier="";
     return occurrences;
   }
   async ExcelTabsinArray(workbook) {
+    //holt sich alle Exceltabs aus Postgres (Tabelle val_exceltabs)
     await this.callvalexceltabs();
     
     //Anzahl Tabs ermitteln
@@ -101,7 +110,7 @@ let tabsvier="";
     this.exceltabsauslesen(workbook);//liest Exceltabs aus
     this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
 
-    if (valexceltabsfilter.length === 1) {//wenn nur ein Tab vorhanden ist
+    if (valexceltabsfilter.length === 1) {//wenn nur eine Vorlage für ein Tab vorhanden ist
       //Anzahl der Tabs ist eindeutig für Verfahrensauswahl
       if (valexceltabsfilter[0].ident_kriterium === 1) {
         this.waehleVerfahren(valexceltabsfilter[0].id_verfahren);
@@ -131,7 +140,7 @@ let tabsvier="";
       }
 
     }
-      //wenn mehr als ein Tab vorhanden ist
+      //wenn mehrere Vorlagen für ein Tab vorhanden sind in (PG) val_exceltabs
     else if (valexceltabsfilter.length > 1) {
 
       
@@ -187,42 +196,61 @@ let tabsvier="";
         for (var i in obj[index]) {
           let temp:TabSpalte={} as TabSpalte;
 
-         temp.Spaltenname=i;
-         temp.Tabname=Tabname;
+         temp.Spaltenname=i.toLowerCase();
+         temp.Tabname=Tabname.toLowerCase();
           this.excelspaltenimport.push(temp);
         }
       }
     })}
   }
-  ValExcelSpalten(namentabs:string){
-    this.VorhandeneVerfahren=[];
-  let valspaltenfiter=null;let valtabname=namentabs;
-  if (namentabs==="indifferent"){ 
-    valspaltenfiter= this.valspalten.filter(excelspalten => excelspalten.name_exceltab === namentabs);}
-  else{
-    valspaltenfiter= this.valspalten.filter(excelspalten => excelspalten.name_exceltab !== "indifferent");
-  }
-console.log(this.excelspaltenimport)
-   for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
+  ValExcelSpalten(namentabs: string) {
+    // Initialisiere das Array VorhandeneVerfahren als leeres Array
+    this.VorhandeneVerfahren = [];
 
-    let name=this.excelspaltenimport[i];
+    // Deklariere und initialisiere Variablen
+    let valspaltenfiter = null;
+    let valtabname = namentabs;
 
-   for (let a = 0, l = valspaltenfiter.length; a < l; a += 1) {
-    const valnamespalte=valspaltenfiter[a].spalten_name;
-    if (namentabs!=="indifferent"){ 
-     valtabname=valspaltenfiter[a].name_exceltab;}else{name.Tabname="indifferent";}
-    const valnameerforderlich:boolean=valspaltenfiter[a].kennung;
-    const verfahrens_id:number=valspaltenfiter[a].id_verfahren;
-    
-      if (name.Spaltenname===valnamespalte && name.Tabname===valtabname && valnameerforderlich===true){
-
-     this.VorhandeneVerfahren.push(verfahrens_id);
-      }
-    
+    // Filtere die valspalten (VOrgabe PG ) basierend auf dem Wert von namentabs (Importdatei)
+    if (namentabs === "indifferent") {
+        // Wenn namentabs "indifferent" ist, filtere die valspalten, deren name_exceltab gleich namentabs ist
+        valspaltenfiter = this.valspalten.filter(excelspalten => excelspalten.name_exceltab === namentabs);
+    } else {
+        // Ansonsten filtere die valspalten, deren name_exceltab nicht "indifferent" ist
+        valspaltenfiter = this.valspalten.filter(excelspalten => excelspalten.name_exceltab !== "indifferent");
     }
 
-}
-console.log(this.VorhandeneVerfahren)
+    // Logge den Inhalt von excelspaltenimport in die Konsole
+    console.log(this.excelspaltenimport);
+
+    // Iteriere über jedes Element in excelspaltenimport
+    for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
+        let name = this.excelspaltenimport[i];
+
+        // Iteriere über jedes Element im gefilterten valspaltenfiter
+        for (let a = 0, l = valspaltenfiter.length; a < l; a += 1) {
+            const valnamespalte = valspaltenfiter[a].spalten_name.toLowerCase();
+
+            // Setze den Tabellennamen basierend auf dem Wert von namentabs
+            if (namentabs !== "indifferent") {
+                valtabname = valspaltenfiter[a].name_exceltab;
+            } else {
+                name.Tabname = "indifferent";
+            }
+
+            const valnameerforderlich: boolean = valspaltenfiter[a].kennung;
+            const verfahrens_id: number = valspaltenfiter[a].id_verfahren;
+
+            // Überprüfe, ob die Spaltennamen und Tabellennamen übereinstimmen und ob der Name erforderlich ist
+            if (name.Spaltenname === valnamespalte && name.Tabname === valtabname && valnameerforderlich === true) {
+                // Füge die verfahrens_id zu VorhandeneVerfahren hinzu
+                this.VorhandeneVerfahren.push(verfahrens_id);
+            }
+        }
+    }
+
+    // Logge den Inhalt von VorhandeneVerfahren in die Konsole
+    console.log(this.VorhandeneVerfahren);
 }
 
 
