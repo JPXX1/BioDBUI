@@ -277,9 +277,12 @@ async handleMZBClick(){ //Taxadaten MZB
     this.props.push(this.anzeigenMstUebersichtService.displayedColumns);
     console.log(this.props);
     if (komp_id===1){
-    this.getButtonAktivColorMP();}else{
-      this.getButtonAktivColorMZ();}
+    this.getButtonAktivColorMP();}else if (komp_id===3){
+      this.getButtonAktivColorMZ();}else if (komp_id===5){
+        this.getButtonAktivColorPhytol();}
   }
+
+
   async  buttonstamm(){
 
  await this.stammdatenService.start(true,false);
@@ -287,12 +290,25 @@ async handleMZBClick(){ //Taxadaten MZB
 
  console.log (this.stammdatenService.messstellenarray);
   }
+  getButtonAktivColorPhytol() {
+    
+    const el = document.getElementById('ppButton');
+    this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)'); 
+    const ee = document.getElementById('berichtsEUButton');
+    this._renderer2.removeStyle(ee,'background-color');  
+    const el1 = document.getElementById('mpButton');
+    this._renderer2.removeStyle(el1, 'background-color'); 
+    const elz = document.getElementById('mzButton');
+    this._renderer2.removeStyle(elz, 'background-color');  
+   // this._renderer2.setStyle(ee, 'background-color', 'withe');
+  }
   getButtonAktivColorMZ() {
     const el = document.getElementById('mpButton');
     this._renderer2.removeStyle(el, 'background-color'); 
     const ee = document.getElementById('berichtsEUButton');
     this._renderer2.removeStyle(ee,'background-color');  
-
+    const el1 = document.getElementById('ppButton');
+    this._renderer2.removeStyle(el1,'background-color');  
     const elz = document.getElementById('mzButton');
     this._renderer2.setStyle(elz, 'background-color', 'rgb(20,220,220)');  
    // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
@@ -302,7 +318,8 @@ async handleMZBClick(){ //Taxadaten MZB
     this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
     const ee = document.getElementById('berichtsEUButton');
     this._renderer2.removeStyle(ee,'background-color');  
-
+    const el1 = document.getElementById('ppButton');
+    this._renderer2.removeStyle(el1,'background-color'); 
     const elz = document.getElementById('mzButton');
     this._renderer2.removeStyle(elz, 'background-color');
    // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
@@ -314,5 +331,7 @@ async handleMZBClick(){ //Taxadaten MZB
     this._renderer2.setStyle(ee, 'background-color', 'rgb(20,220,220)'); 
     const elz = document.getElementById('mzButton');
     this._renderer2.removeStyle(elz, 'background-color');
+    const el1 = document.getElementById('ppButton');
+    this._renderer2.removeStyle(el1,'background-color'); 
   }
 }

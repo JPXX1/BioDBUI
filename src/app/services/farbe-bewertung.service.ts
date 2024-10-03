@@ -7,15 +7,15 @@ export class FarbeBewertungService {
 
   getColor(OZK: string): string {
     switch (true) {
-      case OZK && OZK.startsWith('1'):
+      case OZK && OZK.startsWith('1') && OZK.length < 3:
         return 'rgb(0, 158, 224)';
-      case OZK && OZK.startsWith('2'):
+      case OZK && OZK.startsWith('2') && OZK.length < 3:
         return 'rgb(0, 144, 54)';
-      case OZK && OZK.startsWith('3'):
+      case OZK && OZK.startsWith('3') && OZK.length < 3:
         return 'rgb(255, 255, 0)';
-      case OZK && OZK.startsWith('4'):
+      case OZK && OZK.startsWith('4') && OZK.length < 3:
         return 'rgb(255, 153, 0)';
-      case OZK && OZK.startsWith('5'):
+      case OZK && OZK.startsWith('5') && OZK.length < 3:
         return 'rgb(226, 0, 26)';
       default:
         return 'rgb(255, 255, 255)'; // white
