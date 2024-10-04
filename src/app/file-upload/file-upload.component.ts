@@ -424,6 +424,10 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					
 					this.pruefen=false;
 					break;
+					case 6://LLBB_Ilat Import
+					this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
+					this.Datimptab=false;
+					break;
 				  default:
 					this.InfoBox="Keine Importdatei."
 				}

@@ -159,26 +159,49 @@ exceltabsauslesen(workbook) {
       }
       
       
-      else {
+      else{
+        if (this.excelspaltenimport.length>0){
+          
+          
+          try {
+            for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
+              let name = this.excelspaltenimport[i];
+              if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || name.Spaltenname.includes("protokoll phytoplankton")) {
+                  this.waehleVerfahren(6);break;}
+                  }
+             
+                 
+                }
+              
+            
+          catch (error) {
+           // console.error(error.message);
+          }
+      }
+   
+  }
+
+    }else{
+      if (this.excelspaltenimport.length>0){
+        
+        
         try {
-          for (let i = 0, l =valexceltabsfilter.length; i < l; i += 1) {
-            this.ValExcelSpalten(valexceltabsfilter[i].namentabs);
-            this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
-            if (this.NrVerfahren > 0) {
-              throw new Error("Number is 4");
-            }
-            console.log(  this.NrVerfahren);
-          };
-        } catch (error) {
+          for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
+            let name = this.excelspaltenimport[i];
+            if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || name.Spaltenname.includes("Protokoll Phytoplankton")) {
+                this.waehleVerfahren(6);break;}
+                }
+           
+               
+              }
+            
+          
+        catch (error) {
          // console.error(error.message);
         }
-
-
-       }
-
     }
  
-}
+}}
 
   spaltenauslesen( workbook) {
 
