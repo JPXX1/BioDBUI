@@ -58,6 +58,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	public uebersicht:Uebersicht[]=[];
 	public uebersichtImport:UebersichtImport[];
 	public newuebersichtImport:UebersichtImport;
+	
 	ImportIntoDB:boolean=true;
 	pruefen:boolean=true;
 	dataSource: MatTableDataSource<Uebersicht>;
@@ -425,8 +426,11 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					this.pruefen=false;
 					break;
 					case 6://LLBB_Ilat Import
+					await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
+					
 					this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					this.Datimptab=false;
+					this.displayableColumns(6);
 					break;
 				  default:
 					this.InfoBox="Keine Importdatei."

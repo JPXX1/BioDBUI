@@ -3,19 +3,246 @@ import * as XLSX from 'xlsx';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
 import { Uebersicht } from '../interfaces/uebersicht';
 import { MessstellenImp } from '../interfaces/messstellen-imp';
-
+import { Messwerte } from '../interfaces/messwerte';
+import { ImpPhylibServ } from './impformenphylib.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PhytoseeServiceService {
 
-  constructor(private xlsxImportPhylibService:XlsxImportPhylibService) { }
-  
+  constructor(private impPhylibServ:ImpPhylibServ,private xlsxImportPhylibService:XlsxImportPhylibService) { }
+  public arten: any;
+  public messwerte:Messwerte[];
   public messstellenImp: MessstellenImp[] = [];
   public uebersicht:Uebersicht[]=[];
   public _uebersicht:Uebersicht;
 
 
+  async callartenPhyto() {
+    // this.workbookInit(datum,Probenehmer)
+    await this.impPhylibServ.getArtenPhylibMP(5).forEach(value => {
+      this.arten = value;
+      console.log('observable -> ' + value);
+    });
+  }
+  
+  async PhytoseeLLBBimport(workbook, valspalten: any, tab: any,verfahrennr:number,loescheErste5Zeilen:boolean){
+   
+      // let array: Messwerte[] = []; 
+      this.uebersicht = []; 
+      this.xlsxImportPhylibService.MessDataOrgi = [];
+      this.xlsxImportPhylibService.displayColumnNames=[];
+    this.xlsxImportPhylibService.dynamicColumns=[];
+    this.messstellenImp=[];
+      //let reader = new FileReader();
+    
+      // var sheets;
+      var Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
+      let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
+      // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
+      let bidmst; let bidpara; let bideinh; let bwert;
+      let importp:string;let mstOK: string; let ok: string; let typ:string;let nutzung:string;let taxaliste:string;
+   
+    let datum:Date;
+    let einh1: number = 6;
+let einh2: number = 7;
+let einh3: number = 9;
+let einh4: number = 8;
+
+let para_id1: number = 97;
+let para_id2: number = 98;
+let para_id3: number = 99;
+let para_id4: number = 100;
+let gewaesser:string;
+      let XL_row_object;
+      let json_Messstelle;
+      let mst_alt:string;
+     let abundanz: string;let biovolKonz: string;let spezBioVoll:string;let relBioVol:string;
+      let mst: string;
+      this.arten=[];
+      
+      await  this.xlsxImportPhylibService.holeMst();
+      await this.callartenPhyto();
+      //welche Spalte in der Übersicht
+      // const valspaltenfiteranzeige = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1 && excelspalten.id_tab === tabMST);
+      // const valtabfiterMst = valspalten.filter(excelspalten => excelspalten.spalte_messstelle === true &&  excelspalten.id_verfahren === verfahrennr && excelspalten.id_tab === tabMST);
+  
+      
+      // const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import_spalte === true);
+      // const valspaltenfiterMst = valspalten.filter(excelspalten => excelspalten.spalte_messstelle === true &&  excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1);
+  
+        
+  
+  
+  
+        //console.log(workbook.SheetNames[i]);
+        XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        json_Messstelle = JSON.stringify(XL_row_object);
+        const obj1 = JSON.parse(json_Messstelle);
+       
+        // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+        if (loescheErste5Zeilen===true){obj1.splice(0, 5);
+          const headers = obj1[0];
+
+      // Konvertiere das restliche Objekt zurück in ein JSON-Objekt mit den neuen Überschriften
+      XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: headers, range: 5 });
+        // XL_row_object=data;
+        json_Messstelle = JSON.stringify(XL_row_object);
+       
+        }
+
+        const obj = JSON.parse(json_Messstelle);
+          console.log(this.uebersicht);
+          // Here is your object
+          let o: number = 1;
+          obj.forEach((val, index) => {
+            if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
+              // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
+              if (index>0){
+                //console.log(val + " / " + obj[index][i] + ": " + i);
+                console.log(obj.length)
+                o = o + 1;
+                              
+                  
+                  abundanz=null; biovolKonz=null; spezBioVoll=null; relBioVol=null;
+                  const datumString:string = excelDateToJSDate(obj[index]['Datum']); // Beispiel: '2023-10-01'
+
+                  // Konvertiere das Datum in eine Date-Instanz
+                  const datum: Date = new Date(datumString);
+
+                  gewaesser=obj[index]['Gewässer'];
+                    mst =  obj[index]['Messstelle'];
+                    if (mst===undefined){   mst = obj[index]['Messtelle'];}
+                    if (mst.startsWith('O')) {
+                      aMessstelle = mst.substring(1);
+                    } else {
+                      aMessstelle = mst;
+                    }
+                  
+            
+                  let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == mst);
+  
+                  //console.log(mst);
+  
+                  if (
+                    mstee.length !== 0) {
+                      mstOK = "";
+                    mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                  }
+                  else {
+                    aMessstelle = mst;
+                    mstOK = "checked";
+                  }
+                 
+                    
+                   
+
+                  //}
+                
+                this._uebersicht= {} as Uebersicht;
+               if ( mst!== undefined){
+                if (mstOK==="checked") {importp="";}else{
+                  importp="checked";}
+
+                       }
+
+                  if (loescheErste5Zeilen===true){
+                      
+                        abundanz=obj[index]['Abundanz']; biovolKonz=obj[index]['Biovolumenkonzentration']; spezBioVoll=obj[index]['spezifisches Biovolumen']; relBioVol=obj[index]['relatives Biovolumen'];
+                       
+                  }else{
+                    //Zellzahl (Zellen mL-1)	Biovol. (mm3L-1)	Zellvol. (µm³)			% BV
+
+                    abundanz=obj[index]['Zellzahl (Zellen mL-1)']; biovolKonz=obj[index]['Biovol. (mm3L-1)']; spezBioVoll=obj[index]['Zellvol. (µm³)']; relBioVol=obj[index]['% BV'];
+                  }
+                    // einh1=6;einh2=7;einh3=9;einh4=8;
+                    // para_id1=97;para_id2=98;para_id3=99;para_id4=100;
+
+                      Messwert=abundanz;
+                      aTiefe=0;
+                      aProbe='-';
+                      aForm='-';
+                      aEinheit='m/L';
+                      //für array und  this.MessDataImp (ImortMesswerte)
+                      Einheit=einh1;
+                      Form=6;
+                      Probe=11;
+                      Tiefe=1;
+                      cf=false;
+                      if (Messwert>0){
+                      Taxon = obj[index]['DV-Nr.'];
+                      
+                      //Mst für import
+                      // let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == i);
+  
+      
+                      // if (
+                      //   mstee.length !== 0) {
+                      //     mstOK = "";
+                      //   mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                      // }
+                      // else {
+                      //   aMessstelle = i;
+                      //   mstOK = "checked";
+                      // }
+                     
+                      //Taxon = obj[index][TAXON_NAME];
+                      let taxon_ = this.arten.filter(arten => arten.dvnr == Taxon);
+                      if (taxon_.length > 0) {
+                         Taxon = taxon_[0].id_taxon; 
+                         aTaxon = taxon_[0].taxon; RLD=taxon_[0].rld;
+                         ok = ""; } 
+                         else {
+                        ok = "checked";
+                        aTaxon=Taxon+'/ '+obj[index]['TAXON_NAME']+' nicht bekannt';
+                        // var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
+                        // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
+      
+                      }
+                      importp="checked";
+                      if (ok==="checked" || mstOK==="checked") {importp="";}
+
+                      this._uebersicht= {} as Uebersicht;
+                      // array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
+                      this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                      this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh1, id_para: para_id1, wert: abundanz, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+                      this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh2, id_para: para_id2, wert: biovolKonz, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+                      this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh3, id_para: para_id3, wert: spezBioVoll, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+                      this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh4, id_para: para_id4, wert: relBioVol, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+                      // this.xlsxImportPhylibService.schalteSpalte('sp3',gewaesser);
+                    
+                      this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;
+                      this._uebersicht.fehler2=ok;this._uebersicht.fehler3="";this._uebersicht.import1=importp;
+                      this.xlsxImportPhylibService._uebersicht=this._uebersicht;
+                      this.xlsxImportPhylibService.schalteSpalte('sp3',gewaesser);
+                      this.xlsxImportPhylibService.groupNAch();
+                      Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = "";RLD=null;
+                      aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+                       // this._uebersicht.mst=i;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
+                    }
+
+
+
+                    
+                 
+                    
+                  
+  
+                      
+                
+                
+                
+              }}
+            
+          })
+  
+          //of(array);
+        
+          this.uebersicht=this.xlsxImportPhylibService.uebersicht;
+      //  this.xlsxImportPhylibService.MessDataImp = array;
+      
+        }
+  
   async Phytoseeexport(workbook, valspalten: any, tab: any,verfahrennr:number){
     await this.xlsxImportPhylibService.holeMst();
     // console.log(this.xlsxImportPhylibService.mst);
@@ -190,4 +417,9 @@ function bewertung_als_zahl(bewertung: string): number {
 
   // Gibt die numerische Bewertung zurück
   return bewertung_zahl;
+}
+function excelDateToJSDate(excelDate: number): string {
+  const excelEpoch = new Date(1899, 11, 30); // Excel epoch start date
+  const jsDate = new Date(excelEpoch.getTime() + excelDate * 86400000); // 86400000 ms in a day
+  return jsDate.toDateString();
 }

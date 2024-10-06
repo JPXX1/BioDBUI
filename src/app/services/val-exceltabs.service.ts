@@ -16,7 +16,7 @@ export class ValExceltabsService {
   public NrVerfahren:number;
   public Exceltabsimpalle:string="";
   public ExceltabsimpVier:string="";
-  
+  public loescheErste5Zeilen:boolean;
   constructor(private impPhylibServ: ImpPhylibServ) { }
   VorhandeneVerfahren:number[]=[];
 
@@ -167,7 +167,10 @@ exceltabsauslesen(workbook) {
             for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
               let name = this.excelspaltenimport[i];
               if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || name.Spaltenname.includes("protokoll phytoplankton")) {
-                  this.waehleVerfahren(6);break;}
+                if (name.Spaltenname.includes("protokoll phytoplankton")) {
+                  this.loescheErste5Zeilen=true;
+                }else{  this.loescheErste5Zeilen=false;}
+                this.waehleVerfahren(6);break;}
                   }
              
                  
@@ -188,8 +191,11 @@ exceltabsauslesen(workbook) {
         try {
           for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
             let name = this.excelspaltenimport[i];
-            if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || name.Spaltenname.includes("Protokoll Phytoplankton")) {
-                this.waehleVerfahren(6);break;}
+            if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr." || name.Spaltenname.includes("protokoll phytoplankton")) {
+              if (name.Spaltenname.includes("protokoll phytoplankton")) {
+                this.loescheErste5Zeilen=true;
+              }else{  this.loescheErste5Zeilen=false;} 
+              this.waehleVerfahren(6);break;}
                 }
            
                
