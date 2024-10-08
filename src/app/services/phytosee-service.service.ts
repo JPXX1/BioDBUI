@@ -37,12 +37,12 @@ export class PhytoseeServiceService {
       //let reader = new FileReader();
     
       // var sheets;
-      var Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
-      let aMessstelle: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
+      let Abundanzid:number=1;let Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf;let RLD;
+      let aAbundanzID:string;let aMessstelle: string; let aParameter:string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
       // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
-      let bidmst; let bidpara; let bideinh; let bwert;
+      let bidmst;  let bideinh; let bwert;
       let importp:string;let mstOK: string; let ok: string; let typ:string;let nutzung:string;let taxaliste:string;
-   
+      
     let datum:Date;
     let einh1: number = 6;
 let einh2: number = 7;
@@ -155,9 +155,15 @@ let gewaesser:string;
 
                     abundanz=obj[index]['Zellzahl (Zellen mL-1)']; biovolKonz=obj[index]['Biovol. (mm3L-1)']; spezBioVoll=obj[index]['Zellvol. (µm³)']; relBioVol=obj[index]['% BV'];
                   }
+                  aAbundanzID=obj[index]['Taxonzusatz'];
+                  if(aAbundanzID!==null){
+                  Abundanzid
+                //ergänzen 10-15µm...
+                }
+
                     // einh1=6;einh2=7;einh3=9;einh4=8;
                     // para_id1=97;para_id2=98;para_id3=99;para_id4=100;
-
+                    aParameter='Zellzahl';
                       Messwert=abundanz;
                       aTiefe=0;
                       aProbe='-';
@@ -171,22 +177,9 @@ let gewaesser:string;
                       cf=false;
                       if (Messwert>0){
                       Taxon = obj[index]['DV-Nr.'];
-                      
-                      //Mst für import
-                      // let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == i);
-  
-      
-                      // if (
-                      //   mstee.length !== 0) {
-                      //     mstOK = "";
-                      //   mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
-                      // }
-                      // else {
-                      //   aMessstelle = i;
-                      //   mstOK = "checked";
-                      // }
+                      if (Taxon!==undefined){ // zummengefasste Taxa z.B.SummeKlasse Bacillariophyceae
+
                      
-                      //Taxon = obj[index][TAXON_NAME];
                       let taxon_ = this.arten.filter(arten => arten.dvnr == Taxon);
                       if (taxon_.length > 0) {
                          Taxon = taxon_[0].id_taxon; 
@@ -204,7 +197,7 @@ let gewaesser:string;
 
                       this._uebersicht= {} as Uebersicht;
                       // array.push({ _Nr: o, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
-                      this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                      this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Datum: datumString, _Probe: aProbe, _Taxon: aTaxon,_Parameter:aParameter, _Form: aAbundanzID, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: Abundanzid,_RoteListeD:RLD });
                       this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh1, id_para: para_id1, wert: abundanz, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
                       this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh2, id_para: para_id2, wert: biovolKonz, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
                       this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: datumString, id_einh: einh3, id_para: para_id3, wert: spezBioVoll, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
@@ -220,7 +213,7 @@ let gewaesser:string;
                       aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
                        // this._uebersicht.mst=i;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
                     }
-
+                  }
 
 
                     
@@ -421,5 +414,10 @@ function bewertung_als_zahl(bewertung: string): number {
 function excelDateToJSDate(excelDate: number): string {
   const excelEpoch = new Date(1899, 11, 30); // Excel epoch start date
   const jsDate = new Date(excelEpoch.getTime() + excelDate * 86400000); // 86400000 ms in a day
-  return jsDate.toDateString();
+
+  const day = String(jsDate.getDate()).padStart(2, '0'); // Tag mit führender Null
+  const month = String(jsDate.getMonth() + 1).padStart(2, '0'); // Monat mit führender Null (Monate sind 0-basiert)
+  const year = jsDate.getFullYear();
+
+  return `${day}.${month}.${year}`;
 }

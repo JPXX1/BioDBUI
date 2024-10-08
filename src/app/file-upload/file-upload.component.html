@@ -100,6 +100,10 @@
     <div *ngIf="Datimptab == true" style="float: left;vertical-align: top;width: 40%;margin-left:5%">
       <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
     </div>
+    <div *ngIf="Datimptabphyto == true" style="float: left;vertical-align: top;width: 40%;margin-left:5%">
+      <app-einzeldatephytoplankton [Einzeldat]="MessData"></app-einzeldatephytoplankton>
+    </div>
+    
   </div>
 </div>
 <div class="card" *ngIf="ImportDatenAnzeige == true" style="vertical-align: top;width: 90%;margin-left: 2%;">

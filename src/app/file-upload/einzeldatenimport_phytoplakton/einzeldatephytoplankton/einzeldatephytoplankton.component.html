@@ -1,0 +1,54 @@
+
+<table  cdk-table [dataSource]="Einzeldat">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+        
+    <!-- Position Column -->
+    
+    
+    <!-- Name Column -->
+    <ng-container cdkColumnDef="mst">
+      <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr"> Messstelle </th>
+      <td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element._Messstelle}} 
+        </td>
+        
+    </ng-container>
+    <ng-container cdkColumnDef="datum">
+        <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr">Datum</th>
+        <td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element._Datum}} 
+          </td>
+          
+      </ng-container>
+    <!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
+    <!-- Weight Column -->
+    <ng-container cdkColumnDef="parameter">
+        <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr"> Parameter </th>
+        <td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element._Parameter}} </td>
+        
+      </ng-container>
+    <ng-container cdkColumnDef="taxon">
+      <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-rl"> Taxon </th>
+      <td  cdk-cell *cdkCellDef="let element"  [style.background-color]="getColorFehler(element._Taxon)" class="spalte-arten"> {{element._Taxon}} </td>
+      
+    </ng-container>
+    <ng-container cdkColumnDef="wert">
+        <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr">Wert</th>
+        <td  cdk-cell *cdkCellDef="let element"  class="spalte-jahr"> {{element._Messwert}} </td>
+      </ng-container>
+      <ng-container cdkColumnDef="form">
+        <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-rl">Form</th>
+        <td  cdk-cell *cdkCellDef="let element" class="spalte-rl"> {{element._Form}} </td>
+        </ng-container>
+    <!-- Symbol Column -->
+    <ng-container cdkColumnDef="einheit">
+      <th  cdk-header-cell *cdkHeaderCellDef  class="header-table-jahr"> Einheit </th>
+      <td  cdk-cell *cdkCellDef="let element" class="spalte-jahr"> {{element._Einheit}} </td>
+    </ng-container>
+   
+     
+      <tr  cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr  cdk-row *cdkRowDef="let row; columns: displayedColumns;"></tr> 
+  </table>
+  
+    

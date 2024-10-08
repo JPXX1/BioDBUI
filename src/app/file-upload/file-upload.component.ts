@@ -54,6 +54,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	arrayBuffer:any;
 	public mstimptab:boolean=false;
 	public Datimptab:boolean=false;
+	public Datimptabphyto:boolean=false;
 	public newDate: string;
 	public uebersicht:Uebersicht[]=[];
 	public uebersichtImport:UebersichtImport[];
@@ -64,7 +65,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	dataSource: MatTableDataSource<Uebersicht>;
 	mstMakrophyten:MstMakrophyten[];
 	ImportDatenAnzeige:boolean=true;
-	public MessData:Messwerte[]=[];	public MessDataOrgi:Messwerte[]=[];//public MessDataGr:Messgroup[]=[];
+	public MessData:Messwerte[]=[];	public  MessDataOrgi:Messwerte[]=[];//public MessDataGr:Messgroup[]=[];
 	public MessDataImp:Messwerte[]=[];
 	displayColumnNames:string[]=['Nr','Messstelle','Anzahl', 'MPtyp'];
 	dynamicColumns:string[]=['nr','mst','anzahl','sp3','fehler1','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
@@ -117,7 +118,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 		this.pruefen=true;this.ImportIntoDB=true;
 		this.InfoBox="";
 		this.dataSource=new MatTableDataSource();
-		this.mstimptab=false;  this.Datimptab=false;
+		this.mstimptab=false;  this.Datimptab=false;this.Datimptabphyto=false;
 		this.newuebersichtImport= {} as UebersichtImport;
 		this.newuebersichtImport.dateiname=this.file.name;
 	}
@@ -332,7 +333,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 		{  this.ImportDatenAnzeige=false;
 			
 			this.pruefen=true;
-			this.mstimptab=true; this.Datimptab=false;  this.ImportIntoDB=true;
+			this.mstimptab=true; this.Datimptab=false; this.Datimptabphyto=false; this.ImportIntoDB=true;
 	//	this.file= event.target.files[0];     
 		let fileReader = new FileReader();    
 		fileReader.readAsArrayBuffer(this.file);     
@@ -373,7 +374,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 						
 						
 						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
-						this.Datimptab=false;
+						this.Datimptab=false;this.Datimptabphyto=false;
 						this.pruefen=false;
 						// this.dataSource.sort = this.sort;
 					break;
@@ -388,7 +389,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 						this.pruefen=false;
 						this.displayableColumns(2);
 						// this.dataSource.sort=this.sort;
-						this.Datimptab=false;
+						this.Datimptab=false;this.Datimptabphyto=false;
 						break;
 					case 3:
 						this.newuebersichtImport.id_komp=3;
@@ -400,7 +401,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 						// this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
 					// this.dataSource.sort=this.sort;
-					this.Datimptab=false;
+					this.Datimptab=false;this.Datimptabphyto=false;
 					this.pruefen=false;
 					break;
 					case 4://MZB export
@@ -410,7 +411,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					this.Datimptab=false;
+					this.Datimptab=false;this.Datimptabphyto=false;
 					this.displayableColumns(4);
 					// this.dataSource.sort=this.sort;
 					this.pruefen=false;
@@ -419,7 +420,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					// code block
 					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren);
 					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
-					this.Datimptab=false;
+					this.Datimptab=false;this.Datimptabphyto=false;
 					this.displayableColumns(5);
 					// this.dataSource.sort=this.sort;
 					
@@ -427,9 +428,10 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					break;
 					case 6://LLBB_Ilat Import
 					await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
-					
+					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
-					this.Datimptab=false;
+					this.Datimptab=false;this.Datimptabphyto=false;
+
 					this.displayableColumns(6);
 					break;
 				  default:
@@ -533,11 +535,12 @@ displayableColumns(idverfahren:number){
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
 	}
 	handleRowClick(row){
-		
-		
-		
-		// event.currentTarget.
+		if (this.valExceltabsService.NrVerfahren===6){
+		this.Datimptabphyto=true;
+		this.Datimptab=false;}
+		else{
 		this.Datimptab=true;
+		this.Datimptabphyto=false;}	
 		let messgroup = this.MessDataOrgi.filter(dd => dd._Messstelle== row.mst);
 		this.MessData=messgroup;
 		console.log(row);
