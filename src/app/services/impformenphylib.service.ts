@@ -14,7 +14,7 @@ export class ImpPhylibServ {
   constructor(private httpClient: HttpClient) { }
  
   getFormen(){ 
-    return this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
+    return this.httpClient.get(`${this.apiUrl}/impformenphylib`);
 //  return this.httpClient.get('${this.apiUrl}/impformenphylib');
     
 
@@ -151,30 +151,7 @@ export class ImpPhylibServ {
             return  "Fehler";
           }
         }
-      //  async postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import:number):Promise<number>{ 
-      //     let response;
-      //     const body = new HttpParams()
-      //     .set('id_mst',MessstellenImp.id_mst)
-      //     .set('id_para',MessstellenImp.id_para)
-      //     .set('id_import',id_import)
-      //     .set('id_pn',Probenehmer)
-      //     .set('datum',datum)
-      //     .set('id_einh',MessstellenImp.id_einh)
-      //     .set('wert',MessstellenImp.wert);
-          
-
-      //   console.log(MessstellenImp)
-     
-      
-
-      //   await this.httpClient.post('${this.apiUrl}/insertPhylibMessstellen', body,{observe: 'response'}).pipe(
-      //     catchError(err => {
-      //       console.error(err);
-            
-      //     })
-      //   );
-     
-      //   }
+  
         
 
         
@@ -215,34 +192,6 @@ export class ImpPhylibServ {
         }
       }
        
-        //--
-
-        // async postMesswertePhylib(MessDataImp:Messwerte, datum:string,Probenehmer:string,id_import:number):Promise<number>{
-
-        //   let response;
-        //      const body = new HttpParams()
-        //    .set('id_taxon',MessDataImp._Taxon)
-        //    .set('id_einheit',MessDataImp._Einheit)
-        //    .set('id_probe',MessDataImp._Probe)
-        //    .set('id_mst',MessDataImp._Messstelle)
-        //    .set('id_taxonzus',MessDataImp._Form)
-        //    .set('id_pn',Probenehmer)
-        //    .set('datumpn',datum)
-        //    .set('id_import',id_import)
-        //    .set('id_tiefe',MessDataImp._Tiefe)
-        //    .set('id_abundanz',MessDataImp._idAbundanz)
-        //    .set('cf',MessDataImp._cf)
-        //    .set('wert',MessDataImp._Messwert);
- 
-         
-        //    console.log(MessDataImp)
-        //    await this.httpClient.post('${this.apiUrl}/insertPhylibMesswerte', body,{observe: 'response'}).subscribe(resp=> {
-        //      console.log("response %o, ", resp);
-        //       return resp.status;
-        //      response=resp.status;
-        //    });  
-        //   return response;
-        //  }
-        
+              
         
 }

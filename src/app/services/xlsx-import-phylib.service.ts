@@ -61,7 +61,7 @@ export class XlsxImportPhylibService {
 		try {
 			// Using firstValueFrom to convert the observable to a promise
 			this.formen = await firstValueFrom(this.impPhylibServ.getFormen());
-			console.log(this.formen);
+			//console.log(this.formen);
 		  } catch (err) {
   // Asserting that err is an instance of Error
   const errorMessage = (err as Error).message;
@@ -656,62 +656,76 @@ anzahlmst=  distinctArr.length;
 return anzahlmst;
 }
 
-	doppelteMesswerte(): boolean {
-		let MstDoppelteDSTemp:string[]=[];
-		let antwort: boolean = false;
-		let TempSet:String[]  = [];
-		let Temp2Set:{Mst:string,temp:string}[]  = [];
-		let laengeArrDistinct: number;
-		let laengeArrOrg: number = this.MessDataImp.length;
-		for (let a = 0, le = this.MessDataImp.length; a < le; a += 1) {
-
-			const temp:string=this.MessDataImp[a]._Messstelle +","+this.MessDataImp[a]._Einheit +","+this.MessDataImp[a]._Form+this.MessDataImp[a]._Taxon +","+this.MessDataImp[a]._Tiefe;
-			TempSet.push(temp);
-			console.log(temp)
-			Temp2Set.push({Mst:this.MessDataImp[a]._Messstelle,temp:temp});
-		}
-
-const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index)
-		
-				laengeArrDistinct=  distinctArr.length;
-		
-		
-		
-		antwort = laengeArrOrg > laengeArrDistinct;
-		
-		if (antwort) {
-		for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
-			
-			const ds=TempSet.filter(g=>g===Temp2Set[i].temp);
-			if (ds.length>1){
-
-				const mstee = this.mst.filter(messstellen => messstellen.id_mst == Temp2Set[i].Mst);
-				MstDoppelteDSTemp.push(mstee[0].namemst);
-			
-			// console.log(this.MstDoppelteDS);
-			}
-
-		}}
-
-
-		const distinctArr2=MstDoppelteDSTemp.filter((value,index,self)=>self.indexOf(value)===index)
-
-		distinctArr2.length>0
-		{
-			
-		this.MstDoppelteDS="(Mst: ";
-		for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
-		this.MstDoppelteDS=this.MstDoppelteDS+distinctArr2[f] + "; ";
-		}
-		this.MstDoppelteDS=this.MstDoppelteDS+")";
-
-
+doppelteMesswerte(): boolean {
+	// Temporäres Array, um doppelte Messstellen zu speichern
+	let MstDoppelteDSTemp: string[] = [];
+	// Antwort, die angibt, ob doppelte Messwerte gefunden wurden
+	let antwort: boolean = false;
+	// Temporäres Array, um kombinierte Werte zu speichern
+	let TempSet: string[] = [];
+	// Temporäres Array, um Messstellen und kombinierte Werte zu speichern
+	let Temp2Set: { Mst: string, temp: string }[] = [];
+	// Länge des Arrays mit eindeutigen Werten
+	let laengeArrDistinct: number;
+	// Länge des ursprünglichen Arrays
+	let laengeArrOrg: number = this.MessDataImp.length;
+  
+	// Schleife durch das ursprüngliche Array
+	for (let a = 0, le = this.MessDataImp.length; a < le; a += 1) {
+	  // Kombiniere verschiedene Eigenschaften zu einem String
+	  const temp: string = this.MessDataImp[a]._Messstelle + "," + this.MessDataImp[a]._Einheit + "," + this.MessDataImp[a]._Datum + "," + this.MessDataImp[a]._Form + "," + this.MessDataImp[a]._Taxon + "," + this.MessDataImp[a]._Tiefe;
+	  // Füge den kombinierten String zum TempSet hinzu
+	  TempSet.push(temp);
+	  console.log(temp);
+	  // Füge die Messstelle und den kombinierten String zum Temp2Set hinzu
+	  Temp2Set.push({ Mst: this.MessDataImp[a]._Messstelle, temp: temp });
 	}
-		return antwort;
+  
+	// Erstelle ein Array mit eindeutigen Werten aus TempSet
+	const distinctArr = TempSet.filter((value, index, self) => self.indexOf(value) === index);
+	// Bestimme die Länge des Arrays mit eindeutigen Werten
+	laengeArrDistinct = distinctArr.length;
+  
+	// Setze die Antwort auf true, wenn die Länge des ursprünglichen Arrays größer ist als die Länge des Arrays mit eindeutigen Werten
+	antwort = laengeArrOrg > laengeArrDistinct;
+  
+	if (antwort) {
+	  // Schleife durch das Temp2Set
+	  for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
+		// Filtere TempSet nach dem aktuellen kombinierten String
+		const ds = TempSet.filter(g => g === Temp2Set[i].temp);
+		if (ds.length > 1) {
+		  // Filtere die Messstellen nach der aktuellen Messstelle
+		  const mstee = this.mst.filter(messstellen => messstellen.id_mst == Temp2Set[i].Mst);
+		  if (mstee.length > 1) {
+			// Füge den Namen der Messstelle zum MstDoppelteDSTemp hinzu
+			MstDoppelteDSTemp.push(mstee[0].namemst);
+		  }
+		}
 	  }
+	}
+  
+	// Erstelle ein Array mit eindeutigen Messstellen aus MstDoppelteDSTemp
+	const distinctArr2 = MstDoppelteDSTemp.filter((value, index, self) => self.indexOf(value) === index);
+  
+	if (distinctArr2.length > 0) {
+	  // Initialisiere die MstDoppelteDS-Variable
+	  this.MstDoppelteDS = "(Mst: ";
+	  // Schleife durch das distinctArr2
+	  for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
+		// Füge die Messstellen zum MstDoppelteDS-String hinzu
+		this.MstDoppelteDS = this.MstDoppelteDS + distinctArr2[f] + "; ";
+	  }
+	  // Schließe den MstDoppelteDS-String
+	  this.MstDoppelteDS = this.MstDoppelteDS + ")";
+	}
+  
+	// Gib die Antwort zurück
+	return antwort;
+  }
 
 	  //wenn in Phytoseeexport Jahre mitgeliefert werden
-	  async pruefeObMesswerteschonVorhandenmitJahr(probenehmer: string) {
+	  async pruefeObMesswerteAbiotikschonVorhandenmitJahr(probenehmer: string) {
 		let jahrtemp: string; this.vorhanden = false;
 		
 		
@@ -754,6 +768,76 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 	}}}
 
 	  }
+	  async pruefeObMesswerteschonVorhandenJahr(probenehmer: string) {
+		this.uebersichtGeprueft=this.uebersicht;
+		this.vorhanden = false;
+
+		// probenehmer = '1';
+		let i = 0;
+		const distinctArray = this.MessDataImp.filter((value, index, self) => 
+			index === self.findIndex((t) => (
+			  t._Datum === value._Datum
+			))
+		  );
+
+		for (let i = 0; i < distinctArray.length; i++) {
+			const element = distinctArray[i];
+			
+			let datum: string=element._Datum;
+			await this.holeMesswerteausDB(datum,probenehmer);
+			
+			
+			
+		 
+
+		
+		if (this.MWausDB.length>0){
+		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
+
+		if (this.uebersicht[a].import1==="checked"){ //import möglich
+
+
+			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+
+			let mstID=mstee[0].id_mst;
+			const tmpMWteil=this.MWausDB.filter(g=>g.id_mst===mstID)
+
+
+			if (tmpMWteil.length>0){ 
+
+				const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
+
+		for (let i = 0, l = relMW.length; i < l; i += 1) {
+			const mw: Messwerte = relMW[i];
+			
+			
+			
+
+			const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
+			
+
+			if (combi.length > 0) {
+				this.vorhanden = true;
+				this.groupNAchPruefung(this.uebersicht[a]);
+
+				i = l;
+			}
+
+		}}}}}else {
+			
+			let combi = this.uebersicht.filter(d => d.import1 === "checked");
+			if (combi!==null){
+				if (combi.length>0)
+				{this.vorhanden = false;}	else{
+
+					this.vorhanden = true;}
+			}
+			
+
+
+		}
+		} this.uebersicht=this.uebersichtGeprueft;}
+
 	async pruefeObMesswerteschonVorhanden(jahr: string, probenehmer: string) {
 		this.uebersichtGeprueft=this.uebersicht;
 		let jahrtemp: string; this.vorhanden = false;
@@ -871,11 +955,11 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 			console.log('observable -> ' + this.MWausDB);
 		});
 	}
-	async importIntoDB(jahr: string, probenehmer: string):Promise<string> {
+	async importIntoDB(jahr: string, probenehmer: string,useincludeDate:boolean):Promise<string> {
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
-		let importMW=await this.importMesswerteIntoDB(jahr, probenehmer);
+		let importMW=await this.importMesswerteIntoDB(jahr, probenehmer,useincludeDate);
 		let importMSt=await this.importMessstellenIntoDB(jahr, probenehmer);
 		
 				if (importMW==="Import der Messwerte erfolgreich." &&
@@ -904,9 +988,9 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 			}
 			return rueckgabe;
 	}
-	async importMesswerteIntoDB(jahr: string, probenehmer: string):Promise<string> {
+	async importMesswerteIntoDB(jahr: string, probenehmer: string,useIncludedDate:boolean):Promise<string> {
 		let jahrtemp: string;
-		jahrtemp = ("15.07." + jahr);
+		if (useIncludedDate===false){jahrtemp = ("15.07." + jahr);}
 		console.log(jahrtemp);
 		let messwertanzahl:number=0;
 		let bemerkung="Import der Messwerte erfolgreich.";
@@ -925,6 +1009,8 @@ const distinctArr=TempSet.filter((value,index,self)=>self.indexOf(value)===index
 
 		for (let i = 0, l = tmpMWteil.length; i < l; i += 1) {
 			messwertanzahl = messwertanzahl + 1;
+			if (useIncludedDate===true)	
+			{jahrtemp=tmpMWteil[i]._Datum}
 			let variable:number=await this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp)
 			console.log (variable);
 			if (variable!==201){

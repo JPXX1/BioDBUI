@@ -9,7 +9,7 @@ import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service'
 export class EinzeldatephytoplanktonComponent {
   constructor(private Farbebewertg: FarbeBewertungService) { }	
   @Input()  Einzeldat:messdata[]=[];	
-  displayedColumns: string[] = ['mst', 'datum', 'taxon', 'parameter', 'wert','form', 'einheit'];
+  displayedColumns: string[] = ['mst', 'datum', 'taxon', 'parameter', 'wert', 'einheit'];
  
   getColor(OZK){
     return this.Farbebewertg.getColorRL(OZK);

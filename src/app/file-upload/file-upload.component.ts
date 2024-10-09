@@ -199,10 +199,18 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 				console.log(this.MessDataOrgi.length)
 				console.log(this.valExceltabsService.NrVerfahren)
 				console.log(this.xlsxImportPhylibService.messstellenImp)
-				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
-					if (this.valExceltabsService.NrVerfahren!==5){await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);}
-					else {await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenmitJahr( this.probenehmer);}
-
+				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3 || this.valExceltabsService.NrVerfahren === 6)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
+					if (this.valExceltabsService.NrVerfahren!==5 ){
+						
+						if(this.valExceltabsService.NrVerfahren!==6){
+						await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);}else{
+							//Verfahren=6
+							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr(this.probenehmer);
+						}}
+					else {
+						//Verfahren=5
+						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
+					
 					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;} else { 
 						if (this.xlsxImportPhylibService.doppelteMesswerte()===true)
 						{this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
@@ -229,6 +237,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 				this.xlsxImportPhylibService.uebersichtImport=this.newuebersichtImport;
 			}
 	async	importIntoDB(){
+			let useincludeDate:boolean=false;
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
 			console.log(this.jahr);
@@ -240,8 +249,8 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 			}else 
 			
 			{
-			
-			if (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3){
+				if (this.valExceltabsService.NrVerfahren===6)	{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
+			if (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6){
 			if (this.MessDataOrgi.length>0 ){
 				// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 				// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
@@ -254,7 +263,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 				
 				this.archivImportErzeugen();
 				
-				 this.InfoBox=await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer);
+				 this.InfoBox=await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
 				 return;
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;};}
@@ -427,10 +436,14 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 					this.pruefen=false;
 					break;
 					case 6://LLBB_Ilat Import
-					await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
+					this.InfoBox="";
+					const result=await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,workbook.SheetNames.length,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
-					this.Datimptab=false;this.Datimptabphyto=false;
+					if (result===("Import erfolgreich")){ 
+						this.pruefen=false;
+						this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Messstellen in der Importdatei.";}
+					else {this.InfoBox=result;}
+						this.Datimptab=false;this.Datimptabphyto=false;
 
 					this.displayableColumns(6);
 					break;
