@@ -1,0 +1,52 @@
+<h2>Benutzer bearbeiten</h2>
+
+<form (ngSubmit)="onSubmit()">
+
+  <!-- Container für Vorname und Nachname nebeneinander -->
+  <div style="display: flex; gap: 20px;">
+    <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
+        Vorname
+      </p>
+    <mat-form-field style="flex: 1;">
+      <input matInput placeholder="Vorname" [(ngModel)]="data.user.vornahme" name="vornahme" required />
+    </mat-form-field>
+    <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
+        Nachname
+      </p>
+    <mat-form-field style="flex: 1;">
+      <input matInput placeholder="Nachname" [(ngModel)]="data.user.zunahme" name="zunahme" required />
+    </mat-form-field>
+  </div>
+
+  <!-- Mailadresse -->
+  <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
+    Mail
+  </p>
+  <mat-form-field style="width: 70%;">
+    <input matInput placeholder="E-Mail" [(ngModel)]="data.user.mail" name="mail" required />
+  </mat-form-field>
+  <!-- login -->
+  <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
+    login-Name
+  </p>
+  <mat-form-field style="width: 100%;">
+    <input matInput placeholder="Login" [(ngModel)]="data.user.login" name="login" readonly />
+  </mat-form-field>
+
+  <!-- Checkboxen -->
+  <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+    <mat-checkbox [(ngModel)]="data.user.administrator" name="administrator">Administrator</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.nutzer1" name="nutzer1">Nutzer 1</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.nutzer2" name="nutzer2">Nutzer 2</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.nutzer3" name="nutzer3">Nutzer 3</mat-checkbox>
+  </div>
+
+  <!-- Buttons -->
+  <div style="margin-top: 20px;">
+    <button mat-button type="submit" style="border: 1px;border-color: darkgray;">Speichern</button>
+    <button mat-button type="button" (click)="onCancel()" style="border: 1px;border-color: darkgray;">Abbrechen</button>
+  </div>
+  
+</form>
+
+  
