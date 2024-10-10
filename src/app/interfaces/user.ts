@@ -9,5 +9,6 @@ export interface User {
   mail?: string;
   id_users?: number;
   login?: string; 
+  password?: string;
 }
   

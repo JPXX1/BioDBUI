@@ -1,0 +1,13 @@
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;  /* Ausrichtung am rechten Rand */
+    gap: 10px;  /* Abstand zwischen den Buttons */
+    margin-right: 10px; /* Optionaler Abstand zum Rand */
+  }
+  
+  button {
+    background-color:  rgb(233, 229, 229);  /* Hintergrundfarbe */
+    width: 300px;  /* Feste Breite für die Buttons */
+  }
+  

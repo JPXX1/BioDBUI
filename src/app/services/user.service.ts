@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../interfaces/user';
 import { environment } from '../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +20,7 @@ export class UserService {
 
    // Methode zum Überprüfen, ob ein Login bereits existiert
    checkLoginExists(login: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/check-login/${login}`);
+    return this.http.get<boolean>(`${this.apiUrl}/users/check-login/${login}`);
   }
 
   getUser(id: number): Observable<User> {
@@ -34,7 +35,11 @@ export class UserService {
     return this.http.put<User>(`${this.apiUrl}/userschange/${id}`, user);
   }
 
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteUser(id: number): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.apiUrl}/deleteuser/${id}`));
+  }
+   // Passwort aktualisieren
+   updatePassword(id: number, password: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/register/${id}/password`, { password });
   }
 }

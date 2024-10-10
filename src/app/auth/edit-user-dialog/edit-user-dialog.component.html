@@ -1,15 +1,17 @@
 <h2>Benutzer bearbeiten</h2>
 
-<form (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" style="margin-right: 2%;margin-left: 2%;">
 
   <!-- Container für Vorname und Nachname nebeneinander -->
   <div style="display: flex; gap: 20px;">
     <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
         Vorname
       </p>
-    <mat-form-field style="flex: 1;">
-      <input matInput placeholder="Vorname" [(ngModel)]="data.user.vornahme" name="vornahme" required />
-    </mat-form-field>
+
+      <mat-form-field style="flex: 1;">
+        <input matInput placeholder="Vorname" [(ngModel)]="data.user.vornahme" name="vornahme" required (ngModelChange)="onVornameChange($event)" />
+      </mat-form-field>
+    
     <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
         Nachname
       </p>
@@ -43,8 +45,8 @@
 
   <!-- Buttons -->
   <div style="margin-top: 20px;">
-    <button mat-button type="submit" style="border: 1px;border-color: darkgray;">Speichern</button>
-    <button mat-button type="button" (click)="onCancel()" style="border: 1px;border-color: darkgray;">Abbrechen</button>
+    <button mat-button [disabled]="isSaveDisabled" type="submit" style="background-color: rgb(233, 229, 229);">Speichern</button>
+    <button mat-button type="button" (click)="onCancel()" style="margin-left:2%;background-color:  rgb(233, 229, 229);">Abbrechen</button>
   </div>
   
 </form>

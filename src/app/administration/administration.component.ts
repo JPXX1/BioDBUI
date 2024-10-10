@@ -14,5 +14,5 @@ export class AdministrationComponent {
       this.router.navigate(['/login']);
         }} 
   
-  addnutzer(){this.router.navigate(['/register']);}
+
 }

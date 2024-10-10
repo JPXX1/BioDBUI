@@ -1,5 +1,6 @@
 import { Component, Renderer2, ViewChild, ElementRef, HostListener, AfterViewInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { HelpService } from '../app/services/help.service';
+import { AuthService } from './auth/auth.service';
 
 // import { Router } from '@angular/router';
 @Component({
@@ -16,7 +17,7 @@ sticky:boolean=false;
 menuPosition: any;
 selectedMenuItem: string = '';
   isHelpActive: boolean = false;
-constructor(private renderer: Renderer2, private helpService: HelpService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
+constructor(public authService:AuthService,private renderer: Renderer2, private helpService: HelpService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
   this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
 }
   //constructor(private _renderer2: Renderer2,){}
@@ -82,7 +83,7 @@ handleScroll() {
 
   getlink4(){
    
-    this.selectedMenuItem = 'Administration';
+    this.selectedMenuItem = 'Nutzerverwaltung';
   }
   getlink5(){
    

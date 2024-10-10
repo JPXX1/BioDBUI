@@ -75,28 +75,52 @@ import { EinzeldatephytoplanktonComponent } from './file-upload/einzeldatenimpor
 import { UserManagementComponent } from './auth/user-management/user-management.component';
 import { EditUserDialogComponent } from './auth/edit-user-dialog/edit-user-dialog.component';
 import { ConfirmDeleteDialogComponent } from './auth/confirm-delete-dialog/confirm-delete-dialog.component';
-
+import { ConfirmPasswordDialogComponent } from './auth/confirm-password-dialog/confirm-password-dialog.component';
+import { RoleGuard } from 'src/app/auth/auth/role.guard';
 // StammWkComponent
 
 const routes: Routes = [
 	{ path: '', redirectTo: '/login', pathMatch: 'full' }, // Default route
 	{ path: 'login', component: LoginComponent },
-	{ path: 'monitoringkarte', component: MonitoringkarteComponent },
+	{ path: 'monitoringkarte', component: MonitoringkarteComponent 
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer1' }  // Die erwartete Rolle
+	},
+	
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
-	{ path: 'datenimport', component: FileUploadComponent },
-	{ path: 'monitoringdaten', component: MonitoringComponent },
-	{ path: 'stammdaten', component: StammdatenComponent },
+	{ path: 'datenimport', component: FileUploadComponent 
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'administrator' }  // Die erwartete Rolle
+
+	},
+	{ path: 'monitoringdaten', component: MonitoringComponent 
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer1' }  // Die erwartete Rolle
+	},
+	{ path: 'stammdaten', component: StammdatenComponent 
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer3' }  // Die erwartete Rolle
+	},
 	{ path: 'register', component: RegisterComponent },
-	{path:'admin',component:AdministrationComponent},
-	{path:'datenexport',component:DatenExportComponent},
-	{path:'bewerten',component:ExpertenurteilMstComponent}
+	{path:'admin',component:AdministrationComponent
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'administrator' }  // Die erwartete Rolle
+	},
+	{path:'datenexport',component:DatenExportComponent
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer2' }  // Die erwartete Rolle
+	},
+	{path:'bewerten',component:ExpertenurteilMstComponent
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer3' }  // Die erwartete Rolle
+	}
 	
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent, RegisterDialogComponent,  MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent,
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent, RegisterDialogComponent,  MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent,
 ], 
 imports: [MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,

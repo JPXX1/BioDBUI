@@ -8,16 +8,22 @@
       <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" [matMenuTriggerFor]="messstellen">
         <mat-icon>menu</mat-icon>
       </button>  
-       <mat-menu #messstellen="matMenu">
-          <button id="link1" [routerLink]="['/datenimport']" class="linkcolor menu-button" mat-button (click)="getlink1()">Datenimport</button>
-          <button id="link6" [routerLink]="['/datenexport']" class="linkcolor menu-button" mat-button (click)="getlink5()">Datenexport</button>
-          <button id="link7" [routerLink]="['/bewerten']" class="linkcolor menu-button" mat-button (click)="getlink6()">Bewerten</button>
-          <button id="link2" [routerLink]="['/monitoringdaten']" class="linkcolor menu-button" mat-button (click)="getlink2()">Monitoringdaten</button>
-          <button id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor menu-button" mat-button (click)="getlink0()">Monitoringkarte</button>
-          <button id="link4" [routerLink]="['/stammdaten']" class="linkcolor menu-button" mat-button (click)="getlink3()">Stammdaten</button>
-          <button id="link5" [routerLink]="['/admin']" class="menu-button" mat-button (click)="getlink4()">Benutzerverwaltung</button>
-          
-        </mat-menu>
+      <mat-menu #messstellen="matMenu">
+        <button *ngIf="authService.isNutzer3() || authService.isAdmin()" id="link1" [routerLink]="['/datenimport']" class="linkcolor menu-button" mat-button (click)="getlink1()">Datenimport</button>
+        
+        <button *ngIf="authService.isNutzer2() || authService.isNutzer3() || authService.isAdmin()" id="link6" [routerLink]="['/datenexport']" class="linkcolor menu-button" mat-button (click)="getlink5()">Datenexport</button>
+        
+        <button *ngIf="authService.isNutzer3() || authService.isAdmin()" id="link7" [routerLink]="['/bewerten']" class="linkcolor menu-button" mat-button (click)="getlink6()">Bewerten</button>
+        
+        <button *ngIf="authService.isNutzer1() || authService.isNutzer2() || authService.isNutzer3() || authService.isAdmin()" id="link2" [routerLink]="['/monitoringdaten']" class="linkcolor menu-button" mat-button (click)="getlink2()">Monitoringdaten</button>
+        
+        <button *ngIf="authService.isNutzer1() || authService.isNutzer2() || authService.isNutzer3() || authService.isAdmin()" id="link3" [routerLink]="['/monitoringkarte']" class="linkcolor menu-button" mat-button (click)="getlink0()">Monitoringkarte</button>
+        
+        <button *ngIf="authService.isNutzer3() || authService.isAdmin()" id="link4" [routerLink]="['/stammdaten']" class="linkcolor menu-button" mat-button (click)="getlink3()">Stammdaten</button>
+        
+        <button *ngIf="authService.isAdmin()" id="link5" [routerLink]="['/admin']" class="menu-button" mat-button (click)="getlink4()">Nutzerverwaltung</button>
+      </mat-menu>
+      
         <span>{{ selectedMenuItem }}</span>
         <button mat-button id="helpButton" (click)="toggleHelp()" 
           [ngClass]="{ 'help-button-active': isHelpActive, 'help-button': true }">Hilfe</button>

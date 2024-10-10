@@ -1,50 +1,63 @@
-<h2>Benutzerverwaltung</h2>
-<div style="margin-bottom: 20px;">
+
+<div class="button-container">
+  <button mat-button (click)="sendMailToAllUsers()">Mail an alle Nutzer senden</button>
   <button mat-button color="primary" (click)="addNewUser()">Neuen Benutzer hinzufügen</button>
 </div>
+
+<div>
+
 <!-- Tabelle zur Anzeige der Benutzer -->
-<table mat-table [dataSource]="users" class="mat-elevation-z8">
+<table mat-table [dataSource]="users" class="mat-elevation-z8" matSort>
   <!-- ID-Nutzer Spalte -->
   <ng-container matColumnDef="id_nu">
-    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
     <td mat-cell *matCellDef="let user"> {{ user.id_nu }} </td>
   </ng-container>
 
   <!-- Vorname Spalte -->
   <ng-container matColumnDef="vornahme">
-    <th mat-header-cell *matHeaderCellDef> Vorname </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Vorname </th>
     <td mat-cell *matCellDef="let user"> {{ user.vornahme }} </td>
   </ng-container>
 
   <!-- Nachname Spalte -->
   <ng-container matColumnDef="zunahme">
-    <th mat-header-cell *matHeaderCellDef> Nachname </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nachname </th>
     <td mat-cell *matCellDef="let user"> {{ user.zunahme }} </td>
   </ng-container>
 
   <!-- E-Mail Spalte -->
   <ng-container matColumnDef="mail">
-    <th mat-header-cell *matHeaderCellDef> E-Mail </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Mail </th>
     <td mat-cell *matCellDef="let user"> {{ user.mail }} </td>
   </ng-container>
   <!-- login -->
   <ng-container matColumnDef="login">
-    <th mat-header-cell *matHeaderCellDef> login </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> login </th>
     <td mat-cell *matCellDef="let user"> {{ user.login }} </td>
   </ng-container>
+
+   <!-- Passwort vergeben Spalte -->
+   <ng-container matColumnDef="password">
+    <th mat-header-cell *matHeaderCellDef> Passwort vergeben </th>
+    <td mat-cell *matCellDef="let user">
+      <mat-checkbox [checked]="!!user.password" disabled></mat-checkbox>
+    </td>
+  </ng-container>
+
   <!-- Aktionen Spalte -->
 
  <!-- Administrator Checkbox -->
  <ng-container matColumnDef="administrator">
-  <th mat-header-cell *matHeaderCellDef> Administrator </th>
+  <th mat-header-cell *matHeaderCellDef mat-sort-header> Administrator </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.administrator" disabled></mat-checkbox>
   </td>
 </ng-container>
 
 <!-- Nutzer1 Checkbox -->
-<ng-container matColumnDef="nutzer1">
-  <th mat-header-cell *matHeaderCellDef> Nutzer1 </th>
+<ng-container matColumnDef="nutzer1" >
+  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nutzer1 </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer1" disabled></mat-checkbox>
   </td>
@@ -52,7 +65,7 @@
 
 <!-- Nutzer2 Checkbox -->
 <ng-container matColumnDef="nutzer2">
-  <th mat-header-cell *matHeaderCellDef> Nutzer2 </th>
+  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nutzer2 </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer2" disabled></mat-checkbox>
   </td>
@@ -60,19 +73,21 @@
 
 <!-- Nutzer3 Checkbox -->
 <ng-container matColumnDef="nutzer3">
-  <th mat-header-cell *matHeaderCellDef> Nutzer3 </th>
+  <th mat-header-cell *matHeaderCellDef  mat-sort-header> Nutzer3 </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer3" disabled></mat-checkbox>
   </td>
 
   
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+    <th mat-header-cell *matHeaderCellDef>  </th>
     <td mat-cell *matCellDef="let user">
-      <button mat-button (click)="editUser(user)">Nutzer bearbeiten</button>
+      <button mat-button (click)="editUser(user)"style="margin-left:2%;margin-top:2%;background-color:  rgb(233, 229, 229);">Nutzer bearbeiten</button>
       <!-- <button mat-button (click)="deleteUser(user.id_nu)">Nutzer löschen</button> -->
-      <button mat-button color="warn" (click)="confirmDelete(user)">Nutzer Löschen</button>
-      <button mat-button (click)="addpasswort()">Passwort vergeben</button>
+      <button mat-button color="warn" (click)="confirmDelete(user)"style="margin-left:2%;margin-top:2%;background-color:  rgb(233, 229, 229);">Nutzer Löschen</button>
+       
+      <button mat-button (click)="addPassword(user)"style="margin-left:2%;margin-top:2%;background-color:  rgb(233, 229, 229);">Passwort vergeben und Nutzerdaten verschicken</button>
+     
     </td>
   </ng-container>
 </ng-container>
@@ -80,3 +95,4 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+</div>
