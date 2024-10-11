@@ -16,7 +16,8 @@
 
               "allowedCommonJsDependencies": [
                 "file-saver",
-                "exceljs"
+                "exceljs",
+                 "rbush"
               ],
             
 

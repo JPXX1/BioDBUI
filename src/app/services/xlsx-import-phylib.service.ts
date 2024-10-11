@@ -689,36 +689,36 @@ doppelteMesswerte(): boolean {
 	// Setze die Antwort auf true, wenn die Länge des ursprünglichen Arrays größer ist als die Länge des Arrays mit eindeutigen Werten
 	antwort = laengeArrOrg > laengeArrDistinct;
   
-	if (antwort) {
-	  // Schleife durch das Temp2Set
-	  for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
-		// Filtere TempSet nach dem aktuellen kombinierten String
-		const ds = TempSet.filter(g => g === Temp2Set[i].temp);
-		if (ds.length > 1) {
-		  // Filtere die Messstellen nach der aktuellen Messstelle
-		  const mstee = this.mst.filter(messstellen => messstellen.id_mst == Temp2Set[i].Mst);
-		  if (mstee.length > 1) {
-			// Füge den Namen der Messstelle zum MstDoppelteDSTemp hinzu
-			MstDoppelteDSTemp.push(mstee[0].namemst);
-		  }
-		}
-	  }
-	}
+	// if (antwort) {
+	//   // Schleife durch das Temp2Set
+	//   for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
+	// 	// Filtere TempSet nach dem aktuellen kombinierten String
+	// 	const ds = TempSet.filter(g => g === Temp2Set[i].temp);
+	// 	if (ds.length > 1) {
+	// 	  // Filtere die Messstellen nach der aktuellen Messstelle
+	// 	  const mstee = this.mst.filter(messstellen => messstellen.id_mst === Temp2Set[i].Mst);
+	// 	  if (mstee.length > 1) {
+	// 		// Füge den Namen der Messstelle zum MstDoppelteDSTemp hinzu
+	// 		MstDoppelteDSTemp.push(mstee[0].namemst);
+	// 	  }
+	// 	}
+	//   }
+	// }
   
-	// Erstelle ein Array mit eindeutigen Messstellen aus MstDoppelteDSTemp
-	const distinctArr2 = MstDoppelteDSTemp.filter((value, index, self) => self.indexOf(value) === index);
+	// // Erstelle ein Array mit eindeutigen Messstellen aus MstDoppelteDSTemp
+	// const distinctArr2 = MstDoppelteDSTemp.filter((value, index, self) => self.indexOf(value) === index);
   
-	if (distinctArr2.length > 0) {
-	  // Initialisiere die MstDoppelteDS-Variable
-	  this.MstDoppelteDS = "(Mst: ";
-	  // Schleife durch das distinctArr2
-	  for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
-		// Füge die Messstellen zum MstDoppelteDS-String hinzu
-		this.MstDoppelteDS = this.MstDoppelteDS + distinctArr2[f] + "; ";
-	  }
-	  // Schließe den MstDoppelteDS-String
-	  this.MstDoppelteDS = this.MstDoppelteDS + ")";
-	}
+	// if (distinctArr2.length > 0) {
+	//   // Initialisiere die MstDoppelteDS-Variable
+	//   this.MstDoppelteDS = "(Mst: ";
+	//   // Schleife durch das distinctArr2
+	//   for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
+	// 	// Füge die Messstellen zum MstDoppelteDS-String hinzu
+	// 	this.MstDoppelteDS = this.MstDoppelteDS + distinctArr2[f] + "; ";
+	//   }
+	//   // Schließe den MstDoppelteDS-String
+	//   this.MstDoppelteDS = this.MstDoppelteDS + ")";
+	// }
   
 	// Gib die Antwort zurück
 	return antwort;

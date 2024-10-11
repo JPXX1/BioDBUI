@@ -26,6 +26,8 @@ import {PhytoseeServiceService} from 'src/app/services/phytosee-service.service'
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
@@ -85,7 +87,19 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 		
 	}
+// Diese Methode wird ausgelöst, wenn das Event von der Kindkomponente gefeuert wird
+handleJahrSelected(selectedJahr: number) {
+	this.ImportIntoDB=true;
+	this.pruefen=false;
+    // console.log("Ausgewähltes Jahr:", selectedJahr);
+    // Hier kannst du beliebige Logik einfügen, z.B. das Jahr speichern oder verarbeiten
+  }
 
+  handlePNSelected(selectedPN: number) {
+	this.ImportIntoDB=true;
+	this.pruefen=false;
+
+  }
 	panelOpenState = false;
 	async ngOnInit() {
 		if (!this.authService.isLoggedIn()) {
@@ -212,8 +226,32 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
 					
 					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;} else { 
-						if (this.xlsxImportPhylibService.doppelteMesswerte()===true)
-						{this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
+						if (this.xlsxImportPhylibService.doppelteMesswerte()===true){
+							const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+								width: '250px',
+								data: { message: 'Es wurden doppelte Messwerte gefunden. Möchten Sie fortfahren und die doppelten Werte entfernen?' }
+							  });
+							  dialogRef.afterClosed().subscribe(result => {
+								if (result === true) {
+								  // Der Benutzer hat "Ja" gewählt -> Distinct anwenden
+								  const distinctObjects = Array.from(
+									new Map(this.xlsxImportPhylibService.MessDataImp.map(item => [JSON.stringify(item), item])).values()
+								  );
+								  this.xlsxImportPhylibService.MessDataImp = distinctObjects;
+						
+								  // Setze die InfoBox-Nachricht
+								  this.InfoBox = "Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.";
+								  this.ImportIntoDB = false; 
+								}else {
+									// Der Benutzer hat "Nein" gewählt -> Abbrechen
+									this.InfoBox = "Der Import wurde abgebrochen.";
+									//console.log(this.InfoBox);
+								  }
+								});
+						
+						  
+
+							//this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
 						console.log(this.InfoBox)} else 
 						{this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; }};
 				} else {

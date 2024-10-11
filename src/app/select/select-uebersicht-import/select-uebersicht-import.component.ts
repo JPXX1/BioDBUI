@@ -3,14 +3,8 @@ import { Sort} from '@angular/material/sort';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import {DialogJaNeinComponent} from 'src/app/dialog-ja-nein/dialog-ja-nein.component';
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
-import {
-  MatDialog,
-  MatDialogRef,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogTitle,
-  MatDialogContent,
-} from '@angular/material/dialog';
+import { MatDialog  } from '@angular/material/dialog';
+import { parse } from 'date-fns';
 @Component({
   selector: 'app-select-uebersicht-import',
   templateUrl: './select-uebersicht-import.component.html',
@@ -31,11 +25,59 @@ export class SelectUebersichtImportComponent {
   temp:any=[];
   constructor(public dialog: MatDialog,private uebersichtImportService:UebersichtImportService) { }
  
-  sortData(sort:Sort){
+  // sortData(sort:Sort){
 
-    this.sortDataue.emit(sort);
+  //   this.sortDataue.emit(sort);
 
+  // }
+
+
+  sortData(sort: Sort) {
+    const data = this.uebersicht.slice(); // Erstelle eine Kopie des Arrays
+
+    if (!sort.active || sort.direction === '') {
+      return;
+    }
+
+    this.uebersicht = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+
+      switch (sort.active) {
+        case 'importiert':
+          return this.compareDates(a.importiert, b.importiert, isAsc); // Datumssortierung
+        default:
+          return this.compare(a[sort.active], b[sort.active], isAsc); // Generische Sortierung
+      }
+    });
+
+    this.sortDataue.emit(sort); // Sende das Sortierevent weiter, falls benötigt
   }
+
+ 
+ // Vergleichsfunktion für Datum mit Hilfe von date-fns
+ compareDates(dateA: string, dateB: string, isAsc: boolean): number {
+  const parsedDateA = this.parseDate(dateA);
+  const parsedDateB = this.parseDate(dateB);
+  return (parsedDateA < parsedDateB ? -1 : 1) * (isAsc ? 1 : -1);
+}
+
+// Datumsparser mit date-fns
+parseDate(dateString: string): Date {
+  return parse(dateString, 'dd.MM.yy HH:mm', new Date()); // Parsen des Strings mit dem Format
+}
+
+// Generische Vergleichsfunktion für andere Felder
+compare(a: any, b: any, isAsc: boolean): number {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return (a.localeCompare(b)) * (isAsc ? 1 : -1); // Stringvergleich
+  } else if (typeof a === 'number' && typeof b === 'number') {
+    return ((a < b ? -1 : 1) * (isAsc ? 1 : -1)); // Zahlenvergleich
+  } else {
+    return 0; // Für andere Typen keine Sortierung
+  }
+}
+
+
   openEmojiDialog(zeile) {
     let dialog = this.dialog.open(DialogJaNeinComponent);
     dialog.afterClosed().subscribe(result => {
@@ -56,10 +98,10 @@ export class SelectUebersichtImportComponent {
  
 }
 
-loescheDaten(id_imp:number){
-  UebersichtImportService
+// loescheDaten(id_imp:number){
+//  // this.UebersichtImportService.loescheDatenMstAbundanz(id_imp);
 
-}
+// }
   onSelect(newValue) {
     console.log(newValue);
     // this.selectedUebersicht = newValue;

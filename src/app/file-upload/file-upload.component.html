@@ -23,8 +23,12 @@
               </td>
               <td>
                 <span style="float:left">
-                  <div style="margin-left:50px" class="helpable" id="DD-Jahr"><app-selectjahr [selected]="jahr"></app-selectjahr></div>
-                  <div style="margin-left:50px" class="helpable" id="DD-Probenehmer"><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div>
+                  <app-selectjahr (jahrSelected)="handleJahrSelected($event)" class="helpable" id="DD-Jahr"></app-selectjahr>
+                  <!-- <div style="margin-left:50px" class="helpable" id="DD-Jahr"><app-selectjahr [selected]="jahr"></app-selectjahr></div> -->
+                  <app-select-probenehmer (PNSelected)="handlePNSelected($event)" class="helpable" id="DD-Probenehmer" class="helpable" id="DD-Jahr"></app-select-probenehmer>
+                  
+                  
+                  <!-- <div style="margin-left:50px" class="helpable" id="DD-Probenehmer"><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div> -->
                 </span>
               </td>
               <td>

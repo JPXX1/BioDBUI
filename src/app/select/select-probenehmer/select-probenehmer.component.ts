@@ -1,4 +1,4 @@
-import { Component,Input } from '@angular/core';
+import { Component,Input,Output, EventEmitter } from '@angular/core';
 import {ImpPhylibServ} from '/home/jens/angular-file-upload/src/app/services/impformenphylib.service';
 @Component({
   selector: 'app-select-probenehmer',
@@ -9,7 +9,7 @@ export class SelectProbenehmerComponent {
   @Input() selectedPN: string;
   pn:any=[];
   
- 
+  @Output() PNSelected: EventEmitter<number> = new EventEmitter<number>();
   // selectedCar; 
   constructor(private impPhylibServ: ImpPhylibServ) { }
  
@@ -17,7 +17,8 @@ export class SelectProbenehmerComponent {
   onChange(newValue) {
     console.log(newValue);
     this.selectedPN = newValue;
-   
+    this.PNSelected.emit(+newValue); //sendet das ausgewählte Jahr an die Elternkomponente
+  
 }
   ngOnInit() {
 		this.impPhylibServ.getProbenehmer().subscribe(jahre_ => { 
