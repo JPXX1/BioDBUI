@@ -37,7 +37,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   ) {}
     // WMTS capabilities URL
     private wmtsCapabilitiesUrl = 'https://sgx.geodatenzentrum.de/wmts_basemapde/1.0.0/WMTSCapabilities.xml';
-    private wmtsLayer: TileLayer;
+    // private wmtsLayer: TileLayer;
   messstellenFilter: string = '';  // Speichert den aktuellen Filtertext
   map: Map;
   coordinate;
@@ -56,7 +56,12 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   isstartbp2Checked:boolean=false;
   isstartbp1Checked:boolean=false;
   isSeeChecked: boolean = false;
+  isrepraesentFGWChecked: boolean = false;
+  isrepraesentSeeChecked: boolean = false;
   isVerbreitungChecked: boolean = false;
+  isRepraesentCheckedSEEdisable: boolean = true;
+  isRepraesentCheckedFGWdisable: boolean = true;
+  isFilterdisable: boolean = true;
    legendItems = [
     { color: this.getColor('1'), label: 'sehr gut (1)' },
     { color: this.getColor('2'), label: 'gut (2)' },
@@ -186,16 +191,20 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     }
    
    // Funktion, die die Filterung durchführt
-  filterLayer(source: VectorSource, layer: VectorLayer, filter: string) {
+  filterLayer(source: VectorSource, layer: VectorLayer, filter: string,repreasent: boolean) {
     const features = source.getFeatures();
     
-    // Filtern der Features nach dem Namen (namemst)
+// Filtern der Features nach dem Namen (namemst)
     const filteredFeatures = features.filter(feature => {
       const namemst = feature.get('namemst') || '';
-      return namemst.toLowerCase().includes(filter.toLowerCase());
+      const repraesentMst = feature.get('repraesent_mst') === repreasent;
+      if (!filter || filter.trim() === '') {
+        return namemst && repraesentMst;}
+      else {
+        return namemst.toLowerCase().includes(filter.toLowerCase()) && repraesentMst;}
     });
     
-    // Neue Quelle nur mit den gefilterten Features erstellen
+    // Neue Quelle nur mit gefilterten Features erstellen
     const filteredSource = new VectorSource({
       features: filteredFeatures,
     });
@@ -469,34 +478,64 @@ mstnachoben(){
   }
   
 }
-filterMessstellen(fgwchecked: boolean,seechecked: boolean) {
-  this.toggleLayerseemst(seechecked);
-  this.toggleLayerfgwmst(fgwchecked);
-}
-toggleLayerseemst(checked: boolean) {
+public onMenuKeyDown(event: KeyboardEvent) {
+  switch (event.) {}}
+
+startalleSee(checked: boolean) {
   this.map.removeLayer(this.seeLayer);
-  if (checked) {
-    if (!this.messstellenFilter || this.messstellenFilter.trim() === '') {
-      
-      this.showAllFeatures(this.sourceSeeMessstellen, this.seeLayer);
-     
-    }else{
-      // this.map.removeLayer(this.seeLayer);
-      this.filterLayer(this.sourceSeeMessstellen, this.seeLayer,this.messstellenFilter);
-      }
+  if (!checked){this.isrepraesentSeeChecked=false;this.isRepraesentCheckedSEEdisable=true;
+    if (this.isFliesgewasserChecked===false){
+      this.messstellenFilter='';this.isFilterdisable=true;
+  }
+  }
+  if (checked) {this.isFilterdisable=false;
+    this.isRepraesentCheckedSEEdisable=false;
+  this.showAllFeatures(this.sourceSeeMessstellen, this.seeLayer);
   }
 }
+startalleFGW(checked: boolean) {
+  this.map.removeLayer(this.fliesgewasserLayer);
+  if (!checked){this.isrepraesentFGWChecked=false;
+    this.isRepraesentCheckedFGWdisable=true;
+    if (this.isSeeChecked===false){
+      this.messstellenFilter='';this.isFilterdisable=true;
+  }
+}
+  if (checked) {
+    this.isFilterdisable=false;
+    this.isRepraesentCheckedFGWdisable=false;
+  this.showAllFeatures(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer);
+  }
+}
+filterMessstellen(fgwchecked: boolean,seechecked: boolean,repraesent_mst_fgw: boolean,repraesent_mst_see: boolean) {
+ 
+  this.toggleLayerseemst(seechecked,repraesent_mst_see);
+  this.toggleLayerfgwmst(fgwchecked,repraesent_mst_fgw);
+}
+toggleLayerseemst(checked: boolean,repraesent_mst: boolean) {
+  this.map.removeLayer(this.seeLayer);
+  if (checked) {
+    // if (!this.messstellenFilter || this.messstellenFilter.trim() === '') {
+      
+    //   this.showAllFeatures(this.sourceSeeMessstellen, this.seeLayer);
+     
+    // }else{
+      // this.map.removeLayer(this.seeLayer);
+      this.filterLayer(this.sourceSeeMessstellen, this.seeLayer,this.messstellenFilter,repraesent_mst);
+      }
+  }
 
-toggleLayerfgwmst(checked: boolean) {
+
+toggleLayerfgwmst(checked: boolean,repraesent_mst: boolean) {
   this.map.removeLayer(this.fliesgewasserLayer);
   
   if (checked) {
-    if (!this.messstellenFilter || this.messstellenFilter.trim() === '') {
+    // if (!this.messstellenFilter || this.messstellenFilter.trim() === '') {
       
-        this.showAllFeatures(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer);
-      }else{
-        this.filterLayer(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer,this.messstellenFilter);
-        }
+        // this.showAllFeatures(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer);
+      // }else{
+        this.filterLayer(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer,this.messstellenFilter,repraesent_mst);
+        // }
   } 
 }
   toggleLayerVerbreitung(checked: boolean) {

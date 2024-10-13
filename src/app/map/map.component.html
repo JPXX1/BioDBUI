@@ -37,16 +37,23 @@
     </button>
     <mat-menu #mst="matMenu" xPosition="after" [style.width.px]="400">
       
-      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="toggleLayerfgwmst(isFliesgewasserChecked)">
+      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="startalleFGW(isFliesgewasserChecked)" (keydown)="onMenuKeyDown($event)">
         Fließgewässermessstellen
       </mat-checkbox>
-      <mat-checkbox [(ngModel)]="isSeeChecked" (change)="toggleLayerseemst(isSeeChecked)">
+      <mat-checkbox  [(ngModel)]="isrepraesentFGWChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedFGWdisable" (change)="toggleLayerfgwmst(isFliesgewasserChecked,isrepraesentFGWChecked)">
+        repräsentative Messstellen
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isSeeChecked" (change)="startalleSee(isSeeChecked)">
         Seemessstellen
       </mat-checkbox>
-      <mat-form-field appearance="outline" (click)="$event.stopPropagation()" [style.width.%]="100">
+      <mat-checkbox  [(ngModel)]="isrepraesentSeeChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedSEEdisable" (change)="toggleLayerseemst(isSeeChecked,isrepraesentSeeChecked)">
+        repräsentative Messstellen
+      </mat-checkbox>
+     <mat-form-field appearance="outline" (click)="$event.stopPropagation()" [style.width.%]="100" >
         <mat-label>Filter nach Name</mat-label>
-        <input matInput [(ngModel)]="messstellenFilter" (input)="filterMessstellen(isFliesgewasserChecked,isSeeChecked)" placeholder="Messstellenname eingeben" />
+        <input  [disabled]="isFilterdisable" matInput [(ngModel)]="messstellenFilter" (input)="filterMessstellen(isFliesgewasserChecked,isSeeChecked,isrepraesentFGWChecked,isrepraesentSeeChecked)" placeholder="Messstellenname eingeben" />
       </mat-form-field>
+      
     </mat-menu>
     <button id="verbreitung" class="helpable button" mat-button (click)="openDialogVerbreitung()">Verbreitungskarten</button>
   </div>
