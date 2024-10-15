@@ -478,8 +478,6 @@ mstnachoben(){
   }
   
 }
-public onMenuKeyDown(event: KeyboardEvent) {
-  switch (event.) {}}
 
 startalleSee(checked: boolean) {
   this.map.removeLayer(this.seeLayer);

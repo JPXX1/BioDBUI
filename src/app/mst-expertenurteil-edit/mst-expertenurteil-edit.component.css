@@ -1,26 +1,17 @@
 :host {
   display: block;
 }
+
 table {
   width: 100%;
+  height: 1000px;
   border-collapse: collapse; /* Wichtig für zusammenhängende Grenzen */
-  max-height: 400px; /* Feste Höhe für die Tabelle */
+  max-height: 1000px; /* Feste Höhe für die Tabelle */
   overflow-y: auto;  /* Vertikales Scrollen nur im Body der Tabelle */
-  /* display: block;  */
 }
-mat-header-cell {
-  /* Allgemeiner Stil für alle Header */
-  background-color: #f4f4f4;  /* Leichter Hintergrund für bessere Sichtbarkeit */
-  color: #333;                /* Dunkle Schriftfarbe für Kontrast */
-  font-weight:Medium;          /* Fett gedruckte Schrift für Header */
-  text-align: left;           /* Linksbündiger Text */
-  padding: 10px;  
-  height: auto;            /* Ausreichend Abstand im Inneren der Zellen */
-  overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
-  border-bottom: 2px solid #ddd; /* Dunkle Linie unter dem Header für visuelle Trennung */
-}
-mat-cell {
-  box-sizing: border-box;
+
+mat-header-cell, mat-cell {
+  box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen der Zellen sind */
   padding: 8px;
   white-space: normal;
   word-wrap: break-word;
@@ -29,46 +20,36 @@ mat-cell {
   height: auto;
   word-break: break-word;
   hyphens: auto;
+  background-color: white;
 }
 
-/* Spezielle Stile für verschiedene Zelltypen */
-/* Spezielle Stile für verschiedene Zelltypen */
+mat-header-cell {
+  background-color: #f4f4f4;  /* Leichter Hintergrund für bessere Sichtbarkeit */
+  color: #333;                /* Dunkle Schriftfarbe für Kontrast */
+  font-weight: medium;        /* Fett gedruckte Schrift für Header */
+  text-align: left;           /* Linksbündiger Text */
+  border-bottom: 2px solid #ddd; /* Dunkle Linie unter dem Header für visuelle Trennung */
+}
+
 .header-table-wk, .spalte-wk {
-  min-width: 150px;
-  max-width: 200px;
-  background-color: white;
- 
-  
+  width: 150px;
 }
 
 .header-table-jahr, .spalte-jahr {
-  min-width: 80px;
-  max-width: 80px;
-  background-color:white;
-
-
+  width: 60px;
 }
 
 .header-table-begruendung, .spalte-begruendung {
-  min-width: 500px;
-  max-width: 600px;
-  background-color:white;
-
-
+  width: 500px;
 }
 
 .header-table-exp, .spalte-exp {
-  min-width: 60px;
-  max-width: 100px;
-  background-color:white;
-  
+  width: 40px;
 }
-
-
 
 /* Textarea spezifische Stile */
 textarea[matInput] {
-  width: 500px;  /* Setzt die Breite auf 100% der Zelle */
+  width: 100%;  /* Setzt die Breite auf 100% der Zelle */
   height: 100%; /* Setzt die Höhe dynamisch basierend auf dem Inhalt */
   min-height: 50px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
   box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen des Textarea sind */
@@ -77,6 +58,3 @@ textarea[matInput] {
   resize: none; /* Verhindert, dass der Benutzer die Größe des Textarea ändert */
   overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
 }
-
-/* Anpassungen für responsives Verhalten */
-

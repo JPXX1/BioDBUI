@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ImpPhylibServ } from '../services/impformenphylib.service';
 import * as XLSX from 'xlsx';
+
 import { MstIndex } from '../interfaces/mst-index';
 import { Uebersicht } from '../interfaces/uebersicht';
 import { Messwerte } from '../interfaces/messwerte';
@@ -1086,12 +1087,12 @@ return bemerkung;
 		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
 	}
 	
-	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number){
+	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number):boolean{
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === idVerfahren && (excelspalten.anzeige_tab2_tab1 === 1||excelspalten.anzeige_tab2_tab1 ===4) && excelspalten.id_tab === idtab);
-		
+		let showHandleRowClick: boolean = false; 
 		valspaltenfiter.sort((a,b)=>{return compare(a.namespalteng,b.namespalteng,true)});
 
-
+if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=true;}
 
 		this.displayColumnNames=[];this.dynamicColumns=[];
 		this.displayColumnNames.push('Nr');
@@ -1146,10 +1147,15 @@ return bemerkung;
 		if (idVerfahren!==5 && idVerfahren!==2 && idVerfahren!==4){
 			this.dynamicColumns.push('fehler2');}
 		this.dynamicColumns.push('import1');
-		if (idVerfahren===1 || idVerfahren===3 || idVerfahren===5 || idVerfahren===6){
-			this.dynamicColumns.push('actions');}
-	}
-}
+		
+		 // Füge die Aktionsspalte hinzu, falls relevant
+		 if ([1, 2, 3, 4, 5, 6].includes(idVerfahren)) {
+			this.dynamicColumns.push('actions');
+		  }
+		
+		
+	return showHandleRowClick;
+}}
 
 
 function onlyUnique(value, index, array) {

@@ -13,10 +13,10 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
   @ViewChildren('textarea') textareas: QueryList<ElementRef>;
 
   constructor(private msteditService: MsteditService,  private snackBar: MatSnackBar,private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
-
+  @Input() context: string; // Neue Eingabe für den Kontext
   @Input() mstMitExpertenurteil: MstMitExpertenurteil[] = [];
   dataSource: any[] = [];
-  displayedColumns: string[] = ['wkName', 'namemst', 'jahr', 'letzteAenderung', 'firma', 'wert', 'expertenurteil', 'begruendung', 'aktionen'];
+  displayedColumns: string[] = [];
 
   ngAfterViewInit() {
     this.textareas.changes.subscribe((textareas: QueryList<ElementRef>) => {
@@ -32,9 +32,30 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
     });
   }
 
+  updateDisplayedColumns() {
+    // Beispiel: Bedingung, um bestimmte Spalten optional anzuzeigen
+    this.displayedColumns = ['wkName', 'namemst', 'jahr',  'wert','expertenurteil','begruendung'];
+
+    // if (this.mstMitExpertenurteil.some(item => item.expertenurteil !== null)) {
+    //   this.displayedColumns.push('expertenurteil');
+    // }
+    if (this.mstMitExpertenurteil.some(item => item.letzteAenderung !== null)) {
+      this.displayedColumns.push('letzteAenderung');
+    }
+    if (this.mstMitExpertenurteil.some(item => item.firma !== null)) {
+      this.displayedColumns.push('firma');
+    }
+    // if (this.mstMitExpertenurteil.some(item => item.begruendung !== null)) {
+    //   this.displayedColumns.push('begruendung');
+    // }
+
+    this.displayedColumns.push('aktionen');
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mstMitExpertenurteil']) {
       this.dataSource = this.mstMitExpertenurteil;
+      this.updateDisplayedColumns();
       setTimeout(() => {
         this.textareas.forEach(textarea => {
           this.adjustTextareaHeight(textarea.nativeElement);
@@ -45,17 +66,25 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
 
   async saveElement(element: MstMitExpertenurteil) {
     try {
-      const result = await this.msteditService.saveData(element);
-      //console.log('Erfolgreich gespeichert:', result);
-      
-      // Zeige eine kurze Bestätigung mittels Snackbar
+      // speichern Expertneurteil Mst
+      if (this.context === 'context1') {
+        const result = await this.msteditService.saveData(element);
       this.snackBar.open('Daten erfolgreich gespeichert', 'Schließen', {
-        duration: 3000, // 3 Sekunden anzeigen
+        duration: 3000,
       });
+        console.log('Speichern im Kontext 1:', element);
+      } else if (this.context === 'context2') {
+        // speichern Expertneurteil WK
+        const result = await this.msteditService.saveDataWK(element);
+        console.log('Speichern im Kontext 2:', element);
+      } else {
+        // Standardverhalten
+        console.log('Speichern im Standardkontext:', element);
+      }
+
+     
     } catch (error) {
       console.error('Fehler beim Speichern:', error);
-      
-      // Optional: Fehlernachricht in einer Snackbar anzeigen
       this.snackBar.open('Fehler beim Speichern', 'Schließen', {
         duration: 3000,
       });

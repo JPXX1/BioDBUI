@@ -45,7 +45,14 @@ export class LoginComponent {
   //   );
   // }
   openRegisterPopup() {
-    this.dialog.open(RegisterDialogComponent);
+   // this.dialog.open(RegisterDialogComponent);
+    // Öffne das Standard-Mailprogramm
+    const mailSubject = 'Zugang zur BioDatenbank EU-WRRL Senat Berlin';
+    const mail = 'vivien.rosin@SenMVKU.berlin.de';
+    const mailBody = `Sehr geehrte Damen und Herren,\n\nbitte senden Sie mir Zugangsdaten zur BioDatenbank EU-WRRL Senat Berlin zu. 
+    \n\nMit freundlichen Grüßen`;
+    const mailtoLink = `mailto:${mail}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+    window.location.href = mailtoLink;  // Öffnet das Standard-Mailprogramm
   }
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';

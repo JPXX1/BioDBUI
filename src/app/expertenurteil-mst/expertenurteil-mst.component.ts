@@ -27,7 +27,7 @@ export class ExpertenurteilMstComponent implements OnInit, AfterViewInit {
 see_fliess:boolean=false;
     items = [];
     public dbMPUebersichtMst: MstMitExpertenurteil[] = [];
-    BewertungwkUebersicht: WkUebersicht[] = [];
+    BewertungwkUebersicht: MstMitExpertenurteil[] = [];
     BewertungwkUebersichtleer:boolean=false;
     WKUebersichtAnzeigen=false;
     BewertungenMstAnzeige=false;
@@ -331,10 +331,19 @@ see_fliess:boolean=false;
           selectedWasserkorper = await this.lueckenfuellen(selectedComponents);
           this.selectionCheckbox();
         }
-  
+        this.BewertungwkUebersicht=[];
         // Hol die Wasserkörperbewertung ab
-        await this.WKbewertungabfragen(selectedWasserkorper, yearTo, yearTo);
+        this.BewertungwkUebersicht=await this.msteditService.fetchDataFromDbWK(selectedItems,  
+          selectedWasserkorper, 
+          yearFrom, 
+          yearTo
+        );
+        this.BewertungwkUebersichtleer=true;
+        this.WKUebersichtAnzeigen=true;
+        console.log('this.BewertungwkUebersicht:', this.BewertungwkUebersicht);
+        // await this.WKbewertungfiltern(selectedWasserkorper, yearTo, yearTo);
       }
+     
       await this.loadMessstellenData();
       // Prozess abschließen
       this.buttonClicked = false;
@@ -350,55 +359,7 @@ see_fliess:boolean=false;
   
   
 
-  //Abfrage Ergebnisse
-//   async onSubmit() {
-//     const yearFrom = this.form.get('min').value;
-//     const yearTo = this.form.get('max').value;
-//     const dropdownSelection = this.form.get('dropdownSelection')?.value;
-//     const selectedItems = this.form.get('selectedItems')?.value;
-//     const componentType = this.form.get('componentType')?.value;
-    
-//     let selectedWasserkorper = this.form.get('selectedWasserkorper')?.value;
-//    let  selectedComponents = this.form.get('selectedComponents')?.value;
-  
-//     this.resetDisplayFlags();
-//     this.clearDataStorage();
-  
-  
-//    if ((!selectedComponents || selectedWasserkorper.length > 0) && dropdownSelection==='wasserkorper') {
-//       //wenn nur Wasserkörper im Auswahlmenü ausgewählt sind werden hier die zugeordneten Messstellen abgefragt
-//        selectedComponents = await this.lueckenfuellenWKMst(selectedWasserkorper);
-//       //  await this.ArtabundanzenAbfragen(selectedComponents,selectedItems, yearFrom, yearTo);
-//       //  await this.MstBewertungabfragen(selectedComponents,selectedItems, yearFrom, yearTo);
-//      }
-  
-  
-//     // if (this.componentTypeControl.value.includes("artabundanz")) {
-       
-//     //     await this.ArtabundanzenAbfragen(selectedComponents,selectedItems, yearFrom, yearTo);
-//     // } 
-//   console.log (this.componentTypeControl.value)
-//     if (this.componentTypeControl.value.includes("messstellenbewertung")) {
-//       selectedComponents = this.form.get('selectedComponents')?.value;
-//         await this.MstBewertungabfragen(selectedComponents,selectedItems, yearTo, yearTo);
-//         this.selectionCheckbox();
-//     }
-  
-//     if (this.componentTypeControl.value.includes("wasserkorperbewertung")) {
-    
-//       if ((!selectedWasserkorper || selectedWasserkorper.length === 0) && dropdownSelection==='messstellen') {
-//         selectedComponents = this.form.get('selectedComponents')?.value;
-//           selectedWasserkorper = await this.lueckenfuellen(selectedComponents);
-// this.selectionCheckbox();
-//       }
-//        selectedComponents = this.form.get('selectedComponents')?.value;
-    
-      
-//         await this.WKbewertungabfragen(selectedWasserkorper, yearFrom, yearTo);
-//     }
-  
-//     this.buttonClicked = false;
-//   }
+ 
   
 selectionCheckbox(){
   if (this.buttonClicked !== true){
@@ -465,7 +426,7 @@ selectionCheckbox(){
     // importiert MstBewertungen aller ausgewählter komponenten
     
     this.dbMPUebersichtMst=await this.msteditService.fetchDataFromDb(selectedItems);
-    console.log('this.dbMPUebersichtMst:', this.dbMPUebersichtMst);
+   // console.log('this.dbMPUebersichtMst:', this.dbMPUebersichtMst);
   // console.log('selectedComponents:', selectedComponents);
 
   
@@ -492,38 +453,9 @@ selectionCheckbox(){
      console.log('this.anzeigenMstUebersichtService.dbMPUebersichtMst:', this.anzeigenMstUebersichtService.dbMPUebersichtMst);
      console.log('this.dbMPUebersichtMst:', this.dbMPUebersichtMst);
     
-      //  this.anzeigenMstUebersichtService.uniqueMstSortCall();
-      //  this.anzeigenMstUebersichtService.uniqueJahrSortCall();
-      //    this.anzeigenMstUebersichtService.datenUmwandeln();
-      //   this.anzeigenMstUebersichtService.erzeugeDisplayedColumnNames(true);
-      //    this.anzeigenMstUebersichtService.erzeugeDisplayColumnNames(true);
-    
-    
-    // this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
-    // this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
-    // this.props.push(this.anzeigenMstUebersichtService.displayedColumns);
+     
   }
-  
-  
-     WKbewertungabfragen(selectedWasserkorper: any[],yearFrom:string,yearTo:string) {
-      let filteredArray: any[] = [];
-      this.BewertungwkUebersicht = [];
-      this.BewertungwkUebersichtleer=false;
-      if (selectedWasserkorper.length > 0) {
-          if ((selectedWasserkorper.length === 1 && selectedWasserkorper[0] !== 17) || selectedWasserkorper.length > 1) {
-  
-            filteredArray =  this.anzeigeBewertungService.wkUebersicht.filter(item => 
-              selectedWasserkorper.some(criteria => criteria === item.idwk)
-            );
-            this.BewertungwkUebersicht = filteredArray.filter(item => item.Jahr >= Number(yearFrom) && item.Jahr <= Number(yearTo));
-            // this.BewertungwkUebersicht = filteredArray;
-          }
-      }
-  
-      // Setze das gefilterte Array zurück
-      if (filteredArray.length>0){ this.BewertungwkUebersichtleer=true;}else{this.BewertungwkUebersichtleer=false;}
-      this.WKUebersichtAnzeigen = true;
-  }
+ 
   
     onToggleChange() {
      

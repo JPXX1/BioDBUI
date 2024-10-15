@@ -155,6 +155,18 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   
 }
   }
+  async getBwWKUebersicht(selectedItems: number): Promise<any[]> {
+    const response = await this.httpClient.post(`${this.apiUrl}/bwWKUebersicht`, selectedItems).toPromise();
+    
+    // Hier sicherstellen, dass die API ein Array zurückgibt
+    if (!Array.isArray(response)) {
+      throw new Error('Die Antwort ist kein Array');
+    }
+    
+    return response;
+  }
+
+ 
   async getBwMSTUebersicht(selectedItems: number[]): Promise<any[]> {
     const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
     

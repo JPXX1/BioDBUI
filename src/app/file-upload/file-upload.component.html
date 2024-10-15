@@ -85,7 +85,7 @@
             <button mat-icon-button color="primary" (click)="edit(row)" class="iconbutton">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="accent" (click)="handleRowClick(row)" class="iconbutton" color="warn">
+            <button *ngIf="showHandleRowClick" mat-icon-button color="accent" (click)="handleRowClick(row)" class="iconbutton" color="warn">
               <mat-icon>open_in_new</mat-icon>
             </button>
           </mat-cell>

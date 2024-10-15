@@ -37,7 +37,7 @@
     </button>
     <mat-menu #mst="matMenu" xPosition="after" [style.width.px]="400">
       
-      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="startalleFGW(isFliesgewasserChecked)" (keydown)="onMenuKeyDown($event)">
+      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="startalleFGW(isFliesgewasserChecked)">
         Fließgewässermessstellen
       </mat-checkbox>
       <mat-checkbox  [(ngModel)]="isrepraesentFGWChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedFGWdisable" (change)="toggleLayerfgwmst(isFliesgewasserChecked,isrepraesentFGWChecked)">

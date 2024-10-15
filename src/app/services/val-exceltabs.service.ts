@@ -166,11 +166,17 @@ exceltabsauslesen(workbook) {
           try {
             for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
               let name = this.excelspaltenimport[i];
-              if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || name.Spaltenname.includes("protokoll phytoplankton")) {
+              if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || 
+                name.Spaltenname.includes("protokoll phytoplankton")) {
                 if (name.Spaltenname.includes("protokoll phytoplankton")) {
                   this.loescheErste5Zeilen=true;
                 }else{  this.loescheErste5Zeilen=false;}
-                this.waehleVerfahren(6);break;}
+                this.waehleVerfahren(6);break;}else  if
+                //Phylib-Exportdatei  Prüfung anhand der Spaltennamen
+                (name.Spaltenname === "makrophytentyp" || name.Spaltenname === "diatomeentyp" || 
+                  name.Spaltenname.includes("makrophytenverödung")) {
+                    this.waehleVerfahren(2);break;
+                  }
                   }
              
                  

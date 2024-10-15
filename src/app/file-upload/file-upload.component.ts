@@ -73,7 +73,8 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	dynamicColumns:string[]=['nr','mst','anzahl','sp3','fehler1','actions'];//,'sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','fehler1','fehler2','fehler3'];//,'_Messstelle', '_TypWRRL','_UMG', '_AnzahlTaxa','MstOK', 'OK'
 	isHelpActive: boolean = false;
 	helpText: string = '';
-	
+	showHandleRowClick: boolean = false; // Setze dies je nach Tabelle oder Anforderung
+
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
 	loading: boolean = false; // Flag variable 
@@ -225,7 +226,7 @@ handleJahrSelected(selectedJahr: number) {
 						//Verfahren=5
 						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
 					
-					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;} else { 
+					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;}  
 						if (this.xlsxImportPhylibService.doppelteMesswerte()===true){
 							const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 								width: '250px',
@@ -253,7 +254,7 @@ handleJahrSelected(selectedJahr: number) {
 
 							//this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
 						console.log(this.InfoBox)} else 
-						{this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; }};
+						{this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; };
 				} else {
 					this.InfoBox = "Bitte erst eine Importdatei hochladen."
 				}
@@ -430,9 +431,9 @@ handleJahrSelected(selectedJahr: number) {
 					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
-						// this.xlsxImportPhylibService.uebersicht=[];
+						this.MessDataOrgi =[];
 						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
-						
+						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 						this.pruefen=false;
 						this.displayableColumns(2);
 						// this.dataSource.sort=this.sort;
@@ -569,7 +570,7 @@ displayableColumns(idverfahren:number){
 	let tab:number;
 	if (idverfahren===4 || idverfahren===5) {tab=2;} else {tab=0;}
 	
-	this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
+	this.showHandleRowClick=this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
 

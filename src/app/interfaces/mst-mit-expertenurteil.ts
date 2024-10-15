@@ -1,22 +1,23 @@
 export interface MstMitExpertenurteil {
   
         wkName: string;
+        id_wk?: number;
         id: number;
-        parameter: string;
+        parameter?: string;
         idMst: number;
         namemst: string;
-        repraesent: string;
-        idKomp: number;
-        komponente: string;
-        idImport: number;
+        repraesent?: string;
+        idKomp?: number;
+        komponente?: string;
+        idImport?: number;
         jahr: string;
-        letzteAenderung: string;
-        idEinh: number;
-        firma: string;
+        letzteAenderung?: string;
+        idEinh?: number;
+        firma?: string;
         wert: number;
         expertenurteil: string;
         begruendung: string;
-        expertenurteilChanged: Date;
-        idNu: number;
-        ausblenden:boolean;
+        expertenurteilChanged?: Date;
+        idNu?: number;
+        ausblenden?:boolean;
       }

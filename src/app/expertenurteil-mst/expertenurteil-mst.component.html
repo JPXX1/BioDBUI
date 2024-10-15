@@ -95,7 +95,7 @@
         <div class="komponente"  style="margin-top:70px;" class="helpable" id="auswahl-komp">
           <mat-form-field appearance="fill" style="width: 80%;">
             <mat-label>Komponenten für Artabundanzen und Messstellenbewertung</mat-label>
-            <mat-select formControlName="selectedItems" multiple  (selectionChange)="onSelectionChange($event)">
+            <mat-select formControlName="selectedItems" single  (selectionChange)="onSelectionChange($event)">
               <!-- <mat-checkbox [checked]="allKomponentenSelected" (change)="toggleAllKomponenten($event.checked)">
                 Select All
               </mat-checkbox> -->
@@ -133,14 +133,14 @@
     <mat-tab label="Messstellenbewertung" *ngIf="BewertungenMstAnzeige == true">
       <div class="card" style="vertical-align: top;">
         <mat-card class="example-card">
-          <app-mst-expertenurteil-edit [mstMitExpertenurteil]="dbMPUebersichtMst"></app-mst-expertenurteil-edit>
+          <app-mst-expertenurteil-edit context="context1" [mstMitExpertenurteil]="dbMPUebersichtMst"></app-mst-expertenurteil-edit>
         </mat-card>
       </div>
     </mat-tab>
     <mat-tab label="Wasserkörperbewertung" *ngIf="WKUebersichtAnzeigen == true">
       <div class="card" style="vertical-align: top;">
         <mat-card class="example-card">
-          <app-uebersicht-tabelle [wkUebersicht]="BewertungwkUebersicht" *ngIf="BewertungwkUebersichtleer== true"></app-uebersicht-tabelle>
+          <app-mst-expertenurteil-edit context="context2" [mstMitExpertenurteil]="BewertungwkUebersicht" *ngIf="BewertungwkUebersichtleer== true"></app-mst-expertenurteil-edit>
         </mat-card>
       </div>
     </mat-tab>
