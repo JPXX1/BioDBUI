@@ -1,71 +1,76 @@
-<mat-table [dataSource]="dataSource" class="table sticky-header ">
+<div class="mat-elevation-z8 table" translate="no">
+  <mat-table [dataSource]="dataSource" matSort class="sticky-header my-table">
 
-  <!-- WK Name Column -->
-  <ng-container matColumnDef="wkName">
-    <mat-header-cell *matHeaderCellDef class="header-table-wk sticky-header th"> WK Name </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-wk"> {{element.wkName}} </mat-cell>
-  </ng-container>
+    <!-- WK Name Column -->
+    <ng-container matColumnDef="wkName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wk sticky-header"> WK Name </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-wk"> {{element.wkName}} </mat-cell>
+    </ng-container>
 
-  <!-- NameMST Column -->
-  <ng-container matColumnDef="namemst">
-    <mat-header-cell *matHeaderCellDef class="header-table-wk sticky-header th"> Name MST </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-wk"> {{element.namemst}} </mat-cell>
-  </ng-container>
+    <!-- NameMST Column -->
+    <ng-container matColumnDef="namemst">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wk sticky-header"> Name MST </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-wk"> {{element.namemst}} </mat-cell>
+    </ng-container>
 
-  <!-- Jahr -->
-  <ng-container matColumnDef="jahr">
-    <mat-header-cell *matHeaderCellDef class="header-table-jahr sticky-header th"> Jahr </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.jahr}} </mat-cell>
-  </ng-container>
+    <!-- Jahr -->
+    <ng-container matColumnDef="jahr">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-jahr sticky-header"> Jahr </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.jahr}} </mat-cell>
+    </ng-container>
 
-  <!-- Letzte Änderung -->
-  <ng-container matColumnDef="letzteAenderung">
-    <mat-header-cell *matHeaderCellDef class="header-table-jahr sticky-header th"> Letzte Änderung </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.letzteAenderung}} </mat-cell>
-  </ng-container>
+    <!-- Letzte Änderung -->
+    <ng-container matColumnDef="letzteAenderung">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-jahr sticky-header"> Letzte Änderung </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.letzteAenderung}} </mat-cell>
+    </ng-container>
 
-  <!-- Firma -->
-  <ng-container matColumnDef="firma">
-    <mat-header-cell *matHeaderCellDef class="header-table-jahr sticky-header th"> Probenehmer </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.firma}} </mat-cell>
-  </ng-container>
+    <!-- Firma -->
+    <ng-container matColumnDef="firma">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-jahr sticky-header"> Probenehmer </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.firma}} </mat-cell>
+    </ng-container>
 
-  <!-- Wert -->
-  <ng-container matColumnDef="wert">
-    <mat-header-cell *matHeaderCellDef class="header-table-jahr sticky-header th"> Bewertung </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-jahr"> {{element.wert}} </mat-cell>
-  </ng-container>
+    <!-- Wert -->
+    <ng-container matColumnDef="wert">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wert sticky-header"> Bewertung </mat-header-cell>
+      <mat-cell *matCellDef="let element" style="margin-top:10px; min-height: 100px;" [style.background-color]="getColor(element.wert)" class="spalte-wert">
+        {{ element.wert }} 
+      </mat-cell>
+    </ng-container>
 
-  <!-- Expertenurteil -->
-  <ng-container matColumnDef="expertenurteil">
-    <mat-header-cell *matHeaderCellDef class="header-table-exp sticky-header th"> Exp.urteil </mat-header-cell>
-    <mat-cell *matCellDef="let element" class="spalte-exp">
-      <input matInput [(ngModel)]="element.expertenurteil">
-    </mat-cell>
-  </ng-container>
+    <!-- Expertenurteil -->
+    <ng-container matColumnDef="expertenurteil">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-exp sticky-header"> Exp.urteil </mat-header-cell>
+      <mat-cell *matCellDef="let element" class="spalte-exp full-width">
+        <mat-form-field appearance="outline" class="full-width">
+          <input matInput [(ngModel)]="element.expertenurteil" [style.background-color]="getColor(element.expertenurteil)" class="full-width">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Begründung -->
-  <ng-container matColumnDef="begruendung">
-    <mat-header-cell *matHeaderCellDef class="header-table-begruendung sticky-header th"> Begründung </mat-header-cell>
-    <mat-cell *matCellDef="let element" >
-      <textarea #textarea matInput [(ngModel)]="element.begruendung" rows="1" class="textarea spalte-begruendung"></textarea>
-    </mat-cell>
-  </ng-container>
+    <!-- Begründung -->
+    <ng-container matColumnDef="begruendung">
+      <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-begruendung sticky-header"> Begründung </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <textarea #textarea matInput [(ngModel)]="element.begruendung" style="margin-top:10px; min-height: 100px;" rows="1" class="textarea spalte-begruendung full-width"></textarea>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Aktionen Column -->
-  <ng-container matColumnDef="aktionen">
-    <mat-header-cell *matHeaderCellDef> Aktionen </mat-header-cell>
-    <mat-cell *matCellDef="let element">
-      <mat-checkbox [(ngModel)]="element.ausblenden" (change)="onCheckboxChange(element)">
-        ausgeblendet
-      </mat-checkbox>
-      <button mat-button color="primary" (click)="saveElement(element)">Speichern</button>
-      
-    </mat-cell>
-  </ng-container>
+    <!-- Aktionen Column -->
+    <ng-container matColumnDef="aktionen">
+      <mat-header-cell *matHeaderCellDef class="header-table-jahr sticky-header"> Aktionen </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-checkbox *ngIf="displayausblenden" [(ngModel)]="element.ausblenden" (change)="onCheckboxChange(element)">
+          ausgeblendet
+        </mat-checkbox>
+        <button mat-button color="primary" (click)="saveElement(element)">Speichern</button>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Header and Row Declarations -->
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <!-- Header and Row Declarations -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-</mat-table>
+  </mat-table>
+</div>

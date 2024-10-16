@@ -1,42 +1,55 @@
-:host {
-  display: block;
+/* Textarea spezifische Stile */
+/* Container für die Tabelle mit fester Höhe und Overflow-Eigenschaften */
+
+
+textarea[matInput] {
+  width: 100%;  /* Setzt die Breite auf 100% der Zelle */
+  height: 100%; /* Setzt die Höhe dynamisch basierend auf dem Inhalt */
+  min-height: 50px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
+  box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen des Textarea sind */
+  border: 1px solid #ccc; /* Gibt dem Textarea eine feine Grenze für bessere Sichtbarkeit */
+  padding: 0px; /* Gibt Innenabstand, um den Text von den Rändern fernzuhalten */
+  resize: none; /* Verhindert, dass der Benutzer die Größe des Textarea ändert */
+  overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
+}
+/* Spezifische Anpassung der Zellen */
+.mat-cell, .mat-header-cell {
+  padding: 0px 0px !important;    /* Verkleinere das Padding */
+
+  vertical-align: middle !important; /* Vertikale Zentrierung */
+  text-align: center !important;   /* Horizontale Zentrierung */
+  box-sizing: border-box !important;
 }
 
-table {
-  width: 100%;
-  height: 1000px;
-  border-collapse: collapse; /* Wichtig für zusammenhängende Grenzen */
-  max-height: 1000px; /* Feste Höhe für die Tabelle */
-  overflow-y: auto;  /* Vertikales Scrollen nur im Body der Tabelle */
+/* Spezifische Anpassung für die Bewertungszellen */
+.spalte-wert {
+ 
+             /* Feste Höhe */
+  padding: 0px !important;
+  text-align: center !important;        /* Zentrierter Text */
+  vertical-align: middle !important;
 }
 
-mat-header-cell, mat-cell {
-  box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen der Zellen sind */
-  padding: 8px;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  vertical-align: top;
-  height: auto;
-  word-break: break-word;
-  hyphens: auto;
-  background-color: white;
-}
+/* Anpassung der Input-Felder */
 
-mat-header-cell {
-  background-color: #f4f4f4;  /* Leichter Hintergrund für bessere Sichtbarkeit */
-  color: #333;                /* Dunkle Schriftfarbe für Kontrast */
-  font-weight: medium;        /* Fett gedruckte Schrift für Header */
-  text-align: left;           /* Linksbündiger Text */
-  border-bottom: 2px solid #ddd; /* Dunkle Linie unter dem Header für visuelle Trennung */
+input.matInput {
+  height: 100%;           /* Input passt sich an die Höhe der Zelle an */
+  box-sizing: border-box;  /* Padding und Border in die Höhe einbeziehen */
 }
-
+/* Optional: Zentrierung und Ausrichtung von Input-Feldern */
+.mat-form-field-wrapper {
+  display: flex;
+  align-items: center; /* Vertikale Zentrierung des Input-Feldes */
+  height: 100% !important;
+}
 .header-table-wk, .spalte-wk {
   width: 150px;
 }
-
+.header-table-wert, .spalte-wert{
+  width: 50px;height: 5px;padding: 0px;
+}
 .header-table-jahr, .spalte-jahr {
-  width: 60px;
+  width: 30px;
 }
 
 .header-table-begruendung, .spalte-begruendung {
@@ -46,15 +59,16 @@ mat-header-cell {
 .header-table-exp, .spalte-exp {
   width: 40px;
 }
+.my-table {
+  width: 100%;
+  height:1000px;
+  border-collapse: collapse;
+}
 
-/* Textarea spezifische Stile */
-textarea[matInput] {
-  width: 100%;  /* Setzt die Breite auf 100% der Zelle */
-  height: 100%; /* Setzt die Höhe dynamisch basierend auf dem Inhalt */
-  min-height: 50px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
-  box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen des Textarea sind */
-  border: 1px solid #ccc; /* Gibt dem Textarea eine feine Grenze für bessere Sichtbarkeit */
-  padding: 4px; /* Gibt Innenabstand, um den Text von den Rändern fernzuhalten */
-  resize: none; /* Verhindert, dass der Benutzer die Größe des Textarea ändert */
-  overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
+.sticky-header {
+  position: sticky;
+  top: 2; /* Setzen Sie den Wert auf 0, um den Header oben zu fixieren */
+  background-color: white; /* Optional: Hintergrundfarbe, um den Header hervorzuheben */
+  z-index: 1; /* Optional: Wenn andere Inhalte über dem Header erscheinen */
+  border-bottom: 2px solid #ddd; /* Optional: Styling für Header */
 }

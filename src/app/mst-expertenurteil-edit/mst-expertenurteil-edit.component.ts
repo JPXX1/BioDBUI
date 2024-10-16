@@ -1,8 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges, ElementRef, Renderer2, QueryList, ViewChildren, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ElementRef, Renderer2, QueryList, ViewChildren,ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MstMitExpertenurteil } from 'src/app/interfaces/mst-mit-expertenurteil';
+import { MatSort } from '@angular/material/sort';
 import { MsteditService } from 'src/app/services/mstedit.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-mst-expertenurteil-edit',
@@ -11,14 +13,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit {
   @ViewChildren('textarea') textareas: QueryList<ElementRef>;
-
-  constructor(private msteditService: MsteditService,  private snackBar: MatSnackBar,private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
+  @ViewChild(MatSort) sort: MatSort;
+  constructor(private Farbebewertg: FarbeBewertungService,private msteditService: MsteditService,  private snackBar: MatSnackBar,private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
   @Input() context: string; // Neue Eingabe für den Kontext
   @Input() mstMitExpertenurteil: MstMitExpertenurteil[] = [];
-  dataSource: any[] = [];
-  displayedColumns: string[] = [];
+  
+  dataSource: MatTableDataSource<any>;
 
+
+  //dataSource: any[] = [];
+  displayedColumns: string[] =  [];
+
+  displayausblenden: boolean = false;
   ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  
     this.textareas.changes.subscribe((textareas: QueryList<ElementRef>) => {
       setTimeout(() => {
         textareas.forEach(textarea => {
@@ -31,20 +40,23 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
       }, 0);
     });
   }
-
+ 
+   
   updateDisplayedColumns() {
     // Beispiel: Bedingung, um bestimmte Spalten optional anzuzeigen
-    this.displayedColumns = ['wkName', 'namemst', 'jahr',  'wert','expertenurteil','begruendung'];
-
-    // if (this.mstMitExpertenurteil.some(item => item.expertenurteil !== null)) {
-    //   this.displayedColumns.push('expertenurteil');
-    // }
+    this.displayedColumns =  ['wkName', 'namemst', 'jahr',  'wert','expertenurteil','begruendung'];
+     if (this.mstMitExpertenurteil.some(item => item.ausblenden !== null)) {
+       this.displayausblenden=false;
+     }
     if (this.mstMitExpertenurteil.some(item => item.letzteAenderung !== null)) {
       this.displayedColumns.push('letzteAenderung');
     }
-    if (this.mstMitExpertenurteil.some(item => item.firma !== null)) {
-      this.displayedColumns.push('firma');
+    if (this.mstMitExpertenurteil.some(item => item.ausblenden !== null)) {
+      this.displayausblenden=true;
     }
+    // if (this.mstMitExpertenurteil.some(item => item.firma !== null)) {
+    //   this.displayedColumns.push('firma');
+    // }
     // if (this.mstMitExpertenurteil.some(item => item.begruendung !== null)) {
     //   this.displayedColumns.push('begruendung');
     // }
@@ -54,7 +66,9 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mstMitExpertenurteil']) {
-      this.dataSource = this.mstMitExpertenurteil;
+      this.dataSource = new MatTableDataSource(this.mstMitExpertenurteil);
+      this.dataSource.sort = this.sort;
+      // this.dataSource = this.mstMitExpertenurteil;
       this.updateDisplayedColumns();
       setTimeout(() => {
         this.textareas.forEach(textarea => {
@@ -114,4 +128,7 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
     textarea.style.height = 'auto';
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
-}
+  getColor(OZK){
+    return this.Farbebewertg.getColor(OZK);
+     
+  }}

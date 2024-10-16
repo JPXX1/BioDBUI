@@ -14,68 +14,102 @@ private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,private anzeigenMstUebersichtService:AnzeigenMstUebersichtService) { }
 
 
-  public async fetchDataFromDb(komp:number): Promise<MstMitExpertenurteil[]> {
+  /**
+ * Ruft Daten aus der Datenbank ab und mappt sie auf das Interface `MstMitExpertenurteil`.
+ *
+ * @param {number} komp - Die Komponente, für die die Daten abgerufen werden sollen.
+ * @returns {Promise<MstMitExpertenurteil[]>} - Ein Promise, das ein Array von `MstMitExpertenurteil`-Objekten zurückgibt.
+ *
+ * @example
+ * // Beispielaufruf der Methode
+ * const daten = await fetchDataFromDb(1);
+ * console.log(daten);
+ *
+ * @throws {Error} - Wenn ein Fehler beim Abrufen der Daten auftritt.
+ */
+  public async fetchDataFromDb(komp: number,idWkArray: string[],  jahr: string): Promise<MstMitExpertenurteil[]> {
     // Die Methode erwartet eine HTTP-Anfrage oder kann Daten direkt aus einem Array verarbeiten
     await this.anzeigenMstUebersichtService.callBwUebersicht(komp);
-   
+  
     const dbMPUebersichtMst = await this.anzeigenMstUebersichtService.dbMPUebersichtMst; // asynchrone Methode
-//console.log(dbMPUebersichtMst);
-    // Mapping der Daten auf das Interface
-    return dbMPUebersichtMst.map((data: any) => ({
-      wkName: data.wkName,                        // wk.wk_name
-      id_wk: data.id_wk,                          // wk.id_wk
-      id: data.id,                                // da.id
-      parameter: data.parameter,                  // para.parameter
-      idMst: data.idMst,                         // mst.id_mst
-      namemst: data.namemst,             // mst.namemst + ' (*)'
-      repraesent: data.repraesent,                // mst.repraesent
-      idKomp: data.idKomp,                       // para.id_komp
-      komponente: data.komponente,                // tk.komponente
-      idImport: data.idImport,                   // da.id_import
-      jahr: data.jahr,                            // to_char(da.datum, 'YYYY')
-      letzteAenderung: data.letzteAenderung,     // to_char(da.changed, 'dd.mm.YY')
-      idEinh: data.idEinh,                       // da.id_einh
-      firma: data.firma,                          // p.firma
-      wert: data.wert,                            // da.wert
-      expertenurteil: data.expertenurteil,        // de.expertenurteil
-      begruendung: data.begruendung,              // de.begruendung
-      expertenurteilChanged: new Date(data.expertenurteil_changed), // de.changed
-      idNu: data.idNu,                // de.id_nu
-      ausblenden:data.ausblenden      //ausblenden der Daten=true
-    }));
+    
+    // Filter basierend auf id_wk und jahr
+    const filteredData = dbMPUebersichtMst.filter((data: any) => {
+      const dataYear = data.jahr; // Jahr aus dem Datum extrahieren
+     
+      return idWkArray.includes(data.idMst) && dataYear === jahr.toString();
+         // Filtern nach id_wk und jahr
+    });
+  
+    // Mapping der gefilterten Daten auf das Interface
+    return filteredData.map((data: any) => {
+      let expertenurteilChangedDate: Date | null = null;
+      const expertenurteil_temp = data.expertenurteilChanged;
+      
+      // Verarbeite data.expertenurteil_changed, falls vorhanden
+      if (expertenurteil_temp) {
+        expertenurteilChangedDate = new Date(expertenurteil_temp);
+        if (isNaN(expertenurteilChangedDate.getTime())) {
+          expertenurteilChangedDate = null;
+        }
+      }
+  
+      // Verarbeite data.letzteAenderung, wenn expertenurteilChangedDate null ist
+      let letzteAenderungDate: Date;
+      // if (!expertenurteilChangedDate && data.letzteAenderung) {
+        // Parsen des Strings 'DD.MM.YY'
+        const [day, month, year] = data.letzteAenderung.split('.');
+        const parsedYear = parseInt(year, 10) + 2000; // Umwandlung von 'YY' zu 'YYYY'
+        letzteAenderungDate = new Date(`${parsedYear}-${month}-${day}`);
+  
+        if (isNaN(letzteAenderungDate.getTime())) {
+          letzteAenderungDate = null;
+        }else if(letzteAenderungDate<expertenurteilChangedDate){
+          letzteAenderungDate=expertenurteilChangedDate;
+        }
+       
+  
+      // Datum in 'dd.mm.yy' Format konvertieren, falls gültig (ohne Zeit)
+      const formatDate = (date: Date | null): string | null => {
+        if (!date) return null;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(-2); // Nimm nur die letzten 2 Ziffern
+        return `${day}.${month}.${year}`;
+      };
+  
+      const letzteAenderungFormatted = formatDate(letzteAenderungDate);
+  
+      return {
+        wkName: data.wkName,                        // wk.wk_name
+        id_wk: data.id_wk,                          // wk.id_wk
+        id: data.id,                                // da.id
+        parameter: data.parameter,                  // para.parameter
+        idMst: data.idMst,                          // mst.id_mst
+        namemst: data.namemst,                      // mst.namemst + ' (*)'
+        repraesent: data.repraesent,                // mst.repraesent
+        idKomp: data.idKomp,                        // para.id_komp
+        komponente: data.komponente,                // tk.komponente
+        idImport: data.idImport,                    // da.id_import
+        jahr: data.jahr,                            // Originalwert des Jahres ohne Formatierung
+        letzteAenderung: letzteAenderungFormatted,  // Formatierte Anzeige des Datums
+        idEinh: data.idEinh,                        // da.id_einh
+        firma: data.firma,                          // p.firma
+        wert: data.wert,                            // da.wert
+        expertenurteil: data.expertenurteil,        // de.expertenurteil
+        begruendung: data.begruendung,              // de.begruendung
+        expertenurteilChanged: formatDate(expertenurteilChangedDate), // de.changed
+        idNu: data.idNu,                            // de.id_nu
+        ausblenden: data.ausblenden                 // ausblenden der Daten=true
+      };
+    });
   }
+  
+  
 
-  // async fetchDataFromDbWK(komp:number): Promise<MstMitExpertenurteil[]> {
-  //   // Die Methode erwartet eine HTTP-Anfrage oder kann Daten direkt aus einem Array verarbeiten
-  //   //await this.anzeigenMstUebersichtService.getBwWKUebersicht(komp);
-   
-  //   const dbMPUebersichtMst =  await this.anzeigenMstUebersichtService.getBwWKUebersicht(komp);
-  //   //await this.anzeigenMstUebersichtService.dbMPUebersichtMst; // asynchrone Methode
-  //     console.log(dbMPUebersichtMst);
-  //   // Mapping der Daten auf das Interface
-  //   return dbMPUebersichtMst.map((data: any) => ({
-  //     wkName: data.wk_ame,                        // wk.wk_name
-  //     id_wk: data.id_wk,                          // wk.id_wk
-  //     id: data.id,                                // da.id
-  //     // parameter: data.parameter,                  // para.parameter
-  //     idMst: data.idMst,                         // mst.id_mst
-  //     namemst: data.namemst,             // mst.namemst + ' (*)'
-  //     repraesent: data.repraesent,                // mst.repraesent
-  //     idKomp: data.idKomp,                       // para.id_komp
-  //     // komponente: 'f',                // tk.komponente
-  //     // idImport: data.idImport,                   // da.id_import
-  //     jahr: data.jahr,                            // to_char(da.datum, 'YYYY')
-  //     // letzteAenderung: data.letzteAenderung,     // to_char(da.changed, 'dd.mm.YY')
-  //     // idEinh: data.idEinh,                       // da.id_einh
-  //     // firma: data.firma,                          // p.firma
-  //     wert: data.avg_final_wert,                            // da.avg_final_wert
-  //     expertenurteil: data.expertenurteil,        // de.expertenurteil
-  //     begruendung: data.begruendung,              // de.begruendung
-  //     expertenurteilChanged: new Date(data.expertenurteil_changed), // de.changed
-  //     idNu: data.idNu,                // de.id_nu
-  //     ausblenden:data.ausblenden      //ausblenden der Daten=true
-  //   }));
-  // }
+
+
+ 
 /**
  * Diese Methode filtert die Bewertung der Wasserkörperübersicht basierend auf den ausgewählten Wasserkörpern und dem angegebenen Zeitraum.
  * 
@@ -95,37 +129,76 @@ async fetchDataFromDbWK(
   // Abruf der Daten aus dem Service
   const dbMPUebersichtMst = await this.anzeigenMstUebersichtService.getBwWKUebersicht(komp);
   console.log(dbMPUebersichtMst);
-
+  
   // Filtern nach ausgewählten Wasserkörpern (id_wk) und Jahrbereich
   const filteredData = dbMPUebersichtMst.filter((data: any) => {
-    const dataYear = data.jahr;  // Jahr als Text
-    const yearMatches = dataYear === yearTo.toString(); // Vergleich mit dem vorgegebenen Jahr
-    const inSelectedWasserkorper = selectedWasserkorper.length === 0 || selectedWasserkorper.includes(data.id_wk);
-    console.log(`Data Year: ${dataYear}, YearTo: ${yearTo}, Year Matches: ${yearMatches}`);
-  console.log(`Selected Wasserkörper: ${selectedWasserkorper}, ID WK: ${data.id_wk}, In Selected WK: ${inSelectedWasserkorper}`);
-
+    
+//     const yearMatches = dataYear === yearTo.toString(); // Vergleich mit dem vorgegebenen Jahr
+//     const inSelectedWasserkorper = selectedWasserkorper.length === 0 || selectedWasserkorper.includes(data.id_wk);
+  const dataYear = data.jahr;  // Jahr als Text
+  const yearMatches = dataYear === yearTo.toString(); 
+  const inSelectedWasserkorper = selectedWasserkorper.length === 0 || selectedWasserkorper.includes(data.id_wk);
+    
+    console.log(`Data Year: ${dataYear}, YearFrom: ${yearFrom}, YearTo: ${yearTo}, Year Matches: ${yearMatches}`);
+    console.log(`Selected Wasserkörper: ${selectedWasserkorper}, ID WK: ${data.id_wk}, In Selected WK: ${inSelectedWasserkorper}`);
 
     return yearMatches && inSelectedWasserkorper;
   });
 
   // Mapping der gefilterten Daten auf das Interface
-  return filteredData.map((data: any) => ({
-    wkName: data.wk_name,                        // wk.wk_name
-    id_wk: data.id_wk,                          // wk.id_wk
-    id: data.id,                                // da.id
-    idMst: data.id_mst,                          // mst.id_mst
-    namemst: data.namemst,                      // mst.namemst + ' (*)'
-    // repraesent: data.repraesent,                // mst.repraesent
-    // idKomp: data.idKomp,                        // para.id_komp
-    jahr: data.jahr,                            // to_char(da.datum, 'YYYY')
-    wert: data.avg_final_wert,                  // da.avg_final_wert
-    expertenurteil: data.expertenurteil,        // de.expertenurteil
-    begruendung: data.begruendung             // de.begruendung
-    // expertenurteilChanged: new Date(data.expertenurteil_changed), // de.changed
-    // idNu: data.idNu,                            // de.id_nu
-    // ausblenden: false                 // ausblenden der Daten=true
-  }));
+  return filteredData.map((data: any) => {
+    let expertenurteilChangedDate: Date | null = null;
+
+    // Verarbeite data.expertenurteil_changed, falls vorhanden
+    if (data.expertenurteil_changed) {
+      expertenurteilChangedDate = new Date(data.changed);
+      if (isNaN(expertenurteilChangedDate.getTime())) {
+        expertenurteilChangedDate = null;
+      }
+    }
+
+    // Verarbeite data.letzteAenderung, wenn expertenurteilChangedDate null ist
+    let letzteAenderungDate: Date | null = expertenurteilChangedDate;
+    if (!expertenurteilChangedDate && data.letzteAenderung) {
+      // Parsen des Strings 'DD.MM.YY'
+      const [day, month, year] = data.letzteAenderung.split('.');
+      const parsedYear = parseInt(year, 10) + 2000; // Umwandlung von 'YY' zu 'YYYY'
+      letzteAenderungDate = new Date(`${parsedYear}-${month}-${day}`);
+
+      if (isNaN(letzteAenderungDate.getTime())) {
+        letzteAenderungDate = null;
+      }
+    }
+
+    // Datum in 'dd.mm.yy' Format konvertieren, falls gültig
+    const formatDateTime = (date: Date | null): string | null => {
+      if (!date) return null;
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(-2); // Nimm nur die letzten 2 Ziffern
+      return `${day}.${month}.${year}`;
+    };
+
+    const letzteAenderungFormatted = formatDateTime(letzteAenderungDate); // Hier neu definiert
+
+    return {
+      wkName: data.wk_name,                        // wk.wk_name
+      id_wk: data.id_wk,                          // wk.id_wk
+      id: data.id,                                // da.id
+      idMst: data.id_mst,                          // mst.id_mst
+      namemst: data.namemst,                      // mst.namemst + ' (*)'
+      letzteAenderung: letzteAenderungFormatted,  // Formatierte Anzeige des Datums
+      firma: null,                                // para.id_komp
+      jahr: data.jahr,                            // Jahr wird nicht mehr formatiert
+      wert: data.avg_final_wert,                  // da.avg_final_wert
+      expertenurteil: data.expertenurteil,        // de.expertenurteil
+      begruendung: data.begruendung,              // de.begruendung
+      ausblenden: null                            // ausblenden der Daten=true
+    };
+  });
 }
+
+
 
 //speichert das Expertenurteil der Messstelle
 async saveData(mstMitExpertenurteil: MstMitExpertenurteil): Promise<any> {
