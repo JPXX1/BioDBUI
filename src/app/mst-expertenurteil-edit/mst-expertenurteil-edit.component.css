@@ -5,7 +5,7 @@
 textarea[matInput] {
   width: 100%;  /* Setzt die Breite auf 100% der Zelle */
   height: 100%; /* Setzt die Höhe dynamisch basierend auf dem Inhalt */
-  min-height: 50px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
+  min-height: 45px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
   box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen des Textarea sind */
   border: 1px solid #ccc; /* Gibt dem Textarea eine feine Grenze für bessere Sichtbarkeit */
   padding: 0px; /* Gibt Innenabstand, um den Text von den Rändern fernzuhalten */
@@ -22,43 +22,32 @@ textarea[matInput] {
 }
 
 /* Spezifische Anpassung für die Bewertungszellen */
-.spalte-wert {
- 
-             /* Feste Höhe */
-  padding: 0px !important;
-  text-align: center !important;        /* Zentrierter Text */
-  vertical-align: middle !important;
-}
+
 
 /* Anpassung der Input-Felder */
 
 input.matInput {
-  height: 100%;           /* Input passt sich an die Höhe der Zelle an */
+  height: 100%;
+  width: 100%;           /* Input passt sich an die Höhe der Zelle an */
   box-sizing: border-box;  /* Padding und Border in die Höhe einbeziehen */
 }
 /* Optional: Zentrierung und Ausrichtung von Input-Feldern */
-.mat-form-field-wrapper {
-  display: flex;
-  align-items: center; /* Vertikale Zentrierung des Input-Feldes */
-  height: 100% !important;
-}
+
 .header-table-wk, .spalte-wk {
-  width: 150px;
+  width: 120px;
 }
 .header-table-wert, .spalte-wert{
-  width: 50px;height: 5px;padding: 0px;
+  width: 60px; text-align: center;vertical-align: middle;
 }
 .header-table-jahr, .spalte-jahr {
-  width: 30px;
+  max-width: 100px;
 }
 
 .header-table-begruendung, .spalte-begruendung {
   width: 500px;
 }
 
-.header-table-exp, .spalte-exp {
-  width: 40px;
-}
+
 .my-table {
   width: 100%;
   height:1000px;
@@ -69,6 +58,11 @@ input.matInput {
   position: sticky;
   top: 2; /* Setzen Sie den Wert auf 0, um den Header oben zu fixieren */
   background-color: white; /* Optional: Hintergrundfarbe, um den Header hervorzuheben */
-  z-index: 1; /* Optional: Wenn andere Inhalte über dem Header erscheinen */
+  z-index: 2; /* Optional: Wenn andere Inhalte über dem Header erscheinen */
   border-bottom: 2px solid #ddd; /* Optional: Styling für Header */
+}
+.full-width {
+  background-color: ghostwhite;
+  padding: 0px;
+  width: 100%;
 }

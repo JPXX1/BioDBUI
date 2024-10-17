@@ -6,13 +6,11 @@
     max-width: 100%; /* Verhindert, dass die Breite auf 400px begrenzt wird */
     margin-left: 5%;
   }
-  .parent-container {
-    height: 500px; /* Oder die Höhe, die du benötigst */
-    overflow-y: auto; /* Ermöglicht vertikales Scrollen */
-  }
+
   .tab-group-padding {
     padding-left: 5%;
     padding-right: 5%;
+    
   }
   
   .form-container {
