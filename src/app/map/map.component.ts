@@ -4,12 +4,14 @@ import { MapVBSelectionDialogComponent } from 'src/app/map-vbselection-dialog/ma
 import Map from 'ol/Map';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
+import { transform } from 'ol/proj';
+import { fromLonLat, toLonLat } from 'ol/proj';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import { getWidth } from 'ol/extent';
 import {Fill, Stroke, Style} from 'ol/style.js';
 import Point from 'ol/geom/Point';  // Importiere den Punkt-Typ
-//import Feature from 'ol/Feature';
+import { useGeographic } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -85,13 +87,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
       `${this.geoserverUrl}/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_landesgrenze&outputFormat=application%2Fjson&srsname=EPSG:3857&bbox=${extent.join(',')},EPSG:3857`,
     strategy: bboxStrategy
   });
-//http://localhost:8080/geoserver/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_landesgrenze&maxFeatures=50&outputFormat=application%2Fjson
-  // private source_landesgrenze: TileWMS = new TileWMS({
-  //   url: `${this.geoserverUrl}/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_landesgrenze&maxFeatures=50&outputFormat=application%2Fjson`,
-  //   params: {'LAYERS': 'ne:landesgrenze', 'TILED': false},
-  //   serverType: 'geoserver',
-  //   transition: 0,
-  // });
+
   private source_lw_bp1: VectorSource = new VectorSource({
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
@@ -254,20 +250,41 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
           }
         }
         createPieChartLayer() {
+          let hasBeenRendered = false;  // Flagge, um mehrfaches Rendern zu verhindern
+        
           const messstellenLayer = new VectorLayer({
             source: this.source_lw_bp3_with_pie,
-            style: this.mstfgw,  // Brauner Stil für Messstellen
+            style: this.mstfgw,  // Brauner Stil für die Messstellen
           });
         
+          const resolution = this.map.getView().getResolution();
           this.pieChartLayer = new VectorLayer({
             source: this.source_lw_bp3_with_pie,
             style: (feature: FeatureLike) => {
               const realFeature = feature as Feature<Geometry>;
-              const geometry = realFeature.getGeometry();
+              const geometry = realFeature.getGeometry() as Point;
         
+              // Prüfe, ob die Geometrie existiert und vom Typ 'Point' ist
               if (geometry?.getType() === 'Point') {
-                const pointGeometry = geometry as Point;
-                const coordinates = pointGeometry.getCoordinates();  // EPSG:3857 Koordinaten
+                const coordinates = geometry.getCoordinates();  // Hole die X- und Y-Koordinaten des Punktes
+        
+                // Verwende getPixelFromCoordinate, um die Pixelposition des Diagramms exakt zu berechnen
+                const pixel = this.map.getPixelFromCoordinate(coordinates);
+                if (coordinates[0] >1500000) {
+
+                  pixel[0]=pixel[0]-50;
+                  pixel[1]=pixel[1]-5;
+                }
+               
+               
+                console.log(`Pixelkoordinaten in ${navigator.userAgent}:`, pixel);
+                const pixelX = pixel[0];
+                const pixelY = pixel[1];
+        
+                if (!hasBeenRendered) {  // Prüfe, ob das Rendering schon stattgefunden hat
+                  console.log(`Pixelposition des Diagramms: [${pixelX}, ${pixelY}] Koordinaten: [${coordinates[0]}, ${coordinates[1]}]`);
+                  hasBeenRendered = true;  // Setze die Flagge, um mehrfache Logs zu verhindern
+                }
         
                 // Hole die Daten aus dem Feature
                 const data = [
@@ -277,48 +294,24 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
                   realFeature.get('ÖKZ_TK_MP')
                 ];
         
-                realFeature.set('chartData', data);
+                realFeature.set('chartData', data);  // Setze die 'chartData'
         
+                // Style für das Tortendiagramm (mit berechneten Pixelwerten)
                 return new Style({
                   image: new CircleStyle({
-                    radius: 20,
-                    fill: new Fill({ color: '#ffffff' }),
+                    radius: 20,  // Größe des Kreises
+                    fill: new Fill({
+                      color: '#ffffff',  // Hintergrundfarbe des Kreises
+                    }),
                   }),
                   renderer: (geometry, state) => {
-                    const ctx = state.context;
+                    const ctx = state.context;  // Canvas Context
                     ctx.save();
-                    const pixel = this.map.getPixelFromCoordinate(coordinates);
-                    
-                    const view = this.map.getView();
-                //    console.log(view.getProjection.name);
-                      // Berechne die Breite der Karte in Pixeln basierend auf der Projektion und Auflösung
-            // const width = getWidth(view.getProjection().getExtent()) / view.getResolution();
-            
-
-            const resolution = view.getResolution();
-            const width = getWidth(view.getProjection().getExtent()) / resolution;
-            
-            // Bereinige die X-Koordinate unter Berücksichtigung der aktuellen Auflösung
-            const pixelX = ((pixel[0] ) - (18000 / resolution));
-            const pixelY = ((pixel[1] ) - (6000 / resolution));
-            //console.log('Pixelkoordinaten:', pixel, 'Auflösung:', resolution);
-
-            // // Bereinige die X-Koordinate
-            // const pixelX = (((pixel[0]-120) % width) + width) % width;
-            // const pixelY = pixel[1]-100;  // Y-Koordinate bleibt unverändert
-                   
-                    // Konvertiere geografische Koordinaten in Pixelkoordinaten
-                    // const pixelCoords = this.map.getPixelFromCoordinate(pixel);
-                    
-                    // Wenn die Pixelkoordinaten vorhanden sind, zeichne das Diagramm
-                    if (this.map.getPixelFromCoordinate(pixel)) {
-                      const chartData = realFeature.get('chartData');
-                      if (chartData) {
-                        //console.log('Zeichne Tortendiagramm an:', pixelCoords[0], pixelCoords[1]);
         
-                        // Zeichne das Tortendiagramm an den berechneten Pixelkoordinaten
-                        this.drawQuarterPieChart(ctx, chartData, pixelX, pixelY);
-                      }
+                    const chartData = realFeature.get('chartData');
+                    if (chartData) {
+                      // Verwende die berechneten Pixelkoordinaten für das Zeichnen
+                      this.drawQuarterPieChart(ctx, chartData, pixelX, pixelY);
                     }
         
                     ctx.restore();
@@ -326,20 +319,25 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
                 });
               }
         
-              return new Style();  // Falls keine Punkt-Geometrie vorhanden ist
+              // Füge hier ein explizites `null` für den Fall ein, dass die Geometrie keine Punkt-Geometrie ist
+              return null;
             },
           });
         
-          // Füge die Layer zur Karte hinzu
+          // Füge den Layer zur Karte hinzu
           this.map.addLayer(this.pieChartLayer);
           this.map.addLayer(messstellenLayer);
         }
+        
+        
+        
         drawQuarterPieChart(ctx: CanvasRenderingContext2D, data: string[], x: number, y: number) {
           const totalSlices = 4;  // Vier Segmente
-          const radius = 20;  // Radius des Tortendiagramms
+          const radius = 10;  // Radius des Tortendiagramms
           let startAngle = 0;
           const sliceAngle = (2 * Math.PI) / totalSlices;
-        
+        x=x-radius*2;
+        y=y-radius*2;
           // Durchlaufe jedes Viertel des Tortendiagramms
           data.forEach((value) => {
             ctx.beginPath();
@@ -350,75 +348,18 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
             // Setze die Farbe je nach Datenwert
             ctx.fillStyle = this.getColor(value);
             ctx.fill();
-                  // Setze den Rand um jedes Segment (dunkelgrau)
+            // Setze den Rand um jedes Segment (dunkelgrau)
             ctx.strokeStyle = '#4D4D4D';  // Dunkelgrau
             ctx.lineWidth = 1;  // Schmaler Rand
             ctx.stroke();  // Zeichne den Rand um das Segment
             startAngle += sliceAngle;  // Aktualisiere den Startwinkel für das nächste Segment
           });
         }
+      
         
-        // createPieChartLayer() {
-        //   const messstellenLayer = new VectorLayer({
-        //     source: this.source_lw_bp3_with_pie,
-        //     style: this.mstfgw,  // Weise den braunen Stil zu
-        //   });
-        //   this.pieChartLayer = new VectorLayer({
-        //     source: this.source_lw_bp3_with_pie,
-        //     style: (feature: FeatureLike) => {
-        //       const realFeature = feature as Feature<Geometry>;
-        //       const geometry = realFeature.getGeometry() as Point;
-        //       const coordinates = geometry.getCoordinates();  // Diese sollten in EPSG:3857 vorliegen
         
-        //       // Hole die Daten aus dem Feature
-        //       const data = [
-        //        realFeature.get('ÖKZ_QK_MZB'),  // Daten aus den vier Feldern
-        //         realFeature.get('ÖKZ_QK_P'),
-        //         realFeature.get('ÖKZ_TK_Dia'),
-        //         realFeature.get('ÖKZ_TK_MP')
-        //       ];
-        
-        //       realFeature.set('chartData', data);
-        
-        //       return new Style({
-        //         image: new CircleStyle({
-        //           radius: 20,  // Größe des Kreises
-        //           fill: new Fill({
-        //             color: '#ffffff',  // Hintergrundfarbe des Kreises
-        //           }),
-        //         }),
-        //         renderer: (pixelCoordinates, state) => {
-        //           const ctx = state.context;
-        //           ctx.save();
-        
-        //           // Hole die Pixelkoordinaten für die aktuellen Koordinaten
-        //           //const pixelCoords = state.coordinateToPixelTransform(coordinates);  // Falsche Funktion
-        //           // Dies wird ersetzt durch
-        //           const pixelCoords = this.map.getPixelFromCoordinate(coordinates);
-        //           console.log('Pixel-Koordinaten:', pixelCoords);  // Prüfe die Pixelkoordinaten
-        //           const chartData = realFeature.get('chartData');
-        
-        //           if (chartData) {
-        //             // Verwende die korrekten Pixelkoordinaten für die Positionierung
-        //             //ctx.translate(pixelCoords[0], pixelCoords[1]);
-        //             ctx.translate(pixelCoords[0] - 100, pixelCoords[1] - 20);  // Falls ein Offset benötigt wird
-
-        //             this.drawQuarterPieChart(ctx, chartData, 20);  // Zeichne das Tortendiagramm
-        //           }
-        
-        //           ctx.restore();
-        //         },
-        //       });
-        //     },
-        //   });
-        //   console.log(this.pieChartLayer);
-        //   // Füge den Layer zur Karte hinzu
-        //   this.map.addLayer(this.pieChartLayer);
-        //   this.map.addLayer(messstellenLayer);
-        // }
-        
-// Style-Funktion für die Tortendiagramme
-// pieChartStyleFunction(feature, map) {
+        // Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
+// pieChartStyleFunction(feature) {
 //   return new Style({
 //     image: new CircleStyle({
 //       radius: 20,  // Größe des Kreises
@@ -427,23 +368,29 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
 //       }),
 //     }),
 //     renderer: (pixelCoordinates, state) => {
-//       const ctx = state.context;  // Canvas Context
+//       const ctx = state.context;
 //       ctx.save();
 
-//       // Hole die Geometrie des Features (Punktgeometrie)
+//       // Feature wird benötigt, um auf die Geometrie zuzugreifen
 //       const geometry = feature.getGeometry();
-//       if (geometry) {
-//         // Hole die Koordinaten der Geometrie
-//         const coordinates = geometry.getCoordinates();  // EPSG:3857 Koordinaten
+//       if (geometry instanceof Point) {
+//         let coordinates = geometry.getCoordinates();  // Hole die Koordinaten des Punktes
 
-//         // Verwandle die geografischen Koordinaten in Pixel-Koordinaten
-//         const pixelCoords = map.getPixelFromCoordinate(coordinates);  // Verwende map.getPixelFromCoordinate()
+//         // Optional: Transformiere die Koordinaten, falls erforderlich (EPSG:4326 -> EPSG:3857)
+     
+//         const x = coordinates[0]; // X-Koordinate
+//         const y = coordinates[1]; // Y-Koordinate
 
-//         const data = feature.get('chartData');  // Hole die Daten für das Tortendiagramm
-//         if (data) {
-//           // Zeichne an den umgewandelten Pixel-Koordinaten
-//           ctx.translate(pixelCoords[0], pixelCoords[1]);
-//           this.drawQuarterPieChart(ctx, data, 20);  // Zeichne den geviertelten Kreis
+//         // Zeichne einen Kreis an den Koordinaten des Punktes
+//         ctx.beginPath();
+//         ctx.arc(x, y, 20, 0, 2 * Math.PI);  // X und Y werden einzeln übergeben
+//         ctx.fillStyle = '#ffffff';
+//         ctx.fill();
+
+//         // Hole die Tortendiagramm-Daten und zeichne sie
+//         const chartData = feature.get('chartData');
+//         if (chartData) {
+//           this.drawQuarterPieChart(ctx, chartData, x, y);  // Zeichne das Tortendiagramm an den Koordinaten
 //         }
 //       }
 
@@ -451,62 +398,8 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
 //     },
 //   });
 // }
-pieChartStyleFunction(feature) {
-  return new Style({
-    image: new CircleStyle({
-      radius: 20,  // Größe des Kreises
-      fill: new Fill({
-        color: '#ffffff',  // Hintergrundfarbe des Kreises
-      }),
-    }),
-    renderer: (pixelCoordinates, state) => {
-      const ctx = state.context;
-      ctx.save();
 
-      // Feature wird benötigt, um auf die Geometrie zuzugreifen
-      const geometry = feature.getGeometry();
-      if (geometry instanceof Point) {
-        let coordinates = geometry.getCoordinates();  // Hole die Koordinaten des Punktes
 
-        // Optional: Transformiere die Koordinaten, falls erforderlich (EPSG:4326 -> EPSG:3857)
-     
-        const x = coordinates[0]; // X-Koordinate
-        const y = coordinates[1]; // Y-Koordinate
-
-        // Zeichne einen Kreis an den Koordinaten des Punktes
-        ctx.beginPath();
-        ctx.arc(x, y, 20, 0, 2 * Math.PI);  // X und Y werden einzeln übergeben
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
-
-        // Hole die Tortendiagramm-Daten und zeichne sie
-        const chartData = feature.get('chartData');
-        if (chartData) {
-          this.drawQuarterPieChart(ctx, chartData, x, y);  // Zeichne das Tortendiagramm an den Koordinaten
-        }
-      }
-
-      ctx.restore();
-    },
-  });
-}
-
-// drawQuarterPieChart(ctx: CanvasRenderingContext2D, data: string[], radius: number) {
-//   const totalSlices = 4;
-//   let startAngle = 0;
-//   const sliceAngle = (2 * Math.PI) / totalSlices;
-
-//   // Gehe durch jedes Viertel und verwende den String-Wert direkt
-//   data.forEach((value) => {
-//     ctx.beginPath();
-//     ctx.moveTo(0, 0);
-//     ctx.arc(0, 0, radius, startAngle, startAngle + sliceAngle);
-//     ctx.closePath();
-//     ctx.fillStyle = this.getColor(value);  // Verwende die getColor-Funktion direkt
-//     ctx.fill();
-//     startAngle += sliceAngle;
-//   });
-// }
 
 
 
@@ -916,7 +809,9 @@ this.dbKomponenten = this.verbreitungartenService.dbKomponenten;
     this. verbreitungsdaten();
     const status = document.getElementById('status');
     const view = new View({
-      center: [0, 0],
+      center: fromLonLat([13.413215, 52.521918]), // Wähle das passende Zentrum
+      // center: [0, 0],
+      projection: 'EPSG:3857',
       zoom: 2,
     });
 
@@ -1036,7 +931,10 @@ const landesgrenzeLayer = new VectorLayer({
       this.router.navigate(['/login']);
    
       
-    } this.loadWmtsLayer().then(wmtsLayer => {
+    } 
+    // Stelle sicher, dass OpenLayers mit geografischen Koordinaten (EPSG:4326) arbeitet
+   // useGeographic();
+    this.loadWmtsLayer().then(wmtsLayer => {
       this.initializeMap(wmtsLayer);
     }).catch(error => {
       console.error('Error loading WMTS layer:', error);
