@@ -56,7 +56,7 @@
     <!-- Expertenurteil -->
     <ng-container matColumnDef="expertenurteil">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wert  sticky-header"> Exp.urteil </mat-header-cell>
-      <mat-cell *matCellDef="let element" class="spalte-wert">
+      <mat-cell *matCellDef="let element" class="spalte-wert spalte-wert2">
      
           <input matInput [(ngModel)]="element.expertenurteil" [style.background-color]="getColor(element.expertenurteil)" >
    
@@ -66,7 +66,7 @@
     <!-- Begründung -->
     <ng-container matColumnDef="begruendung">
       <mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wert sticky-header"> Begründung </mat-header-cell>
-      <mat-cell *matCellDef="let element" >
+      <mat-cell *matCellDef="let element" class=" spalte-wert2">
         <textarea #textarea matInput [(ngModel)]="element.begruendung"  rows="1" class="textarea "></textarea>
       </mat-cell>
     </ng-container>

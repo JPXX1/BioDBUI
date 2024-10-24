@@ -1,7 +1,7 @@
 <form [formGroup]="form"  class="datenexport-form">
     <div class="form-container">
       <div class="form-column">
-        <div class="form-field" class="helpable" id ="auswahl-mst-wk">
+        <div class="form-field helpable" id ="auswahl-mst-wk">
           <mat-form-field appearance="fill"  class="form-field">
             <mat-label>Messstellen oder Wasserkörper auswählen</mat-label>
             <mat-select formControlName="dropdownSelection" (selectionChange)="onDropdownWkMstChange($event)">
@@ -126,7 +126,7 @@
   </form>
   
   <hr class="custom-divider">
-  <div class="parent-container">
+  
   <mat-tab-group class="tab-group-padding">
     <!-- <pre>{{ dbMPUebersichtMst | json }}</pre> Dies zeigt den Inhalt von dbMPUebersichtMst an -->
 
@@ -145,4 +145,3 @@
       </div>
     </mat-tab>
   </mat-tab-group>
-</div>

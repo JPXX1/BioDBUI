@@ -35,22 +35,7 @@ public value:string;
      this.erzeugeDisplayColumnNames(false);
     
   }
-  // async getBwMSTUebersicht(selectedItems: number[]): Promise<any> {
-  //   try {
-  //     const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
-  //     return response;
-  //   } catch (error) {
-  //     console.error('Fehler beim Abrufen der Übersicht:', error);
-  //     throw error;  // Optional: Weiterleiten des Fehlers, um es an die aufrufende Funktion weiterzugeben
-  //   }
-  // }
-
-
  
-  //  getBwMSTUebersicht(selectedItems: number[]) {
-  //    return this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, {selectedItems});  }
-
-
   erzeugeDisplayColumnNames(komponente:boolean){
     this.displayColumnNames=[];
     this.displayColumnNames.push('Wasserköper');

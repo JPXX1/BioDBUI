@@ -22,6 +22,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
  
   isHelpActive: boolean = false;
   FilterwkUebersicht: WkUebersicht[] = [];
+  FilterwkUebersichtausMst: WkUebersicht[] = [];
   public mstMakrophyten:MstMakrophyten[]=[];//TaxaMP
   public mstMZB:MstMakrophyten[]=[];//TaxaMZB
   public mstUebersicht:MstUebersicht[]=[];//MstBewertungKreuztabelle
@@ -29,6 +30,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
   public MZBAnzeige:boolean=false;
   public MakrophytenMstAnzeige:boolean=false;
   public UebersichtAnzeigen:boolean=true;
+  public UebersichtWKausMstAnzeigen=false;
   public displayColumnNames:string[]=[]; 
   public displayedColumns:string[]=[]; 
   public FilterAnzeige:boolean=false;
@@ -41,7 +43,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
  maxstart=new Date().getFullYear();
   value = '';valueJahr = '';
   Artvalue = '';
-  min:number=2016;
+  min:number=this.maxstart-10;
   max:number=this.maxstart; 
   constructor(private helpService: HelpService,private commentService: CommentService, private snackBar: MatSnackBar,private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
@@ -66,7 +68,10 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
     this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
 			this.helpService.helpText$.subscribe(text => this.helpText = text);
     this.FilterwkUebersicht=[];
+    
+    console.log(this.FilterwkUebersichtausMst);
     this.FilterwkUebersicht=this.anzeigeBewertungService.wkUebersicht;
+    console.log(this.FilterwkUebersicht);
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
     this.onValueChangeFilter( '','');
@@ -96,6 +101,9 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
       
       this.onValueChangeFilter('','');
       //this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
+    }else if (this.UebersichtWKausMstAnzeigen===true){
+      if (this.anzeigeBewertungService.getBwWKUebersichtAusMst.length=== 0){this.handleUebersichtWKausMst();}
+
     }
     }
 
@@ -134,6 +142,7 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
    { this.FilterWKname="Filter Wasserkörper"}
     else if (wkmst==="mst")
     {this.FilterWKname="Filter Messstellen"}
+    else if (wkmst==="wk1"){this.FilterWKname="Filter Wasserkörper "}
   }
   async mstalleauswaehlen(value:number,filter:string,artfilter:string){
     this.repreasent=value;
@@ -157,10 +166,32 @@ this.onValueChangeFilter(value,Artvalue);
     this.value = value; this.Artvalue = Artvalue;
     this.anzeigeBewertungService.filtertxt = value;
     //await this.anzeigeBewertungService.filterdaten;
-
+    this.FilterwkUebersichtausMst = [];
     this.FilterwkUebersicht = [];
+if (!value && this.FilterWKname==="Filter Wasserkörper "){
+  await Promise.all(
+    this.anzeigeBewertungService.wkUebersichtaMst.map(async (f) => {
 
-    if (!value && this.FilterWKname==="Filter Wasserkörper") {
+      if ((f.Jahr >= this.min && f.Jahr <= this.max)) {
+
+        this.FilterwkUebersichtausMst.push(f);
+      }
+
+    }))
+}else if (this.FilterWKname==="Filter Wasserkörper ") {
+
+  await Promise.all(
+    this.anzeigeBewertungService.wkUebersichtaMst.map(async (f) => {
+
+      if (f.WKname.includes(value) && (f.Jahr >= this.min && f.Jahr <= this.max)) {
+
+        this.FilterwkUebersichtausMst.push(f);
+      }
+      //else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
+    }))
+}
+
+else if (!value && this.FilterWKname==="Filter Wasserkörper") {
       // this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
       await Promise.all(
         this.anzeigeBewertungService.wkUebersicht.map(async (f) => {
@@ -219,16 +250,30 @@ this.onValueChangeFilter(value,Artvalue);
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=false;
     this.UebersichtAnzeigen=true;
+    this.UebersichtWKausMstAnzeigen=false;
     this.FilterAnzeige=false;
     this.getButtonAktivUebersicht();
    
   }
-  ausblendenUebersicht(){
-    this.MakrophytenAnzeige=true;
-    this.MakrophytenMstAnzeige=true;
+  async handleUebersichtWKausMst(){
+    await  this.anzeigeBewertungService.startBWUebersichtAusMst();
+    this.FilterwkUebersicht=[];
+    this.FilterwkUebersichtausMst=[];
+   this.FilterwkUebersichtausMst=this.anzeigeBewertungService.wkUebersichtaMst;
+    console.log(this.FilterwkUebersichtausMst);
+    
+    
+    this.getButtonAktivUebersicht();
+    this.FilterWKnameSetzenWK("wk1");
+    this.onValueChangeFilter( '','');
+    // if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
+    this.MZBAnzeige=false;
+    this.MakrophytenAnzeige=false;
+    this.MakrophytenMstAnzeige=false;
     this.UebersichtAnzeigen=false;
-   // this.getButtonAktivUebersicht();
-   this.FilterAnzeige=true;
+    this.UebersichtWKausMstAnzeigen=true;
+    this.FilterAnzeige=false;
+    this.getButtonAktivUebersicht();
   }
   async handleMakrophytenClick(){ //Taxadaten MP
 
@@ -237,7 +282,7 @@ this.onValueChangeFilter(value,Artvalue);
   this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
   this.UebersichtAnzeigen=false;
     this.FilterWKnameSetzenWK("mst");
-  
+    this.UebersichtWKausMstAnzeigen=false;
   this.MZBAnzeige=false;
   
   await this.anzeigeBewertungMPService.callBwMstMP(1);
@@ -255,6 +300,7 @@ async handleMZBClick(){ //Taxadaten MZB
   this.FilterWKnameSetzenWK("mst");
   this.MZBAnzeige=true;
   this.UebersichtAnzeigen=false;
+  this.UebersichtWKausMstAnzeigen=false;
   this.anzeigenMstUebersichtService.value=this.value ;this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
   this.MakrophytenMstAnzeige=false;
   await this.anzeigeBewertungMPService.callBwMstMP(3);
@@ -269,6 +315,7 @@ async handleMZBClick(){ //Taxadaten MZB
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.UebersichtAnzeigen=false;
+    this.UebersichtWKausMstAnzeigen=false;
     await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id);
    // await this.anzeigenMstUebersichtService.callBwUebersichtExp(komp_id);
     this.props=[];

@@ -13,12 +13,14 @@ textarea[matInput] {
   overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
 }
 /* Spezifische Anpassung der Zellen */
-.mat-cell, .mat-header-cell {
-  padding: 0px 0px !important;    /* Verkleinere das Padding */
 
-  vertical-align: middle !important; /* Vertikale Zentrierung */
-  text-align: center !important;   /* Horizontale Zentrierung */
-  box-sizing: border-box !important;
+.mat-mdc-header-row {
+  height: 50px; /* Oder eine andere passende Höhe */
+}
+
+.mat-header-cell {
+  height: 50px;
+  line-height: 50px; /* Passend zur Höhe, damit der Text vertikal zentriert ist */
 }
 
 /* Spezifische Anpassung für die Bewertungszellen */
@@ -37,7 +39,11 @@ input.matInput {
   width: 120px;
 }
 .header-table-wert, .spalte-wert{
-  width: 60px; text-align: center;vertical-align: middle;
+  text-align: center;vertical-align: middle;
+}
+
+.spalte-wert2{
+  background-color: aliceblue;
 }
 .header-table-jahr, .spalte-jahr {
   max-width: 100px;
@@ -54,13 +60,7 @@ input.matInput {
   border-collapse: collapse;
 }
 
-.sticky-header {
-  position: sticky;
-  top: 2; /* Setzen Sie den Wert auf 0, um den Header oben zu fixieren */
-  background-color: white; /* Optional: Hintergrundfarbe, um den Header hervorzuheben */
-  z-index: 2; /* Optional: Wenn andere Inhalte über dem Header erscheinen */
-  border-bottom: 2px solid #ddd; /* Optional: Styling für Header */
-}
+
 .full-width {
   background-color: ghostwhite;
   padding: 0px;

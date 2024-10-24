@@ -5,10 +5,10 @@
       <table>
         <tr>
           <td>
-            <button mat-button id="berichtsEUButton" class="helpable button" [matMenuTriggerFor]="uebersicht">Bericht-EU</button>
+            <button mat-button id="berichtsEUButton" class="helpable button" [matMenuTriggerFor]="uebersicht">Wasserkörper</button>
             <mat-menu #uebersicht="matMenu" xPosition="before">
-              <button mat-menu-item id="wasserkörperButton" class="helpable" (click)="handleUebersichtWK()">Wasserkörper</button>
-              <button mat-menu-item id="messstellenButton" class="helpable " (click)="ausblendenUebersicht()">Messstellen</button>
+              <button mat-menu-item id="wasserkörperButton" class="helpable" (click)="handleUebersichtWK()">Bericht-EU</button>
+              <button mat-menu-item id="messstellenButton" class="helpable " (click)="handleUebersichtWKausMst()">Ergbnisse Monitoring</button>
             </mat-menu>
 
             <button mat-button id="mpButton" class="helpable button" [matMenuTriggerFor]="afterMenu">Makrophyten</button>
@@ -76,6 +76,11 @@
 <div class="card helpable" *ngIf="UebersichtAnzeigen == true" style="vertical-align: top;" id="UebersichtWK">
   <mat-card class="example-card">
     <app-uebersicht-tabelle [wkUebersicht]="FilterwkUebersicht"></app-uebersicht-tabelle>
+  </mat-card>
+</div>
+<div class="card helpable" *ngIf="UebersichtWKausMstAnzeigen == true" style="vertical-align: top;" id="UebersichtWKausMst">
+  <mat-card class="example-card">
+    <app-uebersicht-tabelle [wkUebersicht]="FilterwkUebersichtausMst"></app-uebersicht-tabelle>
   </mat-card>
 </div>
 <div class="card helpable" *ngIf="MakrophytenMstAnzeige" style="vertical-align: top;" >
