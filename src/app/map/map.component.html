@@ -3,18 +3,20 @@
     <div id="popup" class="popup"></div>
     <label id="mapLabel" class="map-label">{{ verbreitung_text }}</label>
   </div>
+  <!-- Füge hier den Zentrieren-Button ein -->
+  <app-center-button [map]="map"></app-center-button>
+ 
   <div class="legend">
     <h3>Legende</h3>
     <div *ngFor="let item of legendItems">
       <div class="legend-key" [ngStyle]="{'background-color': item.color}"></div>
       <div class="legend-label">{{ item.label }}</div>
     </div>
-    <canvas id="legendCanvas" width="300" height="200"></canvas>
+    <canvas id="legendCanvas" width="220" height="160"></canvas>
     <span id="status">&nbsp;</span>
   </div>
 
- 
- 
+  
   <div style="margin-left: 200px; display: flex; align-items: center;">
     <button mat-button id="kartButton" [matMenuTriggerFor]="karten" class="helpable button" style="margin-right: 20px;">
       Bericht-EU

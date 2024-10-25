@@ -29,6 +29,7 @@
    
   }
   .legend {
+    font-size: 12px; /* Verkleinerte Schriftgröße für die Legende */
     position: absolute;
     bottom: 20px;
     right: 20px;
@@ -40,6 +41,7 @@
   
   .legend h3 {
     margin-top: 0;
+    font-size: 14px; /* Verkleinerte Schriftgröße für die Überschrift */
   }
   
   .legend-key {
@@ -47,12 +49,14 @@
     width: 20px;
     height: 20px;
     margin-right: 5px;
+    font-size: 12px; /* Verkleinerte Schriftgröße für die Einträge */
   }
   
   .legend-label {
     display: inline;
   }.example-card {
-    max-width: 80%;
+    max-width: 70%;
+    font-size: 12px;
     margin-left: 200px;
     margin-top: 15px;
     background-color: withe;
@@ -73,4 +77,11 @@
 
    .custom-width {
     width: 500px; /* Setzt die Breite des spezifischen mat-form-field */
+  }
+
+  app-center-button {
+    position: absolute;
+    top: 68px;
+    left: 82px; /* Positioniere den Button in der oberen rechten Ecke */
+    z-index: 1000; /* Stellt sicher, dass er über der Karte liegt */
   }

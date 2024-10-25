@@ -2,16 +2,15 @@ import { Component,OnInit,AfterViewInit,AfterViewChecked } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MapVBSelectionDialogComponent } from 'src/app/map-vbselection-dialog/map-vbselection-dialog.component';
 import Map from 'ol/Map';
+import { defaults as defaultControls } from 'ol/control';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Geometry from 'ol/geom/Geometry';
-import { transform } from 'ol/proj';
-import { fromLonLat, toLonLat } from 'ol/proj';
+import { fromLonLat } from 'ol/proj';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
-import { getWidth } from 'ol/extent';
+import { DEVICE_PIXEL_RATIO } from 'ol/has';
 import {Fill, Stroke, Style} from 'ol/style.js';
 import Point from 'ol/geom/Point';  // Importiere den Punkt-Typ
-import { useGeographic } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
@@ -251,12 +250,10 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
         }
         createPieChartLayer() {
           let hasBeenRendered = false;  // Flagge, um mehrfaches Rendern zu verhindern
-        
-          const messstellenLayer = new VectorLayer({
-            source: this.source_lw_bp3_with_pie,
-            style: this.mstfgw,  // Brauner Stil für die Messstellen
-          });
-        
+        //DevicePixelRatio
+          const ratio=DEVICE_PIXEL_RATIO;
+
+                
           const resolution = this.map.getView().getResolution();
           this.pieChartLayer = new VectorLayer({
             source: this.source_lw_bp3_with_pie,
@@ -272,14 +269,14 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
                 const pixel = this.map.getPixelFromCoordinate(coordinates);
                 if (coordinates[0] >1500000) {
 
-                  pixel[0]=pixel[0]-50;
-                  pixel[1]=pixel[1]-5;
+                  pixel[0]=pixel[0]//-50;
+                  pixel[1]=pixel[1]//-5;
                 }
                
                
-                console.log(`Pixelkoordinaten in ${navigator.userAgent}:`, pixel);
-                const pixelX = pixel[0];
-                const pixelY = pixel[1];
+                //console.log(`Pixelkoordinaten in ${navigator.userAgent}:`, pixel);
+                const pixelX = pixel[0]*ratio//*0.995;
+                const pixelY = pixel[1]*ratio//*0.995;
         
                 if (!hasBeenRendered) {  // Prüfe, ob das Rendering schon stattgefunden hat
                   console.log(`Pixelposition des Diagramms: [${pixelX}, ${pixelY}] Koordinaten: [${coordinates[0]}, ${coordinates[1]}]`);
@@ -326,7 +323,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
         
           // Füge den Layer zur Karte hinzu
           this.map.addLayer(this.pieChartLayer);
-          this.map.addLayer(messstellenLayer);
+          this.map.addLayer(this.messstellenLayer);
         }
         
         
@@ -336,8 +333,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
           const radius = 10;  // Radius des Tortendiagramms
           let startAngle = 0;
           const sliceAngle = (2 * Math.PI) / totalSlices;
-        x=x-radius*2;
-        y=y-radius*2;
+      
           // Durchlaufe jedes Viertel des Tortendiagramms
           data.forEach((value) => {
             ctx.beginPath();
@@ -358,51 +354,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
       
         
         
-        // Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
-// pieChartStyleFunction(feature) {
-//   return new Style({
-//     image: new CircleStyle({
-//       radius: 20,  // Größe des Kreises
-//       fill: new Fill({
-//         color: '#ffffff',  // Hintergrundfarbe des Kreises
-//       }),
-//     }),
-//     renderer: (pixelCoordinates, state) => {
-//       const ctx = state.context;
-//       ctx.save();
-
-//       // Feature wird benötigt, um auf die Geometrie zuzugreifen
-//       const geometry = feature.getGeometry();
-//       if (geometry instanceof Point) {
-//         let coordinates = geometry.getCoordinates();  // Hole die Koordinaten des Punktes
-
-//         // Optional: Transformiere die Koordinaten, falls erforderlich (EPSG:4326 -> EPSG:3857)
-     
-//         const x = coordinates[0]; // X-Koordinate
-//         const y = coordinates[1]; // Y-Koordinate
-
-//         // Zeichne einen Kreis an den Koordinaten des Punktes
-//         ctx.beginPath();
-//         ctx.arc(x, y, 20, 0, 2 * Math.PI);  // X und Y werden einzeln übergeben
-//         ctx.fillStyle = '#ffffff';
-//         ctx.fill();
-
-//         // Hole die Tortendiagramm-Daten und zeichne sie
-//         const chartData = feature.get('chartData');
-//         if (chartData) {
-//           this.drawQuarterPieChart(ctx, chartData, x, y);  // Zeichne das Tortendiagramm an den Koordinaten
-//         }
-//       }
-
-//       ctx.restore();
-//     },
-//   });
-// }
-
-
-
-
-
+        
   // filtert die Messstellen durch die zuvor ausgewählten Arten und Untersuchungsjahre
   filterVerbreitungMessstellenLayer(ids_mst: number[]) {
     
@@ -429,6 +381,16 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   getColor(wert: string) {
     return this.Farbebewertg.getColor(wert);
   }
+  mstDia = new Style({
+    image: new CircleStyle({
+      radius: 4,
+      fill: new Fill({color: 'grey'}),
+      stroke: new Stroke({
+        color: 'black',
+        width: 1.5
+      })
+    })
+  });
   mstfgw = new Style({
     image: new CircleStyle({
       radius: 4,
@@ -569,7 +531,11 @@ mstsee = new Style({
     source: this.source_rw_bp3,
     style: (feature) => this.fgw[feature.get('Ökz')],
   });
-
+  //Layer für die Messstellen mit Tortendiagrammen  
+   messstellenLayer = new VectorLayer({
+    source: this.source_lw_bp3_with_pie,
+    style: this.mstDia,  
+  });
   fliesgewasserLayer = new VectorLayer({
     source: this.sourceFliesgewasserMessstellen,
      style: (feature) => this.mstfgw
@@ -605,7 +571,7 @@ mstsee = new Style({
       ctx.fill();
   
       // Rand um das Segment zeichnen
-      ctx.strokeStyle = '#4D4D4D';
+      ctx.strokeStyle = '#4D4D4D';  // Dunkelgrau
       ctx.lineWidth = 1;
       ctx.stroke();
   
@@ -618,7 +584,7 @@ mstsee = new Style({
       ctx.beginPath();
       ctx.moveTo(x + radius * Math.cos(labelAngle), y + radius * Math.sin(labelAngle));  // Start bei der Kante des Segments
       ctx.lineTo(labelX, labelY);  // Linie zur Beschriftung
-      ctx.strokeStyle = '#000000';  // Farbe der Linie
+      ctx.strokeStyle = '#4D4D4D';  // Dunkelgrau
       ctx.lineWidth = 1;
       ctx.stroke();
   
@@ -626,11 +592,50 @@ mstsee = new Style({
       ctx.font = '12px Arial';
       ctx.fillStyle = '#000000';  // Textfarbe
       ctx.textAlign = labelX > x ? 'left' : 'right';  // Textausrichtung je nach Seite
-      ctx.fillText(labels[index], labelX, labelY);
+     
+      if (labels[index] === 'Makrozoobenthos') {
+        ctx.fillText('Makrozoo-', labelX, labelY);           // Erste Zeile
+        ctx.fillText('benthos', labelX, labelY + 12);        // Zweite Zeile leicht nach unten versetzt
+      } else {
+        ctx.fillText(labels[index], labelX, labelY);         // Standardbeschriftung ohne Zeilenumbruch
+      }
+     
+      // ctx.fillText(labels[index], labelX, labelY);
   
       startAngle += sliceAngle;  // Aktualisiere den Startwinkel
     });
+  
+     // Zeichne den zentralen Kreis mit dem Stil `mstDia`
+  const circleStyle = this.mstDia.getImage() as CircleStyle;  // Cast zu CircleStyle
+  ctx.beginPath();
+  ctx.arc(x, y, circleStyle.getRadius(), 0, 2 * Math.PI);  // Zeichne den Kreis in die Mitte des Diagramms
+  ctx.fillStyle = (circleStyle.getFill() as Fill).getColor() as string;
+  ctx.fill();
+  ctx.strokeStyle = (circleStyle.getStroke() as Stroke).getColor() as string;
+  ctx.lineWidth = (circleStyle.getStroke() as Stroke).getWidth();
+  ctx.stroke();
+
+    // Zeichne die Linie im 12°-Winkel vom Kreis aus
+  const angle = 2 * (Math.PI / 180);  // 45° in Radiant umrechnen
+  const lineLength = 30;  // Länge der Linie
+  const lineEndX = x + (circleStyle.getRadius() + lineLength) * Math.cos(angle);
+  const lineEndY = y + (circleStyle.getRadius() + lineLength) * Math.sin(angle);
+
+  ctx.beginPath();
+  ctx.moveTo(x, y);  // Start von der Mitte des Kreises
+  ctx.lineTo(lineEndX, lineEndY);  // Linie im 12°-Winkel
+  ctx.strokeStyle = '#4D4D4D';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+// Positioniere den Text "Messstelle" neben demDiagramm
+const textXPosition = x + radius + 45; // Position leicht unterhalb des Diagramms
+ctx.font = '12px Arial';
+ctx.fillStyle = '#4D4D4D';  // Textfarbe
+ctx.textAlign = 'center';  // Zentriere den Text horizontal
+ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unterhalb des Kreises
   }
+  
   startbp1(checked: boolean) {
     if (checked){this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_wk_oezk_bp2);
@@ -700,13 +705,13 @@ mstsee = new Style({
         // Zeichne das Tortendiagramm auf der Legende
         const data = ['1', '2', '3', '4'];  // Die Werte der Segmente
         const labels = ['Makrozoobenthos', 'Phytoplankton', 'Diatomeen', 'Makrophyten'];  // Beschriftungen der Segmente
-        this.drawQuarterPieChartWithLegend(ctx, data, labels, 150, 100);  // Zeichne das Diagramm in die Mitte des Canvas
+        this.drawQuarterPieChartWithLegend(ctx, data, labels, 110, 80);  // Zeichne das Diagramm in die Mitte des Canvas
       }
   
     } else {
       // Layer mit Tortendiagrammen entfernen
       this.removePieChartLayer();
-  
+      this.map.removeLayer(this.messstellenLayer);
       // Verstecke die Legende und lösche den Canvas-Inhalt
       const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
       const ctx = legendCanvas.getContext('2d');
@@ -829,7 +834,8 @@ const landesgrenzeLayer = new VectorLayer({
 });
     this.map = new Map({
       target: 'ol-map',
-      layers: [
+      controls: defaultControls({ rotate: false }),
+           layers: [
         wmtsLayer,  // WMTS-Layer Basemap
         landesgrenzeLayer// new TileLayer({
         //   source: this.source_landesgrenze,  //  WMS-Layer der Landesgrenze
@@ -837,6 +843,8 @@ const landesgrenzeLayer = new VectorLayer({
       ],
       view: new View({
         center: [1512406.33, 6880500.21], // Beispiel-Zentrum, bitte anpassen
+        enableRotation: false,   // Deaktiviert die Möglichkeit, die Karte zu drehen
+        rotation: 0,              // Setzt die Drehung auf 0 (Standardausrichtung)
         zoom: 10
       }),
     });
