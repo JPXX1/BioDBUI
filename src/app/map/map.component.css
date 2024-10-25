@@ -80,8 +80,9 @@
   }
 
   app-center-button {
-    position: absolute;
-    top: 68px;
-    left: 82px; /* Positioniere den Button in der oberen rechten Ecke */
+    
+    position: fixed;
+    top: 112px;
+    left: 115px; /* Positioniere den Button in der oberen rechten Ecke */
     z-index: 1000; /* Stellt sicher, dass er über der Karte liegt */
   }

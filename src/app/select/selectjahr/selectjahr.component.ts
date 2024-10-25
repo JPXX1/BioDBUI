@@ -31,7 +31,7 @@ export class SelectjahrComponent {
 		this.impPhylibServ.getJahr().subscribe(jahre_ => { 
       this.jahre  =jahre_;
      
-     console.log(this.jahre);
+    //  console.log(this.jahre);
     });
    }
   

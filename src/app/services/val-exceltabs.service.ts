@@ -28,7 +28,7 @@ export class ValExceltabsService {
       // holt sich die Exceltabs aus Postgres
       await this.impPhylibServ.getvalExceltabs().forEach(value => {
         this.valexceltabs = value;
-        console.log('observable -> ' + value);
+        // console.log('observable -> ' + value);
       });
       // await this.impPhylibServ.getvalExceltabs().forEach(value => {
       //   const lowerCaseValue = value.toLowerCase();
@@ -37,11 +37,11 @@ export class ValExceltabsService {
       // });
       await this.impPhylibServ.getvalVerfahren().forEach(value => {
         this.valverfahren = value;
-        console.log('observable -> ' + value);
+        // console.log('observable -> ' + value);
       });  
       await this.impPhylibServ.getvalExcelSpalten().forEach(value => {
         this.valspalten = value;
-        console.log('observable -> ' + value);
+        // console.log('observable -> ' + value);
       }); 
       
 

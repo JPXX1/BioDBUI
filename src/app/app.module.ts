@@ -42,7 +42,7 @@ import { MatSortModule} from '@angular/material/sort';
 import { MonitoringkarteComponent } from './monitoringkarte/monitoringkarte.component';
 import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+// import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { SelectWasserkoerperComponent } from './select/select-wasserkoerper/select-wasserkoerper.component';
 import { EditStammdatenMstComponent } from './stammdaten/edit-stammdaten-mst/edit-stammdaten-mst.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -67,7 +67,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CustomSnackbarComponent } from './custom-snackbar/custom-snackbar.component';
 import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapVBSelectionDialogComponent } from './map-vbselection-dialog/map-vbselection-dialog.component';
 import { ExpertenurteilMstComponent } from './expertenurteil-mst/expertenurteil-mst.component';
 import { MstExpertenurteilEditComponent } from './mst-expertenurteil-edit/mst-expertenurteil-edit.component';
@@ -127,10 +127,10 @@ declarations: [
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
 	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent, RegisterDialogComponent,  MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent,
 ], 
-imports: [MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
-    ReactiveFormsModule,MatProgressSpinnerModule,MatDialogModule,MatTabsModule,
+    ReactiveFormsModule,MatDialogModule,MatTabsModule,
 ], 
 providers: [SelectjahrComponent,StammMessstellenComponent,EditStammdatenMstComponent,StammWkComponent], 
 bootstrap: [AppComponent] 

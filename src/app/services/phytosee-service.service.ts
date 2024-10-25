@@ -114,7 +114,7 @@ if (head_4===null){head_4 = findKeyWithIncludes(obj[0], "bv");}
           
 
 if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
-          console.log(this.uebersicht);
+          // console.log(this.uebersicht);
           // Here is your object
           let o: number = 1;
           obj.forEach((val, index) => {
@@ -122,7 +122,7 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
               // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
               if (index>0){
                 //console.log(val + " / " + obj[index][i] + ": " + i);
-                console.log(obj.length)
+                // console.log(obj.length)
                 o = o + 1;
                               
                   
@@ -185,7 +185,7 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
                   if (aTaxonzusatz !== undefined) {
                     // Angenommen, this.formen ist ein Array von Objekten und aTaxonzusatz ist die Variable, mit der verglichen wird
                     aTaxonzusatz = aTaxonzusatz.replace(/\s+/g, '');
-                    console.log(this.formen);
+                    // console.log(this.formen);
                     // Filtere die Elemente aus this.formen, deren importname mit aTaxonzusatz übereinstimmt
                     const gefilterteFormen = this.formen.filter(form => aTaxonzusatz.includes(form.importname)&& form.id_taxonzus>6);
 
@@ -205,7 +205,8 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
 
                     Taxon = obj[index]['Taxon'];
                     if (Taxon.includes("<")) {
-                    console.log(Taxon);}
+                    // console.log(Taxon);
+                  }
 
                     let koi=Taxon.toLowerCase();
                     koi = koi.replace(/\s+/g, '');
@@ -214,7 +215,7 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
                     if (gefilterteFormen.length > 0) {
                       Form = gefilterteFormen[0].id_taxonzus;
                       aTaxonzusatz = gefilterteFormen[0].importname;
-                      console.log(aTaxonzusatz);
+                      // console.log(aTaxonzusatz);
                     }
                  // }
                   
@@ -247,7 +248,7 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
                           if(aTaxonzusatz!==undefined){
 
                             aTaxon=aTaxon+'/ '+aTaxonzusatz;
-                            console.log(aTaxon);
+                            // console.log(aTaxon);
                           }
                          ok = ""; } 
                          else {
@@ -322,11 +323,13 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
         
          
       //  this.xlsxImportPhylibService.MessDataImp = array;
-        } console.log(this.xlsxImportPhylibService.MessDataImp); this.uebersicht=this.xlsxImportPhylibService.uebersicht;return FehlerInfo;
+        } 
+        // console.log(this.xlsxImportPhylibService.MessDataImp); 
+        this.uebersicht=this.xlsxImportPhylibService.uebersicht;return FehlerInfo;
         
         } catch (error) {
           // Fehlerbehandlung
-          console.log(this.xlsxImportPhylibService.MessDataImp);
+          // console.log(this.xlsxImportPhylibService.MessDataImp);
           return FehlerInfo;}}
   
   async Phytoseeexport(workbook, valspalten: any, tab: any,verfahrennr:number){

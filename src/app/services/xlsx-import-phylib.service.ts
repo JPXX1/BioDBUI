@@ -75,7 +75,7 @@ export class XlsxImportPhylibService {
 try {
 	// Converting the Observable to a Promise using firstValueFrom
 	this.tiefen = await firstValueFrom(this.impPhylibServ.getTiefen());
-	console.log(this.tiefen);
+	// console.log(this.tiefen);
   } catch (err: unknown) {
 	// Using a type guard to check and access the error message
 	if (err instanceof Error) {
@@ -88,14 +88,10 @@ try {
 
 		
 
-		// await this.impPhylibServ.getTiefen().subscribe(tief_ => {
-		// 	this.tiefen = tief_;
-		// 	console.log(tief_);
-		// 	//return einheiten;
-		// }, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
+		
 		try {
 			this.einheiten = await firstValueFrom(this.impPhylibServ.getEinheiten());
-			console.log(this.einheiten);
+			// console.log(this.einheiten);
 		  } catch (err: unknown) {
 			// Using a type guard to check and access the error message
 			if (err instanceof Error) {
@@ -125,7 +121,7 @@ try {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.getMst().forEach(value => {
 			this.mst = value;
-			console.log('observable -> ' + value);
+			// console.log('observable -> ' + value);
 		});
 	}
 	async PhylibBewertungimport(workbook, valspalten: any, tab: number,verfahrennr : number) {
@@ -220,7 +216,8 @@ try {
 				}
 			}
 		})
-	console.log(this.messstellenImp);this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
+	//console.log(this.messstellenImp);
+	this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
 
 schalteSpalte(Spalte:string,wert:string,jahr?:string) {
 
@@ -303,7 +300,7 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 			}
 		})}
 	}
-console.log(this.mstindex);	
+// console.log(this.mstindex);	
 }
 
 
@@ -549,7 +546,7 @@ console.log(this.mstindex);
 	}
 
 	async groupNAch() {
-		console.log(this._uebersicht);
+		// console.log(this._uebersicht);
 		let mst: string=this._uebersicht.mst;
 		let jahr: string=this._uebersicht.jahr;
 		let _sp3: string=this._uebersicht.sp3;
@@ -599,7 +596,7 @@ console.log(this.mstindex);
 						if (this.uebersicht[i].sp3!==undefined){ _sp3 = this.uebersicht[i].sp3};
 						if (this.uebersicht[i].sp4!==undefined){_sp4 = this.uebersicht[i].sp4};
 						if (this.uebersicht[i].sp5!==undefined){
-							console.log(this.uebersicht[i].sp5);
+							// console.log(this.uebersicht[i].sp5);
 							_sp5 = this.uebersicht[i].sp5};
 						if (this.uebersicht[i].sp6!==undefined){_sp6 = this.uebersicht[i].sp6};
 						if (this.uebersicht[i].sp7!==undefined){var _sp7_: string = this.uebersicht[i].sp7}else{var _sp7_=_sp7};
@@ -618,7 +615,7 @@ console.log(this.mstindex);
 						
 						if (this.uebersicht[i].fehler1 === "checked") { _fehler1_ = "checked"; } else { _fehler1_ = ""; }
 						if (this.uebersicht[i].fehler2 === "checked" || _fehler2==="checked" ) { _fehler2_ = "checked"; } else {}
-						console.log(this.uebersicht[i].import1);
+						// console.log(this.uebersicht[i].import1);
 						if (this.uebersicht[i].anzahl === 0) { _fehler3_ = "checked"; } else { _fehler3_ = ""; };
 						if (importp!==undefined && this.uebersicht[i].import1!==undefined){
 						if (importp === "" || this.uebersicht[i].import1==="" ) { 
@@ -639,7 +636,7 @@ console.log(this.mstindex);
 			}
 
 		}}
-		console.log(this.uebersicht);
+		// console.log(this.uebersicht);
 	}
 
 anzahlMstImp():number{
@@ -735,7 +732,7 @@ doppelteMesswerte(): boolean {
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
 			jahrtemp = ('15.07.' + this.uebersicht[a].jahr); 
 			await this.holeMesswerteAbiotikausDB(jahrtemp, probenehmer);
-			console.log(this.MWausDB);
+			// console.log(this.MWausDB);
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
 			let mstID=mstee[0].id_mst;
@@ -923,7 +920,7 @@ doppelteMesswerte(): boolean {
 
 
 			const combi = this.tempMst.filter(d => d.id_mst === mw.id_mst && d.id_para === mw.id_para && d.id_einh === mw.id_einh);
-			console.log("combi", combi && mw)
+			//console.log("combi", combi && mw)
 
 			if (combi.length > 0) {
 				this.vorhandenMst = true;
@@ -938,7 +935,7 @@ doppelteMesswerte(): boolean {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
 			this.tempMst = value;
-			console.log('observable -> ' + value);
+			//console.log('observable -> ' + value);
 		});
 	}
 	
@@ -946,14 +943,14 @@ doppelteMesswerte(): boolean {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
 			this.MWausDB = value;
-			console.log('observable -> ' + this.MWausDB);
+			//console.log('observable -> ' + this.MWausDB);
 		});
 	}
 	async holeMesswerteausDB(datum: string, Probenehmer: string) {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMesswerte2(datum, Probenehmer).forEach(value => {
 			this.MWausDB = value;
-			console.log('observable -> ' + this.MWausDB);
+			//console.log('observable -> ' + this.MWausDB);
 		});
 	}
 	async importIntoDB(jahr: string, probenehmer: string,useincludeDate:boolean):Promise<string> {
@@ -992,7 +989,7 @@ doppelteMesswerte(): boolean {
 	async importMesswerteIntoDB(jahr: string, probenehmer: string,useIncludedDate:boolean):Promise<string> {
 		let jahrtemp: string;
 		if (useIncludedDate===false){jahrtemp = ("15.07." + jahr);}
-		console.log(jahrtemp);
+		//console.log(jahrtemp);
 		let messwertanzahl:number=0;
 		let bemerkung="Import der Messwerte erfolgreich.";
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
@@ -1013,7 +1010,7 @@ doppelteMesswerte(): boolean {
 			if (useIncludedDate===true)	
 			{jahrtemp=tmpMWteil[i]._Datum}
 			let variable:number=await this.impPhylibServ.postMesswertePhylib(tmpMWteil[i], jahrtemp, probenehmer, this.uebersichtImport.id_imp)
-			console.log (variable);
+			//console.log (variable);
 			if (variable!==201){
 
 				bemerkung="Fehler beim Import der Messwerte."
@@ -1033,8 +1030,8 @@ return bemerkung;
 		let bemerkung="Import der Messstellendaten erfolgreich.";
 		let a=0;
 		jahrtemp = ("15.07." + jahr);
-		console.log(this.messstellenImp.length);
-		console.log(this.messstellenImp);
+		// console.log(this.messstellenImp.length);
+		// console.log(this.messstellenImp);
 
 		this.importierteMst=this.anzahlMstImp(); 
 		for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {

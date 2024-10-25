@@ -119,7 +119,7 @@ export class ImpPhylibServ {
        getArtenPhylibMP(parameter :number){ 
 
         let params = new HttpParams().set('id',parameter);
-        console.log(params.toString())
+        // console.log(params.toString())
         //const params: { id: 1 };
         return this.httpClient.get(`${this.apiUrl}/impArten`, {params});
         }

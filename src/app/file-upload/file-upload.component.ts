@@ -1,12 +1,14 @@
-import { Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
+import { NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
+import { ChangeDetectorRef } from '@angular/core';
 import { HelpService } from '../services/help.service';
 import {PerlodesimportService} from '../services/perlodesimport.service';
 import { Messwerte } from '../interfaces/messwerte';
 import { Uebersicht } from '../interfaces/uebersicht';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
 import {ValExceltabsService} from '../services/val-exceltabs.service';
+
 import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
 import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
 import { MatTableDataSource } from '@angular/material/table';
@@ -25,7 +27,7 @@ import { MatDialog } from '@angular/material/dialog';
 import {PhytoseeServiceService} from 'src/app/services/phytosee-service.service';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-
+import { BehaviorSubject } from 'rxjs';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -61,7 +63,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	public uebersicht:Uebersicht[]=[];
 	public uebersichtImport:UebersichtImport[];
 	public newuebersichtImport:UebersichtImport;
-	
+	isLoading$ = new BehaviorSubject<boolean>(false); 
 	ImportIntoDB:boolean=true;
 	pruefen:boolean=true;
 	dataSource: MatTableDataSource<Uebersicht>;
@@ -82,7 +84,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 	// Inject service 
 	
-	constructor ( private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+	constructor (private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
 		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
@@ -108,6 +110,7 @@ handleJahrSelected(selectedJahr: number) {
 			
         } else{
 			this.ImportDatenAnzeige=false;
+			
 		await this.uebersichtImportService.start();
 		this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
 			this.helpService.helpText$.subscribe(text => this.helpText = text);
@@ -168,7 +171,7 @@ handleJahrSelected(selectedJahr: number) {
 	
 	// OnClick of button Upload 
 	onUpload() {
-		this.loading = !this.loading;
+		this.zone.run(() => this.startLoading());
 		this.mstimptab=true;  
 		
 
@@ -180,14 +183,14 @@ handleJahrSelected(selectedJahr: number) {
 
 					
 
-					this.loading = false; // Flag variable 
+					
 				}
 			}
 		);
 
 		//name uploaddatei in UeberesichtImport;
 		
-	
+		this.zone.run(() => this.stopLoading());// Flag variable 
 	}
 
 
@@ -276,6 +279,7 @@ handleJahrSelected(selectedJahr: number) {
 				this.xlsxImportPhylibService.uebersichtImport=this.newuebersichtImport;
 			}
 	async	importIntoDB(){
+		this.zone.run(() => this.startLoading());
 			let useincludeDate:boolean=false;
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
@@ -379,7 +383,11 @@ handleJahrSelected(selectedJahr: number) {
 	
 			async addfile()     
 		{  this.ImportDatenAnzeige=false;
-			
+
+
+			this.zone.run(() => this.startLoading());
+
+			try {
 			this.pruefen=true;
 			this.mstimptab=true; this.Datimptab=false; this.Datimptabphyto=false; this.ImportIntoDB=true;
 	//	this.file= event.target.files[0];     
@@ -403,7 +411,7 @@ handleJahrSelected(selectedJahr: number) {
 			
 			
 			
-			console.log(this.valExceltabsService.NrVerfahren);
+			// console.log(this.valExceltabsService.NrVerfahren);
 			this.xlsxImportPhylibService.uebersicht=[];
 			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
 				switch(this.valExceltabsService.NrVerfahren) {
@@ -490,8 +498,8 @@ handleJahrSelected(selectedJahr: number) {
 					this.InfoBox="Keine Importdatei."
 				}
 				 this.dataSource.sort=this.sort;
-			}    
-	};
+			}   }finally { this.zone.run(() => this.stopLoading());} 
+			}
 
 	async edit(person: Uebersicht) {
 		let mst_id_alt
@@ -604,7 +612,15 @@ displayableColumns(idverfahren:number){
 	  }
 	 
 	
+	  async startLoading() {
+		this.isLoading$.next(true); // Spinner aktivieren
+		console.log("startLoading");
+	}
 	
+	async stopLoading() {
+		this.isLoading$.next(false); // Spinner aktivieren
+		console.log("stopLoading");
+	}
 }
 
 function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {

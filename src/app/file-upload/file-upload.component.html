@@ -1,7 +1,9 @@
 <!-- <div *ngIf="isHelpActive">
   <p>Hilfe ist aktiviert!</p>
 </div> -->
-
+<div *ngIf="isLoading$ | async">
+  <mat-spinner color="primary"></mat-spinner>
+</div>
 <div class="grid-container">
   <mat-card>
     <mat-card-content>
@@ -17,7 +19,7 @@
                 </span>
                 <span style="float:right">
                   <button (click)="addfile()" id="add-file" class="btn btn-success helpable">
-                    2. Upload
+                     2. Upload
                   </button>
                 </span>
               </td>
@@ -70,14 +72,22 @@
         <ng-container matColumnDef="fehler1">
           <th mat-header-cell *matHeaderCellDef class="header-table-rl">Mst nicht bekannt</th>
           <td mat-cell *matCellDef="let element" class="spalte-rl">
-            <input type="checkbox" [checked]="element.fehler1">
+            <input type="checkbox" 
+          [readonly]="true" 
+          [checked]="element.fehler1" 
+          (click)="$event.preventDefault()">
           </td>
         </ng-container>
         <ng-container matColumnDef="fehler2">
           <th mat-header-cell *matHeaderCellDef class="header-table-rl">Art nicht bekannt</th>
           <td mat-cell *matCellDef="let element" class="spalte-rl">
-            <input type="checkbox" [checked]="element.fehler2">
+            <input type="checkbox" 
+          [readonly]="true" 
+          [checked]="element.fehler2" 
+          (click)="$event.preventDefault()">
           </td>
+
+         
         </ng-container>
         <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef class="header-table-rl">Aktionen</mat-header-cell>
@@ -91,9 +101,13 @@
           </mat-cell>
         </ng-container>
         <ng-container matColumnDef="import1">
-          <th mat-header-cell *matHeaderCellDef>importierbar</th>
-          <td mat-cell *matCellDef="let element">
-            <input type="checkbox" [checked]="element.import1">
+          <th mat-header-cell *matHeaderCellDef>impor-tierbar</th>
+          <td mat-cell *matCellDef="let element" class="spalte-rl">
+            <input type="checkbox" 
+            [readonly]="true" 
+            [checked]="element.import1" 
+            (click)="$event.preventDefault()">
+          
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="dynamicColumns"></tr>

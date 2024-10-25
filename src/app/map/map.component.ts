@@ -330,7 +330,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
         
         drawQuarterPieChart(ctx: CanvasRenderingContext2D, data: string[], x: number, y: number) {
           const totalSlices = 4;  // Vier Segmente
-          const radius = 10;  // Radius des Tortendiagramms
+          const radius = 15;  // Radius des Tortendiagramms
           let startAngle = 0;
           const sliceAngle = (2 * Math.PI) / totalSlices;
       

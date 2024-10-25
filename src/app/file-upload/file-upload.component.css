@@ -36,7 +36,11 @@
  /* font-weight: lighter; */
     border-width: 1px;
   }
-
+  td.spalte-input input[type="checkbox"][disabled] {
+    opacity: 1;
+    pointer-events: none;
+  }
+  
  
   .header-table-rl{
     text-align: center;

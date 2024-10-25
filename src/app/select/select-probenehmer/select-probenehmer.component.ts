@@ -24,7 +24,7 @@ export class SelectProbenehmerComponent {
 		this.impPhylibServ.getProbenehmer().subscribe(jahre_ => { 
       this.pn  =jahre_;
      
-     console.log(this.pn);
+    //  console.log(this.pn);
     });
    }
 }

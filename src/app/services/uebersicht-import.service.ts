@@ -29,7 +29,7 @@ export class UebersichtImportService {
 
   await this.callUebersicht();
   await this.handle();
-  console.log(this.uebersicht);
+  // console.log(this.uebersicht);
  }
 
 
@@ -37,7 +37,7 @@ export class UebersichtImportService {
 
   await this.impPhylibServ.getimpUebersicht().forEach(formen_ => {
     this.temp  = formen_;
-    console.log(formen_);
+    // console.log(formen_);
   });
  }
 
