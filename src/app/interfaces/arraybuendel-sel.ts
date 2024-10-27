@@ -5,7 +5,7 @@ import {TypWrrl} from '../interfaces/typ-wrrl';
 export interface ArraybuendelSel {
 
 mststam:MessstellenStam;
-wkstam:WasserkoerperStam;
+wkstam:WasserkoerperStam[];
 melde:MeldeMst[];
 gewaesser:TypWrrl[];
 }

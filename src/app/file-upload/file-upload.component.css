@@ -1,12 +1,4 @@
-.info {
-  float:right; 
-    height: 20px;
-    /* width: 200px; */
-    /* border: 1px solid rgb(235, 23, 23); */
-    margin-left: 50px;
-    background-color: rgb(253, 251, 220);
-    max-width: 300px;
-  }
+
   .fileupload{
     height: 32px;
     width: 400px;
@@ -16,17 +8,8 @@
     
 
   }
-  /* .table {
-    width: 45%;
-    vertical-align: top;
-    background-color: withe;
-  } */
-  .grid-container {
-    display: grid;
+
  
-  column-gap: 50px;
-  margin-left: 50px;
-  }
  
 
     .spalte-rl{

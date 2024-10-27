@@ -331,7 +331,178 @@ if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
           // Fehlerbehandlung
           // console.log(this.xlsxImportPhylibService.MessDataImp);
           return FehlerInfo;}}
-  
+
+
+
+          /**
+ * Exportiert Daten aus einem Workbook in ein spezifisches Format.
+ * 
+ * @param workbook - Das Workbook-Objekt, das die zu exportierenden Daten enthält.
+ * @param valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten repräsentieren.
+ * @param tab - Die Tab-Nummer, die verarbeitet werden soll.
+ * @param verfahrennr - Die Verfahrensnummer, um die Spalten zu filtern.
+ * 
+ * @returns Ein Promise, das sich auflöst, wenn der Exportprozess abgeschlossen ist.
+ * 
+ * @Bemerkungen
+ * Diese Funktion verarbeitet die Workbook-Daten, indem sie die Spalten anhand der angegebenen Verfahrensnummer und des Tabs filtert.
+ * Anschließend wird das relevante Arbeitsblatt in JSON-Format konvertiert und jede Zeile wird bearbeitet, um Daten zu extrahieren und zu transformieren.
+ * Die transformierten Daten werden im `messstellenImp`-Array gespeichert, und verschiedene Servicemethoden werden aufgerufen, um die Daten zu verarbeiten.
+ * 
+ * @Beispiel
+ * ```typescript
+ * const workbook = ...; // Workbook laden oder erstellen
+ * const valspalten = [...]; // Zu verarbeitende Spalten definieren
+ * const tab = 1; // Tab-Nummer angeben
+ * const verfahrennr = 123; // Verfahrensnummer angeben
+ * 
+ * await Phytoflussexport(workbook, valspalten, tab, verfahrennr);
+ * ```
+ */
+
+          async    Phytoflussexport(workbook, valspalten: any, tab: any,verfahrennr:number){
+            await this.xlsxImportPhylibService.holeMst();
+            // console.log(this.xlsxImportPhylibService.mst);
+            this.xlsxImportPhylibService.displayColumnNames=[];
+            this.xlsxImportPhylibService.dynamicColumns=[];
+            this.messstellenImp=[];
+        
+            let XL_row_object;
+            let json_Messstelle;let jahr: string | undefined;
+            let mstOK: string;
+            let bidmst; 
+            let bidpara1; let bideinh1; let bwert1;
+            let bidpara2; let bideinh2; let bwert2;
+            const namespalteng1:string='sp3';
+                          const namespalteng2:string='sp4'; 
+           // const valrowsfiteranzeige = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 4 && excelspalten.id_tab === tab);
+          
+            
+          //  const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import_spalte === true);
+         
+         
+        
+     
+        const sheetName = 'gesamtbewertung';
+        
+        // Wandelt die Namen der Sheets im Workbook in Kleinbuchstaben um, entfernt Unterstriche und erstellt eine Zuordnung
+        const sheets = Object.keys(workbook.Sheets).reduce((acc: any, key: string) => {
+          const normalizedKey = key.toLowerCase().replace(/_/g, '');
+          acc[normalizedKey] = workbook.Sheets[key];
+          return acc;
+        }, {});
+        
+        
+        // Holt das Arbeitsblatt aus dem Workbook basierend auf dem in Kleinbuchstaben umgewandelten Namen
+        const sheet = sheets[sheetName];
+        
+        // Konvertiert das Arbeitsblatt in ein JSON-Objekt
+        // const XL_row_object = XLSX.utils.sheet_to_json(sheet);
+        
+        XL_row_object = XLSX.utils.sheet_to_json(sheet);
+           // XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[valspaltenfiter[0].name_exceltab]);
+            json_Messstelle = JSON.stringify(XL_row_object);
+            const obj = JSON.parse(json_Messstelle);
+          
+           
+
+
+             
+              obj.forEach((val, index) => {
+        
+                this._uebersicht= {} as Uebersicht;
+                if (obj[index] !== null) {
+                  for (var i in obj[index]) {
+                    // bwert=obj[index][i];
+                    // const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => i.includes(excelspalten.spalten_name));
+                    
+                    // Überprüft, ob die Spalte 'Jahr' existiert, bevor sie zugewiesen wird
+          if ('Jahr' in obj[index]) {
+            jahr = obj[index]['Jahr'];
+          }else{
+            // Setzt jahr auf undefined
+            jahr = undefined;}
+                   
+                        let mst = obj[index]['Gewässername'];
+                        if (mst===null){  let mst = obj[index]['GewässernameWB'];}
+                         let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst === mst);
+                        
+                         if (mstee.length>0){
+                         this._uebersicht.mst=mstee[0].namemst;
+                         bidmst=mstee[0].id_mst;
+                         mstOK = "";}
+                    
+                         
+        
+                          else{
+        
+                            let mstee2 = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.name_synonym === mst);
+                        if (mstee2.length>0){
+                          this._uebersicht.mst=mstee2[0].namemst;
+                          bidmst=mstee2[0].id_mst;
+                          mstOK = "";}else{
+                          this._uebersicht.mst=mst
+                          mstOK = "checked";bidmst=null;}}
+                         
+                          
+                          bwert1=obj[index]['Gesamtindex'];
+                          bideinh1='13';
+                          bidpara1='104';
+                          this._uebersicht.jahr=jahr;
+                          this._uebersicht.sp3=bwert1;
+                        
+                              
+                            bwert2 = bewertung_als_zahl(obj[index]['Verbale Bewertung']);
+                            bidpara2==='94'
+                            bideinh2='13'
+                            this._uebersicht.sp4=obj[index]['Verbale Bewertung']; 
+                           
+                             
+                            
+                         
+        
+        
+        
+        
+                          // this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                             
+        
+                       
+                   
+                      this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2="";this._uebersicht.fehler3="";
+                      if (mstOK==="checked"){this._uebersicht.import1="";} else{this._uebersicht.import1="checked";}
+                       
+                      
+                      //wenn ein Jahr vorhanden ist wird es in die MessstellenImp eingetragen
+                      if (jahr!=='undefined') {
+                        this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh1, id_para: bidpara1, wert: bwert1, id_import: null, id_pn: null,uebersicht:this._uebersicht,jahr:jahr });
+                        this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh2, id_para: bidpara2, wert: bwert2, id_import: null, id_pn: null,uebersicht:this._uebersicht,jahr:jahr });}
+                        
+                      
+                      
+                          else{
+                        this.messstellenImp.push({ id_mst: bidmst, datum: jahr, id_einh: bideinh1, id_para: bidpara1, wert: bwert1, id_import: null, id_pn: null,uebersicht:this._uebersicht });
+                        this.messstellenImp.push({ id_mst: bidmst, datum: jahr, id_einh: bideinh2, id_para: bidpara2, wert: bwert2, id_import: null, id_pn: null,uebersicht:this._uebersicht });
+                            // this.messstellenImp.push({ id_mst: bidmst, datum: jahr, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht });
+                            }
+                      
+                      this.xlsxImportPhylibService._uebersicht=this._uebersicht;
+                      this.xlsxImportPhylibService.schalteSpalte(namespalteng1,bwert1,jahr);
+                     
+                      this.xlsxImportPhylibService.schalteSpalte(namespalteng2,bwert2,jahr);
+                      this.xlsxImportPhylibService.groupNAch();
+                    
+        
+                     
+        
+        
+                    }
+                  }})
+                  //console.log(this.messstellenImp)
+                  
+                  this.xlsxImportPhylibService.messstellenImp=this.messstellenImp;
+
+          }
   async Phytoseeexport(workbook, valspalten: any, tab: any,verfahrennr:number){
     await this.xlsxImportPhylibService.holeMst();
     // console.log(this.xlsxImportPhylibService.mst);
@@ -466,7 +637,7 @@ XL_row_object = XLSX.utils.sheet_to_json(sheet);
 
             }
           }})
-          console.log(this.messstellenImp)
+          //console.log(this.messstellenImp)
           
           this.xlsxImportPhylibService.messstellenImp=this.messstellenImp;
   }

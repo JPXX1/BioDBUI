@@ -1,13 +1,8 @@
-.sticky-header {
-    width: 100%;
-    overflow: auto;
-    height: 400px; /* Adjust the height as needed */
-  }
-  
-  .sticky-header th {
-    position: sticky;
-    top: 80px;
-    z-index: 2;
-    background: white; /* Ensure the header background is white for better visibility */
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
-  }
+.cdk-overlay-pane {
+  position: fixed !important;
+  top: 20vh !important; /* Positionierung im oberen Drittel des Bildschirms */
+  left: 50% !important;
+  transform: translateX(-50%) !important; /* Horizontales Zentrieren */
+  margin-top: 0 !important; /* Entfernt das dynamische Margin */
+  z-index: 1000; /* Höhere Sichtbarkeit */
+}

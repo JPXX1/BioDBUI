@@ -84,6 +84,17 @@ exceltabsauslesen(workbook) {
   this.Exceltabsimpalle = tabs;
 }
 
+    /**
+     * Zählt die Vorkommen von Einträgen aus den Excel-Import-Registerkarten, die dem angegebenen Filter entsprechen.
+     *
+     * @param valexceltabsfilter - durch Semikolon getrennte Zeichenfolgen, wird verwendet, um übereinstimmende Einträge zu filtern und zu zählen.
+     * @returns Die Anzahl der Vorkommen von Einträgen aus den Excel-Import-Registerkarten, die dem Filter entsprechen.
+     *
+     * @bemerkungen
+     * - Die Methode teilt die ersten vier Registerkarten der Excel-Importdatei in einzelne Einträge auf und konvertiert sie in Kleinbuchstaben.
+     * - Sie teilt auch die `valexceltabsfilter`-Zeichenfolge in einzelne Einträge auf und konvertiert sie in Kleinbuchstaben.
+     * - Schließlich zählt sie, wie viele dieser Einträge aus den Excel-Import-Registerkarten in den Filtereinträgen vorhanden sind.
+     */
   countOccurrences(valexceltabsfilter: string): number {
     // Schritt 1: Splitten der vier ersten Tabs der Excelimportdatei in einzelne Einträge und in Kleinbuchstaben umwandeln
     const entries = this.ExceltabsimpVier.split(';')
@@ -100,6 +111,10 @@ exceltabsauslesen(workbook) {
   
     return occurrences;
   }
+
+
+
+
   async ExcelTabsinArray(workbook) {
     //holt sich alle Exceltabs aus Postgres (Tabelle val_exceltabs)
     await this.callvalexceltabs();
@@ -131,22 +146,22 @@ exceltabsauslesen(workbook) {
         this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
 
 
-        console.log(this.NrVerfahren);
-      }
+                console.log(this.NrVerfahren);
+            }
       else if (valexceltabsfilter[0].ident_kriterium === 5 &&  this.countOccurrences(valexceltabsfilter[0].namentabs)>1) {
         
         this.NrVerfahren =valexceltabsfilter[0].id_verfahren;
         console.log( this.NrVerfahren );
-      }
+    }
 
     }
       //wenn mehrere Vorlagen für ein Tab vorhanden sind in (PG) val_exceltabs
     else if (valexceltabsfilter.length > 1) {
 
       
-      //Phylibimportdatei Prüfung anhand der Tab-Benennung
+      //z.B.: Phylibimportdatei Prüfung anhand der Tab-Benennung
     //  let valexceltabsfilter4=valexceltabsfilter.filter(exceltabs=>exceltabs.namentabs===this.ExceltabsimpVier);
-      const valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[0].namentabs);
+      let valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[0].namentabs);
 
       let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
       if (valexceltabsfilter2.length === 1) {
@@ -157,13 +172,18 @@ exceltabsauslesen(workbook) {
       else   if (valexceltabsfilter4 === 2) {this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
 
       }
-      
+      //Phytofluss-Exportdatei
+      else if (valexceltabsfilter.length ===2 && valexceltabsfilter4 === 1 && this.excelspaltenimport.length>0) {
+        valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[1].namentabs);
+      if (valexceltabsfilter4 === 4) {
+        this.waehleVerfahren(7);
+      }}
       
       else{
         if (this.excelspaltenimport.length>0){
           
           
-          try {
+        try {
             for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
               let name = this.excelspaltenimport[i];
               if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || 
@@ -176,8 +196,8 @@ exceltabsauslesen(workbook) {
                 (name.Spaltenname === "makrophytentyp" || name.Spaltenname === "diatomeentyp" || 
                   name.Spaltenname.includes("makrophytenverödung")) {
                     this.waehleVerfahren(2);break;
-                  }
-                  }
+                }
+            }
              
                  
                 }
@@ -211,8 +231,8 @@ exceltabsauslesen(workbook) {
         catch (error) {
          // console.error(error.message);
         }
-    }
- 
+}
+
 }}
 
   spaltenauslesen( workbook) {

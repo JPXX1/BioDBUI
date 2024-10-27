@@ -31,7 +31,7 @@
                   
                   
                   <!-- <div style="margin-left:50px" class="helpable" id="DD-Probenehmer"><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div> -->
-                </span>
+              </span>
               </td>
               <td>
                 <button (click)="pruefeObMesswerteschonVorhanden()" id="btn-pruefen" [disabled]="pruefen" class="btn btn-success helpable" style="margin-left:50px">
@@ -40,10 +40,8 @@
                 <button (click)="importIntoDB()" [disabled]="ImportIntoDB" class="btn btn-success" style="margin-left:50px;margin-top:10px">
                   6. Import in die Datenbank
                 </button>
-              </td>
-              <span class="infobox">
-                <app-info-box [Info]="InfoBox" class="info" style="margin-left:100px"></app-info-box>
-              </span>
+            </td>
+            
             </tr>
           </table>
         </div>
@@ -123,7 +121,7 @@
     </div>
     
   </div>
-</div>
+
 <div class="card" *ngIf="ImportDatenAnzeige == true" style="vertical-align: top;width: 90%;margin-left: 2%;">
   <mat-card class="example-card">
     <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>

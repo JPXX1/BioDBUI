@@ -1,0 +1,11 @@
+/* start.component.css */
+.welcome-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zentriert horizontal */
+    justify-content: flex-start; /* Oben ausgerichtet */
+    height: 30vh;
+    text-align: center;
+    padding-top: 20px; /* Optional: Abstand vom oberen Rand */
+   
+  }

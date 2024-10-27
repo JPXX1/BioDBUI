@@ -1,6 +1,6 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input,EventEmitter,Output } from '@angular/core';
 import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+// import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import { MeldeMst } from 'src/app/interfaces/melde-mst';
 import {StammdatenService} from 'src/app/services/stammdaten.service';
@@ -14,16 +14,19 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
   styleUrls: ['./edit-stammdaten-mst.component.css']
 })
 export class EditStammdatenMstComponent {
+  @Input() data: ArraybuendelSel; // Empfängt die Daten
+  @Output() closeDialog = new EventEmitter<any>(); // Event für das Schließen des Dialogs
+
   seefliess: boolean;
   wk:any;
   formInstance: FormGroup;
   wk_name1:string;
   MeldeMst:string;
   dropdownList:WasserkoerperSelect[]=[];
-  // dropdownMeldeMst:MeldeMst[]=[]
+  dropdownMeldeMst:MeldeMst[]=[]
   //selectedItems:WasserkoerperSelect[]=[];
   dropdownSettings:IDropdownSettings = {};
-  // dropdownMeldeSettings:IDropdownSettings = {};
+  dropdownMeldeSettings:IDropdownSettings = {};
   errorMessage: string | null = null;
   dropdownTypGewaesser:TypWrrl[]=[];
   dropdownSettingsGew:IDropdownSettings = {};
@@ -32,105 +35,89 @@ export class EditStammdatenMstComponent {
   readonly xmax = 417907; // Obere Grenze für Rechtswert
   readonly ymin = 5796741; // Untere Grenze für Hochwert
   readonly ymax = 5842261; // Obere Grenze für Hochwert
-  // wk:any=[];
-//  constructor(private formBuilder: FormBuilder) {}^
-  constructor(public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel,private fb: FormBuilder) {
-
-      this.seefliess=data.mststam.see;
-
-      this.formInstance = this.fb.group({
-       id_mst: ['', Validators.required],
-       namemst: ['', Validators.required],
-      idgewaesser: ['', Validators.required],
-      gewaessername: ['', Validators.required],
-      ortslage: ['', Validators.required],
-      see: ['', Validators.required],
-      repraesent: ['', Validators.required],
-      melde_mst: ['', Validators.required],
-      melde_mst_str: ['', Validators.required],
-      wrrl_typ: ['', Validators.required],
-      id_wk: ['', Validators.required],
-      wk_name: ['', Validators.required],
-      eu_cd_sm: ['', Validators.required],
-      dia_typ: ['', Validators.required],
-      pp_typ: ['', Validators.required],
-      mp_typ: ['', Validators.required],
-      hw_etrs: ['', Validators.required],
-      rw_etrs: ['', Validators.required],
-      updated_at: ['', Validators.required],
-       
-      });
-
-   
-    let mw1: WasserkoerperSelect={} as WasserkoerperSelect;
-    mw1.id=data.mststam.id_wk;
-    
-    mw1.wk_name=data.mststam.wk_name;
-    //this.selectedItems.push(mw1);
-    this.wk_name1=mw1.wk_name;
-    this.MeldeMst=data.mststam.melde_mst_str;
-
-    
-    this.formInstance.setValue(data.mststam);
-    this.dropdownSettings = {
-      singleSelection: true,
-      idField: 'id',
-      textField: 'wk_name',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 20,
-      allowSearchFilter: true,
-     
-    };
-
-    this.dropdownSettingsGew = {
-      singleSelection: true,
-      idField: 'id',
-      textField: 'typ',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 20,
-      allowSearchFilter: true,
-     
-    }; 
-// this.dropdownMeldeSettings={
-//   singleSelection: true,
-//   idField: 'id_mst',
-//   textField: 'namemst',
-//   selectAllText: 'Select All',
-//   unSelectAllText: 'UnSelect All',
-//   itemsShowLimit: 20,
-//   allowSearchFilter: true,
-
-
-// }
-// for (let a=0,ls=this.data.melde.length; a < ls; a += 1){
-// let temp:MeldeMst={} as MeldeMst;
-
-// temp.id_mst=this.data.melde[a].id_mst;
-// temp.namemst=this.data.melde[a].namemst;
-// temp.repraesent=true;
-//   this.dropdownMeldeMst.push(temp);
-// }
-
-this.dropdownTypGewaesser=data.gewaesser;
-
-
-    // this.wk_name1= data.mststam.wk_name;
-    this.wk=data.wkstam;
-    for (let i = 0, l = this.wk.length; i < l; i += 1) {
-			let mw: WasserkoerperSelect={} as WasserkoerperSelect;
-
-      mw.id=this.wk[i].id;
-      mw.wk_name=this.wk[i].wk_name;
-			
-      this.dropdownList.push(mw);
-			
-    }
-     
   
- }
+constructor(private fb: FormBuilder) {
+  this.formInstance = this.fb.group({
+    id_mst: ['', Validators.required],
+    namemst: ['', Validators.required],
+    idgewaesser: ['', Validators.required],
+    gewaessername: ['', Validators.required],
+    ortslage: ['', Validators.required],
+    see: ['', Validators.required],
+    repraesent: ['', Validators.required],
+    melde_mst: ['', Validators.required],
+    melde_mst_str: ['', Validators.required],
+    wrrl_typ: ['', Validators.required],
+    id_wk: ['', Validators.required],
+    wk_name: ['', Validators.required],
+    eu_cd_sm: ['', Validators.required],
+    dia_typ: ['', Validators.required],
+    pp_typ: ['', Validators.required],
+    mp_typ: ['', Validators.required],
+    hw_etrs: ['', Validators.required],
+    rw_etrs: ['', Validators.required],
+    updated_at: ['', Validators.required],
+  });
+}
+ngOnInit(): void {
+  this.initializeDropdowns();
+}
+initializeDropdowns(): void {
+  // Daten für Wasserkoerper (dropdownList)
+  this.seefliess = this.data.mststam.see;
+  this.formInstance.setValue(this.data.mststam);
+
+  this.dropdownList = this.data.wkstam.map((wk) => ({
+    id: wk.id,
+    wk_name: wk.wk_name
+  }));
+
+  // Daten für Typ Gewaesser (dropdownTypGewaesser)
+  this.dropdownTypGewaesser = this.data.gewaesser;
+
+  // Daten für Melde Messstellen (dropdownMeldeMst)
+  this.dropdownMeldeMst = this.data.melde.map((melde) => ({
+    id_mst: melde.id_mst,
+    namemst: melde.namemst,
+    repraesent: melde.repraesent
+  }));
+
+  // Initialisierung für Dropdown-Einstellungen
+  this.dropdownSettings = {
+    singleSelection: true,
+    idField: 'id',
+    textField: 'wk_name',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 20,
+    allowSearchFilter: true,
+  };
+
+  this.dropdownSettingsGew = {
+    singleSelection: true,
+    idField: 'id',
+    textField: 'typ',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 20,
+    allowSearchFilter: true,
+  };
+
+  this.dropdownMeldeSettings = {
+    singleSelection: true,
+    idField: 'id_mst',
+    textField: 'namemst',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 20,
+    allowSearchFilter: true,
+  };
+
+  // Initiale Werte setzen
+  const initialWk = this.dropdownList.find(wk => wk.id === this.data.mststam.id_wk);
+  this.wk_name1 = initialWk ? initialWk.wk_name : '';
+  this.MeldeMst = this.data.mststam.melde_mst_str;
+}
  onToggleFgwSeeChange(isSelected: boolean) {
   this.seefliess = isSelected; // Speichert den ausgewählten Wert
   this.formInstance.get('see').setValue(isSelected);
@@ -175,7 +162,10 @@ onItemSelectMeldemst(item: any) {
   this.formInstance.get('melde_mst_str').setValue(item.namemst);  
 
 }
-
+cancel(): void {
+  // Schließt den Dialog ohne Änderungen zu speichern
+  this.closeDialog.emit(null);
+}
 
 save(): void {
    // Führe die Validierung der Koordinaten durch
@@ -184,7 +174,7 @@ save(): void {
     return;
   }
 //  console.log(this.formInstance.value)
- this.dialogRef.close( this.formInstance.value);
+this.closeDialog.emit(this.formInstance.value);
 
 }
 }

@@ -1,5 +1,8 @@
 .example-PN {
-    height: 20px;
+    height: 40px;
     width: 200px;
+    /* position: fixed; /* Fixiert die Komponente am oberen Rand */
+  margin-top: 2px; 
+  margin-left: 240px;
     border: 1px solid black;
   }

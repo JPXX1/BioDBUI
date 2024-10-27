@@ -1,18 +1,15 @@
-/* .panel {
-    background: rgba(206, 245, 144, 0.473);
-    border-radius: var(--panel-border-width);
-    padding: var(--panel-border-width);
-  } */
-  /* .linkcolor{
-    color:rgba(14, 14, 241, 0.986);
-} */
+router-outlet + * {
+  margin-top: 64px; /* Höhe der Toolbar berücksichtigen */
+  display: block;
+}
 
 .sticky-header {
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
-  background-color: white;
+  /* background-color: white; */
+  background-color: transparent;
   height: 84px; /* Höhe der Kopfzeile, anpassen entsprechend der tatsächlichen Höhe */
   overflow: hidden; /* Entfernen der Scroll-Leiste */
   /* display: flex; Sicherstellen, dass die Inhalte innerhalb des Headers korrekt ausgerichtet sind */
@@ -33,7 +30,7 @@
 .help-button {
   border: 2px solid rgb(248, 6, 6); /* Roter Rahmen */
   position: absolute;
-  top: 30px;
+  top: 28px;
   right: 10px;
   z-index: 1100;
   

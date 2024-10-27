@@ -1,7 +1,7 @@
 <h2>Messstelle bearbeiten</h2>
 
 <div mat-dialog-content>
-  <form [formGroup]="formInstance">
+  <form [formGroup]="formInstance" style="background-color: azure;">
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Messstellenname *</mat-label>
@@ -77,6 +77,6 @@
 <div class="mt-5" mat-dialog-actions>
   <button mat-raised-button color="primary" [disabled]="formInstance.dirty && formInstance.errors" (click)="save()"
     cdkFocusInitial>Änderungen speichern</button>
-  <button mat-raised-button mat-dialog-close>Abbrechen</button>
+  <button mat-raised-button mat-dialog-close (click)="cancel()">Abbrechen</button>
 
 </div>

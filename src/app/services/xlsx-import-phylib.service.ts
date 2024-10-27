@@ -1098,7 +1098,7 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
 				}
-				if  (idVerfahren===6 ){
+				if  (idVerfahren===6 || idVerfahren===7 ){
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
 				}
@@ -1108,6 +1108,16 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					this.displayColumnNames.push('Jahr');
 					this.dynamicColumns.push('jahr');
 				}
+				if ( idVerfahren===7){
+					
+					this.displayColumnNames.push('Jahr');
+					this.dynamicColumns.push('jahr');
+					this.displayColumnNames.push('Gesamtindex');
+					this.dynamicColumns.push('sp3');
+					this.displayColumnNames.push('ÖZK');
+					this.dynamicColumns.push('sp4');
+				}
+
 
 		for (let i = 0, l = valspaltenfiter.length; i < l; i += 1) {
 			this.displayColumnNames.push(valspaltenfiter[i].anzeigename);
@@ -1132,7 +1142,7 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					//this.displayColumnNames.push('Import');
 					this.dynamicColumns.push('anzahl');
 		}
-		if  (idVerfahren===5 ){
+		if  (idVerfahren===5 || idVerfahren===7){
 			// this.displayColumnNames.push('Gewässername');
 			this.displayColumnNames.push('fehler1');
 					// this.displayColumnNames.push('fehler2');
@@ -1141,12 +1151,12 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					// this.dynamicColumns.push('anzahl');
 		}
 		this.dynamicColumns.push('fehler1');
-		if (idVerfahren!==5 && idVerfahren!==2 && idVerfahren!==4){
+		if (idVerfahren!==5 && idVerfahren!==2 && idVerfahren!==4 && idVerfahren!==7){
 			this.dynamicColumns.push('fehler2');}
 		this.dynamicColumns.push('import1');
 		
 		 // Füge die Aktionsspalte hinzu, falls relevant
-		 if ([1, 2, 3, 4, 5, 6].includes(idVerfahren)) {
+		 if ([1, 2, 3, 4, 5, 6,7].includes(idVerfahren)) {
 			this.dynamicColumns.push('actions');
 		  }
 		

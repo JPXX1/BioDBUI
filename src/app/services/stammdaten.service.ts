@@ -96,7 +96,7 @@ async startwk(kat:boolean,allewk:boolean){
    
       await this.getWk().forEach(formen_ => {
         this.wk  = formen_;
-        console.log(formen_);
+        // console.log(formen_);
         // return formen_;
       });  
     
@@ -120,7 +120,7 @@ async startwk(kat:boolean,allewk:boolean){
 
       await this.getStammGewasser().forEach(formen_ => {
         this.gewaesser_T = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     async callMptyp() {
@@ -364,7 +364,7 @@ if (alleMst===false){
       if (f.repraesent_mst===true){
 
         this.meldemst.push({id_mst: f.id_mst, namemst: f.namemst,repraesent:f.repraesent_mst});
-        console.log(f);
+        // console.log(f);
       }
         this.messstellenarray.push({ id_mst :f.id_mst,namemst: f.namemst,idgewaesser:f.idgewaesser,gewaessername:f.gewaessername,wk_name:f.wk_name,ortslage:f.ortslage,see:f.see,repraesent:f.repraesent_mst,melde_mst_str:f.melde_mst_str,
           melde_mst:f.melde_mst,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
@@ -376,7 +376,7 @@ if (alleMst===false){
   melde_mst:f.melde_mst,wrrl_typ:f.wrrl_typ,mp_typ:f.mp_typ,id_wk:f.id_wk,eu_cd_sm:f.eu_cd_sm,
   dia_typ:f.dia_typ,pp_typ:f.pp_typ,hw_etrs:f.hw_etrs,rw_etrs:f.rw_etrs,updated_at:f.updated_at});}})
 )
- console.log (this.messstellenarray);
+//  console.log (this.messstellenarray);
  
 }
 

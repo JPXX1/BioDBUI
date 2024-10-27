@@ -1,9 +1,12 @@
 <div class="tabs is-centered is-fullwidth"
-     #stickyMenu [class.sticky]="sticky">
-  <p>
+     #stickyMenu [class.sticky]="sticky" translate="no">
+
+
+    <div *ngIf="showMainContent">
 <!-- <div class="panel" > -->
-  <p>
-    <mat-toolbar>
+  
+    
+    <mat-toolbar >
      
       <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" [matMenuTriggerFor]="messstellen">
         <mat-icon>menu</mat-icon>
@@ -28,8 +31,8 @@
         <button mat-button id="helpButton" (click)="toggleHelp()" 
           [ngClass]="{ 'help-button-active': isHelpActive, 'help-button': true }">Hilfe</button>
     </mat-toolbar>
-  </p>
-   
+  
+    </div>
 </div>
  
 

@@ -46,7 +46,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(MatSort) sort: MatSort;
 	@Output() newData =new EventEmitter<MessstellenStam>();
 	// arraybuendel:ArraybuendelSel;
-	InfoBox = 'Start BioDB. Keine Infos!';
+	// InfoBox = 'Start BioDB. Keine Infos!';
 	public einheiten:any;
 	public mst:any;
 	public formen:any;
@@ -97,7 +97,15 @@ handleJahrSelected(selectedJahr: number) {
     // console.log("Ausgewähltes Jahr:", selectedJahr);
     // Hier kannst du beliebige Logik einfügen, z.B. das Jahr speichern oder verarbeiten
   }
-
+ // Methode zum Anzeigen einer Snackbar-Nachricht
+ InfoBox(message: string) {
+	const duration: number = 3000;
+    this.snackBar.open(message, 'Schließen', {
+      duration: duration,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
   handlePNSelected(selectedPN: number) {
 	this.ImportIntoDB=true;
 	this.pruefen=false;
@@ -134,7 +142,7 @@ handleJahrSelected(selectedJahr: number) {
 		this.ImportDatenAnzeige=false;
 		this.file=event.target.files[0];
 		this.pruefen=true;this.ImportIntoDB=true;
-		this.InfoBox="";
+		// this.InfoBox="";
 		this.dataSource=new MatTableDataSource();
 		this.mstimptab=false;  this.Datimptab=false;this.Datimptabphyto=false;
 		this.newuebersichtImport= {} as UebersichtImport;
@@ -198,8 +206,8 @@ handleJahrSelected(selectedJahr: number) {
 	
 	
 		if (this.xlsxImportPhylibService.vorhanden===true)
-		{this.InfoBox="mist"} else
-		{this.InfoBox="allet jut"};
+		{this.InfoBox("mist")} else
+		{this.InfoBox("allet jut")};
 	
 	
 	}
@@ -208,11 +216,11 @@ handleJahrSelected(selectedJahr: number) {
 		this.jahr = this.child1.selected; this.probenehmer = this.childPN.selectedPN;
 
 		if (!this.jahr) {
-			this.InfoBox = "Bitte erst das Untersuchungsjahr auswählen.";
+			this.InfoBox('Bitte erst das Untersuchungsjahr auswählen.');
 		} else {
 
 			if (!this.probenehmer) {
-				this.InfoBox = "Bitte erst den Probenehmer auswählen.";
+				this.InfoBox("Bitte erst den Probenehmer auswählen.");
 			} else {
 				console.log(this.MessDataOrgi.length)
 				console.log(this.valExceltabsService.NrVerfahren)
@@ -229,7 +237,7 @@ handleJahrSelected(selectedJahr: number) {
 						//Verfahren=5
 						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
 					
-					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox = "Daten lassen sich nicht oder nur teilweise importieren." ;}  
+					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox("Daten lassen sich nicht oder nur teilweise importieren.") ;}  
 						if (this.xlsxImportPhylibService.doppelteMesswerte()===true){
 							const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 								width: '250px',
@@ -244,11 +252,11 @@ handleJahrSelected(selectedJahr: number) {
 								  this.xlsxImportPhylibService.MessDataImp = distinctObjects;
 						
 								  // Setze die InfoBox-Nachricht
-								  this.InfoBox = "Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.";
+								  this.InfoBox ("Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.");
 								  this.ImportIntoDB = false; 
 								}else {
 									// Der Benutzer hat "Nein" gewählt -> Abbrechen
-									this.InfoBox = "Der Import wurde abgebrochen.";
+									this.InfoBox ("Der Import wurde abgebrochen.");
 									//console.log(this.InfoBox);
 								  }
 								});
@@ -257,9 +265,9 @@ handleJahrSelected(selectedJahr: number) {
 
 							//this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
 						console.log(this.InfoBox)} else 
-						{this.InfoBox = "Daten sind zum import bereit."; this.ImportIntoDB = false; };
+						{this.InfoBox ("Daten sind zum import bereit."); this.ImportIntoDB = false; };
 				} else {
-					this.InfoBox = "Bitte erst eine Importdatei hochladen."
+					this.InfoBox ("Bitte erst eine Importdatei hochladen.");
 				}
 
 			}
@@ -285,10 +293,10 @@ handleJahrSelected(selectedJahr: number) {
 			this.probenehmer=this.childPN.selectedPN;
 			console.log(this.jahr);
 
-			if (!this.jahr){this.InfoBox="Bitte erst das Untersuchungsjahr auswählen.";
+			if (!this.jahr){this.InfoBox("Bitte erst das Untersuchungsjahr auswählen.");
 			}else{
 
-			if (!this.probenehmer){this.InfoBox="Bitte erst den Probenehmer auswählen.";
+			if (!this.probenehmer){this.InfoBox("Bitte erst den Probenehmer auswählen.");
 			}else 
 			
 			{
@@ -300,13 +308,14 @@ handleJahrSelected(selectedJahr: number) {
 				
 			
 				
-				this.InfoBox="Der Import wird durchgeführt.";
+				this.InfoBox("Der Import wird durchgeführt.");
 
 				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				
 				this.archivImportErzeugen();
 				
-				 this.InfoBox=await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
+				 const message =await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
+				this.InfoBox(message);
 				 return;
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;};}
@@ -315,13 +324,13 @@ handleJahrSelected(selectedJahr: number) {
 				console.log(this.valExceltabsService.NrVerfahren);
 				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || this.valExceltabsService.NrVerfahren===5){
 					if (this.xlsxImportPhylibService.vorhanden===true)
-				{this.InfoBox="Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+				{this.InfoBox("Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
 				if (this.xlsxImportPhylibService.vorhandenMst===true)
-				{this.InfoBox="Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden."} else
+				{this.InfoBox("Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
 
 				
 
-				{this.InfoBox="Der Import wird durchgeführt.";
+				{this.InfoBox("Der Import wird durchgeführt.");
 					if (this.valExceltabsService.NrVerfahren===5){	this.newuebersichtImport.id_komp=5;}
 				
 					//neue importID,Jahr und Probenehmer erzeugen/anfuegen
@@ -329,14 +338,15 @@ handleJahrSelected(selectedJahr: number) {
 				
 				this.archivImportErzeugen();
 				this.xlsxImportPhylibService.holeMst();
-				this.InfoBox=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
+				const message=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
+				this.InfoBox(message);
 				return;
 				await this.uebersichtImportService.start();
 				this.uebersichtImport=this.uebersichtImportService.uebersicht;
 				
 			};}
 				else 
-				{this.InfoBox="Bitte erst eine Importdatei hochladen."}
+				{this.InfoBox("Bitte erst eine Importdatei hochladen.")}
 				}}
 			}
 			sortData2(){
@@ -414,6 +424,7 @@ handleJahrSelected(selectedJahr: number) {
 			// console.log(this.valExceltabsService.NrVerfahren);
 			this.xlsxImportPhylibService.uebersicht=[];
 			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
+			console.log(this.valExceltabsService.NrVerfahren);
 				switch(this.valExceltabsService.NrVerfahren) {
 					
 				  case 1:
@@ -429,14 +440,14 @@ handleJahrSelected(selectedJahr: number) {
 						this.displayableColumns(1);
 						
 						
-						this.InfoBox="Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
+						this.InfoBox("Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.");
 						this.Datimptab=false;this.Datimptabphyto=false;
 						this.pruefen=false;
 						// this.dataSource.sort = this.sort;
 					break;
 				  case 2:
 					this.newuebersichtImport.id_komp=1;
-					this.InfoBox="Phylib-Bewertungen erkannt (" + this.file.name+ "). ";
+					this.InfoBox("Phylib-Bewertungen erkannt (" + this.file.name+ "). ");
 					this.xlsxImportPhylibService.callarten();
 						this.xlsxImportPhylibService.ngOnInit();
 						this.MessDataOrgi =[];
@@ -453,7 +464,7 @@ handleJahrSelected(selectedJahr: number) {
 						this.xlsxImportPhylibService.MessDataOrgi=[];
 						await this.perlodesimportService.startimport(workbook);
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.InfoBox="Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.";
+						this.InfoBox("Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.");
 						// this.xlsxImportPhylibService.uebersicht.sort
 					this.displayableColumns(3);
 					// this.dataSource.sort=this.sort;
@@ -465,7 +476,7 @@ handleJahrSelected(selectedJahr: number) {
 					this.newuebersichtImport.id_komp=3;
 					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
 					// this.xlsxImportPhylibService.uebersicht=[];
-					this.InfoBox="Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
+					this.InfoBox("Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					this.Datimptab=false;this.Datimptabphyto=false;
 					this.displayableColumns(4);
@@ -475,7 +486,7 @@ handleJahrSelected(selectedJahr: number) {
 					case 5: //PhytoseeExport
 					// code block
 					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren);
-					this.InfoBox="Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.";
+					this.InfoBox("Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
 					this.Datimptab=false;this.Datimptabphyto=false;
 					this.displayableColumns(5);
 					// this.dataSource.sort=this.sort;
@@ -483,19 +494,29 @@ handleJahrSelected(selectedJahr: number) {
 					this.pruefen=false;
 					break;
 					case 6://LLBB_Ilat Import
-					this.InfoBox="";
+					// this.InfoBox="";
 					const result=await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,workbook.SheetNames.length,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					if (result===("Import erfolgreich")){ 
 						this.pruefen=false;
-						this.InfoBox="LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Messstellen in der Importdatei.";}
-					else {this.InfoBox=result;}
+						this.InfoBox("LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Messstellen in der Importdatei.");}
+					else {this.InfoBox(result);}
 						this.Datimptab=false;this.Datimptabphyto=false;
 
 					this.displayableColumns(6);
 					break;
+					case 7: //PhytoflussExport
+					// code block
+					await this.phytoseeServiceService.Phytoflussexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					this.InfoBox("Phytofluss-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
+					this.Datimptab=false;this.Datimptabphyto=false;
+					this.displayableColumns(7);
+					// this.dataSource.sort=this.sort;
+					
+					this.pruefen=false;
+					break;
 				  default:
-					this.InfoBox="Keine Importdatei."
+					this.InfoBox("Keine Importdatei.");
 				}
 				 this.dataSource.sort=this.sort;
 			}   }finally { this.zone.run(() => this.stopLoading());} 
@@ -627,13 +648,5 @@ function compare(a: number | string | boolean, b: number | string | boolean, isA
 	return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 	
-//   function compare(a, b, isAsc) {
-//     if (a < b) {
-//         return isAsc ? -1 : 1;
-//     }
-//     if (a > b) {
-//         return isAsc ? 1 : -1;
-//     }
-//     return 0;
-// }
+
 

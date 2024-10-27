@@ -39,7 +39,6 @@ import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-
 import {MatSliderModule} from '@angular/material/slider';
 import { MapComponent } from './map/map.component';
 import { MatSortModule} from '@angular/material/sort';
-import { MonitoringkarteComponent } from './monitoringkarte/monitoringkarte.component';
 import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
 import { ReactiveFormsModule } from '@angular/forms';
 // import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -66,7 +65,6 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CustomSnackbarComponent } from './custom-snackbar/custom-snackbar.component';
-import { RegisterDialogComponent } from './auth/register-dialog/register-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapVBSelectionDialogComponent } from './map-vbselection-dialog/map-vbselection-dialog.component';
 import { ExpertenurteilMstComponent } from './expertenurteil-mst/expertenurteil-mst.component';
@@ -79,14 +77,16 @@ import { ConfirmPasswordDialogComponent } from './auth/confirm-password-dialog/c
 import { RoleGuard } from 'src/app/auth/auth/role.guard';
 import { ConfirmDialogComponent } from './file-upload/confirm-dialog/confirm-dialog.component';
 import { CenterButtonComponent } from './map/center-button/center-button.component';
+import { StartComponent } from './auth/start/start.component';
 
 
 // StammWkComponent
 
 const routes: Routes = [
-	{ path: '', redirectTo: '/login', pathMatch: 'full' }, // Default route
+	{ path: '', component: StartComponent }, // StartComponent als Standardroute
+	// { path: '', redirectTo: '/login', pathMatch: 'full' }, // Default route
 	{ path: 'login', component: LoginComponent },
-	{ path: 'monitoringkarte', component: MonitoringkarteComponent 
+	{ path: 'monitoringkarte', component: MapComponent 
 		,canActivate: [RoleGuard],  // Guard aktivieren
 		data: { expectedRole: 'nutzer1' }  // Die erwartete Rolle
 	},
@@ -124,8 +124,9 @@ const routes: Routes = [
 @NgModule({ 
 declarations: [ 
 	AppComponent, SelectUebersichtImportComponent,
-	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, MonitoringkarteComponent, StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
-	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent, RegisterDialogComponent,  MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent,
+	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
+	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
+	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent,
 ], 
 imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
