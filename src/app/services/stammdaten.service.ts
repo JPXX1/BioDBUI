@@ -106,14 +106,14 @@ async startwk(kat:boolean,allewk:boolean){
 
       await this.getStammMst().forEach(formen_ => {
         this.mst = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     async callDiatyp() {
 
       await this.getStammDiaTyp().forEach(formen_ => {
         this.diatyp_t = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     async callGewaesser() {
@@ -178,7 +178,7 @@ async startwk(kat:boolean,allewk:boolean){
     }
 
     
-   neueMst(seefliess: boolean) {
+   neueMst(seefliess: boolean) : Observable<MessstellenStam>{
 
 
     const messstellenStam_neu: MessstellenStam = {
@@ -203,20 +203,28 @@ async startwk(kat:boolean,allewk:boolean){
       updated_at: null,
     };
   
-    this.insertNewMstStamm(messstellenStam_neu).subscribe(
-      (response) => {
-        if (response && response.id) {
-          const neueMst: MessstellenStam = { ...messstellenStam_neu };
-          neueMst.id_mst = response.id;
-          this.messstellenarray.push(neueMst);
-        } else {
-          console.error('Response does not contain an id', response);
+    return new Observable<MessstellenStam>((observer) => {
+      this.insertNewMstStamm(messstellenStam_neu).subscribe({
+        next: (response) => {
+          
+          if (response && response.id_mst) {
+            const neueMst: MessstellenStam = { ...messstellenStam_neu };
+            
+            neueMst.id_mst = response.id_mst;
+            this.messstellenarray.push(neueMst);
+            observer.next(neueMst);
+            observer.complete();
+          } else {
+            console.error('Response does not contain an id', response);
+            observer.error('Response does not contain an id');
+          }
+        },
+        error: (error) => {
+          console.error('Error adding row:', error);
+          observer.error(error);
         }
-      },
-      (error) => {
-        console.error('Error adding row:', error);
-      }
-    );
+      });
+    });
   }
   
  
@@ -616,5 +624,74 @@ async getArchivMstStamm(parameter :number){
       this.httpClient.post(`${this.apiUrl}/updateStamGewaesser`,body).subscribe(resp => {
      console.log("response %o, ", resp);  });
   
+    }
+    calculateMouseY(scrollY) {
+      let mouseY;
+    
+      if (scrollY < 100) {
+          mouseY = 0.1;
+      } else if (scrollY < 500) {
+          mouseY = 0.2;
+      } else if (scrollY < 1000) {
+          mouseY = 0.3;
+      } else if (scrollY < 1500) {
+          mouseY = 0.4;
+      } else if (scrollY < 2000) {
+          mouseY = 0.5;
+      } else if (scrollY < 2500) {
+          mouseY = 0.6;
+      } else if (scrollY < 3000) {
+          mouseY = 0.7;
+      } else if (scrollY < 3500) {
+          mouseY = 0.8;
+      } else if (scrollY < 4000) {
+          mouseY = 0.9;
+      } else if (scrollY < 4500) {
+          mouseY = 1.0;
+      } else if (scrollY < 5000) {
+          mouseY = 1.1;
+      } else if (scrollY < 5500) {
+          mouseY = 1.2;
+      } else if (scrollY < 6000) {
+          mouseY = 1.3;
+      } else if (scrollY < 6500) {
+          mouseY = 1.4;
+      } else if (scrollY < 7000) {
+          mouseY = 1.5;
+      } else if (scrollY < 7500) {
+          mouseY = 1.6;
+      } else if (scrollY < 8000) {
+          mouseY = 1.7;
+      } else if (scrollY < 8500) {
+          mouseY = 1.8;
+      } else if (scrollY < 9000) {
+          mouseY = 1.9;
+      } else if (scrollY < 9500) {
+          mouseY = 2.0;
+      } else if (scrollY < 10000) {
+          mouseY = 2.1;
+      } else if (scrollY < 10500) {
+          mouseY = 2.2;
+      } else if (scrollY < 11000) {
+          mouseY = 2.3;
+      } else if (scrollY < 11500) {
+          mouseY = 2.4;
+      } else if (scrollY < 12000) {
+          mouseY = 2.5;
+      } else if (scrollY < 12500) {
+          mouseY = 2.6;
+      } else if (scrollY < 13000) {
+          mouseY = 2.7;
+      } else if (scrollY < 13500) {
+          mouseY = 2.8;
+      } else if (scrollY < 14000) {
+          mouseY = 2.9;
+      } else {
+          mouseY = 3.0; // Obergrenze für scrollY ab 14000
+      }
+      if (scrollY>6000){mouseY=mouseY+0.1;}
+      if (scrollY>10000){mouseY=mouseY+0.2;}
+        console.log(mouseY + ' ' + scrollY);
+        return mouseY;
     }
 }

@@ -545,6 +545,20 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 		
 	}
 
+		/**
+		 * Gruppiert und verarbeitet Daten asynchron basierend auf der bereitgestellten Übersicht.
+		 * 
+		 * Diese Methode führt die folgenden Operationen aus:
+		 * - Extrahiert verschiedene Eigenschaften aus dem `_uebersicht`-Objekt.
+		 * - Überprüft, ob die `mst`-Eigenschaft definiert ist.
+		 * - Wenn das `uebersicht`-Array leer ist, fügt es ein neues Objekt mit den extrahierten Eigenschaften hinzu.
+		 * - Wenn das `uebersicht`-Array nicht leer ist, filtert es das Array, um passende `mst`-Werte zu finden.
+		 * - Wenn keine passenden `mst`-Werte gefunden werden, fügt es ein neues Objekt mit den extrahierten Eigenschaften hinzu.
+		 * - Wenn ein passender `mst`-Wert gefunden wird, aktualisiert es das bestehende Objekt mit neuen Werten und erhöht die `anzahl`-Eigenschaft.
+		 * - Handhabt verschiedene Bedingungen, um die Eigenschaften `import1`, `fehler1`, `fehler2` und `fehler3` basierend auf den extrahierten Werten zu setzen.
+		 * 
+		 * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+		 */
 	async groupNAch() {
 		// console.log(this._uebersicht);
 		let mst: string=this._uebersicht.mst;
@@ -570,11 +584,11 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 
 			if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
 			
-			 this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
+			 this.uebersicht.push({ nr: this.uebersicht.length + 1,jahr:jahr, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
 		} else {
-			let messgroup = this.uebersicht.filter(dd => dd.mst === mst);
-
+			//let messgroup = this.uebersicht.filter(dd => dd.mst === mst);
+			let messgroup = this.uebersicht.filter(dd => dd.mst === mst && dd.jahr === jahr);
 
 			if (messgroup.length === 0) {
 				//nur BEwertungsdaten=Exportdateien
@@ -588,7 +602,7 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 				let i= this.uebersicht.findIndex(x=>x.mst===mst);
 				// for (let i = 0, l = this.uebersicht.length; i < l; i += 1) {
 
-					if (this.uebersicht[i].mst === mst) {
+					if (this.uebersicht[i].mst === mst && this.uebersicht[i].jahr === jahr) {
 						var _nr_: number = this.uebersicht[i].nr;
 						var _mst_: string = this.uebersicht[i].mst;
 						var _anzahl_: number = this.uebersicht[i].anzahl + 1;
@@ -1044,10 +1058,30 @@ return bemerkung;
 			}
 			
 		}
-		this.UebersichtImportService.aktualisiereImportdaten(this.importierteMst,this.importierteMesswerte,bemerkung + " "+this.bemerkungImpMW,this.uebersichtImport.id_imp)
+
+		let UebersichtImport:UebersichtImport  = {} as UebersichtImport;
+		UebersichtImport.id_imp=this.uebersichtImport.id_imp;
+		UebersichtImport.id_verfahren=this.uebersichtImport.id_verfahren;
+		UebersichtImport.bemerkung=bemerkung;
+		UebersichtImport.anzahlwerte=this.importierteMesswerte;
+		UebersichtImport.anzahlmst=this.importierteMst;
+   
+		this.UebersichtImportService.aktualisiereImportdaten(this.importierteMst,this.importierteMesswerte,bemerkung + " "+this.bemerkungImpMW,this.uebersichtImport.id_imp);
 	return bemerkung;
 	}
-	//Import der Bewertugsergebnisse
+
+		/**
+		 * Importiert die Bewertung von Messpunkten in die Datenbank für ein gegebenes Jahr und einen Probenehmer.
+		 * 
+		 * @param jahr - Das Jahr, für das die Auswertung importiert wird.
+		 * @param probenehmer - Der Probenehmer, der für die Auswertung verantwortlich ist.
+		 * 
+		 * Diese Methode filtert die Übersichtsdatensätze, um nur die Einträge einzuschließen, die für den Import markiert sind.
+		 * Anschließend iteriert sie über die gefilterten Daten, gleicht die Messpunkte ab und entfernt doppelte Einträge.
+		 * Für jeden eindeutigen Eintrag wird ein Datumsstring erstellt und die Daten werden an den Phylib-Dienst gesendet.
+		 * Schließlich wird die Importdatenübersicht mit der Anzahl der verarbeiteten Einträge aktualisiert.
+		 *Import der Bewertungsergebnisse wenn in der Exportdatei Jahre mitgeliefert werden
+		* wird das verwendet, sonst das aus dem Auswahlfeld	( nur für PhytoSee und Phytofluss verwendet)*/
 	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		
@@ -1080,7 +1114,8 @@ return bemerkung;
 			this.impPhylibServ.postMessstellenPhylib(distinctTmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
 
 		}}}}
-
+		
+   
 		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
 	}
 	
@@ -1112,10 +1147,12 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					
 					this.displayColumnNames.push('Jahr');
 					this.dynamicColumns.push('jahr');
-					this.displayColumnNames.push('Gesamtindex');
+					this.displayColumnNames.push('Gewässer');
 					this.dynamicColumns.push('sp3');
-					this.displayColumnNames.push('ÖZK');
+					this.displayColumnNames.push('Gesamtindex');
 					this.dynamicColumns.push('sp4');
+					this.displayColumnNames.push('ÖZK');
+					this.dynamicColumns.push('sp5');
 				}
 
 

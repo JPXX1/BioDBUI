@@ -19,4 +19,7 @@ export class ArchivStammdatenComponent {
   this.dataSource = data;
  
       }
+      onClose(): void {
+        this.dialogRef.close();
+      }
 }

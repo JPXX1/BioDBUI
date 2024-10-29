@@ -18,4 +18,7 @@ export class ArchivStammdatenWkComponent { wasserkoerperStam: WasserkoerperStam[
   this.dataSource = data;
  
       }
+      onClose(): void {
+        this.dialogRef.close();
+      }
 }

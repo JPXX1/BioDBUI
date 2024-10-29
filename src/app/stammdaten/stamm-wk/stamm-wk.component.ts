@@ -58,13 +58,20 @@ export class StammWkComponent {
  
 this.arraybuendelWK=({wkstam:person,diatyp:diatyp,mptyp:mptyp,pptyp:pptyp,wrrltyp:wrrltyp,gewaesser:gewaesser});
 
+const scrollY = window.scrollY || window.pageYOffset;
 
+let mouseY= this.stammdatenService.calculateMouseY(scrollY);
+const viewportHeight = window.innerHeight;
+const topPosition = scrollY + viewportHeight *mouseY;
 
     // person.wknamen=(this.stammdatenService.wk);
     const dialogRef = this.dialog.open(EditStammdatenWkComponent, {
       width: '70%',
       height:'80%',
-      data: this.arraybuendelWK
+      data: this.arraybuendelWK,
+      position: {
+        top: `${topPosition}px`
+      }
     });
  
   
@@ -85,11 +92,19 @@ this.arraybuendelWK=({wkstam:person,diatyp:diatyp,mptyp:mptyp,pptyp:pptyp,wrrlty
 
       await this.stammdatenService.holeArchivWK(person.id);
       this.archivWK= this.stammdatenService.archivWK;
-       console.log(this.archivWK);
-     
+      //  console.log(this.archivWK);
+       const scrollY = window.scrollY || window.pageYOffset;
+
+       let mouseY= this.stammdatenService.calculateMouseY(scrollY);
+       const viewportHeight = window.innerHeight;
+       const topPosition = scrollY + viewportHeight *mouseY;
+
        const dialogRefWK = this.dialog.open(ArchivStammdatenWkComponent, {
          width: '80%',
-         data: this.archivWK
+         data: this.archivWK,
+          position: {
+            top: `${topPosition}px`
+          }
        });
      
      

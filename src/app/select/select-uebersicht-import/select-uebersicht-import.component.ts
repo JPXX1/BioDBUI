@@ -1,10 +1,11 @@
 import { Component,Input,EventEmitter,Output } from '@angular/core';
 import { Sort} from '@angular/material/sort';
+import { differenceInWeeks, parse } from 'date-fns';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import {DialogJaNeinComponent} from 'src/app/dialog-ja-nein/dialog-ja-nein.component';
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
 import { MatDialog  } from '@angular/material/dialog';
-import { parse } from 'date-fns';
+
 @Component({
   selector: 'app-select-uebersicht-import',
   templateUrl: './select-uebersicht-import.component.html',
@@ -25,12 +26,11 @@ export class SelectUebersichtImportComponent {
   temp:any=[];
   constructor(public dialog: MatDialog,private uebersichtImportService:UebersichtImportService) { }
  
-  // sortData(sort:Sort){
-
-  //   this.sortDataue.emit(sort);
-
-  // }
-
+  isWithinFourWeeks(dateString: string): boolean {
+    const date = this.parseDate(dateString);
+    const now = new Date();
+    return differenceInWeeks(now, date) <= 4;
+  }
 
   sortData(sort: Sort) {
     const data = this.uebersicht.slice(); // Erstelle eine Kopie des Arrays
@@ -117,6 +117,8 @@ this.openEmojiDialog(zeile);
 handleRowClick(zeile){
 console.log(zeile);
 this.importID.emit(zeile);
+
+
 
 
 }

@@ -151,8 +151,13 @@ handleJahrSelected(selectedJahr: number) {
 	onDeleteClick(){}
 
 	async handleData(result){
+		const validIds = [1, 3, 6];
+if (validIds.includes(result.id_verfahren)) {
+  // Your code here
 
-		this.mstMakrophyten=[];
+		this.mstMakrophyten=[];}else{
+			
+		}
 		
 		// this.MakrophytenAnzeige=true;
 //   this.MakrophytenMstAnzeige=false;
@@ -225,16 +230,19 @@ handleJahrSelected(selectedJahr: number) {
 				console.log(this.MessDataOrgi.length)
 				console.log(this.valExceltabsService.NrVerfahren)
 				console.log(this.xlsxImportPhylibService.messstellenImp)
-				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || this.valExceltabsService.NrVerfahren === 3 || this.valExceltabsService.NrVerfahren === 6)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
-					if (this.valExceltabsService.NrVerfahren!==5 ){
+				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || 
+					this.valExceltabsService.NrVerfahren === 3 || 
+					this.valExceltabsService.NrVerfahren === 6)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
+					if (this.valExceltabsService.NrVerfahren!==5 && this.valExceltabsService.NrVerfahren!==7){
 						
-						if(this.valExceltabsService.NrVerfahren!==6){
+						if(this.valExceltabsService.NrVerfahren!==6 ){
+							
 						await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);}else{
-							//Verfahren=6
+							//Verfahren=6//
 							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr(this.probenehmer);
 						}}
 					else {
-						//Verfahren=5
+						//Verfahren=5 u. Verfahren=7
 						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
 					
 					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox("Daten lassen sich nicht oder nur teilweise importieren.") ;}  
@@ -285,9 +293,10 @@ handleJahrSelected(selectedJahr: number) {
 				
 				this.uebersichtImportService.archiviereNeueImportUebersicht(this.newuebersichtImport);
 				this.xlsxImportPhylibService.uebersichtImport=this.newuebersichtImport;
+				
 			}
 	async	importIntoDB(){
-		this.zone.run(() => this.startLoading());
+		// this.zone.run(() => this.startLoading());
 			let useincludeDate:boolean=false;
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
@@ -300,8 +309,12 @@ handleJahrSelected(selectedJahr: number) {
 			}else 
 			
 			{
-				if (this.valExceltabsService.NrVerfahren===6)	{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
-			if (this.valExceltabsService.NrVerfahren===1 || this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6){
+				//PhytoLLBB_import(6) und PhytoflussExport(7) haben ein anderes Datum
+				if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===7)	
+					{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
+				// Import Artdaten für Phytoplankton, MZB, Phylib
+			if (this.valExceltabsService.NrVerfahren===1 || 
+				this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6){
 			if (this.MessDataOrgi.length>0 ){
 				// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 				// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
@@ -316,13 +329,18 @@ handleJahrSelected(selectedJahr: number) {
 				
 				 const message =await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
 				this.InfoBox(message);
-				 return;
-				await this.uebersichtImportService.start();
-				this.uebersichtImport=this.uebersichtImportService.uebersicht;};}
+				this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+				this.uebersichtImport.push(this.newuebersichtImport);
+				return;
+			}}
 				else 
+				// hier werden die Bewertungen importiert
 				
 				console.log(this.valExceltabsService.NrVerfahren);
-				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || this.valExceltabsService.NrVerfahren===5){
+				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || 
+					this.valExceltabsService.NrVerfahren===5|| this.valExceltabsService.NrVerfahren===7){
+
+						if (this.valExceltabsService.NrVerfahren===7){this.xlsxImportPhylibService.vorhanden=false;}
 					if (this.xlsxImportPhylibService.vorhanden===true)
 				{this.InfoBox("Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
 				if (this.xlsxImportPhylibService.vorhandenMst===true)
@@ -340,11 +358,11 @@ handleJahrSelected(selectedJahr: number) {
 				this.xlsxImportPhylibService.holeMst();
 				const message=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
 				this.InfoBox(message);
-				return;
-				await this.uebersichtImportService.start();
-				this.uebersichtImport=this.uebersichtImportService.uebersicht;
 				
-			};}
+				this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+				this.uebersichtImport.push(this.newuebersichtImport);
+				return;
+			}}
 				else 
 				{this.InfoBox("Bitte erst eine Importdatei hochladen.")}
 				}}

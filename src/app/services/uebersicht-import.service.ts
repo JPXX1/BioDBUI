@@ -8,7 +8,9 @@ import { environment } from '../../environments/environment';
 })
 export class UebersichtImportService {
   uebersicht:UebersichtImport[];
+  
   temp:any=[];
+  private UebersichtImport:UebersichtImport  = {} as UebersichtImport;
   private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,private impPhylibServ: ImpPhylibServ) { }
 

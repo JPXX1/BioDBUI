@@ -19,6 +19,8 @@ import { HelpService } from 'src/app/services/help.service';
 export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecked{
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatSort) sortWK: MatSort
+  @ViewChild(StammMessstellenComponent) stammMessstellenComponent1: StammMessstellenComponent;
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -85,18 +87,18 @@ ngAfterViewInit() {
 	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
 		this.helpService.registerMouseoverEvents();}
 
-new(){
+async new(){
 
-
-  this.stammdatenService.neueMst(this.seefliess);
-
-
-  this.messstellenStam1=this.stammdatenService.messstellenarray;
-
-  
-
-
-}
+    this.stammdatenService.neueMst(this.seefliess).subscribe({
+      next: async (newMessstelle) => {
+        this.messstellenStam1 = this.stammdatenService.messstellenarray;
+        await this.stammMessstellenComponent.edit(newMessstelle);
+      },
+      error: (error) => {
+        console.error('Error creating new Messstelle:', error);
+      }
+    });
+  }
 sortDataWk(sortWK: Sort) {
   const data = this.wkStam1.slice();
   if (!sortWK.active || sortWK.direction === '') {

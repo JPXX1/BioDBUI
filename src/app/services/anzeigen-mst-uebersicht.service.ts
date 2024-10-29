@@ -65,7 +65,7 @@ public value:string;
           // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
       }})
   )
-   console.log (this.dbMPUebersichtMst);
+  // console.log (this.dbMPUebersichtMst);
    
   }
   erzeugeDisplayedColumnNames(komponente:boolean){

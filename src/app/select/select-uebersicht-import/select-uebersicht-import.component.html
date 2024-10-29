@@ -48,9 +48,15 @@
               <ng-container matColumnDef="Bearbeiten">
                 <mat-header-cell *matHeaderCellDef class="header-table-rl">Aktionen</mat-header-cell>
                 <mat-cell *matCellDef="let row">
-                  <button mat-icon-button color="delete"  class="iconbutton" (click)="onDeleteClick(row)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                  <button
+                  *ngIf="isWithinFourWeeks(row.importiert)"
+                  mat-icon-button
+                  color="delete"
+                  class="iconbutton"
+                  (click)="onDeleteClick(row)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
                   <button mat-icon-button color="accent" aria-label="Example icon button with a menu icon" class="iconbutton"
                     color="warn" (click)="handleRowClick(row)">
                     <mat-icon>open_in_new</mat-icon>
