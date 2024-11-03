@@ -8,13 +8,13 @@
             <button mat-button id="berichtsEUButton" class="helpable button" [matMenuTriggerFor]="uebersicht">Wasserkörper</button>
             <mat-menu #uebersicht="matMenu" xPosition="before">
               <button mat-menu-item id="wasserkörperButton" class="helpable" (click)="handleUebersichtWK()">Bericht-EU</button>
-              <button mat-menu-item id="messstellenButton" class="helpable " (click)="handleUebersichtWKausMst()">Ergbnisse Monitoring</button>
+              <button mat-menu-item id="messstellenButton" class="helpable " (click)="handleUebersichtWKausMst()">Ergebnisse Monitoring</button>
             </mat-menu>
 
             <button mat-button id="mpButton" class="helpable button" [matMenuTriggerFor]="afterMenu">Makrophyten</button>
             <mat-menu #afterMenu="matMenu" xPosition="after">
               <button mat-menu-item id="mpMessstellenübersichtButton" class="helpable " (click)="handleMakrophytenMPClick(1)">Messstellenübersicht</button>
-              <button mat-menu-item id="mpTaxadatenButton" class="helpable " (click)="handleMakrophytenClick()">Taxadaten</button>
+              <button mat-menu-item id="mpTaxadatenButton" class="helpable " (click)="handleMakrophytenTaxaClick()">Taxadaten</button>
             </mat-menu>
 
             <button mat-button id="diatomsButton" class="helpable button" [matMenuTriggerFor]="diatoms">Diatomeen</button>
@@ -26,13 +26,13 @@
             <button mat-button id="ppButton" class="helpable button" [matMenuTriggerFor]="pp">Phytoplankton</button>
             <mat-menu #pp="matMenu" xPosition="after">
               <button mat-menu-item id="ppMessstellenButton" class="helpable "  (click)="handleMakrophytenMPClick(5)">Messstellenübersicht</button>
-              <button mat-menu-item id="ppTaxadatenButton" class="helpable ">Taxadaten</button>
+              <button mat-menu-item id="ppTaxadatenButton" class="helpable " (click)="handlePhytoplanktonClick()">Taxadaten</button>
             </mat-menu>
 
             <button mat-button id="mzButton" class="helpable button" [matMenuTriggerFor]="mzb">Makrozoobenthos</button>
             <mat-menu #mzb="matMenu" xPosition="after">
               <button mat-menu-item id="mzMessstellenübersichtButton " class="helpable" (click)="handleMakrophytenMPClick(3)">Messstellenübersicht</button>
-              <button mat-menu-item id="mzTaxadatenButton" class="helpable" (click)="handleMZBClick()">Taxadaten</button>
+              <button mat-menu-item id="mzTaxadatenButton" class="helpable" (click)="handleMZBTaxaClick()">Taxadaten</button>
             </mat-menu>
 
             <button mat-button id="fischeButton" class="helpable button" [matMenuTriggerFor]="fische">Fische</button>
@@ -62,7 +62,7 @@
           <td></td>
           <td>
             <div style="margin-left:20px;" class="helpable" id="auswahl-zeit">
-              <mat-slider discrete min="2005" [max]="maxstart" (change)="updateSetting(min, max, value, Artvalue)" style="margin-left:10px">
+              <mat-slider discrete min="2005" [max]="maxstart" (change)="updateSetting(min, max, value, Artvalue,true)" style="margin-left:10px">
                 <input [(ngModel)]="min" matSliderStartThumb>
                 <input [(ngModel)]="max" matSliderEndThumb>
               </mat-slider>
@@ -90,11 +90,16 @@
 </div>
 <div class="card helpable" *ngIf="MakrophytenAnzeige == true" style="vertical-align: top;" id="Abund-Makrophyten">
   <mat-card class="example-card">
-    <app-makorphyten-tabelle [mstMakrophyten]="mstMakrophyten"></app-makorphyten-tabelle>
+    <app-makorphyten-tabelle [mstMakrophyten]="mstTaxaMP"></app-makorphyten-tabelle>
+  </mat-card>
+</div>
+<div class="card helpable" *ngIf="PhythoplanktonAnzeige == true" style="vertical-align: top;" id="Abund-Phytoplankton">
+  <mat-card class="example-card">
+    <app-makorphyten-tabelle [mstMakrophyten]="mstTaxaPh"></app-makorphyten-tabelle>
   </mat-card>
 </div>
 <div class="card helpable" *ngIf="MZBAnzeige == true" style="vertical-align: top;" id="Abund-MZB">
   <mat-card class="example-card">
-    <app-makorphyten-tabelle [mstMakrophyten]="mstMZB"></app-makorphyten-tabelle>
+    <app-makorphyten-tabelle [mstMakrophyten]="mstTaxaMZB"></app-makorphyten-tabelle>
   </mat-card>
 </div>

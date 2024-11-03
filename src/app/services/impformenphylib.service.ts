@@ -62,19 +62,17 @@ export class ImpPhylibServ {
 
 
   
-      kontrollPhylibMesswerte2(datum:string,Probenehmer:string): Observable<any>{
+      kontrollPhylibMesswerte2(datum:string): Observable<any>{
                 let params = new HttpParams()
-                .set('id_pn',(Probenehmer))
                 .set('datumpn',datum)       
            ;
                
               return this.httpClient.get(`${this.apiUrl}/kontrollPhylibMesswerte2`, {params: params}); 
               
               }
-      kontrollPhylibMessstellen(datum:string,Probenehmer:string): Observable<any>{
+      kontrollPhylibMessstellen(datum:string): Observable<any>{
                 let params = new HttpParams()
-                .set('id_pn',(Probenehmer))
-                .set('datum',datum)       
+               .set('datum',datum)       
            ;
                
          return this.httpClient.get(`${this.apiUrl}/kontrollPhylibMessstellen`, {params: params}); 

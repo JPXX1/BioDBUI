@@ -15,6 +15,10 @@
 		<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-jahr">Jahr</th>
 		<td mat-cell *matCellDef="let element" class="spalte-jahr">{{element.jahr}}</td>
 	  </ng-container>
+	  <ng-container matColumnDef="datum">
+		<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-jahr">Datum</th>
+		<td mat-cell *matCellDef="let element" class="spalte-jahr">{{element.datum}}</td>
+	  </ng-container>
 	  <ng-container matColumnDef="taxon">
 		<th mat-header-cell *matHeaderCellDef mat-sort-header class="header-table-wk">Taxon</th>
 		<td mat-cell *matCellDef="let element" class="spalte-wk">{{element.taxon}}</td>

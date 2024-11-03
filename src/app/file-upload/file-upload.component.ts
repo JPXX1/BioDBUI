@@ -164,7 +164,10 @@ if (validIds.includes(result.id_verfahren)) {
   //await 
   if (result.import_export===true){
   await this.anzeigeBewertungMPService.callImpMstMP(result.id_imp);
-  this.anzeigeBewertungMPService.datenUmwandeln("","",2004,2050);
+
+  
+
+  this.anzeigeBewertungMPService.arrayNeuFuellen(result.id_imp);
 
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
 
@@ -237,13 +240,13 @@ if (validIds.includes(result.id_verfahren)) {
 						
 						if(this.valExceltabsService.NrVerfahren!==6 ){
 							
-						await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr, this.probenehmer);}else{
+						await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);}else{
 							//Verfahren=6//
-							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr(this.probenehmer);
+							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
 						}}
 					else {
 						//Verfahren=5 u. Verfahren=7
-						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr( this.probenehmer);}
+						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr();}
 					
 					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox("Daten lassen sich nicht oder nur teilweise importieren.") ;}  
 						if (this.xlsxImportPhylibService.doppelteMesswerte()===true){

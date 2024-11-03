@@ -3,7 +3,8 @@ export interface MstMakrophyten {
     mst: string;
     taxonzusatz: string;
     firma: string;
-    jahr: number;
+    jahr?: number;
+    datum?: string;
     taxon: string;
     roteListeD:string;
     letzte_aenderung: string;

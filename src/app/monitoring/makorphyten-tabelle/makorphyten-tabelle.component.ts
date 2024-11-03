@@ -13,8 +13,9 @@ import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp
 export class MakorphytenTabelleComponent implements OnInit, OnChanges {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @Input() mstMakrophyten: MstMakrophyten[] = [];
+  @Input() displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<MstMakrophyten>();
-  displayedColumns: string[] = ['mst', 'gewaessername','jahr', 'taxon', 'wert', 'einheit', 'taxonzusatz', 'RoteListeD', 'tiefe_m', 'letzteAenderung'];
+  // displayedColumns: string[] = ['mst', 'gewaessername','jahr', 'taxon', 'wert', 'einheit', 'taxonzusatz', 'RoteListeD', 'tiefe_m', 'letzteAenderung'];
 
   constructor(private anzeigeBewertungMPService:AnzeigeBewertungMPService,private farbeBewertg: FarbeBewertungService) { }
 
@@ -29,6 +30,7 @@ export class MakorphytenTabelleComponent implements OnInit, OnChanges {
       if (this.anzeigeBewertungMPService.Artvalue.length===0 && this.anzeigeBewertungMPService.value.length===0 && this.mstMakrophyten.length===0)
     {this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;}}
    this.dataSource.data = this.mstMakrophyten;
+   this.displayedColumns = this.anzeigeBewertungMPService.displayedColumns;
     }
   }
 

@@ -737,20 +737,21 @@ doppelteMesswerte(): boolean {
   }
 
 	  //wenn in Phytoseeexport Jahre mitgeliefert werden
-	  async pruefeObMesswerteAbiotikschonVorhandenmitJahr(probenehmer: string) {
+	  async pruefeObMesswerteAbiotikschonVorhandenmitJahr() {
 		let jahrtemp: string; this.vorhanden = false;
 		
 		
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
-
+			
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
 			jahrtemp = ('15.07.' + this.uebersicht[a].jahr); 
-			await this.holeMesswerteAbiotikausDB(jahrtemp, probenehmer);
+			await this.holeMesswerteAbiotikausDB(jahrtemp);
 			// console.log(this.MWausDB);
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
 			let mstID=mstee[0].id_mst;
-			const tmpMWteil=this.MWausDB.filter(g=>g.id_mst===mstID)
+			const messtellenImp_temp=this.messstellenImp.filter(g=>g.id_mst===mstID);
+			const tmpMWteil=this.MWausDB.filter(g=>g.id_mst===mstID && messtellenImp_temp.some(m => m.id_para === g.id_para))
 
 
 			if (tmpMWteil.length>0){ 
@@ -780,7 +781,7 @@ doppelteMesswerte(): boolean {
 	}}}
 
 	  }
-	  async pruefeObMesswerteschonVorhandenJahr(probenehmer: string) {
+	  async pruefeObMesswerteschonVorhandenJahr() {
 		this.uebersichtGeprueft=this.uebersicht;
 		this.vorhanden = false;
 
@@ -796,7 +797,7 @@ doppelteMesswerte(): boolean {
 			const element = distinctArray[i];
 			
 			let datum: string=element._Datum;
-			await this.holeMesswerteausDB(datum,probenehmer);
+			await this.holeMesswerteausDB(datum);
 			
 			
 			
@@ -850,7 +851,7 @@ doppelteMesswerte(): boolean {
 		}
 		} this.uebersicht=this.uebersichtGeprueft;}
 
-	async pruefeObMesswerteschonVorhanden(jahr: string, probenehmer: string) {
+	async pruefeObMesswerteschonVorhanden(jahr: string) {
 		this.uebersichtGeprueft=this.uebersicht;
 		let jahrtemp: string; this.vorhanden = false;
 		jahrtemp = ('15.07.' + jahr); 
@@ -859,7 +860,7 @@ doppelteMesswerte(): boolean {
 
 
 
-		await this.holeMesswerteausDB(jahrtemp, probenehmer);
+		await this.holeMesswerteausDB(jahrtemp);
 		if (this.MWausDB.length>0){
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 
@@ -947,22 +948,22 @@ doppelteMesswerte(): boolean {
 
 	async holeMessstellenausDB(datum: string, Probenehmer: string) {
 		// this.workbookInit(datum,Probenehmer)
-		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
+		await this.impPhylibServ.kontrollPhylibMessstellen(datum).forEach(value => {
 			this.tempMst = value;
 			//console.log('observable -> ' + value);
 		});
 	}
 	
-	async holeMesswerteAbiotikausDB(datum: string, Probenehmer: string) {
+	async holeMesswerteAbiotikausDB(datum: string) {
 		// this.workbookInit(datum,Probenehmer)
-		await this.impPhylibServ.kontrollPhylibMessstellen(datum, Probenehmer).forEach(value => {
+		await this.impPhylibServ.kontrollPhylibMessstellen(datum).forEach(value => {
 			this.MWausDB = value;
 			//console.log('observable -> ' + this.MWausDB);
 		});
 	}
-	async holeMesswerteausDB(datum: string, Probenehmer: string) {
+	async holeMesswerteausDB(datum: string) {
 		// this.workbookInit(datum,Probenehmer)
-		await this.impPhylibServ.kontrollPhylibMesswerte2(datum, Probenehmer).forEach(value => {
+		await this.impPhylibServ.kontrollPhylibMesswerte2(datum).forEach(value => {
 			this.MWausDB = value;
 			//console.log('observable -> ' + this.MWausDB);
 		});

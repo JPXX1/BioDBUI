@@ -564,7 +564,7 @@ async ArtabundanzenAbfragen(selectedComponents,selectedItems,yearFrom:string,yea
       this.anzeigeBewertungMPService.dbBewertungMst = data;
     });
   
-    await this.anzeigeBewertungMPService.datenUmwandeln('','',Number(yearFrom),Number(yearTo));
+this.anzeigeBewertungMPService.arrayNeuFuellen(0);
     this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
     this.ArtenAnzeige=true;
 
