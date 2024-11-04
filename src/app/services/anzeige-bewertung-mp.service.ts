@@ -73,6 +73,13 @@ FilterRichtigesArray(komp: number, FilterMst: string, art: string, min: number, 
   }
 }
  
+/**
+ * Legt die angezeigten Spalten für die MP-Tabelle basierend auf der angegebenen Komponentennummer fest.
+ * 
+ * @param komp - Die Komponentennummer, die verwendet wird, um den Satz von anzuzeigenden Spalten zu bestimmen.
+ *                Wenn `komp` 5 ist, wird ein spezifischer Satz von Spalten angezeigt.
+ *                Andernfalls wird ein anderer Satz von Spalten angezeigt.
+ */
 displayedColumnsMP(komp: number) {
 if (komp === 5) {
   this.displayedColumns= ['mst', 'gewaessername','datum', 'taxon', 'wert', 'einheit', 'taxonzusatz',  'letzteAenderung'];
@@ -81,14 +88,24 @@ if (komp === 5) {
 
 this.displayedColumns= ['mst', 'gewaessername','jahr', 'taxon', 'wert', 'einheit', 'taxonzusatz', 'RoteListeD', 'tiefe_m', 'letzteAenderung'];
 }}
-filterTaxadaten(arr :MstMakrophyten[],FilterMst: string, art: string, min: number, max: number): MstMakrophyten[] {
+/**
+ * Filtert ein Array von MstMakrophyten-Objekten basierend auf den angegebenen Kriterien.
+ *
+ * @param arr - Das zu filternde Array von MstMakrophyten-Objekten.
+ * @param FilterMst - Der Filterstring für die Eigenschaften 'mst' oder 'gewaessername'.
+ * @param art - Der Filterstring für die Eigenschaft 'taxon'.
+ * @param min - Das Mindestjahr für die Eigenschaft 'jahr'.
+ * @param max - Das Höchstjahr für die Eigenschaft 'jahr'.
+ * @returns Ein Array von MstMakrophyten-Objekten, die den Filterkriterien entsprechen.
+ */
+filterTaxadaten(arr: MstMakrophyten[], FilterMst: string, art: string, min: number, max: number): MstMakrophyten[] {
   return arr.filter(item => 
       item.jahr >= min && 
       item.jahr <= max && 
-      item.taxon.toUpperCase().includes(art.toUpperCase()) && 
-      (item.mst.toUpperCase().includes(FilterMst.toUpperCase()) ||
-      item.gewaessername.toUpperCase().includes(FilterMst.toUpperCase()
-  )));
+      (art === '' || item.taxon.toUpperCase().includes(art.toUpperCase())) && 
+      (FilterMst === '' || item.mst.toUpperCase().includes(FilterMst.toUpperCase()) ||
+      item.gewaessername.toUpperCase().includes(FilterMst.toUpperCase()))
+  );
 }
 arrayNeuFuellen(komp: number) {
   this.mstMakrophyten = [];
@@ -119,6 +136,20 @@ arrayNeuFuellen(komp: number) {
 
   }
   this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) || a.tiefe_m.localeCompare(b.tiefe_m) || a.taxon.localeCompare(b.taxon));}
+  /**
+   * Assigns an array to a class property based on the provided component index.
+   *
+   * @param komp - The index of the component to determine which array to assign.
+   * 
+   * The method assigns the following arrays based on the value of `komp`:
+   * - 0: Assigns `mstMakrophyten` to `Taxa_MP`.
+   * - 1: Assigns `mstMakrophyten` to `Taxa_MP`.
+   * - 2: Assigns `mstMakrophyten` to `Taxa_Dia`.
+   * - 3: Assigns `mstMakrophyten` to `Taxa_MZB`.
+   * - 5: Assigns `mstMakrophyten` to `Taxa_Phyto`.
+   * 
+   * If `komp` does not match any of the specified cases, no assignment is made.
+   */
   arrayZuweisen(komp: number) {
     switch (komp) {
         case 0:

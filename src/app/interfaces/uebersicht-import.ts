@@ -5,6 +5,7 @@ export interface UebersichtImport {
     verfahren:string;
     komponente:string;
     importiert:string;
+    datumimport?:Date;
     jahr:string;
     anzahlmst:number;
     anzahlwerte:number;

@@ -1,0 +1,68 @@
+.Zelle{
+
+  text-align: center;
+ 
+  width: 10px;
+  border-color: grey;
+ 
+  border-width: 1px;
+}
+
+
+.spalte-jahr{
+  text-align: center;
+  width: 60px;
+  border-color: grey;
+  border-width: 1px;}
+ 
+  .spalte-rl{
+      text-align: center;
+      width: 120px;
+      border-color: grey;
+
+  border-width: 1px;
+}
+.spalte-wk{
+  text-align: left;
+  width: 220px;
+  border-color: grey;
+ 
+  border-width: 1px;
+}
+
+.header-table-wk{
+  text-align: left;
+ font-weight:normal;
+background-color:blanchedalmond;
+border-color: grey;
+}
+.header-table-jahr{
+  text-align: center;
+ font-weight:normal;
+background-color:blanchedalmond;
+border-color: grey;
+}
+.sticky-header {
+  width: 100%;
+  overflow: auto;
+  height: 400px; /* Adjust the height as needed */
+}
+
+.sticky-header th {
+  position: sticky;
+  top: 0px;
+  z-index: 2;
+  background: white; /* Ensure the header background is white for better visibility */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
+}
+
+.sticky-header th.header-table-wk {
+
+  background-color:lightgrey;
+}
+
+.sticky-header th.header-table-jahr {
+  background-color: lightgrey;
+}
+
+/* You can add more specific styles for other headers if necessary */

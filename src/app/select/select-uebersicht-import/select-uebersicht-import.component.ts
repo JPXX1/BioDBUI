@@ -20,7 +20,7 @@ export class SelectUebersichtImportComponent {
   @Output() importID =new EventEmitter<number>();
   @Output() loeschen =new EventEmitter<number>();
   @Output() sortDataue=new EventEmitter<Sort>(); 
-
+ 
   displayedColumns: string[] = ['dateiname', 'importiert','verfahren', 'probenehmer','komponente', 'jahr','anzahlmst','anzahlwerte','bemerkung','Bearbeiten'];
   
   temp:any=[];

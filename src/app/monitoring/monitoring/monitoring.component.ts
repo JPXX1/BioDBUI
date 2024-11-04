@@ -47,8 +47,8 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
   Artvalue = '';
   min:number=this.maxstart-5;
   max:number=this.maxstart; 
-  maxold:number=this.maxstart;
-  minold:number=this.maxstart-10;
+  // maxold:number=this.maxstart;
+  // minold:number=this.maxstart-10;
   constructor(private helpService: HelpService,private commentService: CommentService, private snackBar: MatSnackBar,private router: Router,private authService: AuthService,private _renderer2: Renderer2,private Farbebewertg: FarbeBewertungService,private anzeigeBewertungService: AnzeigeBewertungService, private anzeigeBewertungMPService:AnzeigeBewertungMPService,
     private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private stammdatenService:StammdatenService) { 
 	}
@@ -60,7 +60,14 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
         this.helpService.registerMouseoverEvents();
       }
 
-
+      InfoBox(message: string) {
+        const duration: number = 3000;
+          this.snackBar.open(message, 'Schließen', {
+            duration: duration,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+          });
+        }
   toggleHelp() {
     this.isHelpActive = !this.isHelpActive;
   }
@@ -95,7 +102,9 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
      }
      else if (this.MZBAnzeige===true && this.MakrophytenAnzeige===false && this.UebersichtAnzeigen===false) {
       this.handleMZBTaxaClick();} 
-     else if (this.UebersichtAnzeigen===true)
+     else if (this.PhythoplanktonAnzeige===true && this.MakrophytenAnzeige===false && this.UebersichtAnzeigen===false) {
+      this.handlePhytoplanktonTaxaClick();} 
+     else if(this.UebersichtAnzeigen===true)
 
 
 
@@ -126,8 +135,11 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
        this.handleMakrophytenTaxaClick();
       
      }
-     else {
+     else if ( this.MZBAnzeige===true && this.MakrophytenAnzeige===false) {
       this.handleMZBTaxaClick();
+     }
+     else if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===false && this.PhythoplanktonAnzeige===true) {
+      this.handlePhytoplanktonTaxaClick;
      }
   }
 
@@ -158,42 +170,72 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
    updateSetting(min:number,max:number,value: string,Artvalue: string,ausGUI:boolean) {
   //  console.log(this.min,' max',this.max);
   //  console.log(this.minold,' oldmax',this.maxold);
-    if (this.PhythoplanktonAnzeige===true || this.MZBAnzeige===true ){
-    if (min+5<max&&max===this.maxold)
-     if (ausGUI===false) 
-      {min=max-5}else
-    {max=max-5;}
-    else 
-    if (min===this.minold&&max-5>min)
-      if (ausGUI===false) 
-        {min=min+5;}
-  else {min=max-5}
-    this.min = min;
-    this.max=max;
+  //   if (this.PhythoplanktonAnzeige===true || this.MZBAnzeige===true ){
+  //   if (min+5<max&&max===this.maxold)
+  //    if (ausGUI===false) 
+  //     {min=max-5}else
+  //   {max=max-5;}
+  //   else 
+  //   if (min===this.minold&&max-5>min)
+  //     if (ausGUI===false) 
+  //       {min=min+5;}
+  // else {min=max-5}
+  //   this.min = min;
+  //   this.max=max;
     if (ausGUI===true){
       
       this.filtertaxadaten(this.komp_id);
       // 
-      }}else {this.onValueChangeFilter(value,Artvalue); }
-    this.minold=min;
-    this.maxold=max;
+      }else {this.onValueChangeFilter(value,Artvalue); }
+    // this.minold=min;
+    // this.maxold=max;
   }
+    /**
+     * Reduziert die Größe des angegebenen Arrays von MstMakrophyten-Objekten auf maximal 2500 Elemente.
+     * Wenn die Array-Länge 2500 überschreitet, wird eine Nachricht in der InfoBox angezeigt, die auf die Reduzierung hinweist.
+     * 
+     * @param mstTaxaAllg - Das zu reduzierende Array von MstMakrophyten-Objekten.
+     * @returns Ein neues Array, das bis zu 2500 Elemente aus dem ursprünglichen Array enthält.
+     */
+   reduceArray(mstTaxaAllg:MstMakrophyten[]): MstMakrophyten[] {
+    let mstTaxaAllg_neu:MstMakrophyten[];
 
+    if (mstTaxaAllg.length > 2500) {
+      this.InfoBox('Die Anzahl der Datensätze wurde auf 2500 reduziert. Verwenden Sie die Filterfunktionen.');
+      mstTaxaAllg_neu= mstTaxaAllg.slice(0, 2500);
+    }else {mstTaxaAllg_neu= mstTaxaAllg;}
+  return mstTaxaAllg_neu;}
+/**
+ * Filtert taxonomische Daten basierend auf der angegebenen Komponentennummer.
+ * 
+ * @param {number} komp - Die Komponentennummer, die verwendet wird, um zu bestimmen, welche taxonomischen Daten gefiltert werden sollen.
+ * 
+ * @remarks
+ * Die Methode verwendet die Funktionen `anzeigeBewertungMPService.FilterRichtigesArray`, um die Daten zu filtern.
+ * und `reduceArray`, um die Anzahl der Elemente im Array zu reduzieren.
+ * 
+ * @example
+ * ```typescript
+ * this.filtertaxadaten(1);
+ * ```
+ * 
+ * @returns {void}
+ */
 filtertaxadaten(komp:number){
 switch(komp){
   case 1:
-    this.mstTaxaMP= this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max);
+    this.mstTaxaMP= this.reduceArray(this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max));
     
         break;
       case 2:
         //this.Taxa_Dia=formen_;
         break;
       case 3:
-        this.mstTaxaMZB= this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max);
+        this.mstTaxaMZB= this.reduceArray(this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max));
  
         break;
       case 5:
-        this.mstTaxaPh= this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max);
+        this.mstTaxaPh= this.reduceArray(this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max));
  
         break;
  
@@ -321,7 +363,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
   }
 
 
-  async handlePhytoplanktonClick(){ //Taxadaten PP
+  async handlePhytoplanktonTaxaClick(){ //Taxadaten PP
     this.komp_id=5;
     this.anzeigeTaxadaten=true;
     this.MakrophytenAnzeige=false;

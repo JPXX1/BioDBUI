@@ -1,12 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
-    /* //Für Firefox alternativ transform nutzen: */
-    transform: scale(1);
-    transform-origin: 0 0;
-    zoom: 0.85; /* Setzt den Zoom auf 90 % */}
 
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
+  /* //Für Firefox alternativ transform nutzen: */
+  transform: scale(1);
+  transform-origin: 0 0;
+  zoom: 0.80; /* Setzt den Zoom auf 90 % */}
+    
     input[type="checkbox"]:disabled {
   opacity: 1 !important;  /* Entfernt das ausgegraute Aussehen */
   pointer-events: none !important; /* Verhindert Interaktion */

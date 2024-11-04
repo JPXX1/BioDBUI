@@ -1,3 +1,4 @@
+
 <div style="position: relative;">
 
   <span>
@@ -26,7 +27,7 @@
             <button mat-button id="ppButton" class="helpable button" [matMenuTriggerFor]="pp">Phytoplankton</button>
             <mat-menu #pp="matMenu" xPosition="after">
               <button mat-menu-item id="ppMessstellenButton" class="helpable "  (click)="handleMakrophytenMPClick(5)">Messstellenübersicht</button>
-              <button mat-menu-item id="ppTaxadatenButton" class="helpable " (click)="handlePhytoplanktonClick()">Taxadaten</button>
+              <button mat-menu-item id="ppTaxadatenButton" class="helpable " (click)="handlePhytoplanktonTaxaClick()">Taxadaten</button>
             </mat-menu>
 
             <button mat-button id="mzButton" class="helpable button" [matMenuTriggerFor]="mzb">Makrozoobenthos</button>

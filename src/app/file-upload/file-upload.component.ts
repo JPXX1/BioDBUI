@@ -1,4 +1,4 @@
-import { NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
+import {ElementRef, HostListener,NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { ChangeDetectorRef } from '@angular/core';
@@ -29,6 +29,7 @@ import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import {DataAbiotik} from 'src/app/interfaces/data-abiotik';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -45,8 +46,17 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	@Output() newData =new EventEmitter<MessstellenStam>();
-	// arraybuendel:ArraybuendelSel;
-	// InfoBox = 'Start BioDB. Keine Infos!';
+
+	@HostListener('window:resize', ['$event'])
+	@HostListener('window:scroll', ['$event'])
+	preventZoom() {
+	  // Zurücksetzen der Skalierung auf 1, falls eine Veränderung festgestellt wird
+	  this.el.nativeElement.style.transform = 'scale(1)';
+	  this.el.nativeElement.style.preventZoom = 'true';
+	}
+	ImpHistoryisChecked: boolean = false;
+
+	dataAbiotik:DataAbiotik[]=[];
 	public einheiten:any;
 	public mst:any;
 	public formen:any;
@@ -66,6 +76,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	isLoading$ = new BehaviorSubject<boolean>(false); 
 	ImportIntoDB:boolean=true;
 	pruefen:boolean=true;
+	ImportBewertungenAnzeige:boolean=false;
 	dataSource: MatTableDataSource<Uebersicht>;
 	mstMakrophyten:MstMakrophyten[];
 	ImportDatenAnzeige:boolean=true;
@@ -76,7 +87,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	isHelpActive: boolean = false;
 	helpText: string = '';
 	showHandleRowClick: boolean = false; // Setze dies je nach Tabelle oder Anforderung
-
+	panelOpenState = false;
 	// Variable to store shortLink from api response 
 	shortLink: string = "";
 	loading: boolean = false; // Flag variable 
@@ -84,7 +95,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 	// Inject service 
 	
-	constructor (private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+	constructor (private el: ElementRef,private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
 		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
@@ -111,13 +122,21 @@ handleJahrSelected(selectedJahr: number) {
 	this.pruefen=false;
 
   }
-	panelOpenState = false;
+
+  async ausblendenImporthistorie() {
+    // this.ImportDatenAnzeige = false;
+    this.ImpHistoryisChecked = !this.ImpHistoryisChecked; // Toggle the checked state
+	await this.uebersichtImportService.handle(this.ImpHistoryisChecked); 
+	this.uebersichtImport=this.uebersichtImportService.uebersicht; 
+}
+	
 	async ngOnInit() {
 		if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
 			
         } else{
 			this.ImportDatenAnzeige=false;
+			this.ImportBewertungenAnzeige=false;
 			
 		await this.uebersichtImportService.start();
 		this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
@@ -131,15 +150,18 @@ handleJahrSelected(selectedJahr: number) {
 	  }
 	close(){
 		this.ImportDatenAnzeige=false;
+		this.ImportBewertungenAnzeige=false;
 	}
 	async openexpand(){
-		this.ImportDatenAnzeige=true;
+		//this.ImportDatenAnzeige=true;
 		// console.log();
-	await this.uebersichtImportService.handle();
+	await this.uebersichtImportService.handle(this.ImpHistoryisChecked);
+	this.ImportBewertungenAnzeige=false;
 	}  
 	// On file Select 
 	onChange(event) {
 		this.ImportDatenAnzeige=false;
+		this.ImportBewertungenAnzeige=false;
 		this.file=event.target.files[0];
 		this.pruefen=true;this.ImportIntoDB=true;
 		// this.InfoBox="";
@@ -156,7 +178,7 @@ if (validIds.includes(result.id_verfahren)) {
   // Your code here
 
 		this.mstMakrophyten=[];}else{
-			
+		this.dataAbiotik=[];	
 		}
 		
 		// this.MakrophytenAnzeige=true;
@@ -171,8 +193,14 @@ if (validIds.includes(result.id_verfahren)) {
 
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
 
-  console.log( this.mstMakrophyten);
+//   console.log( this.mstMakrophyten);
 
+  }else{//console.log(this.dataAbiotik);
+	await this.uebersichtImportService.callgetBwMstTaxa(result.id_imp);
+	this.dataAbiotik = this.uebersichtImportService.dataAbiotik;
+	//console.log(this.dataAbiotik);
+	this.ImportBewertungenAnzeige=true;
+	this.ImportDatenAnzeige=false;
   }
  
 	  }

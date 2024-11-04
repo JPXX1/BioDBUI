@@ -21,14 +21,49 @@ selectedMenuItem: string = '';
 constructor(private router: Router,public authService:AuthService,private renderer: Renderer2, private helpService: HelpService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {
   this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
 }
+@HostListener('window:keydown', ['$event'])
+onKeyDown(event: KeyboardEvent): void {
+  // Prevent zooming with CTRL + Mouse Wheel
+  if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '0')) {
+    event.preventDefault();
+  }
 
+  // Prevent zooming with CTRL + Key shortcuts
+  if (event.ctrlKey && (event.code === 'Equal' || event.code === 'Minus' || event.code === 'Digit0')) {
+    event.preventDefault();
+  }
+}
+
+@HostListener('wheel', ['$event'])
+onWheel(event: WheelEvent): void {
+  // Prevent zooming with CTRL + Mouse Wheel
+  if (event.ctrlKey) {
+    event.preventDefault();
+
+  }
+}
 ngOnInit(): void {
+  window.addEventListener('keydown', this.preventZoom, { passive: false });
+  window.addEventListener('wheel', this.preventWheelZoom, { passive: false });
   this.router.events.subscribe(() => {
     // Prüfen, ob die aktuelle Route die Startseite ist
-    console.log(this.router.url);
+    this.disableMiniMenu();
+   
     this.showMainContent = this.router.url !== '/';
   });
 }
+preventZoom(event: KeyboardEvent): void {
+  if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '0')) {
+    event.preventDefault();
+  }
+}
+
+preventWheelZoom(event: WheelEvent): void {
+  if (event.ctrlKey) {
+    event.preventDefault();
+  }
+}
+
   //constructor(private _renderer2: Renderer2,){}
 
   //klebriges Menü
@@ -41,6 +76,18 @@ ngOnInit(): void {
     // });
   }
 
+  disableMiniMenu() {
+    this.renderer.listen('document', 'selectionchange', () => {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        if (range && range.toString().length > 0) {
+          // Clear the selection to prevent the mini menu from appearing
+          selection.removeAllRanges();
+        }
+      }
+    });
+  }
 //klebriges Menü
 @HostListener('window:scroll', ['$event'])
 handleScroll() {

@@ -3,16 +3,34 @@ import {ImpPhylibServ} from '/home/jens/angular-file-upload/src/app/services/imp
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import {  parse } from 'date-fns';
+import { DataAbiotik } from '../interfaces/data-abiotik';
+
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class UebersichtImportService {
   uebersicht:UebersichtImport[];
-  
+  tempdataabiotik:any=[];
+  dataAbiotik:DataAbiotik[]=[];
   temp:any=[];
   private UebersichtImport:UebersichtImport  = {} as UebersichtImport;
   private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,private impPhylibServ: ImpPhylibServ) { }
+
+   async getBwMstTaxa(komp: number): Promise<any> {
+      let params = new HttpParams().set('id', komp);
+      
+      try {
+          return await this.httpClient.get(`${this.apiUrl}/viewdataabiotik`, { params }).toPromise();
+      } catch (error) {
+          console.error('Error fetching data:', error);
+          throw error;
+      }
+  }
+
 
   aktualisiereImportdaten(anzahlmst:number,anzahlwerte:number,bemerkung:string,id_imp:number){
 
@@ -26,11 +44,20 @@ export class UebersichtImportService {
    console.log("response %o, ", resp);  });
 
   }
+  StringToDate(importiert: string,dateFormat:string): Date {
+    // const dateFormat = 'dd.MM.yy HH:mm';
+    // const importDate = 
+    return parse(importiert, dateFormat, new Date());
+    // const currentDate = new Date();
+//     const weeksDifference = differenceInWeeks(currentDate, importDate);
+// console.log(weeksDifference);
+//     return weeksDifference < 2;
+}
  async start() {
 // this.callUebersicht2();
 
   await this.callUebersicht();
-  await this.handle();
+  await this.handle(false);
   // console.log(this.uebersicht);
  }
 
@@ -88,54 +115,65 @@ callUebersicht2(){
 }
 
 
-async handle(){
-  this.uebersicht=[];
+async handle(checked: boolean) {
+  this.uebersicht = [];
+  // console.log(this.temp);
   await Promise.all(
-  this.temp.map(async (f) => {
-            
-      
-   
-
-    //erzeugt Array mit WK
-    
-      this.uebersicht.push({ dateiname:f.dateiname,
-        verfahren: f.verfahren,
-        komponente:f.komponente,
-        importiert:f.importiert,
-        jahr:f.jahr,
-        probenehmer:f.firma,
-        anzahlmst:f.anzahlmst,
-        anzahlwerte:f.anzahlwerte,
-        bemerkung:f.bemerkung,
-        id_pn:f.id_pn,
-        id_imp:f.id_imp,
-      id_verfahren:f.id_verfahren,
-      import_export:f.import_export,
-      id_komp:f.id_komp
-    });
-     
-})
-)
-//console.log (this.wkarray);
-
+      this.temp.map(async (f) => {
+         
+              this.uebersicht.push({
+                  dateiname: f.dateiname,
+                  verfahren: f.verfahren,
+                  komponente: f.komponente,
+                  importiert: f.importiert,
+                  datumimport: this.StringToDate(f.importiert,'dd.MM.yy HH:mm'),
+                  jahr: f.jahr,
+                  probenehmer: f.firma,
+                  anzahlmst: f.anzahlmst,
+                  anzahlwerte: f.anzahlwerte,
+                  bemerkung: f.bemerkung,
+                  id_pn: f.id_pn,
+                  id_imp: f.id_imp,
+                  id_verfahren: f.id_verfahren,
+                  import_export: f.import_export,
+                  id_komp: f.id_komp
+              });
+          }
+      ));
+  
+      this.uebersicht.sort((a, b) => b.datumimport.getTime() - a.datumimport.getTime());
+if (checked===false){this.uebersicht=this.uebersicht.slice(0,6);}
 }
-// archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport){
-//   const body = new HttpParams()
-//  .set('id_imp',uebersichtImport.id_imp)
-//  .set('dateiname', uebersichtImport.dateiname)
-//  .set('id_komp',uebersichtImport.id_komp)
+async callgetBwMstTaxa(impID: number): Promise<any> {
+  this.tempdataabiotik = [];
+  this.dataAbiotik = [];
+    try {
+        this.tempdataabiotik = await this.getBwMstTaxa(impID);
+        
+        await Promise.all(
+            this.tempdataabiotik.map(async (f) => {
+                this.dataAbiotik.push({
+                    wk_name: f.wk_name,
+                    id_import: f.id_import,
+                    namemst: f.namemst,
+                    id: f.id,
+                    id_wk: f.id_wk,
+                    parameter: f.parameter,
+                    jahr: f.jahr,
+                    letzte_aenderung: this.StringToDate(f.letzte_aenderung ,'dd.MM.yy'),
+                    einheit: f.einheit,
+                    wert: f.wert
+                });
+            })
+        );
 
-//  .set('anzahlmst',uebersichtImport.anzahlmst)
-//  .set('anzahlwerte',uebersichtImport.anzahlwerte)
-
-//  .set('id_verfahren',uebersichtImport.id_verfahren)
-//  .set('bemerkung',uebersichtImport.bemerkung)
-//  .set('jahr',uebersichtImport.jahr)
-//  .set('id_pn',uebersichtImport.id_pn)
-
-//  this.httpClient.post('http://localhost:3000/api/insertArchivImport', body).subscribe(resp => {
-// console.log("response %o, ", resp);  });
-// }
+        // this.uebersicht.sort((a, b) => b.datumimport.getTime() - a.datumimport.getTime());
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+    //console.log(this.tempdataabiotik);
+    }
 
 async  archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport):Promise<string> {
   let url=`${this.apiUrl}/insertArchivImport`;
