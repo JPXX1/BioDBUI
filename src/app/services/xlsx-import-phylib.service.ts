@@ -124,6 +124,16 @@ try {
 			// console.log('observable -> ' + value);
 		});
 	}
+		/**
+		 * Importiert und verarbeitet Daten aus einer Excel-Arbeitsmappe für die Phylib-Bewertung.
+		 * 
+		 * @param workbook - Die Excel-Arbeitsmappe, aus der die Daten importiert werden sollen.
+		 * @param valspalten - Ein Array von Spaltendefinitionen, die zum Filtern und Verarbeiten der Daten verwendet werden.
+		 * @param tab - Der Index des zu verarbeitenden Blattes innerhalb der Arbeitsmappe.
+		 * @param verfahrennr - Die Verfahrensnummer, die zum Filtern der Spaltendefinitionen verwendet wird.
+		 * 
+		 * @returns Ein Versprechen, das aufgelöst wird, wenn der Import und die Verarbeitung abgeschlossen sind.
+		 */
 	async PhylibBewertungimport(workbook, valspalten: any, tab: number,verfahrennr : number) {
 		await this.holeMst();
 		this.displayColumnNames=[];
@@ -304,6 +314,33 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 }
 
 
+		/**
+		 * Importiert Daten aus einer Excel-Arbeitsmappe in die Anwendung.
+		 * 
+		 * @param workbook - Die Excel-Arbeitsmappe, aus der die Daten importiert werden sollen.
+		 * @param valspalten - Ein Array von Spaltenkonfigurationen für den Import.
+		 * @param tabMST - Der Index des Blattes, das die Messstationsdaten enthält.
+		 * @param tabMW - Der Index des Blattes, das die Messdaten enthält.
+		 * @param verfahrennr - Die Verfahrensnummer für den Import.
+		 * 
+		 * @returns Ein Versprechen, das aufgelöst wird, wenn der Import abgeschlossen ist.
+		 * 
+		 * @remarks
+		 * Diese Methode verarbeitet die bereitgestellte Excel-Arbeitsmappe, extrahiert Daten basierend auf den bereitgestellten Spaltenkonfigurationen und der Verfahrensnummer.
+		 * Sie füllt verschiedene Arrays und Objekte mit den importierten Daten, einschließlich Messstationen und Messwerten.
+		 * Die Methode führt auch Validierungen und Filterungen basierend auf den bereitgestellten Konfigurationen durch.
+		 * 
+		 * @example
+		 * ```typescript
+		 * const workbook = XLSX.readFile('path/to/excel/file.xlsx');
+		 * const valspalten = [...]; // Spaltenkonfigurationen definieren
+		 * const tabMST = 0; // Index des Blattes mit den Messstationsdaten
+		 * const tabMW = 1; // Index des Blattes mit den Messdaten
+		 * const verfahrennr = 123; // Verfahrensnummer
+		 * 
+		 * await Phylibimport(workbook, valspalten, tabMST, tabMW, verfahrennr);
+		 * ```
+		 */
 	async Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number) {
 		let array: Messwerte[] = []; this.uebersicht = []; this.MessDataOrgi = [];
 		//let reader = new FileReader();
@@ -701,36 +738,7 @@ doppelteMesswerte(): boolean {
 	// Setze die Antwort auf true, wenn die Länge des ursprünglichen Arrays größer ist als die Länge des Arrays mit eindeutigen Werten
 	antwort = laengeArrOrg > laengeArrDistinct;
   
-	// if (antwort) {
-	//   // Schleife durch das Temp2Set
-	//   for (let i = 0, le = Temp2Set.length; i < le; i += 1) {
-	// 	// Filtere TempSet nach dem aktuellen kombinierten String
-	// 	const ds = TempSet.filter(g => g === Temp2Set[i].temp);
-	// 	if (ds.length > 1) {
-	// 	  // Filtere die Messstellen nach der aktuellen Messstelle
-	// 	  const mstee = this.mst.filter(messstellen => messstellen.id_mst === Temp2Set[i].Mst);
-	// 	  if (mstee.length > 1) {
-	// 		// Füge den Namen der Messstelle zum MstDoppelteDSTemp hinzu
-	// 		MstDoppelteDSTemp.push(mstee[0].namemst);
-	// 	  }
-	// 	}
-	//   }
-	// }
-  
-	// // Erstelle ein Array mit eindeutigen Messstellen aus MstDoppelteDSTemp
-	// const distinctArr2 = MstDoppelteDSTemp.filter((value, index, self) => self.indexOf(value) === index);
-  
-	// if (distinctArr2.length > 0) {
-	//   // Initialisiere die MstDoppelteDS-Variable
-	//   this.MstDoppelteDS = "(Mst: ";
-	//   // Schleife durch das distinctArr2
-	//   for (let f = 0, le = distinctArr2.length; f < le; f += 1) {
-	// 	// Füge die Messstellen zum MstDoppelteDS-String hinzu
-	// 	this.MstDoppelteDS = this.MstDoppelteDS + distinctArr2[f] + "; ";
-	//   }
-	//   // Schließe den MstDoppelteDS-String
-	//   this.MstDoppelteDS = this.MstDoppelteDS + ")";
-	// }
+	
   
 	// Gib die Antwort zurück
 	return antwort;
@@ -756,28 +764,10 @@ doppelteMesswerte(): boolean {
 
 			if (tmpMWteil.length>0){ 
 				this.vorhanden = true;
-				this.groupNAchPruefung(this.uebersicht[a]);
+				this.groupNachPruefung(this.uebersicht[a]);
 				// const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
 
-		// for (let i = 0, l = relMW.length; i < l; i += 1) {
-		// 	const mw: Messwerte = relMW[i];
-			
-			
-		// 	// this.mst
-
-		// 	// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
-
-		// 	const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
-		// 	//console.log("combi", combi)
-
-		// 	if (combi.length > 0) {
-		// 		this.vorhanden = true;
-		// 		this.groupNAchPruefung(this.uebersicht[a]);
-
-		// 		i = l;
-		// 	}
-
-		// }
+		
 	}}}
 
 	  }
@@ -789,7 +779,7 @@ doppelteMesswerte(): boolean {
 		let i = 0;
 		const distinctArray = this.MessDataImp.filter((value, index, self) => 
 			index === self.findIndex((t) => (
-			  t._Datum === value._Datum
+			  t._Datum === value._Datum 
 			))
 		  );
 
@@ -831,7 +821,7 @@ doppelteMesswerte(): boolean {
 
 			if (combi.length > 0) {
 				this.vorhanden = true;
-				this.groupNAchPruefung(this.uebersicht[a]);
+				this.groupNachPruefung(this.uebersicht[a]);
 
 				i = l;
 			}
@@ -851,6 +841,27 @@ doppelteMesswerte(): boolean {
 		}
 		} this.uebersicht=this.uebersichtGeprueft;}
 
+		/**
+		 * Überprüft asynchron, ob Messwerte für ein bestimmtes Jahr bereits in der Datenbank vorhanden sind.
+		 * 
+		 * @param jahr - Das Jahr als String, um nach vorhandenen Messwerten zu suchen.
+		 * @returns Ein Versprechen, das aufgelöst wird, wenn die Überprüfung abgeschlossen ist.
+		 * 
+		 * Diese Methode führt die folgenden Schritte aus:
+		 * 1. Setzt die Eigenschaft `uebersichtGeprueft` auf die aktuelle `uebersicht`.
+		 * 2. Initialisiert die Eigenschaft `vorhanden` auf false.
+		 * 3. Konstruiert einen temporären Datumsstring unter Verwendung des angegebenen Jahres.
+		 * 4. Ruft Messwerte aus der Datenbank für das konstruierte Datum ab.
+		 * 5. Wenn Messwerte in der Datenbank gefunden werden:
+		 *    - Iteriert über das `uebersicht`-Array, um importierbare Einträge zu überprüfen.
+		 *    - Filtert Messpunkte (`mst`), um passende Einträge zu finden.
+		 *    - Überprüft, ob die Messwerte aus der Datenbank mit den importierten Messdaten übereinstimmen.
+		 *    - Wenn eine Übereinstimmung gefunden wird, setzt die Eigenschaft `vorhanden` auf true und ruft die Methode `groupNAchPruefung` auf.
+		 * 6. Wenn keine Messwerte in der Datenbank gefunden werden:
+		 *    - Filtert das `uebersicht`-Array nach Einträgen, die als importierbar markiert sind.
+		 *    - Setzt die Eigenschaft `vorhanden` basierend auf dem Vorhandensein importierbarer Einträge.
+		 * 7. Stellt die Eigenschaft `uebersicht` auf ihren ursprünglichen Zustand zurück.
+		 */
 	async pruefeObMesswerteschonVorhanden(jahr: string) {
 		this.uebersichtGeprueft=this.uebersicht;
 		let jahrtemp: string; this.vorhanden = false;
@@ -862,10 +873,11 @@ doppelteMesswerte(): boolean {
 
 		await this.holeMesswerteausDB(jahrtemp);
 		if (this.MWausDB.length>0){
+			// console.log(this.uebersicht);
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
-
+			// console.log(this.uebersicht);
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
-
+// console.log(this.uebersicht[a].mst);
 
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
@@ -881,16 +893,12 @@ doppelteMesswerte(): boolean {
 			const mw: Messwerte = relMW[i];
 			
 			
-			// this.mst
-
-			// this.uebersicht.filter(a=>a.mst===mw._Messstelle)
-
 			const combi = this.MWausDB.filter(d => d.id_mst === mw._Messstelle && d.id_taxon === mw._Taxon && d.id_tiefe === mw._Tiefe && d.id_taxonzus === mw._Form && d.id_abundanz === mw._idAbundanz);
-			//console.log("combi", combi)
+			
 
 			if (combi.length > 0) {
 				this.vorhanden = true;
-				this.groupNAchPruefung(this.uebersicht[a]);
+				this.groupNachPruefung(this.uebersicht[a]);
 
 				i = l;
 			}
@@ -908,17 +916,27 @@ doppelteMesswerte(): boolean {
 
 
 		}
+		
 		this.uebersicht=this.uebersichtGeprueft;}
 
 
-	groupNAchPruefung(_uebersicht:Uebersicht) {
-		let i=this.uebersichtGeprueft.indexOf(_uebersicht)
-		if (_uebersicht.import1==="checked"){
-			_uebersicht.import1="";
-			this.uebersichtGeprueft.splice(i, 1);
-			this.uebersichtGeprueft.push(_uebersicht);
+	/**
+		 * Aktualisiert den Status des angegebenen Übersichtselements im `uebersichtGeprueft`-Array.
+		 * Wenn die `import1`-Eigenschaft des Übersichtselements auf "checked" gesetzt ist, wird die Eigenschaft auf einen leeren String zurückgesetzt,
+		 * das Element aus seiner aktuellen Position im Array entfernt und dann an das Ende des Arrays verschoben.
+		 *
+		 * @param _uebersicht - Das zu aktualisierende Übersichtselement.
+		 */
+	groupNachPruefung(_uebersicht: Uebersicht) {
+		const index = this.uebersichtGeprueft.findIndex(item => item === _uebersicht);
+	  
+		// Prüfen, ob das Objekt im Array existiert und `import1` auf "checked" steht
+		if (index !== -1 && _uebersicht.import1 === "checked") {
+		  // `import1` auf leeren String setzen
+		  this.uebersichtGeprueft[index].import1 = "";
+		}
+	  }
 
-}}
 
 
 	async pruefeObMessstellenschonVorhanden(jahr: string, probenehmer: string) {
@@ -961,6 +979,12 @@ doppelteMesswerte(): boolean {
 			//console.log('observable -> ' + this.MWausDB);
 		});
 	}
+	/**
+		 * Ruft asynchron Messwerte aus der Datenbank für ein bestimmtes Datum ab.
+		 * 
+		 * @param datum - Das Datum, für das die Messwerte abgerufen werden sollen.
+		 * @returns Ein Versprechen, das aufgelöst wird, wenn die Messwerte abgerufen und in `this.MWausDB` gespeichert wurden.
+		 */
 	async holeMesswerteausDB(datum: string) {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMesswerte2(datum).forEach(value => {
@@ -968,6 +992,14 @@ doppelteMesswerte(): boolean {
 			//console.log('observable -> ' + this.MWausDB);
 		});
 	}
+		/**
+		 * Importiert Daten in die Datenbank für ein bestimmtes Jahr und einen bestimmten Probennehmer.
+		 *
+		 * @param jahr - Das Jahr, für das die Daten importiert werden.
+		 * @param probenehmer - Der Probennehmer, der für die Daten verantwortlich ist.
+		 * @param useincludeDate - Ein boolesches Flag, das angibt, ob das Datum im Import enthalten sein soll.
+		 * @returns Ein Versprechen, das aufgelöst wird und einen String zurückgibt, der den Erfolg oder Misserfolg des Datenimports angibt.
+		 */
 	async importIntoDB(jahr: string, probenehmer: string,useincludeDate:boolean):Promise<string> {
 		// this.pruefeObMesswerteschonVorhanden(jahr, probenehmer);
 		// this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
@@ -983,6 +1015,18 @@ doppelteMesswerte(): boolean {
 			
 	}
 	//Phylib/Perloes ExportDatei
+		/**
+		 * Importiert die Bewertungsdaten in die Datenbank für ein bestimmtes Jahr und einen bestimmten Probennehmer.
+		 * 
+		 * Diese Methode überprüft zuerst, ob die Messpunkte bereits in der Datenbank vorhanden sind.
+		 * Wenn entweder taxonomische Daten oder abiotische Daten aus der Importdatei bereits vorhanden sind,
+		 * wird der Importvorgang abgebrochen und eine entsprechende Nachricht zurückgegeben.
+		 * Andernfalls wird der Import der Bewertungsdaten der Messpunkte in die Datenbank fortgesetzt.
+		 * 
+		 * @param jahr - Das Jahr, für das die Daten importiert werden.
+		 * @param probenehmer - Der Probennehmer, der mit den Daten verbunden ist.
+		 * @returns Eine Zeichenkette, die das Ergebnis des Importvorgangs angibt.
+		 */
 	importBewertungIntoDB(jahr: string, probenehmer: string): string {
 		
 		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);

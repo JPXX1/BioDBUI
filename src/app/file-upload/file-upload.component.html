@@ -66,8 +66,8 @@
       </mat-expansion-panel>
     </mat-accordion>
   </div>
-  <div style="display: flex; flex-grow: grow">
-    <div *ngIf="mstimptab == true" style="float: left;width: 45%;margin-left:2%">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div *ngIf="mstimptab == true" style="flex: 1; max-width: 40%; margin-left: 2%;">
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container *ngFor="let colName of dynamicColumns; index as i;">
           <ng-container *ngIf="colName!=='actions' && colName!=='import1' && colName!=='fehler1'  && colName!=='fehler2';" [matColumnDef]="colName">
@@ -119,12 +119,12 @@
         <tr mat-header-row *matHeaderRowDef="dynamicColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: dynamicColumns;"></tr>
       </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" aria-label="Select page of users"></mat-paginator>
+      <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" aria-label="Select page of users" style="text-align: left;"></mat-paginator>
     </div>
-    <div *ngIf="Datimptab == true" style="float: left;vertical-align: top;width: 40%;margin-left:5%">
+    <div *ngIf="Datimptab == true"  style="flex: 1; max-width: 40%; margin-left: 5%;">
       <app-eineldatenimp [Einzeldat]="MessData"></app-eineldatenimp>
     </div>
-    <div *ngIf="Datimptabphyto == true" style="float: left;vertical-align: top;width: 40%;margin-left:5%">
+    <div *ngIf="Datimptabphyto == true"  style="flex: 1; max-width: 40%; margin-left: 5%;">
       <app-einzeldatephytoplankton [Einzeldat]="MessData"></app-einzeldatephytoplankton>
     </div>
     

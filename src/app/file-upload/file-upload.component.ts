@@ -192,7 +192,7 @@ if (validIds.includes(result.id_verfahren)) {
   this.anzeigeBewertungMPService.arrayNeuFuellen(result.id_imp);
 
   this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
-
+  this.ImportDatenAnzeige=true;
 //   console.log( this.mstMakrophyten);
 
   }else{//console.log(this.dataAbiotik);
@@ -248,6 +248,23 @@ if (validIds.includes(result.id_verfahren)) {
 	
 	}
 	
+		/**
+		 * Überprüft asynchron, ob Messwerte bereits vorhanden sind.
+		 * 
+		 * Diese Methode führt eine Reihe von Überprüfungen und Operationen durch, um festzustellen, 
+		 * ob Messwerte für ein ausgewähltes Jahr und einen ausgewählten Probennehmer bereits im System vorhanden sind. 
+		 * Sie gibt dem Benutzer über eine InfoBox Rückmeldung und behandelt doppelte Messwerte, indem sie den Benutzer 
+		 * mit einem Bestätigungsdialog auffordert.
+		 * 
+		 * Die Methode folgt diesen Schritten:
+		 * 1. Überprüft, ob das Jahr und der Probennehmer ausgewählt sind.
+		 * 2. Protokolliert die Länge der ursprünglichen Messdaten, die Verfahrensnummer und die importierten Messstationen.
+		 * 3. Abhängig von der Verfahrensnummer ruft sie verschiedene Methoden auf, um vorhandene Messwerte zu überprüfen.
+		 * 4. Wenn doppelte Messwerte gefunden werden, fordert sie den Benutzer mit einem Bestätigungsdialog auf, die Duplikate zu entfernen.
+		 * 5. Gibt dem Benutzer über eine InfoBox Rückmeldung basierend auf den Ergebnissen der Überprüfungen.
+		 * 
+		 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Überprüfungen und Operationen abgeschlossen sind.
+		 */
 	async pruefeObMesswerteschonVorhanden(){
 		this.jahr = this.child1.selected; this.probenehmer = this.childPN.selectedPN;
 
@@ -268,7 +285,7 @@ if (validIds.includes(result.id_verfahren)) {
 						
 						if(this.valExceltabsService.NrVerfahren!==6 ){
 							
-						await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);}else{
+						  await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);}else{
 							//Verfahren=6//
 							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
 						}}
@@ -291,7 +308,8 @@ if (validIds.includes(result.id_verfahren)) {
 								  this.xlsxImportPhylibService.MessDataImp = distinctObjects;
 						
 								  // Setze die InfoBox-Nachricht
-								  this.InfoBox ("Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.");
+								  //this.InfoBox ("Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.");
+								  this.InfoBox ("Die doppelten Messwerte wurden entfernt."+this.MessageImportierbareDaten()); 
 								  this.ImportIntoDB = false; 
 								}else {
 									// Der Benutzer hat "Nein" gewählt -> Abbrechen
@@ -303,16 +321,34 @@ if (validIds.includes(result.id_verfahren)) {
 						  
 
 							//this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
-						console.log(this.InfoBox)} else 
-						{this.InfoBox ("Daten sind zum import bereit."); this.ImportIntoDB = false; };
+						} else 
+						{
+							
+							this.InfoBox (this.MessageImportierbareDaten());
+							// this.InfoBox ("Daten sind zum import bereit.");
+							this.ImportIntoDB = false; };
 				} else {
-					this.InfoBox ("Bitte erst eine Importdatei hochladen.");
+					 this.InfoBox ("Bitte erst eine Importdatei hochladen.");
+				
 				}
 
 			}
 		}
 	}
-
+	MessageImportierbareDaten():string {
+		let message;
+		const checkedCount = this.xlsxImportPhylibService.uebersichtGeprueft.filter(item => item.import1 === "checked").length;
+		const uncheckedCount = this.xlsxImportPhylibService.uebersichtGeprueft.filter(item => item.import1 === "").length;
+	  
+		if (checkedCount===0 && this.xlsxImportPhylibService.uebersichtGeprueft.length>0) {
+			message="Alle Daten sind bereits in der Datenbank vorhanden";
+		}else if (uncheckedCount===0 && this.xlsxImportPhylibService.uebersichtGeprueft.length>0) {
+			message="Alle Daten sind zum Import bereit";}else if
+			(uncheckedCount>0 &&  checkedCount>0 && 
+				this.xlsxImportPhylibService.uebersichtGeprueft.length>0) 
+	  {	message="Einige Daten sind bereits in der Datenbank vorhanden, einige sind zum Import bereit.";}
+		return message;
+	  }
 			archivImportErzeugen(){
 
 				this.newuebersichtImport.id_imp=this.uebersichtImportService.neueImportid(this.uebersichtImport);
