@@ -46,6 +46,15 @@
           </table>
         </div>
       </div>
+           <div *ngIf="ArtenNichtBekanntIsVisible" style="float: right; margin-right: 20%;"> 
+          <label>
+              <input type="checkbox" 
+              [readonly]="false" 
+              [checked]="ArtenNichtBekannt"
+              (click)="ausblendenDVNR()" 
+              style="right: 100px;">  Arten ohne DV-Nr ausblenden
+          </label>
+      </div>
     </mat-card-content>
   </mat-card>
   <div class="grid-item" style="width: 90%;margin-left: 2%;" class="helpable" id="panel-importhistorie">

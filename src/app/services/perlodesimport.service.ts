@@ -21,7 +21,7 @@ export class PerlodesimportService {
 	public uebersicht:Uebersicht[]=[];
   public _uebersicht:Uebersicht;
   public mst: any;
-
+  ArtenNichtBekanntIsVisible:boolean=false;
   constructor(private httpClient: HttpClient,private xlsxImportPhylibService:XlsxImportPhylibService) { }
 
   getArtenMZB(){ 
@@ -201,7 +201,7 @@ await this.Perlodesimport(workbook)
       // const valspaltenfiterMst = valspalten.filter(excelspalten => excelspalten.spalte_messstelle === true &&  excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1);
   
         
-  
+      this.ArtenNichtBekanntIsVisible=false;
   
   
         //console.log(workbook.SheetNames[i]);
@@ -229,7 +229,7 @@ await this.Perlodesimport(workbook)
 
                     mst = i;
                   aMessstelle=mst;
-                  //taxonzus=new Taxonzus();
+                 
                   let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == mst);
   
                   //console.log(mst);
@@ -321,7 +321,7 @@ await this.Perlodesimport(workbook)
                         aTaxon=Taxon+'/'+obj[index]['TAXON_NAME']+'ID_ART nicht bekannt';
                         // var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
                         // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
-      
+                        this.ArtenNichtBekanntIsVisible=true;
                       }
                       importp="checked";
                       if (ok==="checked" || mstOK==="checked") {importp="";}

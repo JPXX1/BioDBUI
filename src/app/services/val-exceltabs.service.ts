@@ -23,6 +23,18 @@ export class ValExceltabsService {
 
 
 //Datenabfrage aus Postgres (exceltabs, Excelspalten und ValVerfahren)
+    /**
+     * Ruft asynchron verschiedene Werte vom Service ab und setzt sie.
+     * 
+     * Diese Methode führt die folgenden Operationen aus:
+     * 1. Ruft Excel-Tabs vom Service ab und weist sie `valexceltabs` zu.
+     * 2. Ruft Verfahren vom Service ab und weist sie `valverfahren` zu.
+     * 3. Ruft Excel-Spalten vom Service ab und weist sie `valspalten` zu.
+     * 
+     * Jede Abrufoperation wird abgewartet, um sicherzustellen, dass die Werte nacheinander gesetzt werden.
+     * 
+     * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn alle Werte abgerufen und gesetzt wurden.
+     */
 	async callvalexceltabs() {
 
       // holt sich die Exceltabs aus Postgres
@@ -115,6 +127,34 @@ exceltabsauslesen(workbook) {
 
 
 
+    /**
+     * Verarbeitet die Excel-Arbeitsmappe und wählt das entsprechende Verfahren basierend auf der Anzahl der Tabs und deren Namen aus.
+     * 
+     * @param workbook - Die zu verarbeitende Excel-Arbeitsmappe.
+     * 
+     * Die Funktion führt die folgenden Schritte aus:
+     * 1. Ruft alle Excel-Tabs aus der Postgres-Tabelle `val_exceltabs` ab.
+     * 2. Bestimmt die Anzahl der Tabs in der Arbeitsmappe.
+     * 3. Filtert die `valexceltabs` basierend auf der Anzahl der Tabs in der Arbeitsmappe.
+     * 4. Liest die Excel-Tabs und deren Spaltennamen.
+     * 5. Wählt das entsprechende Verfahren basierend auf den in `valexceltabs` definierten Kriterien aus.
+     * 
+     * Die Auswahlkriterien umfassen:
+     * - Wenn es nur eine Vorlage für einen Tab gibt, überprüft es die Identifikationskriterien (`ident_kriterium`):
+     *   - Wenn `ident_kriterium` 1 ist, wählt es das Verfahren basierend auf der Anzahl der Tabs aus.
+     *   - Wenn `ident_kriterium` 2 ist, wählt es das Verfahren basierend auf der Anzahl und den Namen der Tabs aus.
+     *   - Wenn `ident_kriterium` 4 ist, validiert es die Excel-Spalten und wählt das Verfahren basierend auf dem Durchschnitt der verfügbaren Verfahren aus.
+     *   - Wenn `ident_kriterium` 5 ist und der Tab-Name mehr als einmal vorkommt, wählt es das Verfahren basierend auf dem Tab-Namen aus.
+     * - Wenn es mehrere Vorlagen für einen Tab gibt, filtert es weiter basierend auf den Tab-Namen und Spaltennamen.
+     * 
+     * Die Funktion behandelt verschiedene Szenarien, einschließlich:
+     * - Phylib-Importdateien basierend auf Tab-Namen.
+     * - Phytosee-Exportdateien basierend auf Tab-Namen.
+     * - Phytofluss-Exportdateien basierend auf Tab-Namen und Spaltennamen.
+     * - Phylib-Exportdateien basierend auf Spaltennamen.
+     * 
+     * Im Falle von Fehlern während des Prozesses versucht die Funktion, diese elegant zu behandeln.
+     */
   async ExcelTabsinArray(workbook) {
     //holt sich alle Exceltabs aus Postgres (Tabelle val_exceltabs)
     await this.callvalexceltabs();
@@ -196,7 +236,9 @@ exceltabsauslesen(workbook) {
                 (name.Spaltenname === "makrophytentyp" || name.Spaltenname === "diatomeentyp" || 
                   name.Spaltenname.includes("makrophytenverödung")) {
                     this.waehleVerfahren(2);break;
-                }
+                }//Pelodes-import
+                else if(name.Spaltenname === "id_art")
+                  { this.waehleVerfahren(3);break;}
             }
              
                  

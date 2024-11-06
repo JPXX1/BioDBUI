@@ -55,7 +55,8 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	  this.el.nativeElement.style.preventZoom = 'true';
 	}
 	ImpHistoryisChecked: boolean = false;
-
+	ArtenNichtBekannt: boolean = false;
+	ArtenNichtBekanntIsVisible: boolean = false;
 	dataAbiotik:DataAbiotik[]=[];
 	public einheiten:any;
 	public mst:any;
@@ -101,6 +102,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 		
 	}
+	
 // Diese Methode wird ausgelöst, wenn das Event von der Kindkomponente gefeuert wird
 handleJahrSelected(selectedJahr: number) {
 	this.ImportIntoDB=true;
@@ -122,7 +124,27 @@ handleJahrSelected(selectedJahr: number) {
 	this.pruefen=false;
 
   }
+  ausblendenDVNR(){
+	this.ArtenNichtBekannt = !this.ArtenNichtBekannt;
 
+	if (this.ArtenNichtBekannt===true){
+		const MessDataImpoD: Messwerte[] = this.xlsxImportPhylibService.MessDataImp.filter(item => typeof item._Taxon === 'string' && !item._Taxon.includes('ID_ART nicht bekannt'));
+		const MessDataTemp: Messwerte[] = this.MessDataOrgi.filter(item => typeof item._Taxon === 'string' && !item._Taxon.includes('ID_ART nicht bekannt'));
+				
+		this.MessDataOrgi=MessDataTemp;
+	this.xlsxImportPhylibService.uebersicht.forEach(item => {
+											if (item.fehler2 === "checked") {
+												item.fehler2 = "";
+											}
+											if (item.fehler2 !== "checked" && item.fehler1 !== "checked") {
+												item.import1 = "checked";
+											} else {
+												item.import1 = "";
+											}
+										});
+		this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
+	}
+}
   async ausblendenImporthistorie() {
     // this.ImportDatenAnzeige = false;
     this.ImpHistoryisChecked = !this.ImpHistoryisChecked; // Toggle the checked state
@@ -476,6 +498,24 @@ if (validIds.includes(result.id_verfahren)) {
 	}
 
 	
+			/**
+			 * Handhabt das Hinzufügen einer Datei und verarbeitet sie basierend auf dem enthaltenen Datentyp.
+			 * Diese Funktion liest die Datei als ArrayBuffer, verarbeitet sie mit der FileReader-API
+			 * und bestimmt dann den Datentyp in der Datei, um spezifische Importoperationen durchzuführen.
+			 * 
+			 * Die Funktion unterstützt mehrere Importtypen, einschließlich:
+			 * - Phylib-Import
+			 * - Phylib-Bewertungen
+			 * - Perlodes-Import
+			 * - Perlodes-Export
+			 * - Phytosee-Export
+			 * - LLBB_Ilat-Import
+			 * - Phytofluss-Export
+			 * 
+			 * Die Funktion aktualisiert verschiedene UI-Elemente und interne Zustände basierend auf dem Importtyp.
+			 * 
+			 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Dateiverarbeitung abgeschlossen ist.
+			 */
 			async addfile()     
 		{  this.ImportDatenAnzeige=false;
 
@@ -544,13 +584,18 @@ if (validIds.includes(result.id_verfahren)) {
 						this.Datimptab=false;this.Datimptabphyto=false;
 						break;
 					case 3:
+						let message="";
 						this.newuebersichtImport.id_komp=3;
 						// this.xlsxImportPhylibService.uebersicht=[];
 						this.xlsxImportPhylibService.MessDataOrgi=[];
 						await this.perlodesimportService.startimport(workbook);
 						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.InfoBox("Perlodes-Importdatei erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.");
-						// this.xlsxImportPhylibService.uebersicht.sort
+						this.ArtenNichtBekanntIsVisible=this.perlodesimportService.ArtenNichtBekanntIsVisible;
+						if (this.ArtenNichtBekanntIsVisible===true){message=" Einige Arten sind nicht bekannt.";}
+						this.InfoBox("Perlodes-Importdatei erkannt (" + this.file.name+ ")." + 
+							this.xlsxImportPhylibService.MessDataOrgi.length + 
+							" Datensätze in der Importdatei."+message);
+						this.ArtenNichtBekanntIsVisible=this.perlodesimportService.ArtenNichtBekanntIsVisible;
 					this.displayableColumns(3);
 					// this.dataSource.sort=this.sort;
 					this.Datimptab=false;this.Datimptabphyto=false;
