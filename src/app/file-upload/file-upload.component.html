@@ -24,22 +24,29 @@
                 </span>
               </td>
               <td>
-                <span style="float:left">
-                  <app-selectjahr (jahrSelected)="handleJahrSelected($event)" class="helpable" id="DD-Jahr"></app-selectjahr>
+              
+                  <div style="margin-left:50px;max-width: 100px;" class="helpable" id="DD-Jahr">
+                  <app-selectjahr (jahrSelected)="handleJahrSelected($event)"></app-selectjahr>
+                  </div>
+                </td> <td>
+                  <div style="margin-left:10px;max-width: 100px;" class="helpable" id="DD-Probenehmer">
                   <!-- <div style="margin-left:50px" class="helpable" id="DD-Jahr"><app-selectjahr [selected]="jahr"></app-selectjahr></div> -->
-                  <app-select-probenehmer (PNSelected)="handlePNSelected($event)" class="helpable" id="DD-Probenehmer" class="helpable" id="DD-Jahr"></app-select-probenehmer>
-                  
+                  <app-select-probenehmer (PNSelected)="handlePNSelected($event)" ></app-select-probenehmer>
+                </div>
                   
                   <!-- <div style="margin-left:50px" class="helpable" id="DD-Probenehmer"><app-select-probenehmer [selectedPN]="probenehmer"></app-select-probenehmer></div> -->
-              </span>
+              
               </td>
               <td>
+                <div style="margin-left:350px;max-width: 150px;">
                 <button (click)="pruefeObMesswerteschonVorhanden()" id="btn-pruefen" [disabled]="pruefen" class="btn btn-success helpable" style="margin-left:50px">
                   5. prüfen
-                </button><br>
-                <button (click)="importIntoDB()" [disabled]="ImportIntoDB" class="btn btn-success" style="margin-left:50px;margin-top:10px">
+                </button></div>
+              </td>
+              <td> <div style="margin-left:30px;max-width: 320px;">
+                <button (click)="importIntoDB()" [disabled]="ImportIntoDB" class="btn btn-success" style="margin-left:50px">
                   6. Import in die Datenbank
-                </button>
+                </button></div>
             </td>
             
             </tr>
