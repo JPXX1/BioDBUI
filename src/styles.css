@@ -16,3 +16,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
 .notranslate {
   translate: no; /* Dieses CSS sagt Browsern, dass die Inhalte nicht übersetzt werden sollen */
 }
+.mat-menu-panel {
+  overflow: hidden !important;
+  max-width: none !important;
+}

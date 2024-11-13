@@ -41,10 +41,12 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     private router: Router,
     private authService: AuthService,
     private Farbebewertg: FarbeBewertungService
+    
   ) {}
     // WMTS capabilities URL
     private wmtsCapabilitiesUrl = 'https://sgx.geodatenzentrum.de/wmts_basemapde/1.0.0/WMTSCapabilities.xml';
-    // private wmtsLayer: TileLayer;
+   
+    private activeBpPieLayer: VectorLayer | null = null;
   messstellenFilter: string = '';  // Speichert den aktuellen Filtertext
   map: Map;
   coordinate;
@@ -67,6 +69,9 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   isrepraesentSeeChecked: boolean = false;
   isVerbreitungChecked: boolean = false;
   isErsterBPChecked: boolean = false;  // Variable für den Checkbox-Status
+  isZweiterBPChecked: boolean = false;  // Variable für den Checkbox-Status
+  isDritterBPChecked: boolean = false;  // Variable für den Checkbox-Status
+  isVierterBPChecked: boolean = false;  // Variable für den Checkbox-Status
   pieChartLayer: VectorLayer | null = null;
   isRepraesentCheckedSEEdisable: boolean = true;
   isRepraesentCheckedFGWdisable: boolean = true;
@@ -130,10 +135,23 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
 
   //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp1&maxFeatures=50&outputFormat=application%2Fjson
   private source_lw_bp3_with_pie = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp3&maxFeatures=500&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp1&maxFeatures=50&outputFormat=application%2Fjson
+  private source_lw_bp2_with_pie = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp2&maxFeatures=500&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp1&maxFeatures=50&outputFormat=application%2Fjson
+  private source_lw_bp1_with_pie = new VectorSource({
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp1&maxFeatures=500&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
   });
-
+  private source_lw_bp4_with_pie = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp4&maxFeatures=500&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
   private async loadWmtsLayer(): Promise<TileLayer> {
     const response = await fetch(this.wmtsCapabilitiesUrl);
     const capabilitiesText = await response.text();
@@ -248,7 +266,14 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
             this.pieChartLayer = null;
           }
         }
-        createPieChartLayer() {
+        createPieChartLayer(source_ = new VectorSource()) {
+         
+        this.messstellenLayer=new VectorLayer({
+            source: source_,
+            style: this.mstDia,  
+          });
+
+
           let hasBeenRendered = false;  // Flagge, um mehrfaches Rendern zu verhindern
         //DevicePixelRatio
           const ratio=DEVICE_PIXEL_RATIO;
@@ -256,7 +281,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
                 
           const resolution = this.map.getView().getResolution();
           this.pieChartLayer = new VectorLayer({
-            source: this.source_lw_bp3_with_pie,
+            source: source_,
             style: (feature: FeatureLike) => {
               const realFeature = feature as Feature<Geometry>;
               const geometry = realFeature.getGeometry() as Point;
@@ -320,7 +345,9 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
               return null;
             },
           });
-        
+          this.activeBpPieLayer = this.pieChartLayer;
+
+          
           // Füge den Layer zur Karte hinzu
           this.map.addLayer(this.pieChartLayer);
           this.map.addLayer(this.messstellenLayer);
@@ -689,37 +716,113 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     this.map.removeLayer(this.view_geo_lw_oezk_bp3);
   }
   }
+private toggleSingleBpLayer(checked: boolean, sourceLayer: VectorSource) {
+  
+  if (checked) {
+   
+    if (this.activeBpPieLayer) {
+      this.map.removeLayer(this.activeBpPieLayer);
+      this.map.removeLayer(this.messstellenLayer);
+      this.activeBpPieLayer = null;
+    }
+    this.drawLegend();
+    this.createPieChartLayer(sourceLayer);
+    this.activeBpPieLayer = this.pieChartLayer;
+
+  } else {
+    this.map.removeLayer(this.messstellenLayer);
+    this.removePieChartLayer();
+    this.activeBpPieLayer = null;
+    this.clearLegend();
+  }
+  
+}
+private drawLegend() {
+  const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
+  const ctx = legendCanvas.getContext('2d');
+ 
+  if (ctx) {
+    ctx?.clearRect(0, 0, legendCanvas.width, legendCanvas.height);
+    const data = ['1', '2', '3', '4'];
+    const labels = ['Makrozoobenthos', 'Phytoplankton', 'Diatomeen', 'Makrophyten'];
+    this.drawQuarterPieChartWithLegend(ctx, data, labels, 110, 80);
+  }
+}
+
+private clearLegend() {
+  const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
+  const ctx = legendCanvas.getContext('2d');
+  if (ctx) {
+    ctx.clearRect(0, 0, legendCanvas.width, legendCanvas.height);
+  }
+}
+
+//   toggleBP(checked: boolean, sourceLayer: any) {
+//     // Aktualisiere den Status
+ 
+
+//     if (checked) {
+//         // Layer mit Tortendiagrammen hinzufügen
+//         this.createPieChartLayer(sourceLayer);
+
+//         // Finde das Canvas-Element und hole den 2D-Zeichenkontext (ctx)
+//         const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
+//         const ctx = legendCanvas.getContext('2d');
+
+//         if (ctx) {
+//             // Zeichne das Tortendiagramm auf der Legende
+//             const data = ['1', '2', '3', '4'];
+//             const labels = ['Makrozoobenthos', 'Phytoplankton', 'Diatomeen', 'Makrophyten'];
+//             this.drawQuarterPieChartWithLegend(ctx, data, labels, 110, 80);  // Zeichne das Diagramm in die Mitte des Canvas
+//         }
+//     } else {
+//         // Layer mit Tortendiagrammen entfernen
+//         this.removePieChartLayer();
+//         this.map.removeLayer(this.messstellenLayer);
+
+//         // Verstecke die Legende und lösche den Canvas-Inhalt
+//         const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
+//         const ctx = legendCanvas.getContext('2d');
+//         if (ctx) {
+//             ctx.clearRect(0, 0, legendCanvas.width, legendCanvas.height);  // Lösche den Canvas-Inhalt
+//         }
+//     }
+// }
   // Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
   ersterBP(checked: boolean) {
-    this.isErsterBPChecked = checked;  // Toggle den Checkbox-Status
   
-    if (this.isErsterBPChecked) {
-      // Layer mit Tortendiagrammen hinzufügen
-      this.createPieChartLayer();
+    this.isErsterBPChecked = checked;
+    this.isZweiterBPChecked = false;
+    this.isDritterBPChecked = false;
+    this.isVierterBPChecked = false;
+    this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
+  }
+  zweiterBP(checked: boolean) {
+    
+    this.isErsterBPChecked = false;
+    this.isZweiterBPChecked = checked;
+    this.isDritterBPChecked = false;
+    this.isVierterBPChecked = false;
+    this.toggleSingleBpLayer(checked, this.source_lw_bp2_with_pie);
+  }
   
-      // Finde das Canvas-Element und hole den 2D-Zeichenkontext (ctx)
-      const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
-      const ctx = legendCanvas.getContext('2d');  // Erstelle den 2D-Zeichenkontext
+  dritterBP(checked: boolean) {
   
-      if (ctx) {
-        // Zeichne das Tortendiagramm auf der Legende
-        const data = ['1', '2', '3', '4'];  // Die Werte der Segmente
-        const labels = ['Makrozoobenthos', 'Phytoplankton', 'Diatomeen', 'Makrophyten'];  // Beschriftungen der Segmente
-        this.drawQuarterPieChartWithLegend(ctx, data, labels, 110, 80);  // Zeichne das Diagramm in die Mitte des Canvas
-      }
+    this.isErsterBPChecked = false;
+    this.isZweiterBPChecked = false;
+    this.isDritterBPChecked = checked;
+    this.isVierterBPChecked = false;
+    this.toggleSingleBpLayer(checked, this.source_lw_bp3_with_pie);
+  }
   
-    } else {
-      // Layer mit Tortendiagrammen entfernen
-      this.removePieChartLayer();
-      this.map.removeLayer(this.messstellenLayer);
-      // Verstecke die Legende und lösche den Canvas-Inhalt
-      const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
-      const ctx = legendCanvas.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, legendCanvas.width, legendCanvas.height);  // Lösche den Canvas-Inhalt
-      }
-    }
-  }F
+  vierterBP(checked: boolean) {
+    
+    this.isErsterBPChecked = false;
+    this.isZweiterBPChecked = false;
+    this.isDritterBPChecked = false;
+    this.isVierterBPChecked = checked;
+    this.toggleSingleBpLayer(checked, this.source_lw_bp4_with_pie);
+  }
 mstnachoben(){
 
   if (this.isFliesgewasserChecked=== true){

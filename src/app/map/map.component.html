@@ -23,13 +23,13 @@
     </button>
     <mat-menu #karten="matMenu" xPosition="after" [style.width.px]="600">
 
-      <mat-checkbox [(ngModel)]="isstartbp3Checked" (change)="startbp3(isstartbp3Checked)" [style.width.%]="100">
+      <mat-checkbox [(ngModel)]="isstartbp3Checked" (click)="$event.stopPropagation();startbp3(isstartbp3Checked)" [style.width.%]="100">
         Wasserkörperbewertung 3. Bewirtschaftungsplan
       </mat-checkbox>
-      <mat-checkbox [(ngModel)]="isstartbp2Checked" (change)="startbp2(isstartbp2Checked)" [style.width.%]="100">
+      <mat-checkbox [(ngModel)]="isstartbp2Checked" (click)="$event.stopPropagation();startbp2(isstartbp2Checked)" [style.width.%]="100">
         Wasserkörperbewertung 2. Bewirtschaftungsplan
       </mat-checkbox>
-      <mat-checkbox [(ngModel)]="isstartbp1Checked" (change)="startbp1(isstartbp1Checked)" [style.width.%]="100">
+      <mat-checkbox [(ngModel)]="isstartbp1Checked" (click)="$event.stopPropagation();startbp1(isstartbp1Checked)" [style.width.%]="100">
         Wasserkörperbewertung 1. Bewirtschaftungsplan
       </mat-checkbox>
       
@@ -39,12 +39,21 @@
     <button mat-button id="bwmstButton" [matMenuTriggerFor]="mstb" class="helpable button" style="margin-right: 20px;">
       Bewertung der Messstellen
     </button>
-    <mat-menu #mstb="matMenu" xPosition="after" [style.width.px]="400">
-
-      <mat-checkbox [(ngModel)]="isErsterBPChecked" (change)="ersterBP(isErsterBPChecked)">
-        Bewertung an den Übersichtsmessstellen
+    <mat-menu #mstb="matMenu" xPosition="after" [style.width.px]="900">
+      <mat-checkbox [(ngModel)]="isVierterBPChecked"    (click)="$event.stopPropagation();vierterBP(isVierterBPChecked)">
+        <span class="custom-checkbox-label">Messstellen (2026-2021)</span>
+ 
       </mat-checkbox>
-
+      <mat-checkbox [(ngModel)]="isDritterBPChecked"  class="custom-checkbox wide-label"  (click)="$event.stopPropagation();dritterBP(isDritterBPChecked)">
+        <span class="custom-checkbox-label">Messstellen (2020 - 2015)</span>
+        
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isZweiterBPChecked"  class="custom-checkbox wide-label"  (click)="$event.stopPropagation();zweiterBP(isZweiterBPChecked)">
+        <span class="custom-checkbox-label">Messstellen (2014 - 2005)</span>
+      </mat-checkbox>
+      <mat-checkbox [(ngModel)]="isErsterBPChecked" class="custom-checkbox wide-label"  (click)="$event.stopPropagation();ersterBP(isErsterBPChecked)">
+        <span class="custom-checkbox-label">Messstellen (vor 2005)</span>
+      </mat-checkbox>
 
     </mat-menu>
     
@@ -53,16 +62,16 @@
     </button>
     <mat-menu #mst="matMenu" xPosition="after" [style.width.px]="400">
       
-      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (change)="startalleFGW(isFliesgewasserChecked)">
+      <mat-checkbox [(ngModel)]="isFliesgewasserChecked" (click)="$event.stopPropagation();startalleFGW(isFliesgewasserChecked)">
         Fließgewässermessstellen
       </mat-checkbox>
-      <mat-checkbox  [(ngModel)]="isrepraesentFGWChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedFGWdisable" (change)="toggleLayerfgwmst(isFliesgewasserChecked,isrepraesentFGWChecked)">
+      <mat-checkbox  [(ngModel)]="isrepraesentFGWChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedFGWdisable" (click)="$event.stopPropagation();toggleLayerfgwmst(isFliesgewasserChecked,isrepraesentFGWChecked)">
         repräsentative Messstellen
       </mat-checkbox>
-      <mat-checkbox [(ngModel)]="isSeeChecked" (change)="startalleSee(isSeeChecked)">
+      <mat-checkbox [(ngModel)]="isSeeChecked" (click)="$event.stopPropagation();startalleSee(isSeeChecked)">
         Seemessstellen
       </mat-checkbox>
-      <mat-checkbox  [(ngModel)]="isrepraesentSeeChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedSEEdisable" (change)="toggleLayerseemst(isSeeChecked,isrepraesentSeeChecked)">
+      <mat-checkbox  [(ngModel)]="isrepraesentSeeChecked" style="margin-left: 20px;" [disabled]="isRepraesentCheckedSEEdisable" (click)="$event.stopPropagation();toggleLayerseemst(isSeeChecked,isrepraesentSeeChecked)">
         repräsentative Messstellen
       </mat-checkbox>
      <mat-form-field appearance="outline" (click)="$event.stopPropagation()" [style.width.%]="100" >

@@ -86,3 +86,8 @@
     left: 115px; /* Positioniere den Button in der oberen rechten Ecke */
     z-index: 1000; /* Stellt sicher, dass er über der Karte liegt */
   }
+  .custom-checkbox-label {
+    display: inline-block;
+    width: 500px; /* Passen Sie die Breite nach Bedarf an */
+  }
+  

@@ -44,14 +44,16 @@ export class LoginComponent {
   //   );
   // }
   openRegisterPopup() {
-   // this.dialog.open(RegisterDialogComponent);
-    // Öffne das Standard-Mailprogramm
+    // Betreff und Nachrichtentext für die E-Mail definieren
     const mailSubject = 'Zugang zur BioDatenbank EU-WRRL Senat Berlin';
     const mail = 'vivien.rosin@SenMVKU.berlin.de';
-    const mailBody = `Sehr geehrte Damen und Herren,\n\nbitte senden Sie mir Zugangsdaten zur BioDatenbank EU-WRRL Senat Berlin zu. 
-    \n\nMit freundlichen Grüßen`;
+    const mailBody = `Sehr geehrte Damen und Herren,\n\nbitte senden Sie mir Zugangsdaten zur BioDatenbank EU-WRRL Senat Berlin zu.\n\nMit freundlichen Grüßen`;
+  
+    // Mailto-Link erstellen, mit korrekt kodiertem Betreff und Nachrichtentext
     const mailtoLink = `mailto:${mail}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
-    window.location.href = mailtoLink;  // Öffnet das Standard-Mailprogramm
+  
+    // Öffnet das Standard-Mailprogramm des Benutzers
+    window.location.href = mailtoLink;
   }
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
