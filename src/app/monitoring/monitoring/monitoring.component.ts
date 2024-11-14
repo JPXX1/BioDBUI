@@ -435,7 +435,8 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.FilterWKnameSetzenWK("mst");
     // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
     this.komp_id=komp_id;
-    this.anzeigenMstUebersichtService.value=this.value ;this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
+    this.anzeigenMstUebersichtService.value=this.value ;
+    this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.UebersichtAnzeigen=false;

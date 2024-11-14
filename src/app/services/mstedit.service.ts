@@ -190,7 +190,7 @@ async fetchDataFromDbWK(
       letzteAenderung: letzteAenderungFormatted,  // Formatierte Anzeige des Datums
       firma: null,                                // para.id_komp
       jahr: data.jahr,                            // Jahr wird nicht mehr formatiert
-      wert: data.avg_final_wert,                  // da.avg_final_wert
+      wert: data.wert,                  // da.avg_final_wert
       expertenurteil: data.expertenurteil,        // de.expertenurteil
       begruendung: data.begruendung,              // de.begruendung
       ausblenden: null                            // ausblenden der Daten=true
