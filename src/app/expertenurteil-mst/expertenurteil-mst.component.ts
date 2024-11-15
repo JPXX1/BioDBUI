@@ -340,7 +340,7 @@ see_fliess:boolean=false;
         );
         this.BewertungwkUebersichtleer=true;
         this.WKUebersichtAnzeigen=true;
-        console.log('this.BewertungwkUebersicht:', this.BewertungwkUebersicht);
+        // console.log('this.BewertungwkUebersicht:', this.BewertungwkUebersicht);
         // await this.WKbewertungfiltern(selectedWasserkorper, yearTo, yearTo);
       }
      
@@ -426,32 +426,7 @@ selectionCheckbox(){
     // importiert MstBewertungen aller ausgewählter komponenten
     
     this.dbMPUebersichtMst=await this.msteditService.fetchDataFromDb(selectedItems,selectedComponents, yearTo);
-   console.log('this.dbMPUebersichtMst:', this.dbMPUebersichtMst);
-  // console.log('selectedComponents:', selectedComponents);
 
-  
-    //  const selectedComponents = this.form.get('selectedComponents')?.value;
-    // filtert den Array auf ausgewählte Messstellen
-   
-    
-  //   const filteredArray = this.dbMPUebersichtMst.filter(item => {
-  //     const match = selectedComponents.some(selected => Number(selected) === Number(item.idMst));
-  //     if (!match) {
-  //         // console.log(`No match for item id_mst: ${item.idMst}`);
-  //     }
-  //     return match;
-  // });
-  
-  // console.log('Filtered Array:', filteredArray);
-  
-  // Setze das gefilterte Array zurück
-  // this.anzeigenMstUebersichtService.dbMPUebersichtMst = filteredArray;
-  
-  
-    // await this.anzeigenMstUebersichtService.filterMst('','',Number(yearFrom),Number(yearTo));
-     //this.dbMPUebersichtMst=await this.anzeigenMstUebersichtService.dbMPUebersichtMst;
-     //console.log('this.anzeigenMstUebersichtService.dbMPUebersichtMst:', this.anzeigenMstUebersichtService.dbMPUebersichtMst);
-     console.log('this.dbMPUebersichtMst:', this.dbMPUebersichtMst);
     
      
   }

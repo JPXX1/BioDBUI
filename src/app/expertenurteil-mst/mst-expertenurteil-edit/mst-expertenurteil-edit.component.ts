@@ -44,13 +44,20 @@ export class MstExpertenurteilEditComponent implements OnChanges, AfterViewInit 
    
   updateDisplayedColumns() {
     // Beispiel: Bedingung, um bestimmte Spalten optional anzuzeigen
-    this.displayedColumns =  ['wkName', 'namemst', 'jahr',  'wert','expertenurteil','begruendung'];
+    this.displayedColumns =  ['wkName','namemst','jahr','wert','expertenurteil','begruendung'];
      if (this.mstMitExpertenurteil.some(item => item.ausblenden !== null)) {
        this.displayausblenden=false;
      }
-    if (this.mstMitExpertenurteil.some(item => item.letzteAenderung !== null)) {
+   
+  
+
+
+     if (this.mstMitExpertenurteil.some(item => item.letzteAenderung !== null)) {
       this.displayedColumns.push('letzteAenderung');
     }
+
+
+   
     if (this.mstMitExpertenurteil.some(item => item.ausblenden !== null)) {
       this.displayausblenden=true;
     }

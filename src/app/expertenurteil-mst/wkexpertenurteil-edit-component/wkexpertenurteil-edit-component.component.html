@@ -1,0 +1,83 @@
+<div class="mat-elevation-z8 table" translate="no">
+    <mat-table [dataSource]="dataSource" matSort >
+  
+      <!-- WK Name Column -->
+      <ng-container matColumnDef="wkName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > WK Name </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="spalte-wk"> 
+          
+            <input matInput readonly="true" [(ngModel)]="element.wkName">
+          
+        </mat-cell>
+      </ng-container>
+  
+      <!-- NameMST Column -->
+     
+  
+      <!-- Jahr -->
+      <ng-container matColumnDef="jahr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Jahr </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="spalte-jahr">  
+          
+          <input matInput readonly="true" [(ngModel)]="element.jahr" >
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Letzte Änderung -->
+      <ng-container matColumnDef="letzteAenderung">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Letzte Änderung </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="spalte-jahr"> 
+       
+            <input matInput readonly="true" [(ngModel)]="element.letzteAenderung" >
+          
+  
+        </mat-cell>
+      </ng-container>
+  
+     
+  
+      <!-- Wert -->
+      <ng-container matColumnDef="wert">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Bewertung </mat-header-cell>
+        <mat-cell *matCellDef="let element"  class="spalte-wert">
+        
+            <input matInput readonly="true" [(ngModel)]="element.wert" [style.background-color]="getColor(element.wert)" >
+         
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Expertenurteil -->
+      <ng-container matColumnDef="expertenurteil">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Exp.urteil </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="spalte-wert spalte-wert2">
+       
+            <input matInput [(ngModel)]="element.expertenurteil" [style.background-color]="getColor(element.expertenurteil)" >
+     
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Begründung -->
+      <ng-container matColumnDef="begruendung">
+        <mat-header-cell *matHeaderCellDef mat-sort-header > Begründung </mat-header-cell>
+        <mat-cell *matCellDef="let element" class=" spalte-wert2">
+          <textarea #textarea matInput [(ngModel)]="element.begruendung"  rows="1" class="textarea "></textarea>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Aktionen Column -->
+      <ng-container matColumnDef="aktionen">
+        <mat-header-cell *matHeaderCellDef > Aktionen </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-checkbox *ngIf="displayausblenden" [(ngModel)]="element.ausblenden" (change)="onCheckboxChange(element)">
+            ausgeblendet
+          </mat-checkbox>
+          <button mat-button color="primary" (click)="saveElement(element)">Speichern</button>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- Header and Row Declarations -->
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  
+    </mat-table>
+  </div>

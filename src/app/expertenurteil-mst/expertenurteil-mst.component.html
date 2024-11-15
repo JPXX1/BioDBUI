@@ -140,7 +140,7 @@
     <mat-tab label="Wasserkörperbewertung" *ngIf="WKUebersichtAnzeigen == true">
       <div class="card" style="vertical-align: top;">
         <mat-card class="example-card">
-          <app-mst-expertenurteil-edit context="context2" [mstMitExpertenurteil]="BewertungwkUebersicht" *ngIf="BewertungwkUebersichtleer== true"></app-mst-expertenurteil-edit>
+          <app-wkexpertenurteil-edit-component context="context2" [mstMitExpertenurteil]="BewertungwkUebersicht" *ngIf="BewertungwkUebersichtleer== true"></app-wkexpertenurteil-edit-component>
         </mat-card>
       </div>
     </mat-tab>

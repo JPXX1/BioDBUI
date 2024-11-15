@@ -92,6 +92,13 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     strategy: bboxStrategy
   });
 
+  
+  private source_aus_daten_lw_bp2: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=150&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+
+
   private source_lw_bp1: VectorSource = new VectorSource({
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
@@ -527,6 +534,15 @@ mstsee = new Style({
         color: this.getColor('5'),
       }),
     }),
+    '99': new Style({
+      stroke: new Stroke({
+        color: 'black',
+        width: 1,
+      }),
+      fill: new Fill({
+        color: 'grey',
+      }),
+    }),
   };
 
   view_geo_lw_oezk_bp1 = new VectorLayer({
@@ -562,6 +578,10 @@ mstsee = new Style({
    messstellenLayer = new VectorLayer({
     source: this.source_lw_bp3_with_pie,
     style: this.mstDia,  
+  });
+  view_geo_aus_daten_lw_oezk_bp2 = new VectorLayer({
+    source: this.source_aus_daten_lw_bp2,
+    style: (feature) => this.seen[feature.get('Ökz')],
   });
   fliesgewasserLayer = new VectorLayer({
     source: this.sourceFliesgewasserMessstellen,
@@ -716,7 +736,10 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     this.map.removeLayer(this.view_geo_lw_oezk_bp3);
   }
   }
-private toggleSingleBpLayer(checked: boolean, sourceLayer: VectorSource) {
+
+ 
+
+  private toggleSingleBpLayer(checked: boolean, sourceLayer: VectorSource) {
   
   if (checked) {
    
@@ -757,37 +780,7 @@ private clearLegend() {
   }
 }
 
-//   toggleBP(checked: boolean, sourceLayer: any) {
-//     // Aktualisiere den Status
- 
 
-//     if (checked) {
-//         // Layer mit Tortendiagrammen hinzufügen
-//         this.createPieChartLayer(sourceLayer);
-
-//         // Finde das Canvas-Element und hole den 2D-Zeichenkontext (ctx)
-//         const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
-//         const ctx = legendCanvas.getContext('2d');
-
-//         if (ctx) {
-//             // Zeichne das Tortendiagramm auf der Legende
-//             const data = ['1', '2', '3', '4'];
-//             const labels = ['Makrozoobenthos', 'Phytoplankton', 'Diatomeen', 'Makrophyten'];
-//             this.drawQuarterPieChartWithLegend(ctx, data, labels, 110, 80);  // Zeichne das Diagramm in die Mitte des Canvas
-//         }
-//     } else {
-//         // Layer mit Tortendiagrammen entfernen
-//         this.removePieChartLayer();
-//         this.map.removeLayer(this.messstellenLayer);
-
-//         // Verstecke die Legende und lösche den Canvas-Inhalt
-//         const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
-//         const ctx = legendCanvas.getContext('2d');
-//         if (ctx) {
-//             ctx.clearRect(0, 0, legendCanvas.width, legendCanvas.height);  // Lösche den Canvas-Inhalt
-//         }
-//     }
-// }
   // Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
   ersterBP(checked: boolean) {
   
@@ -798,7 +791,8 @@ private clearLegend() {
     this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
   }
   zweiterBP(checked: boolean) {
-    
+    this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp2);
+    this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp2);
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = checked;
     this.isDritterBPChecked = false;

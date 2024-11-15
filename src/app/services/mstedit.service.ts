@@ -155,16 +155,33 @@ async fetchDataFromDbWK(
       if (isNaN(expertenurteilChangedDate.getTime())) {
         expertenurteilChangedDate = null;
       }
+    }else if(data.letzte_aenderung){
+      // String in Tag, Monat und Jahr zerlegen
+      const [day, month, year] = data.letzte_aenderung.split('.').map(Number);
+      
+      // Jahr anpassen (wenn es nur zweistellig ist, wird es zu 2024 oder 1924 interpretiert)
+      const fullYear = year < 50 ? 2000 + year : 1900 + year;
+      
+      // Neues Date-Objekt erstellen
+      expertenurteilChangedDate = new Date(fullYear, month - 1, day);
     }
 
     // Verarbeite data.letzteAenderung, wenn expertenurteilChangedDate null ist
     let letzteAenderungDate: Date | null = expertenurteilChangedDate;
-    if (!expertenurteilChangedDate && data.letzteAenderung) {
+    if (!expertenurteilChangedDate &&(data.letzteAenderung || data.letzte_aenderung)) {
+
+      if(data.letzte_aenderung && typeof data.letzte_aenderung === "string"){
+          // Parsen des Strings 'DD.MM.YY'
+      const [day, month, year] = data.letzteAenderung.split('.');
+      const parsedYear = parseInt(year, 10) + 2000; // Umwandlung von 'YY' zu 'YYYY'
+      letzteAenderungDate = new Date(`${parsedYear}-${month}-${day}`);
+      }else if(data.letzte_aenderung ){
+      
       // Parsen des Strings 'DD.MM.YY'
       const [day, month, year] = data.letzteAenderung.split('.');
       const parsedYear = parseInt(year, 10) + 2000; // Umwandlung von 'YY' zu 'YYYY'
       letzteAenderungDate = new Date(`${parsedYear}-${month}-${day}`);
-
+    }
       if (isNaN(letzteAenderungDate.getTime())) {
         letzteAenderungDate = null;
       }
@@ -179,7 +196,7 @@ async fetchDataFromDbWK(
       return `${day}.${month}.${year}`;
     };
 
-    const letzteAenderungFormatted = formatDateTime(letzteAenderungDate); // Hier neu definiert
+    const letzteAenderungFormatted = formatDateTime(letzteAenderungDate) ?? ""; // Hier neu definiert
 
     return {
       wkName: data.wk_name,                        // wk.wk_name

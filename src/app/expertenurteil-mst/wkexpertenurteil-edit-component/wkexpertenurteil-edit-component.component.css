@@ -1,0 +1,19 @@
+input.matInput {
+    height: 100%;
+    width: 100%;           /* Input passt sich an die Höhe der Zelle an */
+    box-sizing: border-box;  /* Padding und Border in die Höhe einbeziehen */
+  }
+  
+  textarea[matInput] {
+    width: 100%;  /* Setzt die Breite auf 100% der Zelle */
+    height: 100%; /* Setzt die Höhe dynamisch basierend auf dem Inhalt */
+    min-height: 45px; /* Minimalhöhe, um sicherzustellen, dass das Textarea sichtbar ist */
+    box-sizing: border-box; /* Stellt sicher, dass Padding und Border innerhalb der Dimensionen des Textarea sind */
+    border: 1px solid #ccc; /* Gibt dem Textarea eine feine Grenze für bessere Sichtbarkeit */
+    padding: 0px; /* Gibt Innenabstand, um den Text von den Rändern fernzuhalten */
+    resize: none; /* Verhindert, dass der Benutzer die Größe des Textarea ändert */
+    overflow: hidden; /* Verhindert Scrollbalken, lässt den Inhalt dynamisch die Höhe anpassen */
+  }
+  .spalte-wert2{
+    background-color: aliceblue;
+  }

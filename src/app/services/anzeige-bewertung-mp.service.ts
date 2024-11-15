@@ -35,7 +35,7 @@ public value:string;
     return this.httpClient.get(`${this.apiUrl}/bwMstAbundanzen`, {params});
  }
  async callBwMstTaxa(komp:number) {
- 
+ this.dbBewertungMst = [];
   await this.getBwMstTaxa(komp).forEach(formen_ => {
     this.dbBewertungMst = formen_;
    

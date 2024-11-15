@@ -5,7 +5,7 @@
 //   };
 export const environment = {
   production: true,
-  apiUrl: 'https://api.senstadt.verwaltung-berlin.de/api'  // URL der API in der Produktionsumgebung
+  apiUrl: 'https://senstadt.verwaltung-berlin.de:3000/api'  // URL der API in der Produktionsumgebung
 };
 
   // export const environmentgeo = {
@@ -14,5 +14,5 @@ export const environment = {
   // };
   export const environmentgeo = {
     production: true,
-    geoserverUrl: 'https://geo.senstadt.verwaltung-berlin.de/geoserver'  // Verwenden des FQDN anstelle der IP-Adresse
+    geoserverUrl: 'https://senstadt.verwaltung-berlin.de:8080/geoserver'  // Verwenden des FQDN anstelle der IP-Adresse
   };

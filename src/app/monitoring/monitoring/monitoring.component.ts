@@ -92,6 +92,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
 	}}
   clearSearchFilter(){
     this.value='';
+
     if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
  
   {
@@ -118,6 +119,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
       if (this.anzeigeBewertungService.getBwWKUebersichtAusMst.length=== 0){this.handleUebersichtWKausMst();}
 
     }
+    else{this.onValueChangeFilter('','');}
     }
 
 
@@ -183,8 +185,8 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
   //   this.min = min;
   //   this.max=max;
     if (ausGUI===true){
-      
-      this.filtertaxadaten(this.komp_id);
+      this.onValueChangeFilter(value,Artvalue); 
+      // this.filtertaxadaten(this.komp_id);
       // 
       }else {this.onValueChangeFilter(value,Artvalue); }
     // this.minold=min;
@@ -439,6 +441,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
+    this.PhythoplanktonAnzeige=false;
     this.UebersichtAnzeigen=false;
     this.UebersichtWKausMstAnzeigen=false;
     await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id);

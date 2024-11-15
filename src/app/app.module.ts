@@ -12,6 +12,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 
+
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';
@@ -69,7 +70,7 @@ import { CustomSnackbarComponent } from './custom-snackbar/custom-snackbar.compo
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MapVBSelectionDialogComponent } from './map-vbselection-dialog/map-vbselection-dialog.component';
 import { ExpertenurteilMstComponent } from './expertenurteil-mst/expertenurteil-mst.component';
-import { MstExpertenurteilEditComponent } from './mst-expertenurteil-edit/mst-expertenurteil-edit.component';
+import { MstExpertenurteilEditComponent } from './expertenurteil-mst/mst-expertenurteil-edit/mst-expertenurteil-edit.component';
 import { EinzeldatephytoplanktonComponent } from './file-upload/einzeldatenimport_phytoplakton/einzeldatephytoplankton/einzeldatephytoplankton.component';
 import { UserManagementComponent } from './auth/user-management/user-management.component';
 import { EditUserDialogComponent } from './auth/edit-user-dialog/edit-user-dialog.component';
@@ -80,6 +81,7 @@ import { ConfirmDialogComponent } from './file-upload/confirm-dialog/confirm-dia
 import { CenterButtonComponent } from './map/center-button/center-button.component';
 import { StartComponent } from './auth/start/start.component';
 import { DataAbiotikTableComponentComponent } from './file-upload/data-abiotik-table-component/data-abiotik-table-component.component';
+import { WKExpertenurteilEditComponent } from './expertenurteil-mst/wkexpertenurteil-edit-component/wkexpertenurteil-edit-component.component';
 
 
 // StammWkComponent
@@ -124,11 +126,11 @@ const routes: Routes = [
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
-declarations: [ 
+declarations: [ WKExpertenurteilEditComponent,
 	AppComponent, SelectUebersichtImportComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
 	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
-	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent,
+	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent
 ], 
 imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
