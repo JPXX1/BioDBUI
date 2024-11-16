@@ -91,14 +91,32 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
       `${this.geoserverUrl}/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_landesgrenze&outputFormat=application%2Fjson&srsname=EPSG:3857&bbox=${extent.join(',')},EPSG:3857`,
     strategy: bboxStrategy
   });
-
-  
+  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=50&outputFormat=application%2Fjson
+  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=50&outputFormat=application%2Fjson
   private source_aus_daten_lw_bp2: VectorSource = new VectorSource({
-    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=150&outputFormat=application%2Fjson`,
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=250&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
   });
-
-
+  private source_aus_daten_lw_bp3: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp3&maxFeatures=250&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  private source_aus_daten_lw_bp4: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp4&maxFeatures=250&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  private source_aus_daten_rw_bp2: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_rw_bp2&maxFeatures=250&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  private source_aus_daten_rw_bp3: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_rw_bp3&maxFeatures=250&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
+  private source_aus_daten_rw_bp4: VectorSource = new VectorSource({
+    url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_rw_bp4&maxFeatures=250&outputFormat=application%2Fjson`,
+    format: new GeoJSON(),
+  });
   private source_lw_bp1: VectorSource = new VectorSource({
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_geo_lw_oezk_bp1&maxFeatures=50&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
@@ -486,8 +504,14 @@ mstsee = new Style({
         width: 4,
       }),
     }),
+    '99': new Style({
+      stroke: new Stroke({
+        color: 'grey',
+        width: 4,
+      }),
+    }),
   };
-
+ 
   seen = {
     '1': new Style({
       stroke: new Stroke({
@@ -579,9 +603,35 @@ mstsee = new Style({
     source: this.source_lw_bp3_with_pie,
     style: this.mstDia,  
   });
+  
+
+ 
+  
   view_geo_aus_daten_lw_oezk_bp2 = new VectorLayer({
     source: this.source_aus_daten_lw_bp2,
-    style: (feature) => this.seen[feature.get('Ökz')],
+    style: (feature) => this.seen[feature.get('OEZK')],
+  });
+  view_geo_aus_daten_lw_oezk_bp3 = new VectorLayer({
+    source: this.source_aus_daten_lw_bp3,
+    style: (feature) => this.seen[feature.get('OEZK')],
+  });
+  view_geo_aus_daten_lw_oezk_bp4 = new VectorLayer({
+    source: this.source_aus_daten_lw_bp4,
+    style: (feature) => this.seen[feature.get('OEZK')],
+  });
+
+
+  view_geo_aus_daten_rw_oezk_bp2 = new VectorLayer({
+    source: this.source_aus_daten_rw_bp2,
+    style: (feature) => this.fgw[feature.get('OEZK')],
+  });
+  view_geo_aus_daten_rw_oezk_bp3 = new VectorLayer({
+    source: this.source_aus_daten_rw_bp3,
+    style: (feature) => this.fgw[feature.get('OEZK')],
+  });
+  view_geo_aus_daten_rw_oezk_bp4 = new VectorLayer({
+    source: this.source_aus_daten_rw_bp4,
+    style: (feature) => this.fgw[feature.get('OEZK')],
   });
   fliesgewasserLayer = new VectorLayer({
     source: this.sourceFliesgewasserMessstellen,
@@ -704,6 +754,8 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
 
   startbp2(checked: boolean) {
     if (checked){
+
+     
     this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_wk_oezk_bp1);
     this.map.addLayer(this.view_geo_wk_oezk_bp2);
@@ -791,17 +843,32 @@ private clearLegend() {
     this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
   }
   zweiterBP(checked: boolean) {
-    this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp2);
-    this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp2);
+    
+    this.removeallbp();
+   
+    
+    if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp2);
+    this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp2);}
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = checked;
     this.isDritterBPChecked = false;
     this.isVierterBPChecked = false;
+    //this.map.addLayer(this.view_geo_wk_oezk_bp3);
     this.toggleSingleBpLayer(checked, this.source_lw_bp2_with_pie);
   }
-  
+  removeallbp(){
+    this.map.removeLayer(this.view_geo_aus_daten_rw_oezk_bp2);
+    this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp2);
+    this.map.removeLayer(this.view_geo_aus_daten_rw_oezk_bp3);
+    this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp3);
+    this.map.removeLayer(this.view_geo_aus_daten_rw_oezk_bp4);
+    this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp4);
+  }
   dritterBP(checked: boolean) {
-  
+    this.removeallbp();
+    if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp3);
+      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp3);}
+
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = false;
     this.isDritterBPChecked = checked;
@@ -810,7 +877,9 @@ private clearLegend() {
   }
   
   vierterBP(checked: boolean) {
-    
+    this.removeallbp();
+    if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp4);
+      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp4);}
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = false;
     this.isDritterBPChecked = false;
