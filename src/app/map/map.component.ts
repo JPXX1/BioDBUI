@@ -49,6 +49,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     private activeBpPieLayer: VectorLayer | null = null;
   messstellenFilter: string = '';  // Speichert den aktuellen Filtertext
   map: Map;
+  
   coordinate;
   options: String;
   verbreitung_text:string='';
@@ -611,6 +612,7 @@ mstsee = new Style({
     source: this.source_aus_daten_lw_bp2,
     style: (feature) => this.seen[feature.get('OEZK')],
   });
+  
   view_geo_aus_daten_lw_oezk_bp3 = new VectorLayer({
     source: this.source_aus_daten_lw_bp3,
     style: (feature) => this.seen[feature.get('OEZK')],
@@ -843,7 +845,8 @@ private clearLegend() {
     this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
   }
   zweiterBP(checked: boolean) {
-    
+    this.view_geo_aus_daten_lw_oezk_bp2.set('name', 'view_geo_aus_daten_lw_oezk_bp2');
+    this.view_geo_aus_daten_rw_oezk_bp2.set('name', 'view_geo_aus_daten_rw_oezk_bp2');
     this.removeallbp();
    
     
@@ -865,6 +868,8 @@ private clearLegend() {
     this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp4);
   }
   dritterBP(checked: boolean) {
+    this.view_geo_aus_daten_lw_oezk_bp3.set('name', 'view_geo_aus_daten_lw_oezk_bp3');
+    this.view_geo_aus_daten_rw_oezk_bp3.set('name', 'view_geo_aus_daten_rw_oezk_bp3');
     this.removeallbp();
     if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp3);
       this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp3);}
@@ -877,6 +882,8 @@ private clearLegend() {
   }
   
   vierterBP(checked: boolean) {
+    this.view_geo_aus_daten_lw_oezk_bp4.set('name', 'view_geo_aus_daten_lw_oezk_bp4');
+    this.view_geo_aus_daten_rw_oezk_bp4.set('name', 'view_geo_aus_daten_rw_oezk_bp4');
     this.removeallbp();
     if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp4);
       this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp4);}
@@ -1033,10 +1040,12 @@ const landesgrenzeLayer = new VectorLayer({
     });
 
     let selected = null;
+    let activeLayer = null; // Variable, um den aktiven Layer zu speichern
     this.map.on('pointermove', function (e) {
       if (selected !== null) {
         selected.setStyle(undefined);
         selected = null;
+        activeLayer = null; // Setze den aktiven Layer zurück
       }
 
       this.forEachFeatureAtPixel(e.pixel, function (f, layer) {
@@ -1045,18 +1054,31 @@ const landesgrenzeLayer = new VectorLayer({
           return false; // Beende die Verarbeitung für Landesgrenzen-Features
         }
         selected = f;
+        activeLayer = layer; // Speichere den aktiven Layer
         selectStyle.getFill().setColor(f.get('COLOR') || '#eeeeee');
         f.setStyle(selectStyle);
         return true;
       });
       container.innerHTML = '';
       if (selected) {
+        const layerName = activeLayer ? activeLayer.get('name') : 'Unbekannt';
         let wkName = selected.get('wk_name');
         let jahr = selected.get('jahr');
         let oekz = selected.get('Ökz');
         let namemst = selected.get('namemst');
+        let zeitraum = '';
+         // Logik zur Bestimmung des Zeitraums
+    if (layerName!==undefined) {if (layerName.endsWith('4')) {
       
-        if (!namemst) {
+      zeitraum = '2021-2026';
+    } else if (layerName.endsWith('3')) {
+      zeitraum = '2015-2020';
+    } else if (layerName.endsWith('2')) {
+      zeitraum = '2005-2014';
+    } else {
+      zeitraum = 'Unbekannter Zeitraum';
+    }}
+          if(oekz!==undefined && jahr!==undefined){
           container.innerHTML =
             wkName +
             ' (' +
@@ -1075,10 +1097,14 @@ const landesgrenzeLayer = new VectorLayer({
             selected.get('Ökz_qk_mzb') +
             '</td> <td align=center>' +
             selected.get('Ökz_qk_f') +
-            '</td></tr></table/';
-        } else if (namemst) {
+            '</td></tr></table/';}
+         else if (namemst!==undefined) {
           container.innerHTML =
             namemst
+           
+        }else if (wkName!==undefined) {
+          container.innerHTML =
+          wkName + '; Untersuchungszeitraum: ' + zeitraum;
            
         } else {
           container.innerHTML = 'Keine Daten verfügbar';

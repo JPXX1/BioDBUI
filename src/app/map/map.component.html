@@ -37,22 +37,22 @@
     </mat-menu>
     
     <button mat-button id="bwmstButton" [matMenuTriggerFor]="mstb" class="helpable button" style="margin-right: 20px;">
-      Bewertung der Messstellen
+      Ergebnisse aus dem Monitoring
     </button>
     <mat-menu #mstb="matMenu" xPosition="after" [style.width.px]="900">
       <mat-checkbox [(ngModel)]="isVierterBPChecked"    (click)="$event.stopPropagation();vierterBP(isVierterBPChecked)">
-        <span class="custom-checkbox-label">Messstellen (2026-2021)</span>
+        <span class="custom-checkbox-label">Ökolgoischer Zustand (2021-2026)</span>
  
       </mat-checkbox>
       <mat-checkbox [(ngModel)]="isDritterBPChecked"  class="custom-checkbox wide-label"  (click)="$event.stopPropagation();dritterBP(isDritterBPChecked)">
-        <span class="custom-checkbox-label">Messstellen (2020 - 2015)</span>
+        <span class="custom-checkbox-label">Ökolgoischer Zustand (2015 - 2020)</span>
         
       </mat-checkbox>
       <mat-checkbox [(ngModel)]="isZweiterBPChecked"  class="custom-checkbox wide-label"  (click)="$event.stopPropagation();zweiterBP(isZweiterBPChecked)">
-        <span class="custom-checkbox-label">Messstellen (2014 - 2005)</span>
+        <span class="custom-checkbox-label">Ökolgoischer Zustand (2005 - 2014)</span>
       </mat-checkbox>
       <mat-checkbox [(ngModel)]="isErsterBPChecked" class="custom-checkbox wide-label"  (click)="$event.stopPropagation();ersterBP(isErsterBPChecked)">
-        <span class="custom-checkbox-label">Messstellen (vor 2005)</span>
+        <span class="custom-checkbox-label">Ökolgoischer Zustand (vor 2005)</span>
       </mat-checkbox>
 
     </mat-menu>
