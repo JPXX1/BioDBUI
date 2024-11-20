@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'; 
+import { NgModule,ErrorHandler } from '@angular/core'; 
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
  import { BrowserModule } from '@angular/platform-browser'; 
  import {MatToolbarModule} from '@angular/material/toolbar'; 
@@ -82,7 +82,7 @@ import { CenterButtonComponent } from './map/center-button/center-button.compone
 import { StartComponent } from './auth/start/start.component';
 import { DataAbiotikTableComponentComponent } from './file-upload/data-abiotik-table-component/data-abiotik-table-component.component';
 import { WKExpertenurteilEditComponent } from './expertenurteil-mst/wkexpertenurteil-edit-component/wkexpertenurteil-edit-component.component';
-
+import { GlobalErrorHandler } from './global-error-handler.service';
 
 // StammWkComponent
 
@@ -126,8 +126,8 @@ const routes: Routes = [
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
-declarations: [ WKExpertenurteilEditComponent,
-	AppComponent, SelectUebersichtImportComponent,
+declarations: [ WKExpertenurteilEditComponent,SelectjahrComponent,
+	AppComponent, SelectUebersichtImportComponent,EditStammdatenMstComponent,StammWkComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
 	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
 	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent
@@ -137,8 +137,9 @@ imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonTogg
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatDialogModule,MatTabsModule,
 ], 
-providers: [SelectjahrComponent,StammMessstellenComponent,EditStammdatenMstComponent,StammWkComponent], 
-bootstrap: [AppComponent] 
-}) 
-
+providers: [
+    { provide: ErrorHandler, useClass: GlobalErrorHandler } // Nur Services in 'providers'
+  ],
+  bootstrap: [AppComponent]
+})
 export class AppModule { } 

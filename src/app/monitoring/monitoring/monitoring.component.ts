@@ -18,7 +18,7 @@ import { HelpService } from 'src/app/services/help.service';
   templateUrl: './monitoring.component.html',
   styleUrls: ['./monitoring.component.css']
 })
-export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecked{
+export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewChecked{
  anzeigeTaxadaten:boolean=false;
   isHelpActive: boolean = false;
   FilterwkUebersicht: WkUebersicht[] = [];
@@ -86,8 +86,7 @@ export class MonitoringComponent implements OnInit,AfterViewInit,AfterViewChecke
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
     this.onValueChangeFilter( '','');
-    // Hier () verwenden, um die Methode auszuführen
-    
+
     
 	}}
   clearSearchFilter(){

@@ -56,6 +56,21 @@ bwMstAbundanzenImportID(komp:number) {
   
   return this.httpClient.get(`${this.apiUrl}/bwMstAbundanzenImportID`, {params});
 }
+/**
+ * Filtert und gibt ein Array von MstMakrophyten basierend auf den angegebenen Parametern zurück.
+ *
+ * @param {number} komp - Der Komponententyp zum Filtern.
+ *                        0: Gibt das ursprüngliche mstMakrophyten-Array zurück.
+ *                        1: Filtert mit Taxa_MP.
+ *                        2: Filtert mit Taxa_Dia.
+ *                        3: Filtert mit Taxa_MZB.
+ *                        5: Filtert mit Taxa_Phyto.
+ * @param {string} FilterMst - Der anzuwendende Filterstring.
+ * @param {string} art - Der Typ der Art zum Filtern.
+ * @param {number} min - Der Mindestwert für den Filter.
+ * @param {number} max - Der Höchstwert für den Filter.
+ * @returns {MstMakrophyten[]} - Das gefilterte Array von MstMakrophyten.
+ */
 FilterRichtigesArray(komp: number, FilterMst: string, art: string, min: number, max: number): MstMakrophyten[] {
   switch (komp) {
       case 0:

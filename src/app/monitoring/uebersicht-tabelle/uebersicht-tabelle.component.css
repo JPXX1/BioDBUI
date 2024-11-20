@@ -51,7 +51,7 @@ table {
   .sticky-header {
     width: 100%;
     overflow: auto;
-    height: 400px; /* Adjust the height as needed */
+    /* height: 400px; Adjust the height as needed */
   }
   
   .sticky-header th {
@@ -62,10 +62,4 @@ table {
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
   }
   
-  .sticky-header th.header-table-wk {
-    /* Add specific styles for your header cells if needed */
-  }
   
-  .sticky-header th.header-table-jahr {
-    /* Add specific styles for your header cells if needed */
-  }

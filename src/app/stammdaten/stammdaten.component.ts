@@ -28,8 +28,8 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
     // private commentService: CommentService, 
     private snackBar: MatSnackBar,
     private stammdatenService:StammdatenService,
-    private stammMessstellenComponent:StammMessstellenComponent,
-    private stammWkComponent:StammWkComponent
+    // private stammMessstellenComponent:StammMessstellenComponent,
+    // private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
   TypWrrlAnzeige:boolean=false;
   isHelpActive: boolean = false;
@@ -92,7 +92,7 @@ async new(){
     this.stammdatenService.neueMst(this.seefliess).subscribe({
       next: async (newMessstelle) => {
         this.messstellenStam1 = this.stammdatenService.messstellenarray;
-        await this.stammMessstellenComponent.edit(newMessstelle);
+        await this.stammMessstellenComponent1.edit(newMessstelle);
       },
       error: (error) => {
         console.error('Error creating new Messstelle:', error);
