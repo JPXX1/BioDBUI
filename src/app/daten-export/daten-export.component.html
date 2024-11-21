@@ -1,10 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="datenexport-form">
+<form [formGroup]="form"  class="datenexport-form">
   <div class="form-container">
     <div class="form-column">
       <div class="form-field" class="helpable" id ="auswahl-mst-wk">
         <mat-form-field appearance="fill"  class="form-field">
           <mat-label>Messstellen oder Wasserkörper auswählen</mat-label>
-          <mat-select formControlName="dropdownSelection">
+          <mat-select formControlName="dropdownSelection" (selectionChange)="onDropdownWkMstChange($event)">
             <mat-option value="messstellen">Messstellen</mat-option>
             <mat-option value="wasserkorper">Wasserkörper</mat-option>
           </mat-select>
@@ -18,7 +18,6 @@
             <mat-radio-button value="see">Seen</mat-radio-button>
           </mat-radio-group>
         </div>
-
         <div class="form-field expanded" >
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Messstellen</mat-label>
@@ -26,7 +25,10 @@
               <ng-container *ngIf="isMessstellenOpen">
                 <div class="select-buttons">
                   <mat-checkbox [checked]="allMessstellenSelected" (change)="toggleAllMessstellen($event.checked)">
-                    Wähle alle
+                    wähle alle angezeigten
+                  </mat-checkbox>
+                  <mat-checkbox [checked]="repraesentativeSelected" (change)="toggleAllRepraesented($event.checked)">
+                    repräsentative Mst
                   </mat-checkbox>
                 </div>
                 <mat-form-field appearance="fill" class="filter-field">
@@ -55,7 +57,7 @@
               <ng-container *ngIf="isWasserkorperOpen">
                 <div class="select-buttons">
                   <mat-checkbox [checked]="allWasserkorperSelected" (change)="toggleAllWasserkorper($event.checked)">
-                    Wähle alle
+                    Wähle alle angezeigten
                   </mat-checkbox>
                 </div>
                 <mat-form-field appearance="fill" class="filter-field">
@@ -108,10 +110,16 @@
         </mat-button-toggle-group>
       </div>
 
-  
+     
 
       <div class="button-container" style="margin-top:70px;">
-        <button mat-raised-button color="primary" type="submit" class="helpable" id="btn-daten-abfragen">Daten Abfragen</button>
+        <mat-progress-spinner
+  color="primary"
+  mode="indeterminate"
+  diameter="5"  *ngIf="isLoading">
+</mat-progress-spinner>
+
+        <button mat-raised-button color="primary"  class="helpable" id="btn-daten-abfragen" (click)="onButtonClick()">Daten Abfragen</button>
         <button mat-raised-button color="primary" type="button" (click)="exportToExcel($event)" class="helpable" id="btn-daten-exportieren">Exportiere in eine Exceldatei</button>
       </div>
     </div>

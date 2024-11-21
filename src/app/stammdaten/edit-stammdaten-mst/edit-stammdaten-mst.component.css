@@ -1,13 +1,27 @@
-.sticky-header {
-    width: 100%;
-    overflow: auto;
-    height: 400px; /* Adjust the height as needed */
-  }
+
+ 
   
-  .sticky-header th {
-    position: sticky;
-    top: 80px;
-    z-index: 2;
-    background: white; /* Ensure the header background is white for better visibility */
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
+  form {
+    display: flex;
+    flex-direction: column;
   }
+  /* Verkleinern der Schriftgröße und Zeilenhöhe um ca. 10% */
+mat-dialog-content {
+  font-size: 0.9em; /* Verkleinert die Schriftgröße um 10% */
+  line-height: 1.1; /* Verkleinert die Zeilenhöhe */
+}
+
+mat-form-field {
+  font-size: 0.8em; /* Verkleinert die Schriftgröße innerhalb der Form-Felder */
+  margin-bottom: 5px;
+  height: 5px;
+
+}
+
+mat-label, mat-checkbox, mat-button-toggle-group, ng-multiselect-dropdown {
+  font-size: 0.9em; /* Verkleinert die Schriftgröße für Labels, Checkboxen und Dropdowns */
+}/* Setzen des vertikalen Abstands zwischen mat-form-field-Elementen auf maximal 10px */
+
+.mt-5 {
+  margin-top: 2px; /* Setzen des oberen Abstands auf 10px */
+}

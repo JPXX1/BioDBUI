@@ -1,10 +1,10 @@
 <div class="map-container">
-  <div id="ol-map" class="map-container" style="margin-top: 5%; margin-bottom: 5%; width: 100%; height: 84%;">
+  <div id="ol-map" class="map-container" style="margin-top: 100px; margin-bottom: 5%; width: 100%; height: 84%;">
     <div id="popup" class="popup"></div>
     <label id="mapLabel" class="map-label">{{ verbreitung_text }}</label>
   </div>
   <!-- Füge hier den Zentrieren-Button ein -->
-  <app-center-button [map]="map"></app-center-button>
+  <app-center-button [map]="map" style="margin-top:17px"></app-center-button>
  
   <div class="legend">
     <h3>Legende</h3>
@@ -17,7 +17,7 @@
   </div>
 
   
-  <div style="margin-left: 200px; display: flex; align-items: center;">
+  <div style="margin-left: 200px; display: flex; align-items: center;margin-top:40px">
     <button mat-button id="kartButton" [matMenuTriggerFor]="karten" class="helpable button" style="margin-right: 20px;">
       Bericht-EU
     </button>

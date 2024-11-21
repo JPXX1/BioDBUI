@@ -20,3 +20,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden !important;
   max-width: none !important;
 }
+.dialog-centered {
+  position: fixed;
+  top: 20px; /* Offset oben, optional */
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* Verhindern Sie das Überlaufen und setzen Sie die Höhe des Dialogs */
+.mat-dialog-container {
+  overflow: hidden;
+  height: auto;
+}
+
+mat-dialog-content {
+  overflow: hidden;
+  height: auto;
+}

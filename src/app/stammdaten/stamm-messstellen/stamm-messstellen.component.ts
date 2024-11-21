@@ -73,50 +73,50 @@ arraybuendel:ArraybuendelSel;
       gewaesser: gewaesser,
     };
   
-    const OFFSET_TOP = -1320; // Offset in Pixeln
+    const OFFSET_TOP = 20; // Offset in Pixeln
+    const DIALOG_WIDTH = 800; // Breite des Dialogs
+    const DIALOG_HEIGHT = 1000; // Höhe des Dialogs
   
     let leftPosition = 0;
     let topPosition = 0;
   
-    // Position basierend auf Event berechnen, falls verfügbar
     if (event) {
+      // Position basierend auf Event berechnen
       const targetElement = event.currentTarget as HTMLElement;
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        const dialogWidth = 800; // Breite des Dialogs
-        const dialogHeight = 400; // Höhe des Dialogs
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
   
-        leftPosition = rect.left + rect.width / 2 - dialogWidth / 2;
-        if (leftPosition < 0) {
-          leftPosition = 0;
-        } else if (leftPosition + dialogWidth > viewportWidth) {
-          leftPosition = viewportWidth - dialogWidth;
-        }
+        // Horizontale Zentrierung
+        leftPosition = (viewportWidth - DIALOG_WIDTH) / 2;
   
+        // Vertikale Position mit Offset
         topPosition = rect.top + rect.height + OFFSET_TOP;
-        if (topPosition + dialogHeight > viewportHeight) {
-          topPosition = rect.top - dialogHeight - OFFSET_TOP;
+  
+        // Falls der Dialog aus dem unteren Bereich rutscht
+        if (topPosition + DIALOG_HEIGHT > viewportHeight) {
+          topPosition = rect.top - DIALOG_HEIGHT - OFFSET_TOP;
+  
+          // Sicherstellen, dass der Dialog nicht außerhalb des oberen Bereichs liegt
           if (topPosition < 0) {
-            topPosition = OFFSET_TOP; // Mindestabstand von oben
+            topPosition = OFFSET_TOP;
           }
         }
       }
     } else {
-      // Fallback: Zentriert im Bildschirm mit Offset
-      const dialogWidth = 800;
-      const dialogHeight = 400;
+      // Fallback: Zentriert im Bildschirm
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
   
-      leftPosition = (viewportWidth - dialogWidth) / 2;
-      topPosition = (viewportHeight - dialogHeight) / 2 + OFFSET_TOP;
+      leftPosition = (viewportWidth - DIALOG_WIDTH) / 2;
+      topPosition = (viewportHeight - DIALOG_HEIGHT) / 2 + OFFSET_TOP;
     }
   
     // Dialog öffnen
     const dialogRef = this.dialog.open(EditStammdatenMstComponent, {
-      width: `800px`,
+      width: `${DIALOG_WIDTH}px`,
+      height: `${DIALOG_HEIGHT}px`,
       data: this.arraybuendel,
       position: {
         top: `${topPosition}px`,
@@ -131,6 +131,7 @@ arraybuendel:ArraybuendelSel;
       }
     });
   }
+  
   
   
   

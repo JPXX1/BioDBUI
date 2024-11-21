@@ -26,12 +26,15 @@ import { AuthService } from '../auth/auth.service';
 export class DatenExportComponent implements OnInit,AfterViewInit  {
   items = [];
   public props: any[]=[];
+  buttonClicked: boolean = false; // Um zu verfolgen, ob der Button geklickt wurde
   BewertungwkUebersicht: WkUebersicht[] = [];
   BewertungwkUebersichtleer:boolean=false;
   WKUebersichtAnzeigen=false;
   BewertungenMstAnzeige=false;
+  isLoading = true;
   mstMakrophyten: MstMakrophyten[] = []; // TaxaMP
   ArtenAnzeige = false;
+  repraesentativeSelected=false;
   messstellen = [];
   wasserkorper = [];
   filteredMessstellen = [];
@@ -76,6 +79,63 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
     this.waterBodyTypeControl.valueChanges.subscribe(() => this.filterWaterBodies());
     this.componentTypeControl.valueChanges.subscribe(() => this.onToggleChange()); // Subscribe to value changes
   }
+
+  async onDropdownWkMstChange(event: any) {
+    console.log('Auswahl geändert:', event.value);
+    
+    // Hier kannst du zusätzliche Logik hinzufügen, die ausgeführt wird, wenn die Auswahl geändert wird.
+    if (event.value === 'messstellen') {
+      await this.loadMessstellenData();
+      console.log('Messstellen wurden ausgewählt');
+    } else if (event.value === 'wasserkorper') {
+      console.log('Wasserkörper wurden ausgewählt');
+      await this.loadWasserkorperData()
+    }
+  }
+  selectionCheckbox(){
+    if (this.buttonClicked !== true){
+     this.filterWasserkorper('');
+      this.filterMessstellen('');
+    this.messstellenFilterControl.setValue('');
+    this.wasserkorperFilterControl.setValue('');
+   this.allMessstellenSelected=false;
+    this.allWasserkorperSelected=false;
+    this.repraesentativeSelected=false;}
+   }
+   toggleAllRepraesented(isChecked: boolean): void {
+    let see:boolean=true;
+     this.selectionCheckbox();
+     const messstellenType = this.messstellenTypeControl.value;
+    
+     if (messstellenType === 'fluss') {
+    see=false}
+     this.repraesentativeSelected = isChecked;
+   
+     // Definiere die ausgewählten Komponenten basierend auf dem Wert von isChecked
+     let selectedComponents;
+     
+     if (isChecked) {
+       // Wenn isChecked true ist, filtere nur Objekte mit repraesent = true
+       selectedComponents = this.messstellen.filter(m => m.repraesent === true && m.see===see);
+       this.filteredMessstellen = selectedComponents;
+       // Wenn isChecked true ist, führe toggleAllMessstellen(true) aus
+       //this.toggleAllMessstellen(isChecked);
+     } else {
+       // Wenn isChecked false ist, führe die Funktion filterMessstellenType aus und verwende this.messstellen
+       this.filterMessstellenType();  // Ausführen der Funktion
+       selectedComponents =  this.filteredMessstellen;
+      // this.toggleAllMessstellen(isChecked);
+     }
+   
+     // Setze den Wert des Formularfelds "selectedComponents" mit den gefilterten Daten
+     this.form.get('selectedComponents').setValue(selectedComponents);
+   
+     // Aktualisiere die gefilterten Messstellen
+     this.filteredMessstellen = selectedComponents;
+   
+     // Ausgabe zur Überprüfung
+     console.log(selectedComponents);
+   }
 	  // löst das mousover für die Hilfe aus
 	  ngAfterViewInit() {
 	
@@ -151,7 +211,6 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
   onWasserkorperClose() {
     this.isWasserkorperOpen = false;
   }
-
   filterMessstellen(filterValue: string) {
     const selectedMessstellenIds = this.form.get('selectedComponents')?.value || [];
     const selectedMessstellen = this.filteredMessstellen.filter(m => selectedMessstellenIds.includes(m.id_mst));
@@ -161,7 +220,7 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
     );
 
     if (!filterValue) {
-      this.filteredMessstellen = [... this.messstellen];
+      //this.filteredMessstellen = [... this.messstellen];
     } else {
       this.filteredMessstellen = Array.from(new Set([...selectedMessstellen, ...filteredMessstellen]));
     }
@@ -193,7 +252,9 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
   }
 
   filterMessstellenType() {
+    this.selectionCheckbox();
     const messstellenType = this.messstellenTypeControl.value;
+    this.filteredMessstellen =[];
     if (messstellenType === 'fluss') {
       this.filteredMessstellen = this.messstellen.filter(m => !m.see);
     } else {
@@ -466,7 +527,9 @@ if (this.mstMakrophyten.length>0 || this.anzeigenMstUebersichtService.dbMPUebers
 }
 
 //Abfrage Ergebnisse
-async onSubmit() {
+async onButtonClick() {
+  this.isLoading = true;
+  try{
   const yearFrom = this.form.get('min').value;
   const yearTo = this.form.get('max').value;
   const dropdownSelection = this.form.get('dropdownSelection')?.value;
@@ -508,7 +571,13 @@ async onSubmit() {
   
     
       await this.WKbewertungabfragen(selectedWasserkorper, yearFrom, yearTo);
+  }} catch (error) {
+    console.error('Fehler beim Laden der Daten:', error);
+    // Hier können Sie zusätzliche Fehlerbehandlungslogik hinzufügen
+  } finally {
+    this.isLoading = false;
   }
+  this.isLoading = false;
 }
 
 resetDisplayFlags() {

@@ -1,14 +1,13 @@
 <h2>Messstelle bearbeiten</h2>
 
 <div mat-dialog-content>
-  <form [formGroup]="formInstance">
+  <form [formGroup]="formInstance" style="height: 100%;">
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Messstellenname *</mat-label>
         <input matInput type="text" formControlName="namemst">
       </mat-form-field>
-    </div>
-    <div class="mt-5">
+    <div style="margin-top:35px">
       <mat-form-field class="fullWidth" style="width: 100%;" appearance="outline">
         <mat-label>Ortslage *</mat-label>
         <input matInput type="text" formControlName="ortslage">
@@ -16,21 +15,23 @@
 
       </mat-form-field>
     </div>
+    </div>
     <table>
       <tr>
+        <div style="margin-top:35px">
         <td>
-          <div class="mt-5">
+         
             <mat-form-field class="fullWidth" appearance="outline">
               <mat-label>Hochwert (etrs) *</mat-label>
               <input matInput type="number" formControlName="hw_etrs" />
               <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
             </mat-form-field>
-          </div>
+        
         </td>
         <td>
 
 
-          <div class="mt-5">
+          <div >
             <mat-form-field class="fullWidth" appearance="outline">
               <mat-label>Rechtswert (etrs) *</mat-label>
               <input matInput type="number" formControlName="rw_etrs" />
@@ -38,9 +39,10 @@
             </mat-form-field>
           </div>
         </td>
+      </div>
       </tr>
     </table>
-    <div>
+    <div  class="mt-5">
 
       <mat-label>Repräsentative Messstelle</mat-label>
       <mat-checkbox formControlName="repraesent"></mat-checkbox>
@@ -62,8 +64,7 @@
       <ng-multiselect-dropdown [placeholder]="wk_name1" [settings]="dropdownSettings" [data]="dropdownList"
         (onSelect)="onItemSelect($event)">
       </ng-multiselect-dropdown>
-    </div>
-    <div class="mt-5">
+    
       <mat-label>Gewässer</mat-label>
     <ng-multiselect-dropdown [placeholder]="data.mststam.gewaessername" [settings]="dropdownSettingsGew"
       [data]="dropdownTypGewaesser" (onSelect)="onItemSelectGew($event)">

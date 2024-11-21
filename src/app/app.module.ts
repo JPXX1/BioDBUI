@@ -11,8 +11,6 @@ import {HttpClientModule} from 	'@angular/common/http';
 import {CdkTableModule} from '@angular/cdk/table'; 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-
-
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import { InfoBoxComponent } from './file-upload/info-box/info-box.component';

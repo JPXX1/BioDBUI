@@ -1,19 +1,15 @@
-<div class="mat-elevation-z8 table" > 
-	<table  cdk-table [dataSource]="pros[0]" class="table">
-       
-
-		<!-- <td  cdk-cell *cdkCellDef="let element"[style.background-color]="getColor(element.OKZ_TK_MP)"class="Zelle"> {{element.OKZ_TK_MP}} </td> -->
-			
-			<ng-container *ngFor="let colName of pros[2]; index as i;" [matColumnDef]="colName">
-			  <th mat-header-cell *matHeaderCellDef mat-sort-header matSort class="header-table-jahr sticky-header th"> {{pros[1][i]}} </th>
-			  <td mat-cell *matCellDef="let element"[style.background-color]="getColor(element[colName])"class="Zelle"> {{element[colName]}} </td>
-			</ng-container>
-			<tr mat-header-row *matHeaderRowDef="pros[2]"></tr>
-			<tr mat-row *matRowDef="let row; columns: pros[2];"></tr>
-		 
-		
-		 
-	  </table>
-	  
-		
-	</div>
+<div class="scroll-container">
+	<table cdk-table [dataSource]="pros[0]" class="table">
+	  <ng-container *ngFor="let colName of pros[2]; index as i;" [matColumnDef]="colName">
+		<th mat-header-cell *matHeaderCellDef mat-sort-header matSort class="header-table-jahr sticky-header th">
+		  {{pros[1][i]}}
+		</th>
+		<td mat-cell *matCellDef="let element" [style.background-color]="getColor(element[colName])" class="Zelle">
+		  {{element[colName]}}
+		</td>
+	  </ng-container>
+	  <tr mat-header-row *matHeaderRowDef="pros[2]"></tr>
+	  <tr mat-row *matRowDef="let row; columns: pros[2];"></tr>
+	</table>
+  </div>
+  

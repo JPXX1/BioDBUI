@@ -1,53 +1,29 @@
+/* Table Styling */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
 .Zelle {
   text-align: center;
   width: 10px;
-  border-color: grey;
-  border-width: 1px;
-}
-
-.spalte-jahr {
-  text-align: center;
-  width: 60px;
-  border-color: grey;
-  border-width: 1px;
-}
-
-.spalte-wk {
-  text-align: left;
-  width: 120px;
-  border-color: grey;
-  border-width: 1px;
-}
-
-.header-table-wk {
-  overflow: hidden;
-  text-align: left;
-  height: auto;
-  font-weight: normal;
-  background-color: blanchedalmond;
-  border-color: grey;
-}
-
-.header-table-jahr {
-  height: auto;
-  overflow: hidden;
-  text-align: center;
-  font-weight: normal;
-  background-color: blanchedalmond;
-  border-color: grey;
+  border: 1px solid grey;
 }
 
 .sticky-header {
-  width: 100%;
-  overflow: auto;
+  position: sticky;
+  top: 0; /* Höhe der Kopfzeile */
+  z-index: 2; /* Überlagert die Zellen */
+  background: white; /* Hintergrund für besseren Kontrast */
 }
 
 .sticky-header th {
-  position: sticky;
-  top: 500px; /* Höhe der Kopfzeile, damit der Tabellen-Header direkt unter der Kopfzeile klebt */
-  z-index: 2;
-  background: white; /* Ensure the header background is white for better visibility */
-  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); /* Optional shadow for visual separation */
-  height: auto; /* Entfernen der festen Höhe */
-  padding: 10px; /* Hinzufügen von Padding für bessere Sichtbarkeit */
+  display: table-header-group; /* Stellt sicher, dass Sticky korrekt funktioniert */
+  text-align: center;
+  padding: 5px; /* Standard-Padding */
+  height: auto;
+}
+
+.mat-header-cell {
+  white-space: nowrap; /* Verhindert Umbrüche */
 }

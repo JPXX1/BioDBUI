@@ -3,17 +3,14 @@ router-outlet + * {
   display: block;
 }
 
-.sticky-header {
-  position: fixed;
+.sticky {
+  position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
-  /* background-color: white; */
-  background-color: transparent;
-  height: 84px; /* Höhe der Kopfzeile, anpassen entsprechend der tatsächlichen Höhe */
-  overflow: hidden; /* Entfernen der Scroll-Leiste */
-  /* display: flex; Sicherstellen, dass die Inhalte innerhalb des Headers korrekt ausgerichtet sind */
-  /* align-items: center; Vertikale Zentrierung der Inhalte */
+  background-color: white; /* Transparents kann Probleme verursachen, teste mit einer Farbe */
+  height: 63px; /* Sicherstellen, dass die Höhe korrekt ist */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Schatten für bessere Sichtbarkeit */
 }
 
 

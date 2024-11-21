@@ -11,9 +11,9 @@ import { Router, NavigationEnd } from '@angular/router';
 export class AppComponent  implements OnInit{
   // @ViewChild('link1') link1: ElementRef;
   // klebriges Menü
-  @ViewChild('stickyMenu') menuElement: ElementRef;
+  // @ViewChild('stickyMenu') menuElement: ElementRef;
   title = 'WRRL BioDatenBank Senat Berlin';
-sticky:boolean=false;
+// sticky:boolean=false;
 menuPosition: any;
 showMainContent = true;
 selectedMenuItem: string = '';
@@ -88,18 +88,18 @@ preventWheelZoom(event: WheelEvent): void {
       }
     });
   }
-//klebriges Menü
-@HostListener('window:scroll', ['$event'])
-handleScroll() {
-  const windowScroll = window.pageYOffset;
-  if (windowScroll >= this.menuPosition) {
-    this.sticky = true;
-    this.renderer.addClass(this.menuElement.nativeElement, 'sticky-header');
-  } else {
-    this.sticky = false;
-    this.renderer.removeClass(this.menuElement.nativeElement, 'sticky-header');
-  }
-}
+// //klebriges Menü
+// @HostListener('window:scroll', ['$event'])
+// handleScroll() {
+//   const windowScroll = window.pageYOffset;
+//   // if (windowScroll >= this.menuPosition) {
+//   //   this.sticky = true;
+//   //   this.renderer.addClass(this.menuElement.nativeElement, 'sticky-header');
+//   // } else {
+//   //   this.sticky = false;
+//   //   this.renderer.removeClass(this.menuElement.nativeElement, 'sticky-header');
+//   // }
+// }
 
 
     
