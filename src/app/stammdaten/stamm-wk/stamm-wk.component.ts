@@ -60,7 +60,7 @@ this.arraybuendelWK=({wkstam:person,diatyp:diatyp,mptyp:mptyp,pptyp:pptyp,wrrlty
 
 const scrollY = window.scrollY || window.pageYOffset;
 
-let mouseY= this.stammdatenService.calculateMouseY(scrollY);
+let mouseY;
 const viewportHeight = window.innerHeight;
 const topPosition = scrollY + viewportHeight *mouseY;
 
@@ -95,7 +95,7 @@ const topPosition = scrollY + viewportHeight *mouseY;
       //  console.log(this.archivWK);
        const scrollY = window.scrollY || window.pageYOffset;
 
-       let mouseY= this.stammdatenService.calculateMouseY(scrollY);
+       let mouseY;
        const viewportHeight = window.innerHeight;
        const topPosition = scrollY + viewportHeight *mouseY;
 

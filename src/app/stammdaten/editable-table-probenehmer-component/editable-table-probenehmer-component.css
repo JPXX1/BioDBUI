@@ -1,0 +1,14 @@
+/* Stil für hervorgehobene Zeilen */
+.new-row {
+    animation: highlight 3s ease-out;
+  }
+  
+  @keyframes highlight {
+    from {
+      background-color: #d1f7c4; /* Heller Grünton */
+    }
+    to {
+      background-color: transparent;
+    }
+  }
+  

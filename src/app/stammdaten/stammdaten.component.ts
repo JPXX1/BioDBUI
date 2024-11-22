@@ -32,6 +32,7 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
     // private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
   TypWrrlAnzeige:boolean=false;
+  ProbenehmerAnzeige:boolean=false;
   isHelpActive: boolean = false;
   seefliess:boolean;
    public messstellenStam1:MessstellenStam[]=[];
@@ -156,7 +157,7 @@ this.wkStam1=this.sortedDataWK;
     this.TypWrrlAnzeige=false;
     console.log (this.stammdatenService.messstellenarray)
     this.messstellenStam1=this.stammdatenService.messstellenarray;
-   
+    this.ProbenehmerAnzeige=false;
 
   }
 async gewaesser1(){
@@ -167,6 +168,7 @@ async gewaesser1(){
     this.WKAnzeige=false;
 this.TypWrrlAnzeige=false;
 this.GewaesserAnzeige=true;
+this.ProbenehmerAnzeige=false;
 }
   async wrrlTyp(){
     this.MpTypAnzeige=false;
@@ -176,8 +178,20 @@ this.GewaesserAnzeige=true;
     this.WKAnzeige=false;
     this.PPTypAnzeige=false;
 this.TypWrrlAnzeige=true;
+this.ProbenehmerAnzeige=false;
+  }
+  async Probenehmer(){
+    this.ProbenehmerAnzeige=true;
+    this.MpTypAnzeige=false;
+    this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.WKAnzeige=false;
+    this.TypWrrlAnzeige=false;
+    this.PPTypAnzeige=false;
+    this.DiaTypAnzeige=false;
   }
   async mpTyp(){ 
+    this.ProbenehmerAnzeige=false;
     this.MpTypAnzeige=true;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -194,6 +208,7 @@ this.TypWrrlAnzeige=false;
 this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=false;
     this.DiaTypAnzeige=true;
+    this.ProbenehmerAnzeige=false;
   }
   async ppTyp(){
     this.MpTypAnzeige=false;
@@ -203,6 +218,7 @@ this.TypWrrlAnzeige=false;
     this.WKAnzeige=false;
 this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=true;
+    this.ProbenehmerAnzeige=false;
   }
   async fgwWk()
  
@@ -217,7 +233,8 @@ this.TypWrrlAnzeige=false;
   this.TypWrrlAnzeige=false;
  // console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
-this.gewaesserart="Fließgewässer";}
+this.gewaesserart="Fließgewässer";
+this.ProbenehmerAnzeige=false;}
   
   async seeWk()
   {await  this.stammdatenService.startwk(true,false);
@@ -231,7 +248,8 @@ this.gewaesserart="Fließgewässer";}
   this.TypWrrlAnzeige=false;
  // console.log (this.stammdatenService.wkarray)
   this.wkStam1=this.stammdatenService.wkarray;
-  this.gewaesserart="See";}
+  this.gewaesserart="See";
+  this.ProbenehmerAnzeige=false;}
 
 
 
@@ -247,6 +265,7 @@ this.gewaesserart="Fließgewässer";}
     this.GewaesserAnzeige=false;
     this.TypWrrlAnzeige=false;
     this.WKAnzeige=false;
+    this.ProbenehmerAnzeige=false;
   }
 
   handleDataWK(result:WasserkoerperStam){

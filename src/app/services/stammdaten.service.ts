@@ -6,6 +6,11 @@ import { MeldeMst } from '../interfaces/melde-mst';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable} from 'rxjs';
+
+
+import {Probenehmer} from 'src/app/interfaces/probenehmer';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,6 +24,7 @@ export class StammdatenService {
   public pptyp:TypWrrl[];
   public gewaesser:TypWrrl[];
   public mst:any;
+
   public komponenten:any;
   public diatyp_t:any;
   public mptyp_t:any;
@@ -625,73 +631,23 @@ async getArchivMstStamm(parameter :number){
      console.log("response %o, ", resp);  });
   
     }
-    calculateMouseY(scrollY) {
-      let mouseY;
-    
-      if (scrollY < 100) {
-          mouseY = 0.1;
-      } else if (scrollY < 500) {
-          mouseY = 0.2;
-      } else if (scrollY < 1000) {
-          mouseY = 0.3;
-      } else if (scrollY < 1500) {
-          mouseY = 0.4;
-      } else if (scrollY < 2000) {
-          mouseY = 0.5;
-      } else if (scrollY < 2500) {
-          mouseY = 0.6;
-      } else if (scrollY < 3000) {
-          mouseY = 0.7;
-      } else if (scrollY < 3500) {
-          mouseY = 0.8;
-      } else if (scrollY < 4000) {
-          mouseY = 0.9;
-      } else if (scrollY < 4500) {
-          mouseY = 1.0;
-      } else if (scrollY < 5000) {
-          mouseY = 1.1;
-      } else if (scrollY < 5500) {
-          mouseY = 1.2;
-      } else if (scrollY < 6000) {
-          mouseY = 1.3;
-      } else if (scrollY < 6500) {
-          mouseY = 1.4;
-      } else if (scrollY < 7000) {
-          mouseY = 1.5;
-      } else if (scrollY < 7500) {
-          mouseY = 1.6;
-      } else if (scrollY < 8000) {
-          mouseY = 1.7;
-      } else if (scrollY < 8500) {
-          mouseY = 1.8;
-      } else if (scrollY < 9000) {
-          mouseY = 1.9;
-      } else if (scrollY < 9500) {
-          mouseY = 2.0;
-      } else if (scrollY < 10000) {
-          mouseY = 2.1;
-      } else if (scrollY < 10500) {
-          mouseY = 2.2;
-      } else if (scrollY < 11000) {
-          mouseY = 2.3;
-      } else if (scrollY < 11500) {
-          mouseY = 2.4;
-      } else if (scrollY < 12000) {
-          mouseY = 2.5;
-      } else if (scrollY < 12500) {
-          mouseY = 2.6;
-      } else if (scrollY < 13000) {
-          mouseY = 2.7;
-      } else if (scrollY < 13500) {
-          mouseY = 2.8;
-      } else if (scrollY < 14000) {
-          mouseY = 2.9;
-      } else {
-          mouseY = 3.0; // Obergrenze für scrollY ab 14000
-      }
-      if (scrollY>6000){mouseY=mouseY+0.1;}
-      if (scrollY>10000){mouseY=mouseY+0.2;}
-        console.log(mouseY + ' ' + scrollY);
-        return mouseY;
+    getProbenehmer(): Observable<Probenehmer[]> {
+      return this.httpClient.get<Probenehmer[]>(`${this.apiUrl}/impProbenehmer`);
     }
+    
+    addProbenehmer(data: Partial<Probenehmer>): Observable<Probenehmer> {
+      return this.httpClient.post<Probenehmer>(`${this.apiUrl}/addprobenehmer`, data);
+    }
+    
+    // addProbenehmer(data: Partial<Probenehmer>): Observable<Probenehmer> {
+    //   return this.httpClient.post<Probenehmer>(`${this.apiUrl}/addprobenehmer`, data);
+    // }
+  
+    updateProbenehmer(data: Partial<Probenehmer>): Observable<Probenehmer> {
+      return this.httpClient.put<Probenehmer>(`${this.apiUrl}/probenehmer`, data);
+    }
+  
+    // deleteProbenehmer(id: number): Observable<any> {
+    //   return this.httpClient.delete(`${this.apiUrl}/${id}`);
+    // }
 }

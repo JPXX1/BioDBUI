@@ -1,0 +1,62 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+  <span fxLayoutGap="8px">Probenehmer direkt in der Tabelle bearbeiten</span>
+  <button (click)="addProbenehmer()" class="helpable" id="btn-neuer-MP-Typ">
+    neuen Probenehmer anlegen
+  </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <!-- ID Column -->
+  <ng-container matColumnDef="id_pn">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+    <td mat-cell *matCellDef="let element">{{ element.id_pn }}</td>
+  </ng-container>
+
+  <!-- Firma Column -->
+  <ng-container matColumnDef="firma">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Firma </th>
+    <td mat-cell *matCellDef="let element" contenteditable (blur)="updateRow(element, $event, 'firma')">
+      {{ element.firma }}
+    </td>
+  </ng-container>
+
+  <!-- Adresse Column -->
+  <ng-container matColumnDef="adresse">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Adresse </th>
+    <td mat-cell *matCellDef="let element" contenteditable (blur)="updateRow(element, $event, 'adresse')">
+      {{ element.adresse }}
+    </td>
+  </ng-container>
+
+  <!-- Mail Column -->
+  <ng-container matColumnDef="mail">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Mail </th>
+    <td mat-cell *matCellDef="let element" contenteditable (blur)="updateRow(element, $event, 'mail')">
+      {{ element.mail }}
+    </td>
+  </ng-container>
+
+  <!-- Telefonnummer Column -->
+  <ng-container matColumnDef="telefonnummer">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Telefonnummer </th>
+    <td mat-cell *matCellDef="let element" contenteditable (blur)="updateRow(element, $event, 'telefonnummer')">
+      {{ element.telefonnummer }}
+    </td>
+  </ng-container>
+
+  <!-- Actions Column -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Änderungen speichern </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button color="primary" (click)="saveRow(element)">
+        <mat-icon>save</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Header Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <!-- Data Rows -->
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'new-row': row.isNew}"></tr>
+</table>

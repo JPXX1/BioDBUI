@@ -38,6 +38,8 @@ public value:string;
  this.dbBewertungMst = [];
   await this.getBwMstTaxa(komp).forEach(formen_ => {
     this.dbBewertungMst = formen_;
+
+    console.log(this.dbBewertungMst);
    
   });
 this.arrayNeuFuellen(komp);
@@ -150,7 +152,9 @@ arrayNeuFuellen(komp: number) {
     this.mstMakrophyten.push(this.mstMakrophytenKl);
 
   }
-  this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) || a.tiefe_m.localeCompare(b.tiefe_m) || a.taxon.localeCompare(b.taxon));}
+  this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) || a.tiefe_m.localeCompare(b.tiefe_m) || a.taxon.localeCompare(b.taxon));
+
+}
   /**
    * Assigns an array to a class property based on the provided component index.
    *

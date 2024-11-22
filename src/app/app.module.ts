@@ -38,6 +38,7 @@ import { MakorphytenTabelleComponent } from './monitoring/makorphyten-tabelle/ma
 import { MakrophytenMstUebersichtComponent } from './monitoring/makrophyten-mst-uebersicht/makrophyten-mst-uebersicht.component';
 import {MatSliderModule} from '@angular/material/slider';
 import { MapComponent } from './map/map.component';
+import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MatSortModule} from '@angular/material/sort';
 import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -81,6 +82,7 @@ import { StartComponent } from './auth/start/start.component';
 import { DataAbiotikTableComponentComponent } from './file-upload/data-abiotik-table-component/data-abiotik-table-component.component';
 import { WKExpertenurteilEditComponent } from './expertenurteil-mst/wkexpertenurteil-edit-component/wkexpertenurteil-edit-component.component';
 import { GlobalErrorHandler } from './global-error-handler.service';
+import { EditableTableProbenehmerComponent } from './stammdaten/editable-table-probenehmer-component/editable-table-probenehmer-component';
 
 // StammWkComponent
 
@@ -128,7 +130,9 @@ declarations: [ WKExpertenurteilEditComponent,SelectjahrComponent,
 	AppComponent, SelectUebersichtImportComponent,EditStammdatenMstComponent,StammWkComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
 	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
-	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent
+	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, 
+	EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, 
+	EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent, EditableTableProbenehmerComponent
 ], 
 imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
@@ -136,8 +140,8 @@ imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonTogg
     ReactiveFormsModule,MatDialogModule,MatTabsModule,
 ], 
 providers: [
-    { provide: ErrorHandler, useClass: GlobalErrorHandler } // Nur Services in 'providers'
-  ],
+    { provide: ErrorHandler, useClass: GlobalErrorHandler }, // Nur Services in 'providers'
+	StammdatenService],
   bootstrap: [AppComponent]
 })
 export class AppModule { } 

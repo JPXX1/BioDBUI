@@ -32,11 +32,8 @@
         <button mat-menu-item (click)="diaTyp()">Diatomeentyp</button>
         <button mat-menu-item (click)="mpTyp()">Makrophytentyp</button>
       </mat-menu>
-      <button mat-button [matMenuTriggerFor]="probenehmer" class="helpable button" id="btn-probenehmer">Probenehmer</button>
-      <mat-menu #probenehmer="matMenu" xPosition="after">
-        <button mat-menu-item>Item 1</button>
-        <button mat-menu-item>Item 2</button>
-      </mat-menu>
+      <button mat-button  (click)="Probenehmer()" class="helpable button" id="btn-probenehmer">Probenehmer</button>
+     
      
       
       
@@ -87,4 +84,7 @@
     
     <div class="card" *ngIf="MpTypAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
       <app-editable-table-mptyp></app-editable-table-mptyp>
+    </div>
+    <div class="card" *ngIf="ProbenehmerAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%">
+      <app-editable-table-probenehmer></app-editable-table-probenehmer>
     </div>

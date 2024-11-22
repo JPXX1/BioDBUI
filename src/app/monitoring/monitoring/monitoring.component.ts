@@ -21,8 +21,10 @@ import { HelpService } from 'src/app/services/help.service';
 export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewChecked{
  anzeigeTaxadaten:boolean=false;
   isHelpActive: boolean = false;
+  DiatomeenAnzeige:boolean=false;
   FilterwkUebersicht: WkUebersicht[] = [];
   FilterwkUebersichtausMst: WkUebersicht[] = [];
+  mstTaxaDia:MstMakrophyten[]=[];//TaxaDia
   public mstTaxaMP:MstMakrophyten[]=[];//TaxaMP
   public mstTaxaMZB:MstMakrophyten[]=[];//TaxaMZB
   mstTaxaPh: MstMakrophyten[] = [];//TaxaPhytoplankton
@@ -229,7 +231,8 @@ switch(komp){
     
         break;
       case 2:
-        //this.Taxa_Dia=formen_;
+        this.mstTaxaDia= this.reduceArray(this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max));
+   
         break;
       case 3:
         this.mstTaxaMZB= this.reduceArray(this.anzeigeBewertungMPService.FilterRichtigesArray(this.komp_id,this.value,this.Artvalue,this.min,this.max));
@@ -332,6 +335,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     // if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
     this.MZBAnzeige=false;
     this.PhythoplanktonAnzeige=false;
+    this.DiatomeenAnzeige=false;
     this.MakrophytenAnzeige=false;
     this.MakrophytenMstAnzeige=false;
     this.UebersichtAnzeigen=true;
@@ -352,7 +356,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk1");
     this.onValueChangeFilter( '','');
-    // if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
+    this.DiatomeenAnzeige=false;
     this.MZBAnzeige=false;
     this.PhythoplanktonAnzeige=false;
     this.MakrophytenAnzeige=false;
@@ -368,6 +372,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     this.komp_id=5;
     this.anzeigeTaxadaten=true;
     this.MakrophytenAnzeige=false;
+    this.DiatomeenAnzeige=false;
     // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
     this.FilterAnzeige=true;
   this.MakrophytenMstAnzeige=false;
@@ -393,6 +398,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     this.komp_id=1;
     // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
     this.FilterAnzeige=true;
+    this.DiatomeenAnzeige=false;
   this.MakrophytenMstAnzeige=false;
   this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
   this.UebersichtAnzeigen=false;
@@ -410,8 +416,33 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
   this.MakrophytenAnzeige=true;
 
  }
+ async handleDiatomeenTaxaClick(){ //Taxadaten Diatomeen
+  this.anzeigeTaxadaten=true;
+  this.komp_id=2;
+  // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
+  this.FilterAnzeige=true;
+this.MakrophytenMstAnzeige=false;
+this.anzeigeBewertungMPService.value=this.value ;
+this.anzeigeBewertungMPService.Artvalue=this.Artvalue;
+this.UebersichtAnzeigen=false;
+  this.FilterWKnameSetzenWK("mst");
+  this.UebersichtWKausMstAnzeigen=false;
+this.MZBAnzeige=false;
+this.PhythoplanktonAnzeige=false;
+this.MakrophytenAnzeige=false;
+//console.log(this.anzeigeBewertungMPService.Taxa_MP);
+if (this.anzeigeBewertungMPService.Taxa_Dia.length===0){
+await this.anzeigeBewertungMPService.callBwMstTaxa(2);}
+// await this.anzeigeBewertungMPService.FilterRichtigesArray(1,this.value,this.Artvalue,this.min,this.max);
+
+this.filtertaxadaten(2);//this.mstTaxaMP=this.anzeigeBewertungMPService.mstMakrophyten;
+this.getButtonAktivColorDia();
+this.DiatomeenAnzeige=true;
+
+}
 async handleMZBTaxaClick(){ //Taxadaten MZB
   this.komp_id=3;
+  this.DiatomeenAnzeige=false;
   this.anzeigeTaxadaten=true;
   this.MakrophytenAnzeige=false;
   this.FilterAnzeige=true;
@@ -439,6 +470,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.anzeigenMstUebersichtService.value=this.value ;
     this.anzeigenMstUebersichtService.Artvalue=this.Artvalue;
     this.MakrophytenAnzeige=false;
+    this.DiatomeenAnzeige=false;
     this.MakrophytenMstAnzeige=true;
     this.PhythoplanktonAnzeige=false;
     this.UebersichtAnzeigen=false;
@@ -474,7 +506,8 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this._renderer2.removeStyle(el1, 'background-color'); 
     const elz = document.getElementById('mzButton');
     this._renderer2.removeStyle(elz, 'background-color');  
-   // this._renderer2.setStyle(ee, 'background-color', 'withe');
+    const el2 = document.getElementById('diatomsButton');
+    this._renderer2.removeStyle(el2, 'background-color');
   }
   getButtonAktivColorMZ() {
     const el = document.getElementById('mpButton');
@@ -485,6 +518,20 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this._renderer2.removeStyle(el1,'background-color');  
     const elz = document.getElementById('mzButton');
     this._renderer2.setStyle(elz, 'background-color', 'rgb(20,220,220)');  
+    const el2 = document.getElementById('diatomsButton');
+    this._renderer2.removeStyle(el2, 'background-color');
+  }
+  getButtonAktivColorDia() {
+    const el = document.getElementById('diatomsButton');
+    this._renderer2.setStyle(el, 'background-color', 'rgb(20,220,220)');  
+    const ee = document.getElementById('berichtsEUButton');
+    this._renderer2.removeStyle(ee,'background-color');  
+    const ep = document.getElementById('mpButton');
+    this._renderer2.removeStyle(ep, 'background-color'); 
+    const el1 = document.getElementById('ppButton');
+    this._renderer2.removeStyle(el1,'background-color'); 
+    const elz = document.getElementById('mzButton');
+    this._renderer2.removeStyle(elz, 'background-color');
    // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
   }
   getButtonAktivColorMP() {
@@ -496,6 +543,8 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this._renderer2.removeStyle(el1,'background-color'); 
     const elz = document.getElementById('mzButton');
     this._renderer2.removeStyle(elz, 'background-color');
+    const el2 = document.getElementById('diatomsButton');
+    this._renderer2.removeStyle(el2, 'background-color');
    // this._renderer2.setStyle(ee, 'background-color', 'withe'); 
   }
   getButtonAktivUebersicht() {
@@ -507,5 +556,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this._renderer2.removeStyle(elz, 'background-color');
     const el1 = document.getElementById('ppButton');
     this._renderer2.removeStyle(el1,'background-color'); 
+    const el2 = document.getElementById('diatomsButton');
+    this._renderer2.removeStyle(el2, 'background-color');
   }
 }
