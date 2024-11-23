@@ -101,7 +101,9 @@ preventWheelZoom(event: WheelEvent): void {
 //   // }
 // }
 
-
+getwiki() {
+  this.selectedMenuItem = 'Wiki';
+}
     
   getlink0() {
       

@@ -1,0 +1,29 @@
+.wiki-tree {
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.header1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.sub-entry {
+  margin-left: 20px;
+  padding: 5px;
+  border-left: 2px solid #ddd;
+}
+
+.body-content {
+  margin-left: 40px;
+  font-style: italic;
+  color: #555;
+}
+
+.leaf {
+  margin-left: 20px;
+  padding: 5px;
+}

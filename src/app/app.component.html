@@ -26,9 +26,12 @@
         <button *ngIf="authService.isNutzer3() || authService.isAdmin()" id="link4" [routerLink]="['/stammdaten']" class="linkcolor menu-button" mat-button (click)="getlink3()">Stammdaten</button>
         
         <button *ngIf="authService.isAdmin()" id="link5" [routerLink]="['/admin']" class="menu-button" mat-button (click)="getlink4()">Nutzerverwaltung</button>
+        <button *ngIf="authService.isNutzer1()" id="link6" [routerLink]="['/wiki']" class="menu-button" mat-button (click)="getwiki()">Wiki</button>
       </mat-menu>
       
         <span>{{ selectedMenuItem }}</span>
+
+        
         <button mat-button id="helpButton" (click)="toggleHelp()" 
           [ngClass]="{ 'help-button-active': isHelpActive, 'help-button': true }">Hilfe</button>
     </mat-toolbar>

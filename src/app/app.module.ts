@@ -2,12 +2,13 @@ import { NgModule,ErrorHandler } from '@angular/core';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
  import { BrowserModule } from '@angular/platform-browser'; 
  import {MatToolbarModule} from '@angular/material/toolbar'; 
+ import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
 import { FileUploadComponent } from './file-upload/file-upload.component'; 
 import {MatGridListModule} from '@angular/material/grid-list'; 
 import { AppComponent } from './app.component'; 
 import {HttpClientModule} from 	'@angular/common/http';
- import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {CdkTableModule} from '@angular/cdk/table'; 
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -42,7 +43,7 @@ import {StammdatenService} from 'src/app/services/stammdaten.service';
 import { MatSortModule} from '@angular/material/sort';
 import { StammMessstellenComponent } from './stammdaten/stamm-messstellen/stamm-messstellen.component';
 import { ReactiveFormsModule } from '@angular/forms';
-// import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common'; // <-- Hier hinzufügen
 import { SelectWasserkoerperComponent } from './select/select-wasserkoerper/select-wasserkoerper.component';
 import { EditStammdatenMstComponent } from './stammdaten/edit-stammdaten-mst/edit-stammdaten-mst.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -83,6 +84,7 @@ import { DataAbiotikTableComponentComponent } from './file-upload/data-abiotik-t
 import { WKExpertenurteilEditComponent } from './expertenurteil-mst/wkexpertenurteil-edit-component/wkexpertenurteil-edit-component.component';
 import { GlobalErrorHandler } from './global-error-handler.service';
 import { EditableTableProbenehmerComponent } from './stammdaten/editable-table-probenehmer-component/editable-table-probenehmer-component';
+import { WikiComponent } from 'src/app/wiki/wiki.component';
 
 // StammWkComponent
 
@@ -121,20 +123,24 @@ const routes: Routes = [
 	{path:'bewerten',component:ExpertenurteilMstComponent
 		,canActivate: [RoleGuard],  // Guard aktivieren
 		data: { expectedRole: 'nutzer3' }  // Die erwartete Rolle
-	}
+	},
+	{ path: 'wiki', component: WikiComponent 
+		,canActivate: [RoleGuard],  // Guard aktivieren
+		data: { expectedRole: 'nutzer1' }  // Die erwartete Rolle
+	},
 	
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
-declarations: [ WKExpertenurteilEditComponent,SelectjahrComponent,
+declarations: [ WikiComponent,WKExpertenurteilEditComponent,SelectjahrComponent,
 	AppComponent, SelectUebersichtImportComponent,EditStammdatenMstComponent,StammWkComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
 	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 
 	MessstelleAendernComponent, EditableTableTypwrrlComponent, LoginComponent, RegisterComponent, AdministrationComponent, EditableTableGewaesserComponent, EditableTableTypPPComponent, EditableTableDiatypComponent, 
 	EditableTableMptypComponent, DatenExportComponent, CustomSnackbarComponent,   MapVBSelectionDialogComponent, ExpertenurteilMstComponent, MstExpertenurteilEditComponent, EinzeldatephytoplanktonComponent, UserManagementComponent, 
-	EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent, EditableTableProbenehmerComponent
+	EditUserDialogComponent, ConfirmDeleteDialogComponent, ConfirmPasswordDialogComponent, ConfirmDialogComponent, CenterButtonComponent, StartComponent, DataAbiotikTableComponentComponent, EditableTableProbenehmerComponent, 
 ], 
-imports: [MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
+imports: [MatTreeModule,CommonModule,MatProgressSpinnerModule,MatMenuModule,MatSnackBarModule,MatButtonToggleModule,FlexLayoutModule,MatDividerModule,MatSortModule, NgMultiSelectDropDownModule.forRoot(),MatCheckboxModule,MatSliderModule,MatRadioModule,MatMenuModule,MatExpansionModule,MatTableModule,MatToolbarModule,MatCardModule,ScrollingModule,BrowserModule,BrowserAnimationsModule,
 	ButtonModule,MatGridListModule,TableModule, CdkTableModule, MatPaginatorModule,RouterModule.forRoot(routes),MatIconModule,MatButtonModule,
 	HttpClientModule,  AppRoutingModule, MatSelectModule,MatFormFieldModule,MatInputModule,FormsModule ,
     ReactiveFormsModule,MatDialogModule,MatTabsModule,
