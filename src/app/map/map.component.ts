@@ -32,6 +32,107 @@ import { HelpService } from 'src/app/services/help.service';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
+/**
+ * Die MapComponent-Klasse ist verantwortlich für die Verwaltung und Anzeige einer Karte mit verschiedenen Ebenen und Features.
+ * Sie integriert mehrere Dienste, um geospatiale Daten abzurufen und anzuzeigen, und bietet Funktionen zum Filtern und Visualisieren dieser Daten auf der Karte.
+ * 
+ * @class
+ * @implements {OnInit}
+ * @implements {AfterViewInit}
+ * @implements {AfterViewChecked}
+ * 
+ * @constructor
+ * @param {HelpService} helpService - Dienst zum Registrieren von Mouseover-Ereignissen.
+ * @param {MatDialog} dialog - Dienst zum Öffnen von Dialogen.
+ * @param {VerbreitungartenService} verbreitungartenService - Dienst zur Verwaltung von Verbreitungsdaten von Arten.
+ * @param {Router} router - Dienst zur Navigation.
+ * @param {AuthService} authService - Dienst zur Authentifizierung.
+ * @param {FarbeBewertungService} Farbebewertg - Dienst zur Farbbewertung.
+ * 
+ * @property {string} wmtsCapabilitiesUrl - URL für WMTS-Fähigkeiten.
+ * @property {VectorLayer | null} activeBpPieLayer - Aktive Tortendiagramm-Ebene.
+ * @property {string} messstellenFilter - Aktueller Filtertext für Messstellen.
+ * @property {Map} map - OpenLayers-Karteninstanz.
+ * @property {any} coordinate - Koordinaten für die Karte.
+ * @property {string} options - Optionen für die Karte.
+ * @property {string} verbreitung_text - Text für die Verbreitung von Arten.
+ * @property {string} geoserverUrl - URL für den GeoServer.
+ * @property {number} id_komponente - ID der ausgewählten Komponente.
+ * @property {Array<{ id: number, Komponente: string }>} dbKomponenten - Array von Komponenten aus der Datenbank.
+ * @property {string} taxon - Ausgewähltes Taxon.
+ * @property {boolean} isFliesgewasserChecked - Status der Fliesgewasser-Checkbox.
+ * @property {boolean} isstartbp3Checked - Status der startbp3-Checkbox.
+ * @property {boolean} isstartbp2Checked - Status der startbp2-Checkbox.
+ * @property {boolean} isstartbp1Checked - Status der startbp1-Checkbox.
+ * @property {boolean} isSeeChecked - Status der See-Checkbox.
+ * @property {boolean} isrepraesentFGWChecked - Status der repraesentFGW-Checkbox.
+ * @property {boolean} isrepraesentSeeChecked - Status der repraesentSee-Checkbox.
+ * @property {boolean} isVerbreitungChecked - Status der Verbreitung-Checkbox.
+ * @property {boolean} isErsterBPChecked - Status der ErsterBP-Checkbox.
+ * @property {boolean} isZweiterBPChecked - Status der ZweiterBP-Checkbox.
+ * @property {boolean} isDritterBPChecked - Status der DritterBP-Checkbox.
+ * @property {boolean} isVierterBPChecked - Status der VierterBP-Checkbox.
+ * @property {VectorLayer | null} pieChartLayer - Ebene für Tortendiagramme.
+ * @property {boolean} isRepraesentCheckedSEEdisable - Deaktivierungsstatus für die repraesentSee-Checkbox.
+ * @property {boolean} isRepraesentCheckedFGWdisable - Deaktivierungsstatus für die repraesentFGW-Checkbox.
+ * @property {boolean} isFilterdisable - Deaktivierungsstatus für den Filter.
+ * @property {Array<{ color: string, label: string }>} legendItems - Array von Legenden-Elementen.
+ * @property {VectorSource} source_landesgrenze - Quelle für die Landesgrenze-Ebene.
+ * @property {VectorSource} source_aus_daten_lw_bp2 - Quelle für die aus_daten_lw_bp2-Ebene.
+ * @property {VectorSource} source_aus_daten_lw_bp3 - Quelle für die aus_daten_lw_bp3-Ebene.
+ * @property {VectorSource} source_aus_daten_lw_bp4 - Quelle für die aus_daten_lw_bp4-Ebene.
+ * @property {VectorSource} source_aus_daten_rw_bp2 - Quelle für die aus_daten_rw_bp2-Ebene.
+ * @property {VectorSource} source_aus_daten_rw_bp3 - Quelle für die aus_daten_rw_bp3-Ebene.
+ * @property {VectorSource} source_aus_daten_rw_bp4 - Quelle für die aus_daten_rw_bp4-Ebene.
+ * @property {VectorSource} source_lw_bp1 - Quelle für die lw_bp1-Ebene.
+ * @property {VectorSource} source_lw_bp2 - Quelle für die lw_bp2-Ebene.
+ * @property {VectorSource} source_lw_bp3 - Quelle für die lw_bp3-Ebene.
+ * @property {VectorSource} source_rw_bp1 - Quelle für die rw_bp1-Ebene.
+ * @property {VectorSource} source_rw_bp2 - Quelle für die rw_bp2-Ebene.
+ * @property {VectorSource} source_rw_bp3 - Quelle für die rw_bp3-Ebene.
+ * @property {VectorSource} sourceFliesgewasserMessstellen - Quelle für die FliesgewasserMessstellen-Ebene.
+ * @property {VectorSource} sourceSeeMessstellen - Quelle für die SeeMessstellen-Ebene.
+ * @property {VectorSource} sourceVerbreitungMessstellen - Quelle für die VerbreitungMessstellen-Ebene.
+ * @property {VectorSource} source_lw_bp3_with_pie - Quelle für die lw_bp3_with_pie-Ebene.
+ * @property {VectorSource} source_lw_bp2_with_pie - Quelle für die lw_bp2_with_pie-Ebene.
+ * @property {VectorSource} source_lw_bp1_with_pie - Quelle für die lw_bp1_with_pie-Ebene.
+ * @property {VectorSource} source_lw_bp4_with_pie - Quelle für die lw_bp4_with_pie-Ebene.
+ * 
+ * @method loadWmtsLayer - Lädt die WMTS-Ebene.
+ * @method openDialogVerbreitung - Öffnet den Verbreitungsdialog.
+ * @method filterLayer - Filtert die Ebene basierend auf dem angegebenen Filtertext und Repräsentationsstatus.
+ * @method showAllFeatures - Zeigt alle Features der Ebene an.
+ * @method ngAfterViewInit - Lifecycle-Hook, der aufgerufen wird, nachdem die Ansicht einer Komponente vollständig initialisiert wurde.
+ * @method ngAfterViewChecked - Lifecycle-Hook, der aufgerufen wird, nachdem die Ansicht einer Komponente überprüft wurde.
+ * @method removePieChartLayer - Entfernt die Tortendiagramm-Ebene von der Karte.
+ * @method createPieChartLayer - Erstellt und fügt eine Tortendiagramm-Ebene zur Karte hinzu.
+ * @method drawQuarterPieChart - Zeichnet ein Viertel-Tortendiagramm auf die Leinwand.
+ * @method filterVerbreitungMessstellenLayer - Filtert die VerbreitungMessstellen-Ebene basierend auf den angegebenen IDs.
+ * @method getColor - Holt die Farbe basierend auf dem angegebenen Wert.
+ * @method startbp1 - Schaltet die Sichtbarkeit der bp1-Ebene um.
+ * @method startbp2 - Schaltet die Sichtbarkeit der bp2-Ebene um.
+ * @method startbp3 - Schaltet die Sichtbarkeit der bp3-Ebene um.
+ * @method toggleSingleBpLayer - Schaltet die Sichtbarkeit einer einzelnen bp-Ebene um.
+ * @method drawLegend - Zeichnet die Legende auf die Leinwand.
+ * @method clearLegend - Löscht die Legende von der Leinwand.
+ * @method ersterBP - Schaltet die Sichtbarkeit der ErsterBP-Ebene um.
+ * @method zweiterBP - Schaltet die Sichtbarkeit der ZweiterBP-Ebene um.
+ * @method removeallbp - Entfernt alle bp-Ebenen von der Karte.
+ * @method dritterBP - Schaltet die Sichtbarkeit der DritterBP-Ebene um.
+ * @method vierterBP - Schaltet die Sichtbarkeit der VierterBP-Ebene um.
+ * @method mstnachoben - Verschiebt die Messstellen-Ebenen nach oben.
+ * @method startalleSee - Schaltet die Sichtbarkeit aller See-Ebenen um.
+ * @method startalleFGW - Schaltet die Sichtbarkeit aller FGW-Ebenen um.
+ * @method filterMessstellen - Filtert die Messstellen-Ebenen basierend auf den angegebenen Parametern.
+ * @method toggleLayerseemst - Schaltet die Sichtbarkeit der See-Messstellen-Ebene um.
+ * @method toggleLayerfgwmst - Schaltet die Sichtbarkeit der FGW-Messstellen-Ebene um.
+ * @method toggleLayerVerbreitung - Schaltet die Sichtbarkeit der Verbreitung-Ebene um.
+ * @method verbreitungsdaten - Ruft die Verbreitungsdaten von Arten ab.
+ * @method initializeMap - Initialisiert die Karte mit der angegebenen WMTS-Ebene.
+ * @method ngOnInit - Lifecycle-Hook, der aufgerufen wird, nachdem die Komponente initialisiert wurde.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   
   constructor(
@@ -92,9 +193,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
       `${this.geoserverUrl}/ne/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ne%3Aview_landesgrenze&outputFormat=application%2Fjson&srsname=EPSG:3857&bbox=${extent.join(',')},EPSG:3857`,
     strategy: bboxStrategy
   });
-  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=50&outputFormat=application%2Fjson
-  //http://localhost:8080/geoserver/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=50&outputFormat=application%2Fjson
-  private source_aus_daten_lw_bp2: VectorSource = new VectorSource({
+   private source_aus_daten_lw_bp2: VectorSource = new VectorSource({
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_lw_bp2&maxFeatures=250&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
   });
@@ -178,6 +277,16 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     url: `${this.geoserverUrl}/WK/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=WK%3Aview_wk_bewertung_aus_mst_kreuz_bp4&maxFeatures=500&outputFormat=application%2Fjson`,
     format: new GeoJSON(),
   });
+  /**
+   * Lädt eine WMTS (Web Map Tile Service) Ebene asynchron.
+   * 
+   * Diese Methode ruft die WMTS-Fähigkeiten von der angegebenen URL ab, analysiert die Fähigkeiten
+   * und erstellt eine TileLayer unter Verwendung der angegebenen Layer- und Matrix-Set-Optionen.
+   * 
+   * @returns {Promise<TileLayer>} Ein Promise, das zu einer TileLayer konfiguriert mit den WMTS-Optionen aufgelöst wird.
+   * 
+   * @throws {Error} Wenn ein Problem beim Abrufen oder Analysieren der WMTS-Fähigkeiten auftritt.
+   */
   private async loadWmtsLayer(): Promise<TileLayer> {
     const response = await fetch(this.wmtsCapabilitiesUrl);
     const capabilitiesText = await response.text();
@@ -204,6 +313,28 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   }
   
     //Verbreitung von Arten Dialog
+    /**
+     * Öffnet einen Dialog zur Auswahl der Verbreitung von Arten.
+     * 
+     * Diese Methode führt die folgenden Aktionen aus:
+     * 1. Entfernt den `VerbreitungMessstellenLayer` von der Karte.
+     * 2. Fügt den `VerbreitungMessstellenLayer` wieder zur Karte hinzu.
+     * 3. Öffnet einen Dialog (`MapVBSelectionDialogComponent`) mit einer Breite von 600px und übergibt die folgenden Daten:
+     *    - `idkomp`: Die Komponenten-ID.
+     *    - `dbKomponenten`: Die Datenbankkomponenten.
+     *    - `taxon`: Das Taxon.
+     * 
+     * Nachdem der Dialog geschlossen wurde, führt er die folgenden Aktionen aus:
+     * 1. Entfernt den `VerbreitungMessstellenLayer` von der Karte.
+     * 2. Löscht den `verbreitung_text`.
+     * 3. Wenn ein Ergebnis aus dem Dialog zurückgegeben wird:
+     *    - Aktualisiert die Komponenten-ID (`id_komponente`) mit der ausgewählten ID.
+     *    - Protokolliert das ausgewählte Taxon in der Konsole.
+     *    - Konstruiert einen Textstring, der das Vorkommen des ausgewählten Taxons und den Abfragezeitraum angibt.
+     *    - Filtert die Artendaten (`dbArten`) basierend auf dem ausgewählten Taxon und Abfragezeitraum.
+     *    - Filtert doppelte Messstellen-IDs heraus und speichert sie in `ids_mst`.
+     *    - Ruft `filterVerbreitungMessstellenLayer` mit den gefilterten Messstellen-IDs auf.
+     */
     openDialogVerbreitung(): void {
       this.map.removeLayer(this.VerbreitungMessstellenLayer);
       this.map.addLayer(this.VerbreitungMessstellenLayer);
@@ -250,6 +381,15 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     
    
    // Funktion, die die Filterung durchführt
+  /**
+   * Filtert die Features einer gegebenen Vektorquelle basierend auf einem angegebenen Filterstring und einem Repräsentations-Flag,
+   * und aktualisiert die bereitgestellte Vektorebene mit den gefilterten Features.
+   *
+   * @param {VectorSource} source - Die Vektorquelle, die die zu filternden Features enthält.
+   * @param {VectorLayer} layer - Die Vektorebene, die mit den gefilterten Features aktualisiert werden soll.
+   * @param {string} filter - Der Filterstring, der verwendet wird, um die 'namemst'-Eigenschaft der Features zu filtern.
+   * @param {boolean} repreasent - Das Repräsentations-Flag, das verwendet wird, um die 'repraesent_mst'-Eigenschaft der Features zu filtern.
+   */
   filterLayer(source: VectorSource, layer: VectorLayer, filter: string,repreasent: boolean) {
     const features = source.getFeatures();
     
@@ -274,25 +414,73 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   }
 
   // Funktion, die alle Features ohne Filter anzeigt
+  /**
+   * Stellt die angegebene Ebene mit allen Features aus der bereitgestellten Quelle wieder her und fügt sie der Karte hinzu.
+   *
+   * @param source - Die Vektorquelle, die die anzuzeigenden Features enthält.
+   * @param layer - Die Vektorebene, die wiederhergestellt und der Karte hinzugefügt werden soll.
+   */
+  
   showAllFeatures(source: VectorSource, layer: VectorLayer) {
     // Den Layer mit allen Features wiederherstellen
     layer.setSource(source);
     this.map.addLayer(layer);
   }
+    /**
+     * Lifecycle-Hook, der aufgerufen wird, nachdem die Ansicht einer Komponente vollständig initialisiert wurde.
+     * Hier sollten Sie jeglichen Code platzieren, der mit der Ansicht der Komponente interagieren muss.
+     * 
+     * In dieser Methode registrieren wir Mouseover-Ereignisse für Elemente mit der Klasse 'helpable'
+     * unter Verwendung des helpService.
+     * 
+     * @memberof MapComponent
+     */
     ngAfterViewInit() {
 	
       //	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
         this.helpService.registerMouseoverEvents();}
-        ngAfterViewChecked() {
+    /**
+     * Lifecycle-Hook, der aufgerufen wird, nachdem die Ansicht der Komponente vom Angular-Änderungserkennungsmechanismus überprüft wurde.
+     * Diese Methode wird verwendet, um Mouseover-Ereignisse mit dem helpService zu registrieren.
+     * 
+     * @memberof MapComponent
+     */
+    ngAfterViewChecked() {
           this.helpService.registerMouseoverEvents();
         }
-        removePieChartLayer() {
+    /**
+     * Entfernt die Tortendiagramm-Ebene von der Karte, falls sie existiert.
+     * Wenn die Tortendiagramm-Ebene vorhanden ist, wird sie von der Karte entfernt
+     * und die Referenz auf die Tortendiagramm-Ebene wird auf null gesetzt.
+     */
+    removePieChartLayer() {
           if (this.pieChartLayer) {
             this.map.removeLayer(this.pieChartLayer);
             this.pieChartLayer = null;
           }
         }
-        createPieChartLayer(source_ = new VectorSource()) {
+    /**
+     * Erstellt eine Tortendiagramm-Ebene und fügt sie der Karte hinzu.
+     * 
+     * Diese Funktion initialisiert eine neue `VectorLayer` für Tortendiagramme und eine `VectorLayer` für Messstellen.
+     * Sie verwendet die bereitgestellte `VectorSource` oder eine neue, falls keine angegeben ist. Die Tortendiagramm-Ebene
+     * wird so gestaltet, dass Tortendiagramme an den Koordinaten von Punkt-Features gerendert werden.
+     * 
+     * @param {VectorSource} [source_=new VectorSource()] - Die Vektorquelle für die Ebene. Standardmäßig wird eine neue `VectorSource` verwendet, falls keine angegeben ist.
+     * 
+     * @remarks
+     * - Die Funktion verhindert mehrfaches Rendern durch Verwendung einer Flagge `hasBeenRendered`.
+     * - Die Pixelposition des Diagramms wird mit `getPixelFromCoordinate` berechnet.
+     * - Die Tortendiagramm-Daten werden aus den Eigenschaften des Features extrahiert und auf `chartData` gesetzt.
+     * - Das Tortendiagramm wird mit einer benutzerdefinierten Renderer-Funktion gezeichnet.
+     * 
+     * @example
+     * ```typescript
+     * const source = new VectorSource();
+     * createPieChartLayer(source);
+     * ```
+     */
+    createPieChartLayer(source_ = new VectorSource()) {
          
         this.messstellenLayer=new VectorLayer({
             source: source_,
@@ -381,6 +569,14 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
         
         
         
+        /**
+         * Zeichnet ein Viertel-Tortendiagramm auf einem gegebenen Canvas-Kontext.
+         *
+         * @param ctx - Der Canvas-Rendering-Kontext, auf dem das Tortendiagramm gezeichnet wird.
+         * @param data - Ein Array von Strings, das die Daten für jedes Viertel-Segment darstellt.
+         * @param x - Die x-Koordinate des Zentrums des Tortendiagramms.
+         * @param y - Die y-Koordinate des Zentrums des Tortendiagramms.
+         */
         drawQuarterPieChart(ctx: CanvasRenderingContext2D, data: string[], x: number, y: number) {
           const totalSlices = 4;  // Vier Segmente
           const radius = 15;  // Radius des Tortendiagramms
@@ -409,6 +605,19 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
         
         
   // filtert die Messstellen durch die zuvor ausgewählten Arten und Untersuchungsjahre
+  /**
+   * Filtert die Features des VerbreitungMessstellenLayer basierend auf dem bereitgestellten ids_mst-Array.
+   * 
+   * @param ids_mst - Ein Array von Zahlen, das die ids_mst-Werte repräsentiert, nach denen die Features gefiltert werden sollen.
+   * 
+   * Diese Funktion führt die folgenden Schritte aus:
+   * 1. Ruft alle Features von der sourceVerbreitungMessstellen ab.
+   * 2. Filtert die Features basierend darauf, ob ihre 'id_mst'-Eigenschaft im ids_mst-Array enthalten ist.
+   * 3. Erstellt eine neue VectorSource mit den gefilterten Features.
+   * 4. Aktualisiert den VerbreitungMessstellenLayer mit der neuen gefilterten Quelle.
+   * 5. Fügt den aktualisierten Layer zur Karte hinzu.
+   */
+  
   filterVerbreitungMessstellenLayer(ids_mst: number[]) {
     
      
@@ -431,6 +640,12 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
 
   }
   
+  /**
+   * Holt die Farbe, die dem angegebenen Wert zugeordnet ist.
+   *
+   * @param wert - Der Wert, für den die Farbe abgerufen werden soll.
+   * @returns Die Farbe, die dem angegebenen Wert entspricht.
+   */
   getColor(wert: string) {
     return this.Farbebewertg.getColor(wert);
   }
@@ -650,6 +865,15 @@ mstsee = new Style({
     style:(feature) =>  this.mstverbreitung
  
   });
+  /**
+   * Zeichnet ein Viertel-Tortendiagramm mit einer Legende auf einem gegebenen Canvas-Kontext.
+   * 
+   * @param ctx - Der Canvas-Rendering-Kontext, auf dem das Tortendiagramm gezeichnet wird.
+   * @param data - Ein Array von Strings, das die Daten für jedes Viertel des Tortendiagramms darstellt.
+   * @param labels - Ein Array von Strings, das die Beschriftungen für jedes Viertel des Tortendiagramms darstellt.
+   * @param x - Die x-Koordinate des Zentrums des Tortendiagramms.
+   * @param y - Die y-Koordinate des Zentrums des Tortendiagramms.
+   */
   drawQuarterPieChartWithLegend(ctx: CanvasRenderingContext2D, data: string[], labels: string[], x: number, y: number) {
     const totalSlices = 4;  // Anzahl der Segmente
     const radius = 20;  // Radius des Tortendiagramms
@@ -735,6 +959,22 @@ ctx.textAlign = 'center';  // Zentriere den Text horizontal
 ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unterhalb des Kreises
   }
   
+  /**
+   * Schaltet die Sichtbarkeit bestimmter Kartenebenen basierend auf dem Zustand der bereitgestellten Checkbox um.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die Checkbox aktiviert ist.
+   * 
+   * Wenn `checked` wahr ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp3` und `view_geo_wk_oezk_bp2` von der Karte.
+   * - Fügt die Ebene `view_geo_wk_oezk_bp1` zur Karte hinzu.
+   * - Entfernt die Ebenen `view_geo_lw_oezk_bp3` und `view_geo_lw_oezk_bp2` von der Karte.
+   * - Fügt die Ebene `view_geo_lw_oezk_bp1` zur Karte hinzu.
+   * - Ruft die Methode `mstnachoben` auf.
+   * - Setzt `isstartbp2Checked` und `isstartbp3Checked` auf false.
+   * 
+   * Wenn `checked` falsch ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp1` und `view_geo_lw_oezk_bp1` von der Karte.
+   */
   startbp1(checked: boolean) {
     if (checked){this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_wk_oezk_bp2);
@@ -754,6 +994,22 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     }
   }
 
+  /**
+   * Schaltet die Sichtbarkeit bestimmter Kartenebenen basierend auf dem Zustand der bereitgestellten Checkbox um.
+   * 
+   * @param {boolean} checked - Der Zustand der Checkbox. Wenn true, werden bestimmte Ebenen hinzugefügt und andere entfernt. Wenn false, werden die hinzugefügten Ebenen entfernt.
+   * 
+   * Wenn `checked` wahr ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp3` und `view_geo_wk_oezk_bp1` von der Karte.
+   * - Fügt die Ebene `view_geo_wk_oezk_bp2` zur Karte hinzu.
+   * - Entfernt die Ebenen `view_geo_lw_oezk_bp3` und `view_geo_lw_oezk_bp1` von der Karte.
+   * - Fügt die Ebene `view_geo_lw_oezk_bp2` zur Karte hinzu.
+   * - Ruft die Methode `mstnachoben()` auf.
+   * - Setzt `isstartbp3Checked` und `isstartbp1Checked` auf false.
+   * 
+   * Wenn `checked` falsch ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp2` und `view_geo_lw_oezk_bp2` von der Karte.
+   */
   startbp2(checked: boolean) {
     if (checked){
 
@@ -773,6 +1029,22 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     }
   }
 
+  /**
+   * Schaltet die Sichtbarkeit bestimmter Kartenebenen basierend auf dem Zustand der bereitgestellten Checkbox um.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die Checkbox aktiviert ist.
+   * 
+   * Wenn `checked` wahr ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp2` und `view_geo_wk_oezk_bp1` von der Karte.
+   * - Fügt die Ebene `view_geo_wk_oezk_bp3` zur Karte hinzu.
+   * - Entfernt die Ebenen `view_geo_lw_oezk_bp2` und `view_geo_lw_oezk_bp1` von der Karte.
+   * - Fügt die Ebene `view_geo_lw_oezk_bp3` zur Karte hinzu.
+   * - Setzt `isstartbp2Checked` und `isstartbp1Checked` auf false.
+   * - Ruft die Methode `mstnachoben` auf.
+   * 
+   * Wenn `checked` falsch ist:
+   * - Entfernt die Ebenen `view_geo_wk_oezk_bp3` und `view_geo_lw_oezk_bp3` von der Karte.
+   */
   startbp3(checked: boolean) {
     if (checked){
     this.map.removeLayer(this.view_geo_wk_oezk_bp2);
@@ -793,6 +1065,23 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
 
  
 
+  /**
+   * Schaltet die Sichtbarkeit einer einzelnen BP-Ebene auf der Karte um.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die Ebene angezeigt (true) oder ausgeblendet (false) werden soll.
+   * @param sourceLayer - Die Vektorquellenebene, die für die Erstellung der Tortendiagramm-Ebene verwendet werden soll.
+   * 
+   * Wenn `checked` wahr ist:
+   * - Entfernt die aktuell aktive BP-Tortendiagramm-Ebene und die Messstellen-Ebene von der Karte, falls sie existieren.
+   * - Zeichnet die Legende.
+   * - Erstellt und setzt die Tortendiagramm-Ebene unter Verwendung der bereitgestellten Vektorquellenebene.
+   * 
+   * Wenn `checked` falsch ist:
+   * - Entfernt die Messstellen-Ebene von der Karte.
+   * - Entfernt die Tortendiagramm-Ebene.
+   * - Löscht die Legende.
+   */
+  
   private toggleSingleBpLayer(checked: boolean, sourceLayer: VectorSource) {
   
   if (checked) {
@@ -814,6 +1103,13 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
   }
   
 }
+/**
+ * Zeichnet eine Legende auf einem Canvas-Element mit der ID 'legendCanvas'.
+ * Löscht das Canvas, bevor ein Viertel-Tortendiagramm mit Legende gezeichnet wird.
+ * Das Diagramm stellt vier Kategorien dar: Makrozoobenthos, Phytoplankton, Diatomeen und Makrophyten.
+ * 
+ * @private
+ */
 private drawLegend() {
   const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
   const ctx = legendCanvas.getContext('2d');
@@ -826,6 +1122,11 @@ private drawLegend() {
   }
 }
 
+/**
+ * Löscht den Inhalt des Legenden-Canvas.
+ * Diese Methode ruft das Canvas-Element mit der ID 'legendCanvas' ab,
+ * erhält dessen 2D-Rendering-Kontext und löscht den gesamten Canvas-Bereich.
+ */
 private clearLegend() {
   const legendCanvas = document.getElementById('legendCanvas') as HTMLCanvasElement;
   const ctx = legendCanvas.getContext('2d');
@@ -835,7 +1136,17 @@ private clearLegend() {
 }
 
 
-  // Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
+  // 
+    /**
+   * Behandelt den Auswahlzustand des ersten BP (ersterBP).
+   * Methode, um den Layer mit den Tortendiagrammen hinzuzufügen oder zu entfernen
+
+   * @param checked - Ein boolescher Wert, der angibt, ob der erste BP aktiviert ist.
+   * 
+   * Diese Methode aktualisiert den Zustand von `isErsterBPChecked` auf den Wert von `checked`,
+   * und setzt `isZweiterBPChecked`, `isDritterBPChecked` und `isVierterBPChecked` auf false.
+   * Sie schaltet auch die Sichtbarkeit der einzelnen BP-Ebene um, die mit `source_lw_bp1_with_pie` verbunden ist.
+   */
   ersterBP(checked: boolean) {
   
     this.isErsterBPChecked = checked;
@@ -844,6 +1155,17 @@ private clearLegend() {
     this.isVierterBPChecked = false;
     this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
   }
+  /**
+   * Behandelt die Auswahl der zweiten BP (BP2) Ebene auf der Karte.
+   * 
+   * Diese Methode setzt die Namen für die `view_geo_aus_daten_lw_oezk_bp2` und 
+   * `view_geo_aus_daten_rw_oezk_bp2` Ebenen, entfernt alle BP-Ebenen und fügt 
+   * dann bedingt die BP2-Ebenen zur Karte hinzu, wenn `checked` wahr ist. 
+   * Sie aktualisiert auch den Zustand der BP-Checkboxen.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die BP2-Ebene zur Karte 
+   *                  hinzugefügt werden soll.
+   */
   zweiterBP(checked: boolean) {
     this.view_geo_aus_daten_lw_oezk_bp2.set('name', 'view_geo_aus_daten_lw_oezk_bp2');
     this.view_geo_aus_daten_rw_oezk_bp2.set('name', 'view_geo_aus_daten_rw_oezk_bp2');
@@ -859,6 +1181,17 @@ private clearLegend() {
     //this.map.addLayer(this.view_geo_wk_oezk_bp3);
     this.toggleSingleBpLayer(checked, this.source_lw_bp2_with_pie);
   }
+  /**
+   * Entfernt alle angegebenen Ebenen von der Karte.
+   * 
+   * Diese Methode entfernt die folgenden Ebenen:
+   * - `view_geo_aus_daten_rw_oezk_bp2`
+   * - `view_geo_aus_daten_lw_oezk_bp2`
+   * - `view_geo_aus_daten_rw_oezk_bp3`
+   * - `view_geo_aus_daten_lw_oezk_bp3`
+   * - `view_geo_aus_daten_rw_oezk_bp4`
+   * - `view_geo_aus_daten_lw_oezk_bp4`
+   */
   removeallbp(){
     this.map.removeLayer(this.view_geo_aus_daten_rw_oezk_bp2);
     this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp2);
@@ -867,6 +1200,15 @@ private clearLegend() {
     this.map.removeLayer(this.view_geo_aus_daten_rw_oezk_bp4);
     this.map.removeLayer(this.view_geo_aus_daten_lw_oezk_bp4);
   }
+  /**
+   * Schaltet die Sichtbarkeit der dritten BP-Ebene auf der Karte um.
+   * 
+   * Diese Methode setzt die Namen für die dritten BP-Ebenen, entfernt alle BP-Ebenen,
+   * und fügt dann die dritten BP-Ebenen zur Karte hinzu, wenn der `checked` Parameter wahr ist.
+   * Sie aktualisiert auch den Zustand der BP-Checkboxen und schaltet die einzelne BP-Ebene um.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die dritte BP-Ebene sichtbar sein soll.
+   */
   dritterBP(checked: boolean) {
     this.view_geo_aus_daten_lw_oezk_bp3.set('name', 'view_geo_aus_daten_lw_oezk_bp3');
     this.view_geo_aus_daten_rw_oezk_bp3.set('name', 'view_geo_aus_daten_rw_oezk_bp3');
@@ -881,6 +1223,17 @@ private clearLegend() {
     this.toggleSingleBpLayer(checked, this.source_lw_bp3_with_pie);
   }
   
+  /**
+   * Behandelt die Auswahl und Anzeige der vierten BP-Ebene auf der Karte.
+   * 
+   * Diese Methode setzt die Namen für die `view_geo_aus_daten_lw_oezk_bp4` und 
+   * `view_geo_aus_daten_rw_oezk_bp4` Ebenen, entfernt alle BP-Ebenen von der Karte, 
+   * und fügt die vierten BP-Ebenen hinzu, wenn der `checked` Parameter wahr ist. 
+   * Sie aktualisiert auch den Zustand der BP-Checkboxen und schaltet die Sichtbarkeit 
+   * der `source_lw_bp4_with_pie` Ebene um.
+   * 
+   * @param checked - Ein boolescher Wert, der angibt, ob die vierte BP-Ebene angezeigt werden soll.
+   */
   vierterBP(checked: boolean) {
     this.view_geo_aus_daten_lw_oezk_bp4.set('name', 'view_geo_aus_daten_lw_oezk_bp4');
     this.view_geo_aus_daten_rw_oezk_bp4.set('name', 'view_geo_aus_daten_rw_oezk_bp4');
@@ -893,6 +1246,13 @@ private clearLegend() {
     this.isVierterBPChecked = checked;
     this.toggleSingleBpLayer(checked, this.source_lw_bp4_with_pie);
   }
+/**
+ * Aktualisiert die Kartenebenen, indem sie basierend auf dem überprüften Status entfernt und erneut hinzugefügt werden.
+ * 
+ * Wenn `isFliesgewasserChecked` wahr ist, wird die `fliesgewasserLayer` entfernt und dann erneut zur Karte hinzugefügt.
+ * Wenn `isSeeChecked` wahr ist, wird die `seeLayer` entfernt und dann erneut zur Karte hinzugefügt.
+ */
+
 mstnachoben(){
 
   if (this.isFliesgewasserChecked=== true){
@@ -906,6 +1266,22 @@ mstnachoben(){
   
 }
 
+/**
+ * Schaltet die Sichtbarkeit der 'seeLayer' auf der Karte basierend auf dem Zustand der bereitgestellten Checkbox um.
+ * 
+ * @param checked - Ein boolescher Wert, der angibt, ob die Checkbox aktiviert ist.
+ * 
+ * Wenn `checked` `false` ist:
+ * - Entfernt die 'seeLayer' von der Karte.
+ * - Setzt `isrepraesentSeeChecked` auf `false`.
+ * - Deaktiviert die 'Repraesent'-Checkbox für 'SEE', indem `isRepraesentCheckedSEEdisable` auf `true` gesetzt wird.
+ * - Wenn `isFliesgewasserChecked` ebenfalls `false` ist, wird der `messstellenFilter` gelöscht und der Filter deaktiviert, indem `isFilterdisable` auf `true` gesetzt wird.
+ * 
+ * Wenn `checked` `true` ist:
+ * - Aktiviert den Filter, indem `isFilterdisable` auf `false` gesetzt wird.
+ * - Aktiviert die 'Repraesent'-Checkbox für 'SEE', indem `isRepraesentCheckedSEEdisable` auf `false` gesetzt wird.
+ * - Ruft `showAllFeatures` auf, um alle Features von `sourceSeeMessstellen` auf der 'seeLayer' anzuzeigen.
+ */
 startalleSee(checked: boolean) {
   this.map.removeLayer(this.seeLayer);
   if (!checked){this.isrepraesentSeeChecked=false;this.isRepraesentCheckedSEEdisable=true;
@@ -918,6 +1294,14 @@ startalleSee(checked: boolean) {
   this.showAllFeatures(this.sourceSeeMessstellen, this.seeLayer);
   }
 }
+/**
+ * Schaltet die Sichtbarkeit und Interaktivität der "Fliesgewasser"-Ebene auf der Karte um.
+ * 
+ * @param checked - Ein boolescher Wert, der angibt, ob die "Fliesgewasser"-Ebene angezeigt oder ausgeblendet werden soll.
+ * 
+ * Wenn `checked` `true` ist, wird die "Fliesgewasser"-Ebene zur Karte hinzugefügt und verwandte Filter und Steuerungen werden aktiviert.
+ * Wenn `checked` `false` ist, wird die "Fliesgewasser"-Ebene von der Karte entfernt und verwandte Filter und Steuerungen werden deaktiviert.
+ */
 startalleFGW(checked: boolean) {
   this.map.removeLayer(this.fliesgewasserLayer);
   if (!checked){this.isrepraesentFGWChecked=false;
@@ -932,11 +1316,28 @@ startalleFGW(checked: boolean) {
   this.showAllFeatures(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer);
   }
 }
+/**
+ * Filtert die Messstellen basierend auf den angegebenen Kriterien.
+ *
+ * @param fgwchecked - Gibt an, ob die FGW-Messstellen einbezogen werden sollen.
+ * @param seechecked - Gibt an, ob die SEE-Messstellen einbezogen werden sollen.
+ * @param repraesent_mst_fgw - Gibt an, ob die repräsentativen FGW-Messstellen einbezogen werden sollen.
+ * @param repraesent_mst_see - Gibt an, ob die repräsentativen SEE-Messstellen einbezogen werden sollen.
+ */
 filterMessstellen(fgwchecked: boolean,seechecked: boolean,repraesent_mst_fgw: boolean,repraesent_mst_see: boolean) {
  
   this.toggleLayerseemst(seechecked,repraesent_mst_see);
   this.toggleLayerfgwmst(fgwchecked,repraesent_mst_fgw);
 }
+/**
+ * Schaltet die Sichtbarkeit der seeLayer auf der Karte basierend auf den bereitgestellten Parametern um.
+ * 
+ * @param checked - Ein boolescher Wert, der angibt, ob die Ebene angezeigt werden soll.
+ * @param repraesent_mst - Ein boolescher Wert, der angibt, ob der Messstellenfilter angewendet werden soll.
+ * 
+ * Wenn `checked` wahr ist, wendet die Methode einen Filter auf die seeLayer unter Verwendung des messstellenFilter an.
+ * Andernfalls entfernt sie die seeLayer von der Karte.
+ */
 toggleLayerseemst(checked: boolean,repraesent_mst: boolean) {
   this.map.removeLayer(this.seeLayer);
   if (checked) {
@@ -951,6 +1352,12 @@ toggleLayerseemst(checked: boolean,repraesent_mst: boolean) {
   }
 
 
+/**
+ * Schaltet die Sichtbarkeit der 'fliesgewasserLayer' auf der Karte basierend auf den bereitgestellten Parametern um.
+ * 
+ * @param checked - Ein boolescher Wert, der angibt, ob die Ebene angezeigt werden soll.
+ * @param repraesent_mst - Ein boolescher Wert, der angibt, ob der Messstellenfilter angewendet werden soll.
+ */
 toggleLayerfgwmst(checked: boolean,repraesent_mst: boolean) {
   this.map.removeLayer(this.fliesgewasserLayer);
   
@@ -963,6 +1370,11 @@ toggleLayerfgwmst(checked: boolean,repraesent_mst: boolean) {
         // }
   } 
 }
+  /**
+   * Schaltet die Sichtbarkeit des VerbreitungMessstellenLayer auf der Karte um.
+   *
+   * @param checked - Ein boolescher Wert, der angibt, ob die Ebene hinzugefügt (true) oder entfernt (false) werden soll.
+   */
   toggleLayerVerbreitung(checked: boolean) {
     if (checked) {
       this.map.addLayer(this.VerbreitungMessstellenLayer);
@@ -972,6 +1384,12 @@ toggleLayerfgwmst(checked: boolean,repraesent_mst: boolean) {
           this.map.removeLayer(this.VerbreitungMessstellenLayer);
         }
   }
+  /**
+   * Ruft Daten vom `verbreitungartenService` ab und weist sie zu.
+   * 
+   * Diese Methode ruft die Funktion `callKomponenten` vom `verbreitungartenService` auf
+   * und weist die resultierenden Daten der Eigenschaft `dbKomponenten` zu.
+   */
   verbreitungsdaten(){
    
     //this.verbreitungartenService.callArten();
@@ -982,6 +1400,29 @@ this.dbKomponenten = this.verbreitungartenService.dbKomponenten;
   }
 
 
+  /**
+   * Initialisiert die Karte mit dem angegebenen WMTS-Layer und richtet verschiedene Kartenkonfigurationen,
+   * Stile und Ereignishandler ein.
+   *
+   * @param {TileLayer} wmtsLayer - Der WMTS-Layer, der als Basis-Layer der Karte hinzugefügt wird.
+   *
+   * Diese Funktion führt die folgenden Aufgaben aus:
+   * - Ruft die Methode `verbreitungsdaten` auf.
+   * - Richtet die Kartenansicht mit einem angegebenen Zentrum und Zoom-Level ein.
+   * - Definiert einen Stil ohne Füllung für den landesgrenze-Layer.
+   * - Erstellt und fügt den landesgrenze-Layer zur Karte hinzu.
+   * - Initialisiert die Karte mit dem angegebenen Ziel, den Steuerungen, Layern und der Ansicht.
+   * - Fügt ein Popup-Overlay zur Karte hinzu.
+   * - Richtet einen Ereignishandler für Zeigerbewegungen ein, um Features hervorzuheben und
+   *   Informationen in einem Popup anzuzeigen.
+   *
+   * Der Ereignishandler für Zeigerbewegungen:
+   * - Setzt den Stil zuvor ausgewählter Features zurück.
+   * - Hebt das Feature unter dem Zeiger mit einem bestimmten Stil hervor.
+   * - Zeigt Informationen über das ausgewählte Feature in einem Popup an.
+   * - Bestimmt den Untersuchungszeitraum basierend auf dem Layer-Namen.
+   * - Zeigt den ökologischen Zustand und andere relevante Informationen in einem Tabellenformat an.
+   */
   private initializeMap(wmtsLayer: TileLayer): void {
 
     this. verbreitungsdaten();
@@ -1126,6 +1567,14 @@ const landesgrenzeLayer = new VectorLayer({
 
 
 
+  /**
+   * Lifecycle-Hook, der aufgerufen wird, nachdem Angular alle datengebundenen Eigenschaften einer Direktive initialisiert hat.
+   * Diese Methode führt die folgenden Aktionen aus:
+   * 1. Überprüft, ob der Benutzer mit dem AuthService eingeloggt ist. Wenn nicht, wird zur Login-Seite navigiert.
+   * 2. Lädt asynchron einen WMTS-Layer und initialisiert die Karte mit dem geladenen Layer.
+   * 
+   * @returns {void}
+   */
   ngOnInit(): void {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);

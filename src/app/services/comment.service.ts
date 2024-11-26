@@ -6,14 +6,28 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service to handle operations related to comments.
+ */
 export class CommentService {
-  //private apiUrl = 'http://localhost:3000/comment';
+  /**
+   * URL der API-Endpunkt.
+   * @private
+   */
   private apiUrl = environment.apiUrl;
+
+  /**
+   * Konstruktor zum Injizieren von HttpClient.
+   * @param httpClient - Die HttpClient-Instanz, um HTTP-Anfragen zu stellen.
+   */
   constructor(private httpClient: HttpClient) {}
 
+  /**
+   * Ruft einen Kommentar basierend auf der bereitgestellten Vorlagenreferenz ab.
+   * @param templateRef - Die Referenz der Vorlage, für die der Kommentar abgerufen werden soll.
+   * @returns Ein Observable, das ein Objekt mit dem Kommentar ausgibt.
+   */
   getComment(templateRef: string): Observable<{ kommentar: string }> {
-
-    //this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
     return this.httpClient.get<{ kommentar: string }>(`${this.apiUrl}/wiki?templateRef=${templateRef}`);
   }
 }

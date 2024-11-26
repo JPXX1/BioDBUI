@@ -7,6 +7,18 @@ import { Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * Service zur Verwaltung und Bearbeitung von Messstellen-Daten mit Expertenurteil.
+ * 
+ * Dieser Service bietet Methoden zum Abrufen, Filtern und Speichern von Messstellen-Daten
+ * sowie zur Verwaltung von Expertenurteilen und deren Begründungen.
+ * 
+ * @class
+ * @example
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+	 */
 export class MsteditService {
 public mstMitExpertenurteil:MstMitExpertenurteil[]=[];
 private apiUrl = environment.apiUrl;

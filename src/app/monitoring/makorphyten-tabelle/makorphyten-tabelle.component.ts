@@ -10,6 +10,7 @@ import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp
   templateUrl: './makorphyten-tabelle.component.html',
   styleUrls: ['./makorphyten-tabelle.component.css']
 })
+
 export class MakorphytenTabelleComponent implements OnInit, OnChanges {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @Input() mstMakrophyten: MstMakrophyten[] = [];

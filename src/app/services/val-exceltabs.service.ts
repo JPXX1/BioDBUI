@@ -5,6 +5,39 @@ import * as XLSX from 'xlsx';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service zur Verarbeitung von Excel-Tabellen und deren Spalten, die aus einer PostgreSQL-Datenbank abgerufen werden.
+ * 
+ * Dieser Service bietet Funktionen zum Abrufen und Verarbeiten von Excel-Tabellen und deren Spalten, die in einer PostgreSQL-Datenbank gespeichert sind.
+ * Er ermöglicht die Auswahl und Validierung von Verfahren basierend auf den Excel-Tabellen und deren Spaltennamen.
+ * 
+ * @class
+ * @classdesc Diese Klasse bietet Methoden zum Abrufen und Verarbeiten von Excel-Tabellen und deren Spalten aus einer PostgreSQL-Datenbank.
+ * 
+ * @property {TabSpalte[]} excelspaltenimport - Array von TabSpalten, die aus den Excel-Tabellen importiert wurden.
+ * @property {any} valexceltabs - Enthält die abgerufenen Excel-Tabs.
+ * @property {any} valverfahren - Enthält die abgerufenen Verfahren.
+ * @property {any} valspalten - Enthält die abgerufenen Excel-Spalten.
+ * @property {string} InfoBox - Informationsbox für Nachrichten.
+ * @property {string} Verfahren - Name des ausgewählten Verfahrens.
+ * @property {number} NrVerfahren - Nummer des ausgewählten Verfahrens.
+ * @property {string} Exceltabsimpalle - Namen aller importierten Excel-Tabs.
+ * @property {string} ExceltabsimpVier - Namen der ersten vier importierten Excel-Tabs.
+ * @property {boolean} loescheErste5Zeilen - Flag zum Löschen der ersten fünf Zeilen.
+ * @property {number[]} VorhandeneVerfahren - Array von vorhandenen Verfahren.
+ * 
+ * @constructor
+ * @param {ImpPhylibServ} impPhylibServ - Service zum Abrufen der Daten aus der PostgreSQL-Datenbank.
+ * 
+ * @method callvalexceltabs - Ruft asynchron verschiedene Werte vom Service ab und setzt sie.
+ * @method waehleVerfahren - Wählt das entsprechende Verfahren basierend auf der Tab-Verfahrensnummer aus.
+ * @method exceltabsauslesen - Liest die Namen der Excel-Tabs des importierten Excel-Files aus.
+ * @method countOccurrences - Zählt die Vorkommen von Einträgen aus den Excel-Import-Registerkarten, die dem angegebenen Filter entsprechen.
+ * @method ExcelTabsinArray - Verarbeitet die Excel-Arbeitsmappe und wählt das entsprechende Verfahren basierend auf der Anzahl der Tabs und deren Namen aus.
+ * @method spaltenauslesen - Liest die Spaltennamen der Excel-Tabs aus.
+ * @method ValExcelSpalten - Validiert die Excel-Spalten basierend auf den in `valspalten` definierten Kriterien.
+ * @method ArrayAvg - Berechnet den Durchschnitt eines Arrays.
+ */
 export class ValExceltabsService {
 
 	excelspaltenimport:TabSpalte[]=[];
@@ -59,6 +92,13 @@ export class ValExceltabsService {
 
 	}
 
+  /**
+   * Wählt ein Verfahren basierend auf der angegebenen Verfahrensnummer aus.
+   * Filtert die Liste der Verfahren, um dasjenige zu finden, das der angegebenen Nummer entspricht.
+   * Wenn genau ein passendes Verfahren gefunden wird, setzt es die Eigenschaften `Verfahren` und `NrVerfahren`.
+   *
+   * @param {number} tabverfahrenNrs - Die Nummer des auszuwählenden Verfahrens.
+   */
   waehleVerfahren(tabverfahrenNrs:number){
 
    let verfahrenList= this.valverfahren.filter(verfahre => verfahre.id === tabverfahrenNrs);
@@ -71,6 +111,16 @@ export class ValExceltabsService {
     
   }
 // Liest die Namen der Exceltabs des importierten Excelfiles aus
+/**
+ * Liest die Blattnamen aus der bereitgestellten Arbeitsmappe und verarbeitet sie.
+ * 
+ * Diese Methode konvertiert die Blattnamen in Kleinbuchstaben und verkettet sie zu zwei Zeichenfolgen:
+ * - `ExceltabsimpVier`: Enthält die ersten vier Blattnamen, getrennt durch Semikolons.
+ * - `Exceltabsimpalle`: Enthält alle Blattnamen, getrennt durch Semikolons.
+ * 
+ * @param {Object} workbook - Das Arbeitsmappenobjekt, das die Blattnamen enthält.
+ */
+
 exceltabsauslesen(workbook) {
   let tabs = "";
   let tabsvier = "";
@@ -277,6 +327,15 @@ exceltabsauslesen(workbook) {
 
 }}
 
+  /**
+   * Liest Spalten aus einer Excel-Arbeitsmappe und speichert sie im Array `excelspaltenimport`.
+   * 
+   * @param workbook - Das Excel-Arbeitsmappenobjekt, aus dem die Spalten gelesen werden sollen.
+   * 
+   * Die Methode iteriert durch jedes Blatt in der Arbeitsmappe, konvertiert die Blattdaten in JSON
+   * und extrahiert die Spaltennamen aus der ersten Zeile jedes Blattes. Die Spaltennamen werden dann
+   * zusammen mit dem entsprechenden Blattnamen im Array `excelspaltenimport` gespeichert.
+   */
   spaltenauslesen( workbook) {
 
     this.excelspaltenimport=[];
@@ -300,6 +359,24 @@ exceltabsauslesen(workbook) {
       }
     })}
   }
+  /**
+   * Filtert und verarbeitet Excel-Spalten basierend auf dem angegebenen Tabellennamen.
+   * 
+   * @param namentabs - Der Name der Excel-Tabelle, nach der die Spalten gefiltert werden sollen.
+   * 
+   * Diese Methode initialisiert das Array `VorhandeneVerfahren` als leeres Array.
+   * Anschließend filtert sie das Array `valspalten` basierend auf dem Wert von `namentabs`.
+   * Wenn `namentabs` "indifferent" ist, filtert sie `valspalten`, bei denen `name_exceltab` gleich `namentabs` ist.
+   * Andernfalls filtert sie `valspalten`, bei denen `name_exceltab` nicht "indifferent" ist.
+   * 
+   * Die Methode protokolliert den Inhalt von `excelspaltenimport` in der Konsole und iteriert über jedes Element in `excelspaltenimport`.
+   * Für jedes Element iteriert sie über jedes Element im gefilterten `valspaltenfiter`.
+   * 
+   * Sie setzt den Tabellennamen basierend auf dem Wert von `namentabs` und überprüft, ob die Spaltennamen und Tabellennamen übereinstimmen,
+   * und ob der Name erforderlich ist. Wenn diese Bedingungen erfüllt sind, fügt sie die `verfahrens_id` zu `VorhandeneVerfahren` hinzu.
+   * 
+   * Schließlich protokolliert sie den Inhalt von `VorhandeneVerfahren` in der Konsole.
+   */
   ValExcelSpalten(namentabs: string) {
     // Initialisiere das Array VorhandeneVerfahren als leeres Array
     this.VorhandeneVerfahren = [];
@@ -351,6 +428,14 @@ exceltabsauslesen(workbook) {
 }
 
 
+/**
+ * Berechnet den Durchschnitt der Zahlen im angegebenen Array.
+ * Wenn das Array leer ist, wird 20 zurückgegeben.
+ *
+ * @param {number[]} myArray - Das Array von Zahlen, deren Durchschnitt berechnet werden soll.
+ * @returns {number} Der Durchschnitt der Zahlen im Array, gerundet auf die nächste ganze Zahl.
+ */
+
  ArrayAvg(myArray) {
   let d=20;
   var i = 0, summ = 0, ArrayLen = myArray.length;
@@ -365,6 +450,15 @@ if (ArrayLen>0){
 
 
 }
+/**
+ * Stellt eine Spalte innerhalb eines Tabs in einer Excel-Datei dar.
+ * 
+ * @interface TabSpalte
+ * 
+ * @property {string} Tabname - Der Name des Tabs.
+ * @property {string} Spaltenname - Der Name der Spalte innerhalb des Tabs.
+ */
+
 interface TabSpalte {
         
 

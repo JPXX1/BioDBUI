@@ -1,14 +1,12 @@
 import {ElementRef, HostListener,NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
 import { FileUploadService } from '../services/file-upload.service';
 import * as XLSX from 'xlsx';
-import { ChangeDetectorRef } from '@angular/core';
 import { HelpService } from '../services/help.service';
 import {PerlodesimportService} from '../services/perlodesimport.service';
 import { Messwerte } from '../interfaces/messwerte';
 import { Uebersicht } from '../interfaces/uebersicht';
 import {XlsxImportPhylibService} from '../services/xlsx-import-phylib.service';
 import {ValExceltabsService} from '../services/val-exceltabs.service';
-
 import { SelectjahrComponent } from '../select/selectjahr/selectjahr.component'; 
 import { SelectProbenehmerComponent } from '../select/select-probenehmer/select-probenehmer.component'; 
 import { MatTableDataSource } from '@angular/material/table';
@@ -30,7 +28,6 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import {DataAbiotik} from 'src/app/interfaces/data-abiotik';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
@@ -39,6 +36,108 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 	templateUrl: './file-upload.component.html',
 	styleUrls: ['./file-upload.component.css']
 })
+/**
+ * Die FileUploadComponent ist verantwortlich für das Handling von Datei-Uploads, die Datenverarbeitung und die Verwaltung des Anwendungszustands
+ * im Zusammenhang mit Dateiimporten. Sie interagiert mit verschiedenen Diensten, um Operationen wie Datenvalidierung, Import und Anzeige durchzuführen.
+ * 
+ * @class
+ * @implements {OnInit}
+ * @implements {AfterViewInit}
+ * 
+ * @property {SelectjahrComponent} child1 - ViewChild-Referenz zur SelectjahrComponent.
+ * @property {SelectProbenehmerComponent} childPN - ViewChild-Referenz zur SelectProbenehmerComponent.
+ * @property {MatPaginator} paginator - ViewChild-Referenz zum MatPaginator.
+ * @property {MatSort} sort - ViewChild-Referenz zum MatSort.
+ * @property {EventEmitter<MessstellenStam>} newData - EventEmitter zum Senden neuer Daten.
+ * @property {boolean} ImpHistoryisChecked - Flag, um zu überprüfen, ob die Importhistorie aktiviert ist.
+ * @property {boolean} ArtenNichtBekannt - Flag, um zu überprüfen, ob Arten unbekannt sind.
+ * @property {boolean} ArtenNichtBekanntIsVisible - Flag, um zu überprüfen, ob der Abschnitt für unbekannte Arten sichtbar ist.
+ * @property {DataAbiotik[]} dataAbiotik - Array zur Speicherung abiotischer Daten.
+ * @property {any} einheiten - Variable zur Speicherung von Einheiten.
+ * @property {any} mst - Variable zur Speicherung von Messstellen.
+ * @property {any} formen - Variable zur Speicherung von Formen.
+ * @property {any} arten - Variable zur Speicherung von Arten.
+ * @property {any} tiefen - Variable zur Speicherung von Tiefen.
+ * @property {any} jahr - Variable zur Speicherung des Jahres.
+ * @property {any} probenehmer - Variable zur Speicherung des Probenehmers.
+ * @property {any} importuebersicht - Variable zur Speicherung der Importübersicht.
+ * @property {any} arrayBuffer - Variable zur Speicherung des Array-Buffers.
+ * @property {boolean} mstimptab - Flag, um zu überprüfen, ob der Messstellen-Import-Tab aktiv ist.
+ * @property {boolean} Datimptab - Flag, um zu überprüfen, ob der Daten-Import-Tab aktiv ist.
+ * @property {boolean} Datimptabphyto - Flag, um zu überprüfen, ob der Phytoplankton-Daten-Import-Tab aktiv ist.
+ * @property {string} newDate - Variable zur Speicherung des neuen Datums.
+ * @property {Uebersicht[]} uebersicht - Array zur Speicherung von Übersichts-Daten.
+ * @property {UebersichtImport[]} uebersichtImport - Array zur Speicherung von Importübersichts-Daten.
+ * @property {UebersichtImport} newuebersichtImport - Variable zur Speicherung neuer Importübersichts-Daten.
+ * @property {BehaviorSubject<boolean>} isLoading$ - BehaviorSubject zur Verwaltung des Ladezustands.
+ * @property {boolean} ImportIntoDB - Flag, um zu überprüfen, ob der Import in die Datenbank erlaubt ist.
+ * @property {boolean} pruefen - Flag, um zu überprüfen, ob eine Validierung erforderlich ist.
+ * @property {boolean} ImportBewertungenAnzeige - Flag, um zu überprüfen, ob die Importbewertungen-Anzeige aktiv ist.
+ * @property {MatTableDataSource<Uebersicht>} dataSource - Datenquelle für die Tabelle.
+ * @property {MstMakrophyten[]} mstMakrophyten - Array zur Speicherung von Makrophyten-Messstellen.
+ * @property {boolean} ImportDatenAnzeige - Flag, um zu überprüfen, ob die Importdaten-Anzeige aktiv ist.
+ * @property {Messwerte[]} MessData - Array zur Speicherung von Messdaten.
+ * @property {Messwerte[]} MessDataOrgi - Array zur Speicherung der ursprünglichen Messdaten.
+ * @property {Messwerte[]} MessDataImp - Array zur Speicherung der importierten Messdaten.
+ * @property {string[]} displayColumnNames - Array zur Speicherung der Anzeigespaltennamen.
+ * @property {string[]} dynamicColumns - Array zur Speicherung der dynamischen Spalten.
+ * @property {boolean} isHelpActive - Flag, um zu überprüfen, ob die Hilfe aktiv ist.
+ * @property {string} helpText - Variable zur Speicherung des Hilfetextes.
+ * @property {boolean} showHandleRowClick - Flag, um zu überprüfen, ob das Zeilenklick-Handling angezeigt wird.
+ * @property {boolean} panelOpenState - Flag, um zu überprüfen, ob das Panel geöffnet ist.
+ * @property {string} shortLink - Variable zur Speicherung des Kurzlinks aus der API-Antwort.
+ * @property {boolean} loading - Flag, um zu überprüfen, ob das Laden aktiv ist.
+ * @property {File} file - Variable zur Speicherung der Datei.
+ * 
+ * @method handleJahrSelected - Handhabt das Ereignis, wenn ein Jahr ausgewählt wird.
+ * @method InfoBox - Zeigt eine Snackbar-Nachricht an.
+ * @method handlePNSelected - Handhabt das Ereignis, wenn ein Probenehmer ausgewählt wird.
+ * @method ausblendenDVNR - Schaltet die Sichtbarkeit unbekannter Arten um.
+ * @method ausblendenImporthistorie - Schaltet die Sichtbarkeit der Importhistorie um.
+ * @method ngOnInit - Lifecycle-Hook, der aufgerufen wird, nachdem Angular alle datengebundenen Eigenschaften initialisiert hat.
+ * @method onValueChange - Handhabt das Ereignis, wenn sich ein Wert ändert.
+ * @method close - Schließt die Importdaten- und Bewertungsanzeige.
+ * @method openexpand - Öffnet die Importdaten-Anzeige.
+ * @method onChange - Handhabt das Ereignis, wenn eine Datei ausgewählt wird.
+ * @method onDeleteClick - Handhabt das Ereignis, wenn der Löschen-Button geklickt wird.
+ * @method handleData - Handhabt die Datenverarbeitung basierend auf dem Ergebnis.
+ * @method ngAfterViewInit - Lifecycle-Hook, der aufgerufen wird, nachdem Angular die Ansicht einer Komponente vollständig initialisiert hat.
+ * @method onUpload - Handhabt den Datei-Upload-Prozess.
+ * @method hole - Überprüft, ob Daten verfügbar sind.
+ * @method pruefeObMesswerteschonVorhanden - Überprüft asynchron, ob Messwerte bereits vorhanden sind.
+ * @method MessageImportierbareDaten - Generiert eine Nachricht über importierbare Daten.
+ * @method archivImportErzeugen - Erstellt einen Archiv-Import.
+ * @method importIntoDB - Importiert Daten in die Datenbank.
+ * @method sortData2 - Platzhalter-Methode zum Sortieren von Daten.
+ * @method sortData - Sortiert die Importübersichts-Daten.
+ * @method addfile - Handhabt das Hinzufügen einer Datei und verarbeitet sie basierend auf dem Datentyp.
+ * @method edit - Öffnet einen Dialog zum Bearbeiten einer Messstelle.
+ * @method displayableColumns - Setzt die anzeigbaren Spalten basierend auf der Verfahrens-ID.
+ * @method handleRowClick - Handhabt das Ereignis, wenn eine Zeile geklickt wird.
+ * @method getColorFehler - Holt die Farbe für Fehler.
+ * @method startLoading - Startet den Lade-Spinnner.
+ * @method stopLoading - Stoppt den Lade-Spinnner.
+ * 
+ * @constructor
+ * @param {ElementRef} el - Referenz zum Element.
+ * @param {NgZone} zone - Angular-Zonen-Dienst.
+ * @param {MatSnackBar} snackBar - Material-Snackbar-Dienst.
+ * @param {HelpService} helpService - Dienst zur Handhabung der Hilfe-Funktionalität.
+ * @param {Router} router - Angular-Router-Dienst.
+ * @param {AuthService} authService - Dienst zur Handhabung der Authentifizierung.
+ * @param {AnzeigeBewertungMPService} anzeigeBewertungMPService - Dienst zur Handhabung der Bewertungsanzeige.
+ * @param {UebersichtImportService} uebersichtImportService - Dienst zur Handhabung der Importübersicht.
+ * @param {FarbeBewertungService} Farbebewertg - Dienst zur Handhabung der Farbbewertungen.
+ * @param {PerlodesimportService} perlodesimportService - Dienst zur Handhabung des Perlodes-Imports.
+ * @param {FileUploadService} fileUploadService - Dienst zur Handhabung von Datei-Uploads.
+ * @param {XlsxImportPhylibService} xlsxImportPhylibService - Dienst zur Handhabung von XLSX-Importen.
+ * @param {ValExceltabsService} valExceltabsService - Dienst zur Validierung von Excel-Tabs.
+ * @param {PhytoseeServiceService} phytoseeServiceService - Dienst zur Handhabung des Phytosee-Dienstes.
+ * @param {MatDialog} dialog - Material-Dialog-Dienst.
+ * @param {StammdatenService} stammdatenService - Dienst zur Handhabung von Stammdaten.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 @Injectable()
 export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(SelectjahrComponent, {static: false}) child1: SelectjahrComponent;
@@ -49,6 +148,11 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 	@HostListener('window:resize', ['$event'])
 	@HostListener('window:scroll', ['$event'])
+	/**
+	 * Setzt die Skalierung des Elements auf 1 zurück, wenn eine Änderung festgestellt wird.
+	 * Diese Methode verhindert das Zoomen, indem sie den Transformationsmaßstab auf 1 setzt
+	 * und eine benutzerdefinierte Stil-Eigenschaft anwendet, um die Zoomverhinderung anzuzeigen.
+	 */
 	preventZoom() {
 	  // Zurücksetzen der Skalierung auf 1, falls eine Veränderung festgestellt wird
 	  this.el.nativeElement.style.transform = 'scale(1)';
@@ -104,6 +208,15 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	}
 	
 // Diese Methode wird ausgelöst, wenn das Event von der Kindkomponente gefeuert wird
+/**
+ * Handhabt die Auswahl eines Jahres.
+ * 
+ * Diese Methode wird ausgelöst, wenn ein Jahr ausgewählt wird. Sie setzt das `ImportIntoDB`-Flag auf true
+ * und das `pruefen`-Flag auf false. Zusätzliche Logik kann hinzugefügt werden, um das ausgewählte Jahr zu verarbeiten oder zu speichern.
+ * 
+ * @param selectedJahr - Das ausgewählte Jahr.
+ */
+
 handleJahrSelected(selectedJahr: number) {
 	this.ImportIntoDB=true;
 	this.pruefen=false;
@@ -111,6 +224,11 @@ handleJahrSelected(selectedJahr: number) {
     // Hier kannst du beliebige Logik einfügen, z.B. das Jahr speichern oder verarbeiten
   }
  // Methode zum Anzeigen einer Snackbar-Nachricht
+/**
+ * Zeigt eine Informationsnachricht in einer Snackbar an.
+ *
+ * @param message - Die Nachricht, die in der Snackbar angezeigt werden soll.
+ */
  InfoBox(message: string) {
 	const duration: number = 3000;
     this.snackBar.open(message, 'Schließen', {
@@ -119,11 +237,23 @@ handleJahrSelected(selectedJahr: number) {
       verticalPosition: 'top',
     });
   }
+/**
+ * Handhabt das Ereignis, wenn eine Probenehmernummer (PN) ausgewählt wird.
+ * 
+ * @param selectedPN - Die ausgewählte Probenehmernummer.
+ */
   handlePNSelected(selectedPN: number) {
 	this.ImportIntoDB=true;
 	this.pruefen=false;
 
   }
+/**
+ * Schaltet die Sichtbarkeit von Elementen mit dem Taxon "ID_ART nicht bekannt" um.
+ * 
+ * Wenn `ArtenNichtBekannt` auf true gesetzt ist, filtert es Elemente mit dem Taxon "ID_ART nicht bekannt"
+ * aus `MessDataImp` und `MessDataOrgi` heraus. Es aktualisiert auch das `uebersicht` Array im `xlsxImportPhylibService`,
+ * um die Änderungen im Fehler- und Importstatus widerzuspiegeln, und aktualisiert die Datenquelle für die Tabelle.
+ */
   ausblendenDVNR(){
 	this.ArtenNichtBekannt = !this.ArtenNichtBekannt;
 
@@ -145,6 +275,15 @@ handleJahrSelected(selectedJahr: number) {
 		this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
 	}
 }
+/**
+ * Schaltet die Sichtbarkeit der Importhistorie um und aktualisiert die Übersicht.
+ * 
+ * Diese Methode schaltet den Zustand von `ImpHistoryisChecked` um und ruft die Methode 
+ * `uebersichtImportService.handle` mit dem neuen Zustand auf. Nach dem Serviceaufruf 
+ * wird die Eigenschaft `uebersichtImport` mit der neuesten Übersicht aus dem Service aktualisiert.
+ * 
+ * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+ */
   async ausblendenImporthistorie() {
     // this.ImportDatenAnzeige = false;
     this.ImpHistoryisChecked = !this.ImpHistoryisChecked; // Toggle the checked state
@@ -152,6 +291,15 @@ handleJahrSelected(selectedJahr: number) {
 	this.uebersichtImport=this.uebersichtImportService.uebersicht; 
 }
 	
+	/**
+	 * Initialisiert die Komponente.
+	 * 
+	 * Diese Methode wird aufgerufen, sobald die Komponente initialisiert ist. Sie überprüft, ob der Benutzer eingeloggt ist,
+	 * und navigiert zur Login-Seite, falls nicht. Wenn der Benutzer eingeloggt ist, werden verschiedene
+	 * Komponenteneigenschaften initialisiert und es wird auf Observables vom helpService und uebersichtImportService abonniert.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Initialisierung abgeschlossen ist.
+	 */
 	async ngOnInit() {
 		if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
@@ -166,14 +314,33 @@ handleJahrSelected(selectedJahr: number) {
 		this.uebersichtImport=this.uebersichtImportService.uebersicht;
 		//console.log(this.uebersichtImport);
 	}}
+	/**
+	 * Handhabt das Änderungsereignis für einen Wert.
+	 * 
+	 * @param $event - Das Ereignisobjekt, das den neuen Wert enthält.
+	 */
 	onValueChange($event){
 		console.log($event)
 		this.newDate=$event;
 	  }
+	/**
+	 * Schließt die Importansichten, indem die Anzeigeflags auf false gesetzt werden.
+	 * Diese Methode verbirgt die Abschnitte für Importdaten und Importbewertungen.
+	 */
 	close(){
 		this.ImportDatenAnzeige=false;
 		this.ImportBewertungenAnzeige=false;
 	}
+	/**
+	 * Öffnet die erweiterte Ansicht und handhabt den Importdienst.
+	 * 
+	 * Diese Methode führt die folgenden Aktionen aus:
+	 * 1. Ruft die `handle`-Methode des `uebersichtImportService` mit dem Parameter `ImpHistoryisChecked` auf.
+	 * 2. Setzt `ImportBewertungenAnzeige` auf `false`.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Handhabung des Importdienstes abgeschlossen ist.
+	 */
+ 
 	async openexpand(){
 		//this.ImportDatenAnzeige=true;
 		// console.log();
@@ -181,6 +348,20 @@ handleJahrSelected(selectedJahr: number) {
 	this.ImportBewertungenAnzeige=false;
 	}  
 	// On file Select 
+	/**
+	 * Handhabt das Änderungsereignis, wenn eine Datei ausgewählt wird.
+	 * 
+	 * @param event - Das Ereignisobjekt, das die ausgewählte Datei enthält.
+	 * 
+	 * Diese Methode führt die folgenden Aktionen aus:
+	 * - Setzt `ImportDatenAnzeige` und `ImportBewertungenAnzeige` auf false.
+	 * - Weist die ausgewählte Datei der `file`-Eigenschaft zu.
+	 * - Setzt `pruefen` und `ImportIntoDB` auf true.
+	 * - Initialisiert eine neue `MatTableDataSource`.
+	 * - Setzt `mstimptab`, `Datimptab` und `Datimptabphyto` auf false.
+	 * - Erstellt ein neues `UebersichtImport`-Objekt und weist den Dateinamen `dateiname` zu.
+	 */
+	
 	onChange(event) {
 		this.ImportDatenAnzeige=false;
 		this.ImportBewertungenAnzeige=false;
@@ -192,8 +373,31 @@ handleJahrSelected(selectedJahr: number) {
 		this.newuebersichtImport= {} as UebersichtImport;
 		this.newuebersichtImport.dateiname=this.file.name;
 	}
+	/**
+	 * Handhabt das Klick-Ereignis zum Löschen einer Datei.
+	 * Diese Methode wird ausgelöst, wenn der Löschen-Button geklickt wird.
+	 */
 	onDeleteClick(){}
+	
 
+	/**
+	 * Handhabt die Datenverarbeitung basierend auf dem Ergebnisobjekt.
+	 * 
+	 * @param {any} result - Das Ergebnisobjekt, das zu verarbeitende Daten enthält.
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Datenverarbeitung abgeschlossen ist.
+	 * 
+	 * Die Funktion führt die folgenden Operationen aus:
+	 * - Überprüft, ob die `id_verfahren` im Ergebnis gültig ist.
+	 * - Wenn gültig, wird das `mstMakrophyten` Array geleert.
+	 * - Wenn nicht gültig, wird das `dataAbiotik` Array geleert.
+	 * - Abhängig vom `import_export` Flag im Ergebnis:
+	 *   - Wenn true, wird `anzeigeBewertungMPService.callImpMstMP` und `anzeigeBewertungMPService.arrayNeuFuellen` mit `id_imp` aufgerufen.
+	 *     - Aktualisiert `mstMakrophyten` mit den Daten aus `anzeigeBewertungMPService`.
+	 *     - Setzt `ImportDatenAnzeige` auf true.
+	 *   - Wenn false, wird `uebersichtImportService.callgetBwMstTaxa` mit `id_imp` aufgerufen.
+	 *     - Aktualisiert `dataAbiotik` mit den Daten aus `uebersichtImportService`.
+	 *     - Setzt `ImportBewertungenAnzeige` auf true und `ImportDatenAnzeige` auf false.
+	 */
 	async handleData(result){
 		const validIds = [1, 3, 6];
 if (validIds.includes(result.id_verfahren)) {
@@ -228,6 +432,14 @@ if (validIds.includes(result.id_verfahren)) {
 	  }
 
 	  // löst das mousover für die Hilfe aus
+	/**
+	 * Lifecycle-Hook, der aufgerufen wird, nachdem die Ansicht einer Komponente vollständig initialisiert wurde.
+	 * Diese Methode wird verwendet, um Mouseover-Ereignisse für Elemente mit der Klasse 'helpable' zu registrieren.
+	 * Sie nutzt den helpService, um diese Ereignisse zu verwalten.
+	 *
+	 * @memberof FileUploadComponent
+	 */
+	
 	  ngAfterViewInit() {
 	
 	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
@@ -236,6 +448,21 @@ if (validIds.includes(result.id_verfahren)) {
 
 	
 	// OnClick of button Upload 
+	/**
+	 * Handhabt den Datei-Upload-Prozess.
+	 * 
+	 * Diese Methode initiiert den Datei-Upload, indem sie den Ladeprozess startet,
+	 * eine Flag-Variable setzt und den Datei-Upload-Service aufruft. Sie aktualisiert
+	 * auch den Kurzlink und stellt sicher, dass der Ladeprozess nach Abschluss des
+	 * Uploads gestoppt wird.
+	 * 
+	 * @bemerkungen
+	 * - Die Methode läuft innerhalb der Angular-Zone, um eine ordnungsgemäße Änderungserkennung sicherzustellen.
+	 * - Die `mstimptab`-Flagge wird während des Upload-Prozesses auf true gesetzt.
+	 * - Der `shortLink` wird vorübergehend auf 'FF' gesetzt.
+	 * - Der Datei-Upload-Service wird mit der hochzuladenden Datei aufgerufen.
+	 * - Der Ladeprozess wird nach Abschluss des Uploads gestoppt.
+	 */
 	onUpload() {
 		this.zone.run(() => this.startLoading());
 		this.mstimptab=true;  
@@ -260,6 +487,13 @@ if (validIds.includes(result.id_verfahren)) {
 	}
 
 
+	/**
+	 * Überprüft den Status von `xlsxImportPhylibService.vorhanden` und zeigt eine entsprechende Nachricht an.
+	 * 
+	 * Wenn `xlsxImportPhylibService.vorhanden` `true` ist, wird `InfoBox` mit der Nachricht "mist" aufgerufen.
+	 * Andernfalls wird `InfoBox` mit der Nachricht "allet jut" aufgerufen.
+	 */
+	
 	hole(){
 	
 	
@@ -357,6 +591,16 @@ if (validIds.includes(result.id_verfahren)) {
 			}
 		}
 	}
+	/**
+	 * Generiert eine Nachricht, die den Importstatus der Daten angibt.
+	 *
+	 * Diese Methode überprüft das `uebersichtGeprueft`-Array aus dem `xlsxImportPhylibService`-Service,
+	 * um festzustellen, wie viele Elemente als "checked" (bereit für den Import) markiert sind und wie viele nicht.
+	 * Basierend auf diesen Zählungen gibt sie eine Nachricht zurück, die angibt, ob alle Daten bereits in der Datenbank sind,
+	 * alle Daten zum Import bereit sind oder einige Daten zum Import bereit sind, während einige bereits in der Datenbank sind.
+	 *
+	 * @returns {string} Eine Nachricht, die den Importstatus der Daten angibt.
+	 */
 	MessageImportierbareDaten():string {
 		let message;
 		const checkedCount = this.xlsxImportPhylibService.uebersichtGeprueft.filter(item => item.import1 === "checked").length;
@@ -371,6 +615,17 @@ if (validIds.includes(result.id_verfahren)) {
 	  {	message="Einige Daten sind bereits in der Datenbank vorhanden, einige sind zum Import bereit.";}
 		return message;
 	  }
+			/**
+			 * Generiert eine neue Importübersicht und archiviert sie.
+			 * 
+			 * Diese Methode führt die folgenden Aktionen aus:
+			 * 1. Generiert eine neue Import-ID und weist sie `newuebersichtImport` zu.
+			 * 2. Weist den aktuellen Probenehmer und das Jahr `newuebersichtImport` zu.
+			 * 3. Initialisiert `anzahlmst` und `anzahlwerte` auf 0.
+			 * 4. Setzt das Feld `bemerkung` auf einen leeren String.
+			 * 5. Archiviert die neue Importübersicht mit `uebersichtImportService`.
+			 * 6. Weist die neue Importübersicht `xlsxImportPhylibService` zu.
+			 */
 			archivImportErzeugen(){
 
 				this.newuebersichtImport.id_imp=this.uebersichtImportService.neueImportid(this.uebersichtImport);
@@ -384,6 +639,18 @@ if (validIds.includes(result.id_verfahren)) {
 				this.xlsxImportPhylibService.uebersichtImport=this.newuebersichtImport;
 				
 			}
+		/**
+	 * Importiert Daten in die Datenbank basierend auf dem ausgewählten Jahr und Probenehmer.
+	 * 
+	 * Diese Methode führt die folgenden Schritte aus:
+	 * 1. Überprüft, ob das Jahr und der Probenehmer ausgewählt sind.
+	 * 2. Bestimmt, ob ein spezifisches Datum basierend auf der Verfahrensnummer einbezogen werden soll.
+	 * 3. Je nach Verfahrensnummer importiert sie entweder Messdaten oder Bewertungsdaten.
+	 * 4. Zeigt während des Prozesses entsprechende Nachrichten an den Benutzer an.
+	 * 5. Aktualisiert die Importübersichtsliste mit den neuen Importdetails.
+	 * 
+	 * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Importvorgang abgeschlossen ist.
+	 */
 	async	importIntoDB(){
 		// this.zone.run(() => this.startLoading());
 			let useincludeDate:boolean=false;
@@ -462,6 +729,10 @@ if (validIds.includes(result.id_verfahren)) {
 			}
 			//sortiert Importübersicht 	
 	sortData(sort: Sort) {
+		/**
+		 * Erstellt eine flache Kopie des `uebersichtImport` Arrays und weist sie der `data` Variable zu.
+		 * Dies stellt sicher, dass das ursprüngliche Array nicht verändert wird, wenn `data` manipuliert wird.
+		 */
 		const data = this.uebersichtImport.slice();
 		if (!sort.active || sort.direction === '') {
 			this.uebersichtImport = data;
@@ -652,6 +923,20 @@ if (validIds.includes(result.id_verfahren)) {
 			}   }finally { this.zone.run(() => this.stopLoading());} 
 			}
 
+	/**
+	 * Bearbeitet die Details einer gegebenen Person in der Übersicht.
+	 * 
+	 * Diese Funktion führt die folgenden Schritte aus:
+	 * 1. Ruft die Methode `callBwUebersicht` des `stammdatenService` auf.
+	 * 2. Filtert das `messstellenarray` mit der Methode `filterMst` des `stammdatenService`.
+	 * 3. Findet die alte Messstellen-ID basierend auf der gegebenen `mst` der Person.
+	 * 4. Öffnet einen Dialog zum Bearbeiten der Messstellendetails.
+	 * 5. Nach dem Schließen des Dialogs aktualisiert sie die Übersicht und andere verwandte Datenstrukturen mit den neuen Messstellendetails.
+	 * 
+	 * @param {Uebersicht} person - Die Person, deren Details bearbeitet werden sollen.
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn der Bearbeitungsvorgang abgeschlossen ist.
+	 */
+	
 	async edit(person: Uebersicht) {
 		let mst_id_alt
 		// console.log(this.xlsxImportPhylibService.MessDataImp)
@@ -725,26 +1010,46 @@ if (validIds.includes(result.id_verfahren)) {
 		}});
 	  }
 
+
+/**
+ * Bestimmt und setzt die anzeigbaren Spalten basierend auf der angegebenen Verfahrens-ID.
+ * 
+ * @param idverfahren - Die ID des Verfahrens, um zu bestimmen, welche Spalten angezeigt werden sollen.
+ * 
+ * Diese Methode führt die folgenden Aktionen aus:
+ * - Setzt die Tab-Variable basierend auf der Verfahrens-ID.
+ * - Ruft die Methode `waehleSpaltenUebersicht` des `xlsxImportPhylibService` auf, um zu bestimmen, welche Spalten angezeigt werden sollen.
+ * - Setzt die Eigenschaften `displayColumnNames` und `dynamicColumns` aus dem `xlsxImportPhylibService`.
+ * - Setzt die Eigenschaft `uebersicht` und initialisiert die `dataSource` mit einer neuen `MatTableDataSource`.
+ * - Konfiguriert den Paginator für die Datenquelle.
+ */
 displayableColumns(idverfahren:number){
 	let tab:number;
 	if (idverfahren===4 || idverfahren===5) {tab=2;} else {tab=0;}
 	
 	this.showHandleRowClick=this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
-	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;//}
+	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;
 
-	
-	//if (idverfahren===1 || idverfahren===2){
-		this.uebersicht = this.xlsxImportPhylibService.uebersicht;
+	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
-	// }else if (idverfahren===3) {
-	//	this.uebersicht = this.perlodesimportService.uebersicht;
-	//	this.dataSource = new MatTableDataSource(this.perlodesimportService.uebersicht);
-
-	// }
 	this.dataSource.paginator = this.paginator;
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
-	}
+}
+	/**
+	 * Handhabt das Klick-Ereignis auf eine Zeile in der Tabelle.
+	 * 
+	 * @param row - Das Zeilenobjekt, das angeklickt wurde.
+	 * 
+	 * Diese Methode führt die folgenden Aktionen aus:
+	 * - Überprüft, ob die `NrVerfahren`-Eigenschaft von `valExceltabsService` gleich 6 ist.
+	 *   - Wenn wahr, setzt `Datimptabphyto` auf true und `Datimptab` auf false.
+	 *   - Andernfalls setzt `Datimptab` auf true und `Datimptabphyto` auf false.
+	 * - Filtert das `MessDataOrgi`-Array, um Elemente zu finden, bei denen `_Messstelle` mit `row.mst` übereinstimmt.
+	 * - Weist das gefilterte Ergebnis `MessData` zu.
+	 * - Protokolliert das `row`-Objekt in der Konsole.
+	 */
+	
 	handleRowClick(row){
 		if (this.valExceltabsService.NrVerfahren===6){
 		this.Datimptabphyto=true;
@@ -757,22 +1062,51 @@ displayableColumns(idverfahren:number){
 		console.log(row);
 	}
 	
+		/**
+		 * Bestimmt die Farbe basierend auf den angegebenen booleschen Werten.
+		 *
+		 * @param Wert1 - Der erste boolesche Wert zur Bewertung.
+		 * @param Wert2 - Der zweite boolesche Wert zur Bewertung.
+		 * @returns Die Farbe, die vom Farbebewertg-Dienst basierend auf den Eingabewerten bestimmt wird.
+		 */
 	getColorFehler(Wert1:boolean,Wert2:boolean){
 
 		return this.Farbebewertg.getColorFehler(Wert1,Wert2);
 	  }
 	 
 	
+	/**
+	 * Startet den Ladeprozess, indem das `isLoading$` Observable auf true gesetzt wird,
+	 * was einen Spinner aktiviert, und "startLoading" in die Konsole schreibt.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn der Ladeprozess startet.
+	 */
 	  async startLoading() {
 		this.isLoading$.next(true); // Spinner aktivieren
 		console.log("startLoading");
 	}
+	
+	/**
+	 * Stoppt den Ladeprozess, indem das isLoading$ Observable auf false gesetzt wird.
+	 * Dies deaktiviert den Spinner und schreibt eine Nachricht in die Konsole.
+	 *
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn der Ladeprozess gestoppt ist.
+	 */
 	
 	async stopLoading() {
 		this.isLoading$.next(false); // Spinner aktivieren
 		console.log("stopLoading");
 	}
 }
+
+/**
+ * Vergleicht zwei Werte vom Typ number, string oder boolean.
+ *
+ * @param a - Der erste zu vergleichende Wert.
+ * @param b - Der zweite zu vergleichende Wert.
+ * @param isAsc - Ein boolescher Wert, der angibt, ob der Vergleich in aufsteigender Reihenfolge erfolgen soll.
+ * @returns Eine negative Zahl, wenn `a` kleiner als `b` ist, eine positive Zahl, wenn `a` größer als `b` ist, oder 0, wenn sie gleich sind.
+ */
 
 function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
 	return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

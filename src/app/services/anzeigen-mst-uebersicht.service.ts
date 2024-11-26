@@ -9,6 +9,75 @@ import { environment } from '../../environments/environment';
 })
 
 //Artdaten
+/**
+ * Service zur Verwaltung und Verarbeitung der Übersicht von Messstellen (MST) und Wasserkörpern (WK).
+ * Dieser Service bietet Methoden zum Filtern, Sortieren und Transformieren von Daten im Zusammenhang mit Messstellen und deren Bewertungen.
+ * 
+ * @class AnzeigenMstUebersichtService
+ * 
+ * @property {MstUebersicht[]} mstUebersicht - Array zur Speicherung der Übersicht von Messstellen.
+ * @property {MstUebersicht} mstUebersichtKl - Objekt zur Speicherung einer einzelnen Messstellenübersicht.
+ * @property {any} dbMPUebersichtMst - Datenbankübersicht der Messstellen.
+ * @property {string[]} uniqueJahr - Array zur Speicherung einzigartiger Jahre.
+ * @property {string[]} uniqueMst - Array zur Speicherung einzigartiger Messstellen.
+ * @property {string[]} displayColumnNames - Array zur Speicherung der anzuzeigenden Spaltennamen.
+ * @property {string[]} displayedColumns - Array zur Speicherung der anzuzeigenden Spalten.
+ * @property {WkUebersicht[]} FilterwkUebersicht - Array zur Speicherung der gefilterten Wasserkörperübersicht.
+ * @property {string} apiUrl - API-URL aus der Umgebungskonfiguration.
+ * @property {string} Artvalue - Artwert.
+ * @property {string} value - Wert.
+ * 
+ * @constructor
+ * @param {HttpClient} httpClient - HTTP-Client für API-Anfragen.
+ * @param {AnzeigeBewertungService} anzeigeBewertungService - Service zur Handhabung von Bewertungen.
+ * 
+ * @method call - Hauptmethode zur Verarbeitung und Filterung von Daten basierend auf den angegebenen Parametern.
+ * @param {string} filter - Filterstring.
+ * @param {string} art - Artstring.
+ * @param {number} min - Mindestjahr.
+ * @param {number} max - Höchstjahr.
+ * @param {number} komp_id - Komponenten-ID.
+ * 
+ * @method erzeugeDisplayColumnNames - Generiert die anzuzeigenden Spaltennamen basierend auf dem Komponenten-Flag.
+ * @param {boolean} komponente - Flag zur Einbeziehung der Komponentenspalte.
+ * 
+ * @method filterMst - Filtert Messstellen basierend auf dem angegebenen Filter, Art, Min und Max Werten.
+ * @param {string} filter - Filterstring.
+ * @param {string} art - Artstring.
+ * @param {number} min - Mindestjahr.
+ * @param {number} max - Höchstjahr.
+ * 
+ * @method erzeugeDisplayedColumnNames - Generiert die anzuzeigenden Spaltennamen basierend auf den einzigartigen Jahren.
+ * @param {boolean} komponente - Flag zur Einbeziehung der Komponentenspalte.
+ * 
+ * @method getBwWKUebersicht - Ruft die Wasserkörperübersicht von der API ab.
+ * @param {number} selectedItems - Ausgewählte Elemente für die Anfrage.
+ * @returns {Promise<any[]>} - Promise, das ein Array der Wasserkörperübersicht auflöst.
+ * 
+ * @method getBwMSTUebersicht - Ruft die Messstellenübersicht von der API ab.
+ * @param {number[]} selectedItems - Ausgewählte Elemente für die Anfrage.
+ * @returns {Promise<any[]>} - Promise, das ein Array der Messstellenübersicht auflöst.
+ * 
+ * @method callBwUebersicht - Ruft die API auf, um die Messstellenübersicht abzurufen und zu verarbeiten.
+ * @param {number} komp_id - Komponenten-ID.
+ * 
+ * @method callBwUebersichtExp - Ruft die API auf, um die Messstellenübersicht mit Expertenurteil abzurufen und zu verarbeiten.
+ * @param {number} komp_id - Komponenten-ID.
+ * 
+ * @method uniqueMstSortCall - Sortiert und setzt einzigartige Messstellen.
+ * 
+ * @method uniqueJahrSortCall - Sortiert und setzt einzigartige Jahre.
+ * 
+ * @method anwelcherStelleStehtdasJahr - Bestimmt die Position des Jahres im Array der einzigartigen Jahre.
+ * @param {string} temp - Jahrstring.
+ * @returns {number} - Position des Jahres.
+ * 
+ * @method mstUebersichtFiltern - Filtert die Messstellenübersicht basierend auf der Wasserkörperübersicht.
+ * 
+ * @method datenUmwandeln - Transformiert die Daten für die Messstellenübersicht.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class AnzeigenMstUebersichtService {
   public mstUebersicht: MstUebersicht[] = [];
   public mstUebersichtKl: MstUebersicht;
@@ -23,6 +92,16 @@ export class AnzeigenMstUebersichtService {
 public Artvalue:string;
 public value:string;
 
+  /**
+   * Ruft verschiedene Methoden auf, um Daten basierend auf den angegebenen Parametern zu verarbeiten und zu filtern.
+   *
+   * @param {string} filter - Die anzuwendenden Filterkriterien.
+   * @param {string} art - Die Art der zu verarbeitenden Daten.
+   * @param {number} min - Der Mindestwert für die Filterung.
+   * @param {number} max - Der Höchstwert für die Filterung.
+   * @param {number} komp_id - Die ID der zu verarbeitenden Komponente.
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die gesamte Verarbeitung abgeschlossen ist.
+   */
   async call(filter:string,art:string,min:number,max:number,komp_id:number) {
 
  
@@ -36,6 +115,16 @@ public value:string;
     
   }
  
+   /**
+     * Generiert Anzeigespaltennamen für eine Tabelle.
+     * 
+     * Diese Methode initialisiert das `displayColumnNames` Array und füllt es mit 
+     * Standardspaltennamen wie 'Wasserköper' und 'Messstelle'. Wenn der `komponente` 
+     * Parameter wahr ist, fügt sie auch 'Komponente' zu den Spaltennamen hinzu. 
+     * Zusätzlich fügt sie eindeutige Jahre aus dem `uniqueJahr` Array zu den Spaltennamen hinzu.
+     * 
+     * @param {boolean} komponente - Ein boolesches Flag, das angibt, ob die 'Komponente' Spalte eingeschlossen werden soll.
+     */
   erzeugeDisplayColumnNames(komponente:boolean){
     this.displayColumnNames=[];
     this.displayColumnNames.push('Wasserköper');
@@ -46,6 +135,26 @@ public value:string;
 
   }}
 
+  /**
+   * Filtert das `dbMPUebersichtMst` Array basierend auf den angegebenen Filterkriterien.
+   * 
+   * @param filter - Der String, um die `namemst` Eigenschaft zu filtern. Wenn leer, wird der Filter ignoriert.
+   * @param art - Die Art des anzuwendenden Filters (derzeit nicht verwendet).
+   * @param min - Der Mindestwert für das Jahr zur Filterung.
+   * @param max - Der Höchstwert für das Jahr zur Filterung.
+   * 
+   * @returns Ein Promise, das aufgelöst wird, wenn der Filtervorgang abgeschlossen ist.
+   */
+  /**
+   * Filtert das `dbMPUebersichtMst` Array basierend auf den angegebenen Filterkriterien.
+   * 
+   * @param filter - Ein String, um die `namemst` Eigenschaft zu filtern.
+   * @param art - Ein String, der den Filtertyp darstellt (derzeit nicht verwendet).
+   * @param min - Der Mindestwert für das Jahr zur Filterung.
+   * @param max - Der Höchstwert für das Jahr zur Filterung.
+   * 
+   * @returns Ein Promise, das aufgelöst wird, wenn der Filtervorgang abgeschlossen ist.
+   */
   async filterMst(filter:string,art:string,min:number,max:number){
    
     let temp: any = this.dbMPUebersichtMst;
@@ -68,6 +177,17 @@ public value:string;
   // console.log (this.dbMPUebersichtMst);
    
   }
+  /**
+   * Generiert die anzuzeigenden Spaltennamen basierend auf dem Komponenten-Flag und der Länge der einzigartigen Jahre.
+   * 
+   * @param {boolean} komponente - Ein Flag, das angibt, ob die 'komponente' Spalte eingeschlossen werden soll.
+   * 
+   * Diese Methode initialisiert das `displayedColumns` Array und fügt standardmäßig die 'wk' und 'mst' Spalten hinzu.
+   * Wenn der `komponente` Parameter wahr ist, fügt sie auch die 'komponente' Spalte hinzu.
+   * 
+   * Abhängig von der Länge des `uniqueJahr` Arrays fügt sie eine entsprechende Anzahl von 'sp' Spalten
+   * (z.B. 'sp1', 'sp2', ..., 'sp15') zum `displayedColumns` Array hinzu.
+   */
   erzeugeDisplayedColumnNames(komponente:boolean){
   this.displayedColumns=[];
   this.displayedColumns.push('wk');
@@ -140,6 +260,13 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   
 }
   }
+  /**
+   * Ruft die BW WK Übersicht basierend auf den ausgewählten Elementen ab.
+   * 
+   * @param {number} selectedItems - Die ausgewählten Elemente, die in der Anfrage gesendet werden.
+   * @returns {Promise<any[]>} - Ein Promise, das ein Array der BW WK Übersicht auflöst.
+   * @throws {Error} - Wirft einen Fehler, wenn die Antwort kein Array ist.
+   */
   async getBwWKUebersicht(selectedItems: number): Promise<any[]> {
     const response = await this.httpClient.post(`${this.apiUrl}/bwWKUebersicht`, selectedItems).toPromise();
     
@@ -152,6 +279,14 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   }
 
  
+  /**
+   * Ruft die MST-Übersicht für die angegebenen ausgewählten Elemente ab.
+   *
+   * @param {number[]} selectedItems - Ein Array von ausgewählten Element-IDs.
+   * @returns {Promise<any[]>} Ein Promise, das ein Array von MST-Übersichtsdaten auflöst.
+   * @throws {Error} Wirft einen Fehler, wenn die Antwort kein Array ist.
+   */
+  
   async getBwMSTUebersicht(selectedItems: number[]): Promise<any[]> {
     const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
     
@@ -165,6 +300,20 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
 
   
 
+  /**
+   * Ruft asynchron die Übersichtsdaten für eine gegebene Komponenten-ID ab und verarbeitet sie.
+   * 
+   * @param {number} komp_id - Die ID der Komponente, für die die Übersicht abgerufen werden soll.
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Daten abgerufen und verarbeitet wurden.
+   * 
+   * @throws Protokolliert eine Fehlermeldung, wenn ein Problem beim Abrufen der Übersichtsdaten auftritt.
+   * 
+   * Die Methode führt die folgenden Schritte aus:
+   * 1. Initialisiert ein Array mit der angegebenen Komponenten-ID.
+   * 2. Ruft die Übersichtsdaten mit der Methode `getBwMSTUebersicht` ab.
+   * 3. Stellt sicher, dass die abgerufenen Daten im Array-Format vorliegen.
+   * 4. Mappt die Daten auf eine spezifische Struktur und weist sie `dbMPUebersichtMst` zu.
+   */
   async callBwUebersicht(komp_id: number) {
     let selectedItems: number[] = [];
     selectedItems.push(komp_id);
@@ -204,7 +353,23 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
     }
   }
   
-  //Bewertung ersetzt um Expertenurteil
+ 
+  /**
+   * Bewertung ersetzt um Expertenurteil: Asynchrones Abrufen und Verarbeiten der Übersichtsdaten für eine gegebene Komponenten-ID.
+   * 
+   * @param {number} komp_id - Die ID der Komponente, für die die Übersicht abgerufen werden soll.
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Daten abgerufen und verarbeitet wurden.
+   * 
+   * @throws Protokolliert eine Fehlermeldung, wenn ein Problem beim Abrufen der Übersichtsdaten auftritt.
+   * 
+   * Die Methode führt die folgenden Schritte aus:
+   * 1. Initialisiert ein Array mit der angegebenen Komponenten-ID.
+   * 2. Ruft die Übersichtsdaten mit der Methode `getBwMSTUebersicht` ab.
+   * 3. Stellt sicher, dass die abgerufenen Daten im Array-Format vorliegen.
+   * 4. Filtert Einträge aus, bei denen die Eigenschaft `ausblenden` auf true gesetzt ist.
+   * 5. Mappt die gefilterten Daten auf ein neues Format, einschließlich bedingter Logik für die Eigenschaft `wert`.
+   * 6. Weist die verarbeiteten Daten der Eigenschaft `dbMPUebersichtMst` zu.
+   */
   async callBwUebersichtExp(komp_id: number) {
     let selectedItems: number[] = [];
     selectedItems.push(komp_id);
@@ -248,7 +413,16 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   }
   
   
-  uniqueMstSortCall(){
+  /**
+   * Sortiert und entfernt Duplikate aus dem `dbMPUebersichtMst` Array basierend auf der `namemst` Eigenschaft.
+   * 
+   * Diese Methode iteriert durch das `dbMPUebersichtMst` Array, extrahiert die `namemst` Eigenschaft von jedem Element
+   * und speichert sie in einem temporären Array. Anschließend entfernt sie Duplikate aus dem Array und sortiert es
+   * in aufsteigender Reihenfolge unter Verwendung eines lokalen Vergleichs mit numerischer Sortierung.
+   * 
+   * Das sortierte und eindeutige Array wird dann der `uniqueMst` Eigenschaft zugewiesen.
+   */
+   uniqueMstSortCall(){
 
     let array:string[]=[];
     for (let i = 0, l = this.dbMPUebersichtMst.length; i < l; i += 1) {
@@ -264,6 +438,15 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
     this.uniqueMst=temp.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   }
 
+    /**
+     * Sortiert und filtert einzigartige Jahre aus dem `dbMPUebersichtMst` Array.
+     * 
+     * Diese Methode iteriert durch das `dbMPUebersichtMst` Array, extrahiert die `jahr` Eigenschaft von jedem Element
+     * und speichert diese Werte in einem neuen Array. Anschließend entfernt sie doppelte Werte aus dem Array und sortiert die 
+     * resultierenden einzigartigen Werte in aufsteigender Reihenfolge, wobei numerische Werte berücksichtigt werden.
+     * 
+     * @returns {void}
+     */
     uniqueJahrSortCall(){
 
       let array:string[]=[];
@@ -280,6 +463,12 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     }
 
+      /**
+       * Bestimmt den Index des angegebenen Jahres im uniqueJahr-Array.
+       *
+       * @param {string} temp - Das Jahr, das im uniqueJahr-Array gefunden werden soll.
+       * @returns {number} Der Index des Jahres im uniqueJahr-Array oder null, wenn das Jahr nicht gefunden wird.
+       */
       anwelcherStelleStehtdasJahr(temp:string):number{
         let r:number=null;
         for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
@@ -294,6 +483,12 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
 
 
 
+      /**
+       * Filtert das `mstUebersicht` Array basierend auf der `WKname` Eigenschaft des `FilterwkUebersicht` Arrays.
+       * Iteriert durch jedes Element im `mstUebersicht` Array und wendet die Filterbedingung an.
+       * 
+       * @returns {void}
+       */
       mstUebersichtFiltern(){
         for (let a = 0, l = this.mstUebersicht.length; a < l; a += 1) {
 
@@ -303,6 +498,23 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
       if (!tempFilterwkUebersicht){
       }}}
   
+      /**
+       * Konvertiert und verarbeitet Daten, um das `mstUebersicht` Array zu füllen.
+       * 
+       * Diese Methode führt die folgenden Schritte aus:
+       * 1. Leert das `mstUebersicht` Array.
+       * 2. Iteriert über das `uniqueMst` Array.
+       * 3. Filtert und sortiert das `dbMPUebersichtMst` Array basierend auf dem aktuellen `uniqueMst` Element.
+       * 4. Initialisiert ein neues `MstUebersicht` Objekt.
+       * 5. Füllt das `MstUebersicht` Objekt mit Daten aus dem gefilterten und sortierten Array.
+       * 6. Weist Werte den entsprechenden Eigenschaften (`sp1` bis `sp15`) basierend auf der Jahresposition zu.
+       * 7. Fügt das gefüllte `MstUebersicht` Objekt dem `mstUebersicht` Array hinzu.
+       * 
+       * @bemerkungen
+       * - Die Methode geht davon aus, dass `uniqueMst`, `dbMPUebersichtMst` und `anwelcherStelleStehtdasJahr` innerhalb der Klasse definiert und zugänglich sind.
+       * - Das `MstUebersicht` Objekt hat Eigenschaften `wk`, `mst`, `komponente` und `sp1` bis `sp15`.
+       * - Die Methode `anwelcherStelleStehtdasJahr` wird verwendet, um die Position des Jahres zu bestimmen und den entsprechenden Wert der passenden Eigenschaft zuzuweisen.
+       */
       datenUmwandeln(){
  
         this.mstUebersicht=[];

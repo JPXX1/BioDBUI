@@ -9,13 +9,15 @@ import { MatSort } from '@angular/material/sort';
   styleUrls: ['./data-abiotik-table-component.component.css']
 })
 /**
- * Component representing a table for displaying abiotik data.
+ * Komponente, die eine Tabelle zur Anzeige von abiotischen Daten darstellt.
  * 
  * @export
  * @class DataAbiotikTableComponentComponent
  * 
- * @property {string[]} displayedColumns - Array of column names to be displayed in the table.
- * @property {MatTableDataSource<DataAbiotik>} dataSource - Data source for the table containing abiotik data.
+ * @property {string[]} displayedColumns - Array von Spaltennamen, die in der Tabelle angezeigt werden sollen.
+ * @property {MatTableDataSource<DataAbiotik>} dataSource - Datenquelle für die Tabelle, die abiotische Daten enthält.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
  */
 export class DataAbiotikTableComponentComponent implements  OnChanges{
   @Input() dataAbiotikSource: DataAbiotik[] = [];
@@ -27,10 +29,17 @@ export class DataAbiotikTableComponentComponent implements  OnChanges{
 
 
 
-  // ngOnInit() {
-  //   this.dataSource.data = this.dataAbiotikSource;
-  //   this.dataSource.sort = this.sort;
-  // }
+  
+  /**
+   * Reagiert auf Änderungen der Eingabe-Eigenschaften der Komponente.
+   * 
+   * @param changes - Ein Objekt vom Typ `SimpleChanges`, das die aktuellen und vorherigen Werte der Eingabe-Eigenschaften enthält.
+   * 
+   * Wenn sich die Eigenschaft `dataAbiotikSource` ändert, wird diese Methode:
+   * - Die aktuellen Daten in der `dataSource` löschen.
+   * - Die `dataSource` mit dem neuen Wert von `dataAbiotikSource` aktualisieren.
+   * - Die `sort`-Eigenschaft der `dataSource` auf die `sort`-Eigenschaft der Komponente setzen.
+   */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['dataAbiotikSource']) {
       this.dataSource.data =[];

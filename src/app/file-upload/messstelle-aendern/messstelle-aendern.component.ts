@@ -4,9 +4,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
 import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern';
 import { MeldeMst } from 'src/app/interfaces/melde-mst';
-// import {StammdatenService} from 'src/app/services/stammdaten.service';
-
-import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
@@ -14,6 +11,36 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
   templateUrl: './messstelle-aendern.component.html',
   styleUrls: ['./messstelle-aendern.component.css']
 })
+/**
+ * Komponente zum Ändern eines Messpunkts (Messstelle).
+ * 
+ * Diese Komponente bietet ein Formular zum Ändern der Details eines Messpunkts.
+ * Sie verwendet die reaktiven Formulare von Angular und den Material-Dialog für die Benutzeroberfläche.
+ * 
+ * @class
+ * @name MessstelleAendernComponent
+ * 
+ * @property {string} Mst_name - Der Name des Messpunkts.
+ * @property {any} wk - Platzhalter für Wasserkörperdaten.
+ * @property {FormGroup} formInstance - Die Instanz des reaktiven Formulars für die Komponente.
+ * @property {string} MeldeMst - Platzhalter für den meldenden Messpunkt.
+ * @property {WasserkoerperSelect[]} dropdownList - Liste der Wasserkörper für das Dropdown-Menü.
+ * @property {MeldeMst[]} dropdownMeldeMst - Liste der meldenden Messpunkte für das Dropdown-Menü.
+ * @property {IDropdownSettings} dropdownSettings - Einstellungen für das Wasserkörper-Dropdown-Menü.
+ * @property {IDropdownSettings} dropdownMeldeSettings - Einstellungen für das meldende Messpunkt-Dropdown-Menü.
+ * 
+ * @constructor
+ * @param {MatDialogRef<MessstelleAendernComponent>} dialogRef - Referenz auf den geöffneten Dialog.
+ * @param {ArraybuendelMstaendern} data - An den Dialog übergebene Daten.
+ * @param {FormBuilder} fb - FormBuilder-Instanz zum Erstellen des Formulars.
+ * 
+ * @method onItemSelectMeldemst - Behandelt die Auswahl eines Elements im meldenden Messpunkt-Dropdown-Menü.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method save - Speichert die Formulardaten und schließt den Dialog.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class MessstelleAendernComponent {
 
   Mst_name:string;
@@ -38,23 +65,7 @@ export class MessstelleAendernComponent {
       this.formInstance = this.fb.group({
         id_mst: ['', Validators.required],
         namemst: ['', Validators.required],
-      //  idgewaesser: ['', Validators.required],
-      //  gewaessername: ['', Validators.required],
-      //  ortslage: ['', Validators.required],
-      //  see: ['', Validators.required],
-      //  repraesent: ['', Validators.required],
-      //  melde_mst: ['', Validators.required],
-      //  melde_mst_str: ['', Validators.required],
-      //  wrrl_typ: ['', Validators.required],
-      //  id_wk: ['', Validators.required],
-      //  wk_name: ['', Validators.required],
-      //  eu_cd_sm: ['', Validators.required],
-      //  dia_typ: ['', Validators.required],
-      //  pp_typ: ['', Validators.required],
-      //  mp_typ: ['', Validators.required],
-      //  hw_etrs: ['', Validators.required],
-      //  rw_etrs: ['', Validators.required],
-      //  updated_at: ['', Validators.required],
+
       
        
       });
@@ -85,22 +96,21 @@ temp.namemst=this.data.mststam[a].namemst;
   this.dropdownMeldeMst.push(temp);
 }
 
-
-    // this.wk_name1= data.mststam.wk_name;
-    // this.wk=data.wkstam;
-    // for (let i = 0, l = this.wk.length; i < l; i += 1) {
-		// 	let mw: WasserkoerperSelect={} as WasserkoerperSelect;
-
-    //   mw.id=this.wk[i].id;
-    //   mw.wk_name=this.wk[i].wk_name;
-			
-    //   this.dropdownList.push(mw);
-			
-    // }
      
   
  }
 
+/**
+ * Behandelt die Auswahl eines Elements aus der Liste und aktualisiert die Formularinstanz mit den Details des ausgewählten Elements.
+ * 
+ * @param item - Das ausgewählte Element, das die Eigenschaften `id_mst` und `namemst` enthält.
+ * 
+ * Aktualisiert die Formularfelder:
+ * - `id_mst` mit dem `id_mst`-Wert des ausgewählten Elements.
+ * - `namemst` mit dem `namemst`-Wert des ausgewählten Elements.
+ * 
+ * Protokolliert das ausgewählte Element und den aktuellen Wert des `namemst`-Formularfelds in der Konsole.
+ */
 onItemSelectMeldemst(item: any) {
   console.log(item);
   
@@ -111,6 +121,14 @@ onItemSelectMeldemst(item: any) {
 }
 
 
+/**
+ * Speichert die aktuellen Formulardaten und schließt den Dialog.
+ *
+ * Diese Methode ruft den aktuellen Wert der Formularinstanz ab und schließt den Dialog,
+ * wobei die Formulardaten als Parameter übergeben werden.
+ *
+ * @returns {void}
+ */
 save(): void {
  
 //  console.log(this.formInstance.value)
@@ -119,6 +137,10 @@ save(): void {
 }
 
                     
+/**
+ * Schnittstelle, die eine Auswahl eines Wasserkörpers (Wasserbody) darstellt.
+ */
+
 interface WasserkoerperSelect {
 
   id:number;

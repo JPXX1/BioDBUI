@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './editable-table-typ-pp.component.html',
   styleUrls: ['./editable-table-typ-pp.component.css']
 })
+
 export class EditableTableTypPPComponent implements OnInit, OnChanges{
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];

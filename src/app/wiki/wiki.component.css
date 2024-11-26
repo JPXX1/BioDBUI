@@ -1,29 +1,21 @@
-.wiki-tree {
-  margin: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.header1 {
-  font-size: 1.5em;
+/* Root-Knoten (header1) */
+.mat-tree-level-0 {
   font-weight: bold;
-  margin: 10px 0;
+  font-size: 16px;
 }
 
-.sub-entry {
-  margin-left: 20px;
-  padding: 5px;
-  border-left: 2px solid #ddd;
+/* Erste Unterebene (header2) */
+.mat-tree-level-1 {
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 20px; /* Leichte Einrückung */
+  color: blue;
 }
 
-.body-content {
-  margin-left: 40px;
+/* Zweite Unterebene (body) */
+.mat-tree-level-2 {
   font-style: italic;
-  color: #555;
-}
-
-.leaf {
-  margin-left: 20px;
-  padding: 5px;
+  font-size: 12px;
+  margin-left: 40px;
+  color: green;
 }

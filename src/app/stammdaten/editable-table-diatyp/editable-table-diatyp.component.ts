@@ -9,6 +9,48 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: './editable-table-diatyp.component.html',
   styleUrls: ['./editable-table-diatyp.component.css']
 })
+/**
+ * @fileoverview EditableTableDiatypComponent ist eine Angular-Komponente, die eine Tabelle mit TypWrrl-Daten verwaltet und anzeigt.
+ * Sie ermöglicht das Sortieren, Aktualisieren und Hinzufügen neuer Zeilen zur Tabelle.
+ * 
+ * @class EditableTableDiatypComponent
+ * @implements {OnInit, OnChanges}
+ * 
+ * @property {MatSort} sort - Referenz auf die MatSort-Direktive zum Sortieren der Tabelle.
+ * @property {string[]} displayedColumns - Array von Spaltennamen, die in der Tabelle angezeigt werden sollen.
+ * @property {MatTableDataSource<TypWrrl>} dataSource - Datenquelle für die Tabelle, die TypWrrl-Objekte enthält.
+ * 
+ * @constructor
+ * @param {StammdatenService} dataService - Service zur Handhabung von Datenoperationen im Zusammenhang mit TypWrrl.
+ * 
+ * @method ngOnInit - Lifecycle-Hook, der die Komponente initialisiert, Daten abruft und das Sortieren einrichtet.
+ * @returns {Promise<void>}
+ * 
+ * @method ngOnChanges - Lifecycle-Hook, der Änderungen an Eingabe-Eigenschaften behandelt.
+ * @param {SimpleChanges} changes - Objekt, das die Änderungen an den Eingabe-Eigenschaften enthält.
+ * 
+ * @method updateValue - Aktualisiert den Wert eines bestimmten Feldes in einem TypWrrl-Element.
+ * @param {TypWrrl} element - Das zu aktualisierende TypWrrl-Element.
+ * @param {string} field - Das zu aktualisierende Feld.
+ * @param {any} event - Das Ereignis, das den neuen Wert enthält.
+ * 
+ * @method updateSee - Aktualisiert das 'seefliess'-Feld eines TypWrrl-Elements und passt das 'fliess'-Feld entsprechend an.
+ * @param {TypWrrl} element - Das zu aktualisierende TypWrrl-Element.
+ * @param {string} field - Das zu aktualisierende Feld.
+ * @param {any} event - Das Ereignis, das den neuen Wert enthält.
+ * 
+ * @method updateFliess - Aktualisiert das 'fliess'-Feld eines TypWrrl-Elements und passt das 'seefliess'-Feld entsprechend an.
+ * @param {TypWrrl} element - Das zu aktualisierende TypWrrl-Element.
+ * @param {string} field - Das zu aktualisierende Feld.
+ * @param {any} event - Das Ereignis, das den neuen Wert enthält.
+ * 
+ * @method save - Speichert das aktualisierte TypWrrl-Element, indem der Datenservice aufgerufen wird.
+ * @param {TypWrrl} element - Das zu speichernde TypWrrl-Element.
+ * 
+ * @method new - Fügt der Tabelle eine neue Zeile mit Standardwerten hinzu und aktualisiert die Datenquelle.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class EditableTableDiatypComponent  implements OnInit, OnChanges{
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;

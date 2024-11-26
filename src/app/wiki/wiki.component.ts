@@ -12,17 +12,24 @@ export class WikiComponent implements OnInit {
   dataSource = new MatTreeNestedDataSource<WikiTreeEntry>();
 
   constructor(private wikiService: WikiService) {}
+ 
+  
 
   ngOnInit(): void {
     this.wikiService.getWikiTreeEntries().subscribe({
       next: (data) => {
-        this.dataSource.data = data; // Datenstruktur an den Tree binden
+        this.dataSource.data = data;
       },
       error: (err) => {
-        console.error('Fehler beim Abrufen der Daten:', err);
+        console.error('Fehler beim Laden der Daten:', err);
       },
     });
   }
-  //hasChild = (_: number, node: WikiTreeEntry) => !!node.children && node.children.length > 0;
-  hasChild = (_: number, node: WikiTreeEntry) => !!node.children && node.children.length > 0;
+
+  hasChild = (_: number, node: WikiTreeEntry) =>
+    !!node.children && node.children.length > 0;
+  
+  getNodeLevel(node: WikiTreeEntry): number {
+    return this.treeControl.getLevel(node);
+  }
 }

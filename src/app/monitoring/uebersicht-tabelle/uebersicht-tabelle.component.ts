@@ -11,6 +11,36 @@ import { ViewEncapsulation } from '@angular/core';
   styleUrls: ['./uebersicht-tabelle.component.css'],
   encapsulation: ViewEncapsulation.None
 })
+/**
+ * Komponente, die eine Tabellenübersicht im Überwachungsbereich darstellt.
+ * 
+ * @class
+ * @classdesc Diese Komponente zeigt eine Tabelle mit verschiedenen Spalten zur WK-Übersicht an.
+ * Sie verwendet MatTableDataSource von Angular Material für die Datenverarbeitung und Sortierung.
+ * 
+ * @property {MatSort} sort - Referenz auf die MatSort-Direktive zur Sortierung der Tabelle.
+ * @property {WkUebersicht[]} wkUebersicht - Eingabeeigenschaft, die ein Array von WK-Übersichtsdaten enthält.
+ * @property {string[]} displayedColumns - Array von Spaltennamen, die in der Tabelle angezeigt werden sollen.
+ * @property {MatTableDataSource<WkUebersicht>} dataSource - Datenquelle für die Tabelle.
+ * 
+ * @constructor
+ * @param {AnzeigeBewertungService} anzeigeBewertungService - Service zur Handhabung von Anzeige-Bewertungen.
+ * @param {FarbeBewertungService} Farbebewertg - Service zur Handhabung von Farb-Bewertungen.
+ * 
+ * @method getColor
+ * @description Gibt die Farbe zurück, die einem gegebenen OZK-Wert zugeordnet ist.
+ * @param {any} OZK - Der OZK-Wert, für den die Farbe ermittelt werden soll.
+ * @returns {string} Die Farbe, die dem gegebenen OZK-Wert zugeordnet ist.
+ * 
+ * @method ngOnInit
+ * @description Lifecycle-Hook, der aufgerufen wird, nachdem die daten-gebundenen Eigenschaften initialisiert wurden. Setzt die Sortiereigenschaft der Datenquelle.
+ * 
+ * @method ngOnChanges
+ * @description Lifecycle-Hook, der aufgerufen wird, wenn sich eine daten-gebundene Eigenschaft einer Direktive ändert. Aktualisiert die Datenquelle, wenn sich wkUebersicht ändert.
+ * @param {SimpleChanges} changes - Objekt, das die Änderungen der daten-gebundenen Eigenschaften enthält.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class UebersichtTabelleComponent {
 
 constructor(private anzeigeBewertungService:AnzeigeBewertungService,private Farbebewertg: FarbeBewertungService) {  this.dataSource = new MatTableDataSource(this.wkUebersicht); }
@@ -32,6 +62,16 @@ constructor(private anzeigeBewertungService:AnzeigeBewertungService,private Farb
     this.dataSource.sort = this.sort;
   }
 
+   /**
+     * Reagiert, wenn Angular daten-gebundene Eingabeeigenschaften (neu) setzt.
+     * Die Methode erhält ein SimpleChanges-Objekt mit aktuellen und vorherigen Eigenschaftswerten.
+     * 
+     * @param changes - Ein Objekt mit aktuellen und vorherigen Eigenschaftswerten.
+     * 
+     * Wenn sich die Eigenschaft 'wkUebersicht' geändert hat, wird überprüft, ob 'wkUebersicht' und 'anzeigeBewertungService.value' beide leer sind.
+     * Wenn dies der Fall ist, wird 'anzeigeBewertungService.wkUebersicht' 'wkUebersicht' zugewiesen.
+     * Schließlich wird die Datenquelle mit dem neuen 'wkUebersicht'-Wert aktualisiert.
+     */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['wkUebersicht']) {
 
