@@ -16,6 +16,56 @@ import { HelpService } from 'src/app/services/help.service';
   templateUrl: './stammdaten.component.html',
   styleUrls: ['./stammdaten.component.css']
 })
+/**
+ * Die `StammdatenComponent` Klasse ist verantwortlich für die Verwaltung und Anzeige verschiedener Datentypen im Zusammenhang mit "Messstellen" und "Wasserkoerper".
+ * Sie implementiert Angular-Lebenszyklus-Hooks, um Initialisierung und Ansichtsaktualisierungen zu handhaben, und bietet Methoden zum Sortieren, Filtern und Aktualisieren von Daten.
+ * 
+ * @class
+ * @implements {OnInit}
+ * @implements {AfterViewInit}
+ * @implements {AfterViewChecked}
+ * 
+ * @property {boolean} TypWrrlAnzeige - Flag, das angibt, ob der WRRL-Typ angezeigt wird.
+ * @property {boolean} ProbenehmerAnzeige - Flag, das angibt, ob der Probenehmer angezeigt wird.
+ * @property {boolean} isHelpActive - Flag, das angibt, ob die Hilfe aktiv ist.
+ * @property {boolean} seefliess - Flag, das den Typ des Gewässers angibt.
+ * @property {MessstellenStam[]} messstellenStam1 - Array von "Messstellen"-Daten.
+ * @property {WasserkoerperStam[]} wkStam1 - Array von "Wasserkoerper"-Daten.
+ * @property {boolean} MessstellenAnzeige - Flag, das angibt, ob "Messstellen" angezeigt werden.
+ * @property {boolean} WKAnzeige - Flag, das angibt, ob "Wasserkoerper" angezeigt werden.
+ * @property {boolean} GewaesserAnzeige - Flag, das angibt, ob "Gewaesser" angezeigt werden.
+ * @property {MessstellenStam[]} sortedData - Array von sortierten "Messstellen"-Daten.
+ * @property {WasserkoerperStam[]} sortedDataWK - Array von sortierten "Wasserkoerper"-Daten.
+ * @property {string} gewaesserart - Typ des Gewässers.
+ * @property {boolean} PPTypAnzeige - Flag, das angibt, ob der PP-Typ angezeigt wird.
+ * @property {boolean} DiaTypAnzeige - Flag, das angibt, ob der Dia-Typ angezeigt wird.
+ * @property {boolean} MpTypAnzeige - Flag, das angibt, ob der MP-Typ angezeigt wird.
+ * @property {string} helpText - Text für Hilfeinformationen.
+ * 
+ * @method sortData - Sortiert die "Messstellen"-Daten basierend auf den angegebenen Sortierkriterien.
+ * @method ngAfterViewChecked - Lebenszyklus-Hook, der aufgerufen wird, nachdem Angular die Ansicht der Komponente vollständig überprüft hat.
+ * @method ngAfterViewInit - Lebenszyklus-Hook, der aufgerufen wird, nachdem die Ansicht der Komponente vollständig initialisiert wurde.
+ * @method new - Erstellt eine neue "Messstelle" und aktualisiert das "messstellenStam1"-Array.
+ * @method sortDataWk - Sortiert die "Wasserkoerper"-Daten basierend auf den angegebenen Sortierkriterien.
+ * @method ngOnInit - Lebenszyklus-Hook, der aufgerufen wird, nachdem Angular alle datengebundenen Eigenschaften initialisiert hat.
+ * @method seeMst - Behandelt die Sichtbarkeit und das Abrufen von Daten für "Messstellen".
+ * @method gewaesser1 - Behandelt die Anzeige-Logik für den "Gewaesser"-Abschnitt.
+ * @method wrrlTyp - Aktualisiert die Anzeige-Flags, um den WRRL-Typ-Abschnitt anzuzeigen.
+ * @method probenehmer - Schaltet die Sichtbarkeit verschiedener UI-Komponenten um, um den Probenehmer-Abschnitt anzuzeigen.
+ * @method mpTyp - Behandelt die Anzeige-Logik für den MP-Typ-Abschnitt.
+ * @method diaTyp - Aktualisiert die Sichtbarkeit verschiedener UI-Komponenten, um den Dia-Typ-Abschnitt anzuzeigen.
+ * @method ppTyp - Aktualisiert die Sichtbarkeit verschiedener UI-Komponenten, um den PP-Typ-Abschnitt anzuzeigen.
+ * @method fgwWk - Behandelt die Anzeige- und Aktualisierungslogik für "Fließgewässer".
+ * @method seeWk - Behandelt die Anzeige-Logik für den "See"-Gewässertyp.
+ * @method fgwMst - Initialisiert den Stammdaten-Service und aktualisiert verschiedene Anzeige-Flags.
+ * @method handleDataWK - Behandelt die Aktualisierung der "WasserkoerperStam"-Daten.
+ * @method handleData - Behandelt die bereitgestellten "MessstellenStam"-Daten und aktualisiert vorhandene Daten.
+ * @method formatDate - Formatiert ein gegebenes Datum in einen String im Format "dd.MM.yyyy HH:mm".
+ * @method applyFilterMessstellen - Filtert das "messstellenStam1"-Array basierend auf dem Eingabewert aus dem Ereignis.
+ * @method applyFilterWK - Filtert das "WasserkoerperStam"-Array basierend auf dem Eingabewert aus dem Ereignis.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecked{
   @ViewChild(MatSort) sort: MatSort
   @ViewChild(MatSort) sortWK: MatSort
@@ -48,6 +98,25 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
   helpText: string = '';
 
 //sort Mst
+  /**
+   * Sortiert die Daten basierend auf den angegebenen Sortierkriterien.
+   * 
+   * @param sort - Die Sortierkriterien, die den aktiven Sortierschlüssel und die Richtung enthalten.
+   * 
+   * Die Funktion sortiert das `messstellenStam1` Array basierend auf dem aktiven Sortierschlüssel und der Richtung.
+   * Wenn kein Sortierschlüssel oder keine Richtung angegeben ist, gibt sie die unsortierten Daten zurück.
+   * Die Sortierung erfolgt nach den folgenden Schlüsseln:
+   * - 'id_mst': Sortiert nach der `id_mst` Eigenschaft.
+   * - 'namemst': Sortiert nach der `namemst` Eigenschaft.
+   * - 'ortslage': Sortiert nach der `ortslage` Eigenschaft.
+   * - 'wk_name': Sortiert nach der `wk_name` Eigenschaft.
+   * - 'gewaessername': Sortiert nach der `gewaessername` Eigenschaft.
+   * - 'repraesent': Sortiert nach der `repraesent` Eigenschaft.
+   * - 'updated_at': Sortiert nach der `updated_at` Eigenschaft.
+   * 
+   * Die Sortierreihenfolge wird durch die `direction` Eigenschaft des `sort` Parameters bestimmt,
+   * die entweder 'asc' für aufsteigend oder 'desc' für absteigend sein kann.
+   */
   sortData(sort: Sort) {
     const data = this.messstellenStam1.slice();
     if (!sort.active || sort.direction === '') {
@@ -80,14 +149,42 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
 
 
 }
+/**
+ * Lebenszyklus-Hook, der aufgerufen wird, nachdem Angular die Ansicht der Komponente vollständig überprüft hat.
+ * Diese Methode registriert Mouseover-Ereignisse mithilfe des helpService.
+ * 
+ * @see {@link https://angular.io/guide/lifecycle-hooks#ngafterviewchecked}
+ */
 ngAfterViewChecked() {
   this.helpService.registerMouseoverEvents();
 }
+
+/**
+ * Lebenszyklus-Hook, der aufgerufen wird, nachdem die Ansicht einer Komponente vollständig initialisiert wurde.
+ * Diese Methode wird verwendet, um Mouseover-Ereignisse für Elemente mit der Klasse 'helpable' zu registrieren.
+ * Sie nutzt den helpService, um diese Ereignisse zu verwalten.
+ *
+ * @memberof StammdatenComponent
+ */
+
 ngAfterViewInit() {
 	
 	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
 		this.helpService.registerMouseoverEvents();}
 
+/**
+ * Erstellt eine neue Messstelle und aktualisiert das `messstellenStam1` Array.
+ * 
+ * Diese Methode ruft die `neueMst` Methode des `stammdatenService` mit dem `seefliess` Parameter auf.
+ * Bei erfolgreicher Erstellung einer neuen Messstelle wird das `messstellenStam1` Array mit dem aktuellen 
+ * Messstellen-Array aus dem `stammdatenService` aktualisiert und die `edit` Methode des 
+ * `stammMessstellenComponent1` mit der neu erstellten Messstelle aufgerufen.
+ * 
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die neue Messstelle erstellt und die 
+ * `edit` Methode aufgerufen wurde.
+ * 
+ * @throws Wird eine Fehlermeldung in die Konsole protokollieren, wenn ein Fehler bei der Erstellung der neuen Messstelle auftritt.
+ */
 async new(){
 
     this.stammdatenService.neueMst(this.seefliess).subscribe({
@@ -100,6 +197,31 @@ async new(){
       }
     });
   }
+/**
+ * Sortiert das `wkStam1` Array basierend auf den angegebenen Sortierkriterien und aktualisiert das `sortedDataWK` Array.
+ * 
+ * @param sortWK - Die Sortierkriterien, die das aktive Sortierfeld und die Richtung enthalten.
+ * 
+ * Die Funktion führt die folgenden Schritte aus:
+ * 1. Erstellt eine Kopie des `wkStam1` Arrays.
+ * 2. Überprüft, ob die Sortierkriterien gültig sind. Wenn nicht, wird das kopierte Array `sortedDataWK` zugewiesen und die Funktion beendet.
+ * 3. Sortiert das kopierte Array basierend auf dem aktiven Sortierfeld und der Richtung.
+ * 4. Aktualisiert das `sortedDataWK` Array mit den sortierten Daten.
+ * 5. Protokolliert die sortierten Daten in der Konsole.
+ * 6. Aktualisiert das `wkStam1` Array mit den sortierten Daten.
+ * 
+ * Die Sortierung erfolgt mithilfe der `compare` Funktion, die zwei Werte basierend auf der angegebenen Sortierrichtung vergleicht.
+ * 
+ * Die möglichen Sortierfelder sind:
+ * - 'id'
+ * - 'wk_name'
+ * - 'kuenstlich'
+ * - 'hmwb'
+ * - 'gewaessername'
+ * - 'wrrl_typ_str'
+ * - 'updated_at'
+ */
+
 sortDataWk(sortWK: Sort) {
   const data = this.wkStam1.slice();
   if (!sortWK.active || sortWK.direction === '') {
@@ -133,6 +255,13 @@ console.log( this.sortedDataWK);
 this.wkStam1=this.sortedDataWK;
 
 }
+  /**
+   * Lebenszyklus-Hook, der aufgerufen wird, nachdem Angular alle datengebundenen Eigenschaften einer Direktive initialisiert hat.
+   * Diese Methode überprüft, ob der Benutzer eingeloggt ist. Wenn nicht, wird auf die Login-Seite umgeleitet.
+   * Wenn der Benutzer eingeloggt ist, wird er bei den Observables des Help-Services angemeldet, um den Hilfestatus und -text zu aktualisieren.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Initialisierung abgeschlossen ist.
+   */
   async ngOnInit(){
 
     if (!this.authService.isLoggedIn()) {
@@ -145,6 +274,25 @@ this.wkStam1=this.sortedDataWK;
   }
 
 
+/**
+ * Behandelt asynchron die Sichtbarkeit und das Abrufen von Daten für verschiedene UI-Komponenten im Zusammenhang mit "Messstellen".
+ * 
+ * Diese Methode führt die folgenden Aktionen aus:
+ * - Setzt `seefliess` auf `true`.
+ * - Setzt `MpTypAnzeige` auf `false`.
+ * - Ruft die `start` Methode des `stammdatenService` mit den Parametern `true` und `false` auf.
+ * - Setzt `PPTypAnzeige` auf `false`.
+ * - Setzt `DiaTypAnzeige` auf `false`.
+ * - Setzt `MessstellenAnzeige` auf `true`.
+ * - Setzt `WKAnzeige` auf `false`.
+ * - Setzt `GewaesserAnzeige` auf `false`.
+ * - Setzt `TypWrrlAnzeige` auf `false`.
+ * - Protokolliert das `messstellenarray` vom `stammdatenService` in der Konsole.
+ * - Weist das `messstellenarray` vom `stammdatenService` `messstellenStam1` zu.
+ * - Setzt `ProbenehmerAnzeige` auf `false`.
+ * 
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Methode abgeschlossen ist.
+ */
  async  seeMst(){
   this.seefliess=true;
   this.MpTypAnzeige=false;
@@ -160,6 +308,31 @@ this.wkStam1=this.sortedDataWK;
     this.ProbenehmerAnzeige=false;
 
   }
+/**
+ * Aktualisiert die Anzeigeeigenschaften verschiedener Komponenten, um nur die "Gewaesser" Komponente anzuzeigen.
+ * 
+ * Diese Methode setzt die folgenden Eigenschaften:
+ * - `MpTypAnzeige`: false
+ * - `DiaTypAnzeige`: false
+ * - `PPTypAnzeige`: false
+ * - `MessstellenAnzeige`: false
+ * - `WKAnzeige`: false
+ * - `TypWrrlAnzeige`: false
+ * - `GewaesserAnzeige`: true
+ * - `ProbenehmerAnzeige`: false
+ * 
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeigeeigenschaften aktualisiert wurden.
+ */
+/**
+ * Behandelt die Anzeige-Logik für den "Gewaesser" Abschnitt.
+ * 
+ * Diese Methode setzt die Sichtbarkeit verschiedener UI-Komponenten im Zusammenhang 
+ * mit verschiedenen Datentypen und Messpunkten. Sie verbirgt alle anderen Abschnitte 
+ * und zeigt nur den "Gewaesser" Abschnitt an.
+ * 
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeige-Logik abgeschlossen ist.
+ */
+
 async gewaesser1(){
   this.MpTypAnzeige=false;
   this.DiaTypAnzeige=false;
@@ -170,6 +343,21 @@ this.TypWrrlAnzeige=false;
 this.GewaesserAnzeige=true;
 this.ProbenehmerAnzeige=false;
 }
+  /**
+   * Aktualisiert die Anzeige-Flags für verschiedene Typen und setzt das WRRL-Typ-Anzeige-Flag auf true.
+   * 
+   * Diese Methode setzt die folgenden Flags:
+   * - `MpTypAnzeige`: false
+   * - `DiaTypAnzeige`: false
+   * - `MessstellenAnzeige`: false
+   * - `GewaesserAnzeige`: false
+   * - `WKAnzeige`: false
+   * - `PPTypAnzeige`: false
+   * - `TypWrrlAnzeige`: true
+   * - `ProbenehmerAnzeige`: false
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+   */
   async wrrlTyp(){
     this.MpTypAnzeige=false;
     this.DiaTypAnzeige=false;
@@ -180,7 +368,13 @@ this.ProbenehmerAnzeige=false;
 this.TypWrrlAnzeige=true;
 this.ProbenehmerAnzeige=false;
   }
-  async Probenehmer(){
+  /**
+   * Schaltet die Sichtbarkeit verschiedener UI-Komponenten um, indem `ProbenehmerAnzeige` auf true
+   * und alle anderen Sichtbarkeits-Flags auf false gesetzt werden.
+   *
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsänderungen abgeschlossen sind.
+   */
+  async probenehmer(){
     this.ProbenehmerAnzeige=true;
     this.MpTypAnzeige=false;
     this.MessstellenAnzeige=false;
@@ -190,6 +384,15 @@ this.ProbenehmerAnzeige=false;
     this.PPTypAnzeige=false;
     this.DiaTypAnzeige=false;
   }
+  /**
+   * Behandelt die Anzeige-Logik für den MpTyp-Abschnitt.
+   * 
+   * Diese Methode setzt die Sichtbarkeit verschiedener UI-Komponenten im Zusammenhang 
+   * mit dem MpTyp-Abschnitt. Sie verbirgt die Abschnitte Probenehmer, Messstellen, 
+   * Gewaesser, WK, TypWrrl, PPTyp und DiaTyp und zeigt den MpTyp-Abschnitt an.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeige-Logik abgeschlossen ist.
+   */
   async mpTyp(){ 
     this.ProbenehmerAnzeige=false;
     this.MpTypAnzeige=true;
@@ -200,6 +403,21 @@ this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=false;
     this.DiaTypAnzeige=false;
   }
+  /**
+   * Aktualisiert die Sichtbarkeit verschiedener UI-Komponenten, um den DiaTyp-Abschnitt anzuzeigen.
+   * 
+   * Diese Methode setzt die Sichtbarkeit der folgenden Komponenten:
+   * - MpTypAnzeige: false
+   * - MessstellenAnzeige: false
+   * - GewaesserAnzeige: false
+   * - WKAnzeige: false
+   * - TypWrrlAnzeige: false
+   * - PPTypAnzeige: false
+   * - DiaTypAnzeige: true
+   * - ProbenehmerAnzeige: false
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsaktualisierungen abgeschlossen sind.
+   */
   async diaTyp(){
     this.MpTypAnzeige=false;
     this.MessstellenAnzeige=false;
@@ -210,6 +428,21 @@ this.TypWrrlAnzeige=false;
     this.DiaTypAnzeige=true;
     this.ProbenehmerAnzeige=false;
   }
+  /**
+   * Aktualisiert die Sichtbarkeit verschiedener UI-Komponenten, um den PP Typ Abschnitt anzuzeigen.
+   * 
+   * Diese Methode setzt die Sichtbarkeit der folgenden Komponenten:
+   * - MpTypAnzeige: false
+   * - DiaTypAnzeige: false
+   * - MessstellenAnzeige: false
+   * - GewaesserAnzeige: false
+   * - WKAnzeige: false
+   * - TypWrrlAnzeige: false
+   * - PPTypAnzeige: true
+   * - ProbenehmerAnzeige: false
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsaktualisierungen abgeschlossen sind.
+   */
   async ppTyp(){
     this.MpTypAnzeige=false;
     this.DiaTypAnzeige=false;
@@ -220,6 +453,17 @@ this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=true;
     this.ProbenehmerAnzeige=false;
   }
+  /**
+   * Behandelt die Logik für die Anzeige und Aktualisierung des Zustands im Zusammenhang mit "Fließgewässer".
+   * 
+   * Diese Methode führt die folgenden Aktionen aus:
+   * - Setzt verschiedene Anzeige-Flags auf false.
+   * - Ruft die `startwk` Methode des `stammdatenService` mit spezifischen Parametern auf.
+   * - Aktualisiert die Anzeige-Flags und Zustandsvariablen entsprechend.
+   * - Setzt die `gewaesserart` auf "Fließgewässer".
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die asynchronen Operationen abgeschlossen sind.
+   */
   async fgwWk()
  
   {this.DiaTypAnzeige=false;
@@ -236,6 +480,17 @@ this.TypWrrlAnzeige=false;
 this.gewaesserart="Fließgewässer";
 this.ProbenehmerAnzeige=false;}
   
+  /**
+   * Behandelt asynchron die Anzeige-Logik für den "See" Gewässertyp.
+   * 
+   * Diese Methode führt die folgenden Aktionen aus:
+   * - Startet den Prozess für den Gewässertyp mit spezifischen Parametern.
+   * - Aktualisiert verschiedene Anzeige-Flags, um die Sichtbarkeit verschiedener UI-Komponenten zu steuern.
+   * - Setzt die `wkStam1` Eigenschaft mit dem Gewässertyp-Array aus dem Service.
+   * - Setzt die `gewaesserart` Eigenschaft auf "See".
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Methode abgeschlossen ist.
+   */
   async seeWk()
   {await  this.stammdatenService.startwk(true,false);
     this.DiaTypAnzeige=false;
@@ -253,6 +508,16 @@ this.ProbenehmerAnzeige=false;}
 
 
 
+  /**
+   * Initialisiert den Stammdaten-Service asynchron und aktualisiert verschiedene Anzeige-Flags.
+   * 
+   * Diese Methode führt die folgenden Aktionen aus:
+   * - Startet den Stammdaten-Service mit den angegebenen Parametern.
+   * - Setzt verschiedene Anzeige-Flags, um die Sichtbarkeit verschiedener UI-Komponenten zu steuern.
+   * - Aktualisiert die Eigenschaft `messstellenStam1` mit dem `messstellenarray` aus dem Stammdaten-Service.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Initialisierung und Aktualisierungen abgeschlossen sind.
+   */
   async fgwMst(){
    await this.stammdatenService.start(false,false);
    this.DiaTypAnzeige=false;
@@ -268,6 +533,14 @@ this.ProbenehmerAnzeige=false;}
     this.ProbenehmerAnzeige=false;
   }
 
+  /**
+   * Behandelt die Aktualisierung der WasserkoerperStam-Daten.
+   * 
+   * Diese Methode aktualisiert die WasserkoerperStam-Daten, wenn die ID mit der ID des Ergebnisses übereinstimmt.
+   * Sie archiviert die alten Daten, aktualisiert die Felder mit den neuen Daten und speichert die aktualisierten Daten.
+   * 
+   * @param {WasserkoerperStam} result - Die neuen WasserkoerperStam-Daten, die aktualisiert werden sollen.
+   */
   handleDataWK(result:WasserkoerperStam){
     let wkStam2:WasserkoerperStam[]=this.wkStam1;
     for (let i = 0, l = wkStam2.length; i < l; i += 1) {
@@ -299,6 +572,19 @@ this.ProbenehmerAnzeige=false;}
        this.stammdatenService.speichereWK(result); 
   }
     }}
+/**
+ * Behandelt die bereitgestellten MessstellenStam-Daten, indem die vorhandenen Daten aktualisiert werden, wenn eine Übereinstimmung gefunden wird.
+ * 
+ * @param {MessstellenStam} result - Die neuen MessstellenStam-Daten, die verarbeitet werden sollen.
+ * 
+ * Diese Funktion führt die folgenden Schritte aus:
+ * 1. Iteriert durch die vorhandenen MessstellenStam-Daten (`messstellenStam1`).
+ * 2. Wenn eine Übereinstimmung gefunden wird (basierend auf `id_mst`), archiviert sie die alten Daten mit `stammdatenService.archiviereMstStamm`.
+ * 3. Aktualisiert die übereinstimmenden MessstellenStam-Daten mit den neuen Werten aus `result`.
+ * 4. Setzt das Feld `updated_at` auf das aktuelle Datum.
+ * 5. Speichert die neuen MessstellenStam-Daten mit `stammdatenService.speichereMst`.
+ */
+
 handleData(result:MessstellenStam){
 
 
@@ -331,6 +617,12 @@ handleData(result:MessstellenStam){
 }
 
 
+/**
+ * Formatiert ein gegebenes Datum in einen String im Format "dd.MM.yyyy HH:mm".
+ *
+ * @param date - Das zu formatierende Datum.
+ * @returns Ein String, der das formatierte Datum darstellt.
+ */
 formatDate(date) {
   var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -348,6 +640,13 @@ formatDate(date) {
   //return [year, month, day].join('-');
 }
 
+/**
+ * Filtert das `messstellenStam1` Array basierend auf dem Eingabewert aus dem Ereignis.
+ * Der Filter überprüft, ob der Eingabewert in den Eigenschaften `namemst`, `gewaessername` 
+ * oder `ortslage` der `MessstellenStam` Objekte im `messstellenarray` enthalten ist.
+ * 
+ * @param {Event} event - Das Eingabeereignis, das den Filterwert enthält.
+ */
 applyFilterMessstellen(event: Event) {
   const filterValue = (event.target as HTMLInputElement).value;
 
@@ -372,6 +671,12 @@ applyFilterMessstellen(event: Event) {
   }
 }
 
+/**
+ * Filtert das WasserkoerperStam-Array basierend auf dem Eingabewert aus dem Ereignis.
+ * Die gefilterten Ergebnisse werden im `wkStam1` Array gespeichert.
+ *
+ * @param {Event} event - Das Eingabeereignis, das den Filterwert enthält.
+ */
 applyFilterWK(event:Event){
   const filterValue = (event.target as HTMLInputElement).value;
 
@@ -393,6 +698,16 @@ applyFilterWK(event:Event){
     }}
   }
 }
+
+/**
+ * Vergleicht zwei Werte vom Typ Nummer, String oder Boolean.
+ *
+ * @param a - Der erste zu vergleichende Wert.
+ * @param b - Der zweite zu vergleichende Wert.
+ * @param isAsc - Ein Boolean, der angibt, ob der Vergleich in aufsteigender Reihenfolge erfolgen soll.
+ * @returns Eine negative Zahl, wenn `a` kleiner als `b` ist, eine positive Zahl, wenn `a` größer als `b` ist,
+ *          oder 0, wenn sie gleich sind. Das Ergebnis wird mit 1 multipliziert, wenn `isAsc` true ist, oder -1, wenn `isAsc` false ist.
+ */
 
 function compare(a: number | string | boolean, b: number | string | boolean, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

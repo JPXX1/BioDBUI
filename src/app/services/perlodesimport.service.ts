@@ -9,6 +9,37 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service verantwortlich für die Handhabung von Perlodes-Import- und Exportvorgängen.
+ * 
+ * Dieser Service bietet Methoden zum:
+ * - Abrufen von ArtenMZB-Daten von einer API.
+ * - Exportieren von Daten aus einer Arbeitsmappe in ein spezifisches Format für Perlodes.
+ * - Starten des Importprozesses für eine gegebene Arbeitsmappe.
+ * - Aufrufen und Verarbeiten von ArtenMZB-Daten.
+ * - Importieren von Daten aus einer Excel-Arbeitsmappe in die Anwendung.
+ * 
+ * Der Service interagiert mit einem HTTP-Client und einem anderen Service, `XlsxImportPhylibService`, um diese Vorgänge durchzuführen.
+ * 
+ * @property {string} InfoBox - Eine Zeichenkette zur Speicherung von Informationsnachrichten.
+ * @property {any} arten - Eine Variable zur Speicherung von ArtenMZB-Daten.
+ * @property {Messwerte[]} messwerte - Ein Array zur Speicherung von Messwerten.
+ * @property {string} apiUrl - Die Basis-URL für die API.
+ * @property {Messwerte[]} MessData - Ein Array zur Speicherung von Messdaten.
+ * @property {Messwerte[]} MessDataOrgi - Ein Array zur Speicherung von Original-Messdaten.
+ * @property {Messwerte[]} MessDataImp - Ein Array zur Speicherung von importierten Messdaten.
+ * @property {MessstellenImp[]} messstellenImp - Ein Array zur Speicherung von importierten Messstellen.
+ * @property {Uebersicht[]} uebersicht - Ein Array zur Speicherung von Übersichts-Daten.
+ * @property {Uebersicht} _uebersicht - Eine Variable zur Speicherung eines einzelnen Übersichts-Objekts.
+ * @property {any} mst - Eine Variable zur Speicherung von Messstellen.
+ * @property {boolean} ArtenNichtBekanntIsVisible - Ein Flag, das anzeigt, ob unbekannte Arten sichtbar sind.
+ * 
+ * @constructor
+ * @param {HttpClient} httpClient - Der HTTP-Client, der für API-Anfragen verwendet wird.
+ * @param {XlsxImportPhylibService} xlsxImportPhylibService - Der Service, der für die Handhabung von XLSX-Importen verwendet wird.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class PerlodesimportService {
   public InfoBox: string = "";
   public arten: any;
@@ -24,6 +55,11 @@ export class PerlodesimportService {
   ArtenNichtBekanntIsVisible:boolean=false;
   constructor(private httpClient: HttpClient,private xlsxImportPhylibService:XlsxImportPhylibService) { }
 
+  /**
+   * Ruft die ArtenMZB-Daten von der API ab.
+   *
+   * @returns Ein Observable, das die ArtenMZB-Daten enthält.
+   */
   getArtenMZB(){ 
         
     return this.httpClient.get(`${this.apiUrl}/impArtenMZB`);
@@ -32,6 +68,25 @@ export class PerlodesimportService {
 
 
 
+    /**
+     * Exportiert Daten aus einer Arbeitsmappe in ein spezifisches Format für Perlodes.
+     * 
+     * @param workbook - Das Arbeitsmappenobjekt, das die zu exportierenden Daten enthält.
+     * @param valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten darstellen.
+     * @param tab - Der Index des Tabs in der Arbeitsmappe, der verarbeitet werden soll.
+     * @param verfahrennr - Die Verfahrensnummer, die zum Filtern der Spalten verwendet wird.
+     * 
+     * @returns Ein Promise, das aufgelöst wird, wenn der Exportvorgang abgeschlossen ist.
+     * 
+     * Die Funktion führt die folgenden Schritte aus:
+     * 1. Ruft notwendige Daten mit der Methode `holeMst` von `xlsxImportPhylibService` ab.
+     * 2. Initialisiert und leert bestimmte Eigenschaften von `xlsxImportPhylibService`.
+     * 3. Filtert die Spalten basierend auf der angegebenen `verfahrennr` und `tab`.
+     * 4. Konvertiert das angegebene Blatt in der Arbeitsmappe in das JSON-Format.
+     * 5. Iteriert über die JSON-Daten, um jede Zeile und Spalte zu verarbeiten.
+     * 6. Aktualisiert das `_uebersicht`-Objekt und das `messstellenImp`-Array basierend auf den verarbeiteten Daten.
+     * 7. Ruft die Methode `groupNAch` von `xlsxImportPhylibService` auf, um die Daten zu gruppieren.
+     */
     async Perlodesexport(workbook, valspalten: any, tab: any,verfahrennr : number){
       await this.xlsxImportPhylibService.holeMst();
       this.xlsxImportPhylibService.displayColumnNames=[];
@@ -150,6 +205,16 @@ export class PerlodesimportService {
     }
 
 
+/**
+ * Startet den Importprozess für die angegebene Arbeitsmappe.
+ * 
+ * Diese Methode initialisiert das `arten` Array, ruft Daten mit der `holeMst` Methode von `xlsxImportPhylibService` ab,
+ * ruft die `callartenMZB` Methode auf und führt schließlich den Perlodes-Import mit der bereitgestellten Arbeitsmappe durch.
+ * 
+ * @param {any} workbook - Die zu importierende Arbeitsmappe.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Importprozess abgeschlossen ist.
+ */
+
 async startimport(workbook){
   this.arten=[];
 await  this.xlsxImportPhylibService.holeMst();
@@ -160,23 +225,43 @@ await this.Perlodesimport(workbook)
 
 
 
-    // callartenMZB() {
-		
-    //   this.getArtenMZB().subscribe(arten_ => {
-    //     this.arten = arten_;
-    //     //console.log(this.arten);
-    //     //return einheiten;
-    //   }, (err) => { this.InfoBox = this.InfoBox + " " + err.message });
-    // }
+ 
   
-  	async callartenMZB() {
+    /**
+     * Ruft asynchron die Methode `getArtenMZB` auf und verarbeitet deren Ergebnis.
+     * 
+     * Diese Methode initialisiert die Eigenschaft `arten` mit den Werten, die vom `getArtenMZB` Observable erhalten werden.
+     * Sie protokolliert jeden Wert in der Konsole.
+     * 
+     * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Verarbeitung des Observables abgeschlossen ist.
+     */
+ 
+   
+    async callartenMZB() {
       // this.workbookInit(datum,Probenehmer)
       await this.getArtenMZB().forEach(value => {
-        this.arten = value;
-        console.log('observable -> ' + value);
+      this.arten = value;
+      console.log('observable -> ' + value);
       });
     }
   
+    /**
+         * Importiert Daten aus einer Excel-Arbeitsmappe in die Anwendung.
+         * 
+         * @param workbook - Die Excel-Arbeitsmappe, aus der Daten importiert werden sollen.
+         * 
+         * Diese Funktion verarbeitet das erste Blatt der bereitgestellten Arbeitsmappe, extrahiert Daten und ordnet sie den Datenstrukturen der Anwendung zu.
+         * Sie führt die folgenden Schritte aus:
+         * - Konvertiert die Blattdaten in JSON-Format.
+         * - Iteriert durch die JSON-Objekte, um relevante Daten zu extrahieren und zuzuordnen.
+         * - Validiert und verarbeitet Daten für verschiedene Entitäten wie Messstelle, Probe, Taxon, Form, Messwert, Einheit, Tiefe und cf.
+         * - Aktualisiert die Datendienste der Anwendung mit den importierten Daten.
+         * - Behandelt Fehler und unbekannte Entitäten, indem sie markiert und zur weiteren Überprüfung sichtbar gemacht werden.
+         * 
+         * Die Funktion aktualisiert auch die Übersicht und gruppiert die Daten entsprechend.
+         * 
+         * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Importvorgang abgeschlossen ist.
+         */
     async Perlodesimport(workbook) {
       let array: Messwerte[] = []; this.uebersicht = []; this.xlsxImportPhylibService.MessDataOrgi = [];
       //let reader = new FileReader();

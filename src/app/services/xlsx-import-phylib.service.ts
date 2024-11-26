@@ -9,12 +9,72 @@ import { MessstellenImp } from '../interfaces/messstellen-imp';
 import {UebersichtImportService} from 'src/app/services/uebersicht-import.service';
 import { UebersichtImport } from 'src/app/interfaces/uebersicht-import';
 import { firstValueFrom } from 'rxjs';
+
 @Injectable({
 	providedIn: 'root'
 })
+/**
+ * Dienstklasse zum Importieren und Verarbeiten von Daten aus Excel-Arbeitsmappen für die Phylib-Bewertung.
+ * 
+ * Dieser Dienst bietet Methoden zur Handhabung verschiedener Operationen im Zusammenhang mit dem Import von Daten aus Excel-Dateien,
+ * einschließlich Abrufen von Daten aus externen Diensten, Verarbeiten und Validieren der Daten sowie Importieren in die Datenbank.
+ * 
+ * @author Dr. Jens Päzolt, UmweltSoft
+ * @date 20-10-2024
+ * @bemerkungen
+ * Der Dienst umfasst Methoden für:
+ * - Abrufen verschiedener Datentypen (z.B. Arten, Formen, Tiefen, Einheiten, ParameterAbiot) aus externen Diensten.
+ * - Konvertieren von Observables in Promises für asynchrone Operationen.
+ * - Importieren und Verarbeiten von Daten aus Excel-Arbeitsmappen.
+ * - Handhaben und Validieren von Daten für Messstellen und Messwerte.
+ * - Gruppieren und Verarbeiten von Daten basierend auf verschiedenen Kriterien.
+ * - Importieren von Daten in die Datenbank und Handhaben potenzieller Duplikate.
+ * 
+ * @beispiel
+ * ```typescript
+ * const xlsxImportService = new XlsxImportPhylibService(impPhylibServ, UebersichtImportService);
+ * await xlsxImportService.ngOnInit();
+ * await xlsxImportService.PhylibBewertungimport(workbook, valspalten, tab, verfahrennr);
+ * ```
+ * 
+ * @param impPhylibServ - Der Dienst zur Handhabung von Phylib-Importoperationen.
+ * @param UebersichtImportService - Der Dienst zur Handhabung von Importübersichtsoperationen.
+ * 
+ * @property {string} MstDoppelteDS - Ein String zum Speichern doppelter Datensätze.
+ * @property {any} einheiten - Speichert Einheitsdaten.
+ * @property {any} mst - Speichert Messstellendaten.
+ * @property {any} formen - Speichert Formdaten.
+ * @property {any} arten - Speichert Artendaten.
+ * @property {any} tiefen - Speichert Tiefendaten.
+ * @property {any} arrayBuffer - Speichert Array-Puffer-Daten.
+ * @property {boolean} mstimptab - Gibt an, ob der Messstellen-Import-Tab aktiv ist.
+ * @property {boolean} Datimptab - Gibt an, ob der Datenimport-Tab aktiv ist.
+ * @property {Date} newDate - Speichert ein neues Datum.
+ * @property {string} InfoBox - Speichert Informationsnachrichten.
+ * @property {any} MWausDB - Speichert Messwerte aus der Datenbank.
+ * @property {any} tempMst - Speichert temporäre Messstellendaten.
+ * @property {any} parameterabiot - Speichert abiotische Parameterdaten.
+ * @property {Uebersicht} _uebersicht - Speichert Übersichtsdatensätze.
+ * @property {number} importierteMesswerte - Speichert die Anzahl der importierten Messwerte.
+ * @property {number} importierteMst - Speichert die Anzahl der importierten Messstellen.
+ * @property {UebersichtImport} uebersichtImport - Speichert Importübersichtsdaten.
+ * @property {boolean} vorhanden - Gibt an, ob Daten bereits vorhanden sind.
+ * @property {boolean} vorhandenMst - Gibt an, ob Messstellen bereits vorhanden sind.
+ * @property {string} bemerkungImpMW - Speichert Bemerkungen zu importierten Messwerten.
+ * @property {Messwerte[]} MessData - Speichert Messdaten.
+ * @property {Messwerte[]} MessDataOrgi - Speichert originale Messdaten.
+ * @property {Messwerte[]} MessDataImp - Speichert importierte Messdaten.
+ * @property {MessstellenImp[]} messstellenImp - Speichert importierte Messstellen.
+ * @property {Uebersicht[]} uebersicht - Speichert Übersichtsdatensätze.
+ * @property {Uebersicht[]} uebersichtGeprueft - Speichert geprüfte Übersichtsdatensätze.
+ * @property {string[]} displayColumnNames - Speichert Anzeigespaltennamen.
+ * @property {string[]} dynamicColumns - Speichert dynamische Spalten.
+ * @property {MstIndex[]} mstindex - Speichert Messstellenindizes.
+ */
 export class XlsxImportPhylibService {
 
-	constructor(private impPhylibServ: ImpPhylibServ,private UebersichtImportService:UebersichtImportService) { }
+	constructor(private impPhylibServ: ImpPhylibServ,
+		private UebersichtImportService:UebersichtImportService) { }
 
 	public MstDoppelteDS:string;
 	public einheiten: any;
@@ -46,6 +106,14 @@ export class XlsxImportPhylibService {
 	dynamicColumns:string[]=[];
 	mstindex:MstIndex[]=[];
 
+	/**
+	 * Ruft die Liste der Arten (Spezies) vom Phylib-Dienst ab und weist sie zu.
+	 * 
+	 * Diese Methode ruft die Methode `getArtenPhylibMP` des `impPhylibServ`-Dienstes mit einem Parameter von `1` auf.
+	 * Das Ergebnis wird der `arten`-Eigenschaft der Klasse zugewiesen.
+	 * 
+	 * Wenn ein Fehler während des Dienstaufrufs auftritt, wird die Fehlermeldung der `InfoBox`-Eigenschaft hinzugefügt.
+	 */
 	callarten() {
 		
 
@@ -58,6 +126,20 @@ export class XlsxImportPhylibService {
 	
 
 	
+	/**
+	 * Initialisiert die Komponente durch Abrufen verschiedener Daten vom Dienst.
+	 * 
+	 * Diese Methode wird aufgerufen, wenn die Komponente initialisiert wird. Sie führt die folgenden Aktionen aus:
+	 * - Ruft "formen"-Daten vom Dienst ab und weist sie der Eigenschaft `this.formen` zu.
+	 * - Ruft "tiefen"-Daten vom Dienst ab und weist sie der Eigenschaft `this.tiefen` zu.
+	 * - Ruft "einheiten"-Daten vom Dienst ab und weist sie der Eigenschaft `this.einheiten` zu.
+	 * - Ruft "parameterabiot"-Daten vom Dienst ab und weist sie der Eigenschaft `this.parameterabiot` zu.
+	 * 
+	 * Wenn eine der Abrufoperationen fehlschlägt, wird eine Fehlermeldung der Eigenschaft `this.InfoBox` hinzugefügt und der Fehler wird in der Konsole protokolliert.
+	 * 
+	 * @async
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn alle Daten abgerufen wurden.
+	 */
 	async ngOnInit() {
 		try {
 			// Using firstValueFrom to convert the observable to a promise
@@ -117,6 +199,11 @@ try {
 
 	}
 
+	/**
+	 * Ruft asynchron die MST-Daten mithilfe des impPhylibServ-Dienstes ab und weist sie der mst-Eigenschaft zu.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die MST-Daten abgerufen und zugewiesen wurden.
+	 */
 	async holeMst() {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.getMst().forEach(value => {
@@ -156,9 +243,7 @@ try {
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import_spalte === true);
 		const valspaltenfiterMst = valspalten.filter(excelspalten => excelspalten.spalte_messstelle === true &&  excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1);
 
-		// this.displayColumnNames.push(valspaltenfiterMst[0].anzeigename);
-		// this.dynamicColumns.push(valspaltenfiterMst[0].namespalteng);
-		//console.log(workbook.SheetNames[i]);
+		
 		XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[tab]]);
 		json_Messstelle = JSON.stringify(XL_row_object);
 		const obj = JSON.parse(json_Messstelle);
@@ -208,9 +293,6 @@ try {
 							this.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null,uebersicht:this._uebersicht });
 							this.schalteSpalte(valspaltenfiter2[0].namespalteng,bwert);
 							
-							// if(valspaltenfiteranzeige2[0].anzeige_tab2_tab1 === 1){
-							// this.displayColumnNames.push(valspaltenfiteranzeige2[i].anzeigename);
-							// this.dynamicColumns.push(valspaltenfiteranzeige2[i].namespalteng);}
 							
 							if (valspaltenfiter2[0].anzeige_tab2_tab1 === 1){
 
@@ -229,6 +311,13 @@ try {
 	//console.log(this.messstellenImp);
 	this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
 
+/**
+ * Aktualisiert die angegebene Spalte in der Übersicht mit dem gegebenen Wert und setzt optional das Jahr.
+ *
+ * @param Spalte - Die zu aktualisierende Spalte (z.B. "sp3", "sp4", etc.).
+ * @param wert - Der Wert, der für die angegebene Spalte gesetzt werden soll.
+ * @param jahr - Optional. Das Jahr, das in der Übersicht gesetzt werden soll.
+ */
 schalteSpalte(Spalte:string,wert:string,jahr?:string) {
 
 	// this._uebersicht=null;this._uebersicht= {} as Uebersicht;
@@ -291,6 +380,17 @@ schalteSpalte(Spalte:string,wert:string,jahr?:string) {
 
 
 //findet die Spaltennummer für die Mst_Spalte (wenn nicht die erste, gibt es sonst truble)
+/**
+ * Extrahiert und indiziert spezifische Spaltenwerte aus einem angegebenen Blatt in einer Excel-Arbeitsmappe.
+ *
+ * @param workbook - Das Excel-Arbeitsmappenobjekt.
+ * @param spaltennameMst - Der Name der Spalte, aus der Werte extrahiert werden sollen.
+ * @param tabNrMst - Der Index des Blattes, das innerhalb der Arbeitsmappe verarbeitet werden soll.
+ *
+ * Diese Funktion iteriert durch die Blätter in der Arbeitsmappe, identifiziert das angegebene Blatt anhand seines Index,
+ * konvertiert die Blattdaten in JSON und extrahiert dann Werte aus der angegebenen Spalte. Die extrahierten Werte
+ * und ihre entsprechenden Zeilenindizes werden im `mstindex`-Array gespeichert.
+ */
 funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 	this.mstindex=[];
 	for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1)   {
@@ -690,6 +790,11 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 		// console.log(this.uebersicht);
 	}
 
+/**
+ * Berechnet die Anzahl der importierten, eindeutigen Messstellen.
+ *
+ * @returns {number} Die Anzahl der eindeutigen Messstellen.
+ */
 anzahlMstImp():number{
 let anzahlmst:number=0;
 let TempSet:number[]  = [];
@@ -705,6 +810,15 @@ anzahlmst=  distinctArr.length;
 return anzahlmst;
 }
 
+/**
+ * Überprüft auf doppelte Messwerte in den importierten Daten.
+ *
+ * Diese Methode iteriert durch das `MessDataImp`-Array, kombiniert verschiedene Eigenschaften jedes Elements zu einem String
+ * und speichert diese Strings in einem temporären Array. Anschließend erstellt sie ein Array mit eindeutigen Werten dieser kombinierten Strings
+ * und vergleicht dessen Länge mit der Länge des ursprünglichen Arrays, um festzustellen, ob Duplikate vorhanden sind.
+ *
+ * @returns {boolean} - Gibt `true` zurück, wenn doppelte Messwerte gefunden werden, andernfalls `false`.
+ */
 doppelteMesswerte(): boolean {
 	// Temporäres Array, um doppelte Messstellen zu speichern
 	let MstDoppelteDSTemp: string[] = [];
@@ -745,6 +859,16 @@ doppelteMesswerte(): boolean {
   }
 
 	  //wenn in Phytoseeexport Jahre mitgeliefert werden
+	/**
+	 * Überprüft asynchron, ob abiotische Messwerte für ein bestimmtes Jahr bereits vorhanden sind.
+	 * 
+	 * Diese Methode iteriert über eine Übersichtsliste (`uebersicht`) und für jeden Eintrag, der als "checked" markiert ist,
+	 * wird ein Datumsstring unter Verwendung des Jahres aus dem Eintrag konstruiert. Anschließend werden die Messwerte
+	 * aus der Datenbank für dieses Datum abgerufen. Wenn Messwerte gefunden werden, die mit der Messstation und den Parametern
+	 * aus den importierten Daten übereinstimmen, wird eine Flagge (`vorhanden`) auf true gesetzt und die Daten nach der Überprüfung gruppiert.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Überprüfung abgeschlossen ist.
+	 */
 	  async pruefeObMesswerteAbiotikschonVorhandenmitJahr() {
 		let jahrtemp: string; this.vorhanden = false;
 		
@@ -771,6 +895,15 @@ doppelteMesswerte(): boolean {
 	}}}
 
 	  }
+	/**
+	 * Überprüft asynchron, ob Messwerte für das Jahr bereits vorhanden sind.
+	 * 
+	 * Diese Methode filtert die eindeutigen Messdaten nach Datum und iteriert durch jedes eindeutige Datum.
+	 * Für jedes Datum ruft sie die Messwerte aus der Datenbank ab und überprüft, ob sie bereits vorhanden sind.
+	 * Wenn die Messwerte in der Datenbank gefunden werden, aktualisiert sie die `vorhanden`-Flagge und gruppiert die Übersicht entsprechend.
+	 * 
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Überprüfung abgeschlossen ist.
+	 */
 	  async pruefeObMesswerteschonVorhandenJahr() {
 		this.uebersichtGeprueft=this.uebersicht;
 		this.vorhanden = false;
@@ -939,6 +1072,16 @@ doppelteMesswerte(): boolean {
 
 
 
+	/**
+	 * Überprüft, ob Messstellen für ein bestimmtes Jahr und einen Probennehmer bereits vorhanden sind.
+	 * 
+	 * Diese Methode setzt die Eigenschaft `vorhandenMst` auf `true`, wenn Messstellen gefunden werden,
+	 * die den Kriterien entsprechen und bereits in der Datenbank vorhanden sind.
+	 * 
+	 * @param jahr - Das Jahr, für das überprüft werden soll, ob Messstellen bereits vorhanden sind.
+	 * @param probenehmer - Der Probennehmer.
+	 * @returns Ein Versprechen, das aufgelöst wird, wenn die Überprüfung abgeschlossen ist.
+	 */
 	async pruefeObMessstellenschonVorhanden(jahr: string, probenehmer: string) {
 
 		let jahrtemp: string; this.vorhandenMst = false;
@@ -964,6 +1107,13 @@ doppelteMesswerte(): boolean {
 	}
 
 
+	/**
+	 * Ruft asynchron Messstellen aus der Datenbank basierend auf dem angegebenen Datum und Probennehmer ab.
+	 *
+	 * @param {string} datum - Das Datum, für das die Messstellen abgerufen werden sollen.
+	 * @param {string} Probenehmer - Der Probennehmer, der mit den Messstellen verbunden ist.
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Messstellen abgerufen und verarbeitet wurden.
+	 */
 	async holeMessstellenausDB(datum: string, Probenehmer: string) {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMessstellen(datum).forEach(value => {
@@ -972,6 +1122,12 @@ doppelteMesswerte(): boolean {
 		});
 	}
 	
+	/**
+	 * Ruft asynchron Messwerte für abiotische Faktoren aus der Datenbank für ein bestimmtes Datum ab.
+	 * 
+	 * @param {string} datum - Das Datum, für das die Messwerte abgerufen werden sollen.
+	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Messwerte abgerufen und verarbeitet wurden.
+	 */
 	async holeMesswerteAbiotikausDB(datum: string) {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMessstellen(datum).forEach(value => {
@@ -1045,6 +1201,20 @@ doppelteMesswerte(): boolean {
 			}
 			return rueckgabe;
 	}
+	/**
+	 * Importiert Messwerte in die Datenbank.
+	 *
+	 * @param {string} jahr - Das Jahr, das für den Import verwendet werden soll.
+	 * @param {string} probenehmer - Der Probenehmer, der für den Import verwendet werden soll.
+	 * @param {boolean} useIncludedDate - Flag, das angibt, ob das in den Daten enthaltene Datum verwendet werden soll.
+	 * @returns {Promise<string>} - Ein Versprechen, das eine Zeichenkette zurückgibt, die das Ergebnis des Imports angibt.
+	 *
+	 * Diese Funktion verarbeitet die Messdaten und importiert sie in die Datenbank. Sie iteriert über die 
+	 * Übersichtsdaten und filtert die Messpunkte, die importiert werden müssen. Für jeden Messpunkt 
+	 * sendet sie die Messwerte an die Datenbank unter Verwendung des angegebenen Jahres, Probenehmers und der Import-ID. 
+	 * Die Funktion verfolgt die Anzahl der importierten Messwerte und gibt eine Bemerkung zurück, die angibt, 
+	 * ob der Import erfolgreich war oder ob Fehler aufgetreten sind.
+	 */
 	async importMesswerteIntoDB(jahr: string, probenehmer: string,useIncludedDate:boolean):Promise<string> {
 		let jahrtemp: string;
 		if (useIncludedDate===false){jahrtemp = ("15.07." + jahr);}
@@ -1084,6 +1254,20 @@ doppelteMesswerte(): boolean {
 return bemerkung;
 }
 
+	/**
+	 * Importiert Messstellen in die Datenbank für ein bestimmtes Jahr und einen bestimmten Probennehmer.
+	 * 
+	 * @param jahr - Das Jahr, für das die Messstellen importiert werden.
+	 * @param probenehmer - Der Probennehmer, der für die Messungen verantwortlich ist.
+	 * @returns Ein Versprechen, das eine Zeichenkette zurückgibt, die das Ergebnis des Importvorgangs angibt.
+	 * 
+	 * Die Funktion konstruiert einen Datumsstring unter Verwendung des angegebenen Jahres, iteriert über die 
+	 * Messstellen und versucht, jede einzelne mit der Methode `postMessstellenPhylib` zu importieren. 
+	 * Wenn ein Importvorgang fehlschlägt, wird die Bemerkung aktualisiert, um einen Fehler anzuzeigen.
+	 * 
+	 * Nach dem Versuch, alle Messstellen zu importieren, aktualisiert die Funktion die Importübersicht 
+	 * mit den Ergebnissen und gibt eine Bemerkung zurück, die den Erfolg oder Misserfolg des Importvorgangs angibt.
+	 */
 	async importMessstellenIntoDB(jahr: string, probenehmer: string):Promise<string> {
 		let jahrtemp: string;
 		let bemerkung="Import der Messstellendaten erfolgreich.";
@@ -1164,6 +1348,23 @@ return bemerkung;
 		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
 	}
 	
+	/**
+	 * Wählt und konfiguriert die anzuzeigenden Spalten basierend auf der angegebenen Verfahrens-ID, den Spaltenwerten und der Tabellen-ID aus.
+	 *
+	 * @param idVerfahren - Die ID des Verfahrens, um zu bestimmen, welche Spalten angezeigt werden sollen.
+	 * @param valspalten - Ein Array von Spaltenwerten, die gefiltert und sortiert werden sollen.
+	 * @param idtab - Die ID der Tabelle, um die Spalten zu filtern.
+	 * @returns Ein boolescher Wert, der angibt, ob das Zeilenklick-Handle angezeigt werden soll.
+	 *
+	 * Die Methode führt die folgenden Schritte aus:
+	 * 1. Filtert das `valspalten`-Array basierend auf `idVerfahren`, `anzeige_tab2_tab1` und `idtab`.
+	 * 2. Sortiert die gefilterten Spalten nach ihrer `namespalteng`-Eigenschaft.
+	 * 3. Initialisiert die Arrays `displayColumnNames` und `dynamicColumns`.
+	 * 4. Fügt Standardspalten zu den Arrays basierend auf `idVerfahren` hinzu.
+	 * 5. Iteriert durch die gefilterten Spalten und fügt sie den Arrays hinzu.
+	 * 6. Fügt spezifische Spalten basierend auf `idVerfahren` hinzu.
+	 * 7. Fügt eine 'actions'-Spalte hinzu, wenn `idVerfahren` in der angegebenen Liste enthalten ist.
+	 */
 	waehleSpaltenUebersicht(idVerfahren:number,valspalten:any,idtab:number):boolean{
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === idVerfahren && (excelspalten.anzeige_tab2_tab1 === 1||excelspalten.anzeige_tab2_tab1 ===4) && excelspalten.id_tab === idtab);
 		let showHandleRowClick: boolean = false; 
@@ -1246,6 +1447,15 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 	return showHandleRowClick;
 }}
 
+
+/**
+ * Filtert nicht eindeutige Werte aus einem Array heraus.
+ *
+ * @param value - Der aktuelle Wert, der im Array verarbeitet wird.
+ * @param index - Der Index des aktuellen Wertes, der im Array verarbeitet wird.
+ * @param array - Das Array, auf dem `onlyUnique` aufgerufen wird.
+ * @returns Ein boolescher Wert, der angibt, ob der Wert im Array eindeutig ist.
+ */
 
 function onlyUnique(value, index, array) {
 	return array.indexOf(value) === index;

@@ -14,6 +14,32 @@ import { MatSort } from '@angular/material/sort';
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.css'],
 })
+/**
+ * Komponente zur Verwaltung von Benutzern innerhalb der Anwendung.
+ * 
+ * @export
+ * @class UserManagementComponent
+ * @implements {OnInit}
+ * 
+ * @property {string[]} displayedColumns - Definiert die Spalten der Tabelle.
+ * @property {MatTableDataSource<User>} users - Benutzerdaten in einer MatTableDataSource.
+ * @property {MatSort} sort - Zugriff auf die Sortierung.
+ * 
+ * @constructor
+ * @param {UserService} userService - Service für benutzerbezogene Operationen.
+ * @param {MatDialog} dialog - Service zum Öffnen von Dialogen.
+ * 
+ * @method ngOnInit - Lifecycle-Hook, der aufgerufen wird, nachdem daten-gebundene Eigenschaften initialisiert wurden.
+ * @method sendMailToAllUsers - Sendet eine E-Mail an alle Benutzer.
+ * @method generateRandomPassword - Generiert ein zufälliges 5-stelliges Passwort.
+ * @method addPassword - Setzt ein Passwort für einen Benutzer und speichert es im Backend.
+ * @method setNewPassword - Speichert das neue Passwort für einen Benutzer im Backend.
+ * @method confirmDelete - Öffnet einen Dialog zur Bestätigung der Löschung eines Benutzers.
+ * @method editUser - Öffnet einen Dialog zum Bearbeiten der Benutzerdetails.
+ * @method loadUsers - Lädt die Liste der Benutzer aus dem Backend.
+ * @method addNewUser - Öffnet einen Dialog zum Hinzufügen eines neuen Benutzers.
+  * @autor Dr. Jens Päzolt, Umweltsoft 
+  * */
 export class UserManagementComponent implements OnInit {
   // users: User[] = [];
   displayedColumns: string[] = ['id_nu', 'vornahme', 'zunahme', 'mail','login','password','administrator','nutzer1', 'nutzer2', 'nutzer3', 'actions']; // Definiere die Spalten der Tabelle
@@ -22,10 +48,29 @@ export class UserManagementComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort; // Zugriff auf die Sortierung
   constructor(private userService: UserService, public dialog: MatDialog) {}
 
+  /**
+   * Lifecycle-Hook, der aufgerufen wird, nachdem Angular alle daten-gebundenen Eigenschaften einer Direktive initialisiert hat.
+   * Diese Methode wird verwendet, um zusätzliche Initialisierungsaufgaben durchzuführen.
+   * In diesem Fall lädt sie die Benutzer, indem die Methode `loadUsers` aufgerufen wird.
+   */
   ngOnInit(): void {
     this.loadUsers();
   }
    // Funktion, um eine E-Mail an alle Nutzer zu senden
+  /**
+   * Sendet eine E-Mail an alle Benutzer in der Benutzerliste.
+   * 
+   * Diese Methode sammelt die E-Mail-Adressen aller Benutzer, erstellt einen mailto-Link mit BCC
+   * und öffnet das Standard-Mailprogramm mit den gesammelten E-Mail-Adressen.
+   * 
+   * @bemerkungen
+   * Der Betreff und der Text der E-Mail sind innerhalb der Methode vordefiniert.
+   * 
+   * @beispiel
+   * ```typescript
+   * this.sendMailToAllUsers();
+   * ```
+   */
    sendMailToAllUsers(): void {
     const emailAddresses = this.users.data.map(user => user.mail).join(',');  // E-Mail-Adressen sammeln
     
@@ -39,6 +84,12 @@ export class UserManagementComponent implements OnInit {
   }
   
     // Zufälliges 5-stelliges Passwort generieren
+    /**
+     * Generiert ein zufälliges Passwort, das aus Großbuchstaben, Kleinbuchstaben und Ziffern besteht.
+     * Das generierte Passwort wird 5 Zeichen lang sein.
+     *
+     * @returns {string} Ein zufällig generiertes Passwort.
+     */
     generateRandomPassword(): string {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       let password = '';
@@ -52,6 +103,14 @@ export class UserManagementComponent implements OnInit {
     }
    
  // Passwort setzen und im Backend speichern
+/**
+ * Fügt ein neues Passwort für den angegebenen Benutzer hinzu. Wenn der Benutzer bereits ein Passwort hat,
+ * wird ein Bestätigungsdialog angezeigt, um die Passwortänderung zu bestätigen. Wenn der Benutzer bestätigt,
+ * wird ein neues Passwort generiert und gespeichert. Wenn der Benutzer kein bestehendes Passwort hat,
+ * wird sofort ein neues Passwort generiert und gespeichert.
+ *
+ * @param user - Das Benutzerobjekt, für das das Passwort hinzugefügt oder geändert werden soll.
+ */
  addPassword(user: User): void {
  
   if (user.password) {
@@ -73,7 +132,14 @@ export class UserManagementComponent implements OnInit {
     this.setNewPassword(user);
   }
 }
- // Funktion zum Speichern des neuen Passworts
+  
+/**
+ * Funktion zum Speichern des neuen Passworts: Setzt ein neues Passwort für den angegebenen Benutzer, aktualisiert es im Backend und öffnet das Standard-Mailprogramm,
+ * um das neue Passwort an die E-Mail des Benutzers zu senden.
+ *
+ * @param {User} user - Das Benutzerobjekt, für das das Passwort gesetzt werden soll.
+ * @returns {void}
+ */
  setNewPassword(user: User): void {
   const newPassword = this.generateRandomPassword();
   const updatedUser = { ...user, password: newPassword };
@@ -90,6 +156,13 @@ export class UserManagementComponent implements OnInit {
   });
 }
 // Dialog zum Löschen eines Benutzers öffnen
+/**
+ * Öffnet einen Bestätigungsdialog zum Löschen eines Benutzers. Wenn der Benutzer die Löschung bestätigt,
+ * wird der Benutzerservice aufgerufen, um den Benutzer zu löschen, und die Benutzerliste wird neu geladen.
+ *
+ * @param {User} user - Das zu löschende Benutzerobjekt.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Löschvorgang abgeschlossen ist.
+ */
 async confirmDelete(user: User): Promise<void> {
   const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
     width: '300px',
@@ -113,6 +186,17 @@ async confirmDelete(user: User): Promise<void> {
     
     
 
+  /**
+   * Öffnet einen Dialog zum Bearbeiten des angegebenen Benutzers.
+   * 
+   * @param user - Der zu bearbeitende Benutzer.
+   * 
+   * Der Dialog wird mit einer Breite von 480px und einer Höhe von 700px geöffnet.
+   * Die Benutzerdaten werden zum Bearbeiten an den Dialog übergeben.
+   * 
+   * Nachdem der Dialog geschlossen wurde, wird der Benutzerservice aufgerufen, um den Benutzer zu aktualisieren, falls ein Ergebnis vorliegt.
+   * Sobald der Benutzer aktualisiert wurde, wird die Benutzerliste neu geladen, um die Änderungen widerzuspiegeln.
+   */
   editUser(user: User): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '480px',   // Stelle die Breite auf 480px ein (20% mehr)
@@ -129,11 +213,20 @@ async confirmDelete(user: User): Promise<void> {
     });
   }
   
-  // loadUsers(): void {
-  //   this.userService.getUsers().subscribe((data) => {
-  //     this.users = data;
-  //   });
-  // }
+ 
+  /**
+   * Lädt die Liste der Benutzer vom Benutzerservice und aktualisiert die Datenquelle.
+   * 
+   * Diese Methode abonniert den Benutzerservice, um die Benutzerdaten abzurufen. Sobald die Daten empfangen wurden,
+   * wird die `users` Datenquelle aktualisiert und die Sortierung konfiguriert.
+   * 
+   * - Setzt die Datenquelle für Benutzer.
+   * - Aktiviert die Sortierung für die Datenquelle.
+   * - Setzt die Standardsortierspalte auf 'id_nu'.
+   * - Setzt die Sortierrichtung auf aufsteigend.
+   * 
+   * @returns {void}
+   */
   loadUsers(): void {
     this.userService.getUsers().subscribe((data) => {
       this.users.data = data;
@@ -143,6 +236,15 @@ async confirmDelete(user: User): Promise<void> {
     });
   }
   // Öffnet den Dialog mit einem leeren Benutzerobjekt
+  /**
+   * Öffnet einen Dialog, um einen neuen Benutzer hinzuzufügen. Der Dialog enthält ein leeres Benutzerobjekt,
+   * das vom Benutzer ausgefüllt werden kann. Sobald der Dialog geschlossen wird, wird der neue Benutzer,
+   * falls ein Ergebnis zurückgegeben wird, zur Datenbank hinzugefügt und die Benutzerliste aktualisiert.
+   *
+   * @bemerkungen
+   * Diese Methode verwendet die `EditUserDialogComponent`, um den Dialog anzuzeigen, und
+   * `UserService`, um den neuen Benutzer zur Datenbank hinzuzufügen.
+   */
   addNewUser(): void {
     const newUser: User = {
       vornahme: '',
@@ -169,10 +271,6 @@ async confirmDelete(user: User): Promise<void> {
       }
     });
   }
-  // deleteUser(id: number): void {
-  //   this.userService.deleteUser(id).subscribe(() => {
-  //     this.loadUsers(); // Aktualisiere die Liste nach dem Löschen
-  //   });
-  // }
+ 
   
 }

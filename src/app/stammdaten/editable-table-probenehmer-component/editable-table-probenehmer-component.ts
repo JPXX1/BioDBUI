@@ -10,6 +10,48 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './editable-table-probenehmer-component.html',
   styleUrls: ['./editable-table-probenehmer-component.css'],
 })
+/**
+ * Komponente zur Anzeige und Verwaltung einer Tabelle von Probenehmern (Probenehmer).
+ * 
+ * @class
+ * @implements {OnInit}
+ * 
+ * @example
+ * <app-editable-table-probenehmer></app-editable-table-probenehmer>
+ * 
+ * @property {string[]} displayedColumns - Die in der Tabelle angezeigten Spalten.
+ * @property {MatTableDataSource<Probenehmer>} dataSource - Die Datenquelle für die Tabelle.
+ * @property {MatSort} sort - Die Sortierrichtlinie für die Tabelle.
+ * 
+ * @constructor
+ * @param {StammdatenService} service - Der Service zur Verwaltung der Probenehmer-Daten.
+ * @param {MatSnackBar} snackBar - Der Service zur Anzeige von Snack-Bar-Benachrichtigungen.
+ * 
+ * @method
+ * @name ngOnInit
+ * @description Initialisiert die Komponente und lädt die Probenehmer-Daten.
+ * 
+ * @method
+ * @name loadProbenehmer
+ * @description Lädt die Probenehmer-Daten vom Service und richtet die Sortierung ein.
+ * 
+ * @method
+ * @name addProbenehmer
+ * @description Fügt der Tabelle einen neuen Probenehmer hinzu und zeigt eine Benachrichtigung an.
+ * 
+ * @method
+ * @name updateRow
+ * @param {any} row - Die zu aktualisierenden Zeilendaten.
+ * @param {FocusEvent} event - Das Fokussierungsereignis, das den neuen Wert enthält.
+ * @param {string} field - Das zu aktualisierende Feld.
+ * @description Aktualisiert ein bestimmtes Feld in einer Zeile, wenn sich der Wert ändert.
+ * 
+ * @method
+ * @name saveRow
+ * @param {Probenehmer} row - Die zu speichernden Zeilendaten.
+ * @description Speichert die aktualisierten Zeilendaten im Service und zeigt eine Benachrichtigung an.
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class EditableTableProbenehmerComponent implements OnInit {
   displayedColumns: string[] = ['id_pn', 'firma', 'adresse', 'mail', 'telefonnummer', 'actions'];
   dataSource = new MatTableDataSource<Probenehmer>();

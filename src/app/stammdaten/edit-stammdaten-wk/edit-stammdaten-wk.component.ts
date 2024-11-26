@@ -15,6 +15,53 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
   templateUrl: './edit-stammdaten-wk.component.html',
   styleUrls: ['./edit-stammdaten-wk.component.css']
 })
+/**
+ * Komponente zum Bearbeiten von Wasserkörperdaten (Stammdaten WK).
+ * 
+ * @class
+ * @name EditStammdatenWkComponent
+ * 
+ * @description
+ * Diese Komponente stellt ein Formular zum Bearbeiten von Wasserkörperdaten bereit. Es initialisiert das Formular mit den bereitgestellten Daten und richtet Dropdown-Einstellungen für verschiedene Typen von Wasserkörpern ein. Es behandelt auch die Auswahl von Elementen für verschiedene Dropdowns und aktualisiert entsprechend die Formularwerte.
+ * 
+ * @property {any} wk - Die Wasserkörperdaten.
+ * @property {FormGroup} formInstanceWK - Die Formulargruppe für die Wasserkörperdaten.
+ * @property {string} wk_name1 - Der Name des zu bearbeitenden Wasserkörpers.
+ * @property {TypWrrl[]} dropdownTypPP - Dropdown-Optionen für den PP-Typ.
+ * @property {TypWrrl[]} dropdownTypMP - Dropdown-Optionen für den MP-Typ.
+ * @property {TypWrrl[]} dropdownTypDia - Dropdown-Optionen für den Dia-Typ.
+ * @property {TypWrrl[]} dropdownTypWRRL - Dropdown-Optionen für den WRRL-Typ.
+ * @property {TypWrrl[]} dropdownTypGewaesser - Dropdown-Optionen für den Gewässer-Typ.
+ * @property {IDropdownSettings} dropdownSettingsGew - Dropdown-Einstellungen für Gewässer.
+ * @property {IDropdownSettings} dropdownSettingsDia - Dropdown-Einstellungen für Dia.
+ * @property {IDropdownSettings} dropdownSettingsPP - Dropdown-Einstellungen für PP.
+ * @property {IDropdownSettings} dropdownSettingsMP - Dropdown-Einstellungen für MP.
+ * @property {IDropdownSettings} dropdownSettingsWRRL - Dropdown-Einstellungen für WRRL.
+ * 
+ * @constructor
+ * @param {MatDialogRef<EditStammdatenWkComponent>} dialogRef - Referenz auf den geöffneten Dialog.
+ * @param {ArraybuendelWK} data - Datenbündel mit Wasserkörperdaten und Dropdown-Optionen.
+ * @param {FormBuilder} fb - Formular-Builder zum Erstellen der Formulargruppe.
+ * 
+ * @method onItemSelectGew - Behandelt die Auswahl eines Elements im Gewässer-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method onItemSelectDia - Behandelt die Auswahl eines Elements im Dia-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method onItemSelectMP - Behandelt die Auswahl eines Elements im MP-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method onItemSelectPP - Behandelt die Auswahl eines Elements im PP-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method onItemSelectWrrl - Behandelt die Auswahl eines Elements im WRRL-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
+ * @method save - Speichert die Formulardaten und schließt den Dialog.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class EditStammdatenWkComponent {
   wk:any;
   formInstanceWK: FormGroup;

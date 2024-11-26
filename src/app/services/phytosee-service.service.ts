@@ -10,6 +10,84 @@ import { Taxonzus } from '../file-upload/klassen/taxonzus';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Serviceklasse zur Handhabung verschiedener Operationen im Zusammenhang mit Phytosee.
+ * 
+ * Dieser Service bietet Methoden zum Abrufen und Verarbeiten von Daten aus verschiedenen Quellen,
+ * einschließlich des Imports von Daten aus Excel-Arbeitsmappen und des Exports von Daten in spezifischen Formaten.
+ * Er interagiert mit anderen Diensten wie `ImpPhylibServ` und `XlsxImportPhylibService`,
+ * um seine Operationen durchzuführen.
+ * 
+ * @class
+ * @name PhytoseeServiceService
+ * 
+ * @constructor
+ * @param {ImpPhylibServ} impPhylibServ - Service zum Abrufen von Phylib-Daten.
+ * @param {XlsxImportPhylibService} xlsxImportPhylibService - Service zum Importieren von Daten aus Excel-Dateien.
+ * 
+ * @property {any} arten - Speichert die abgerufenen Arten-Daten.
+ * @property {Messwerte[]} messwerte - Array von Messwerte-Objekten.
+ * @property {MessstellenImp[]} messstellenImp - Array von MessstellenImp-Objekten.
+ * @property {Uebersicht[]} uebersicht - Array von Uebersicht-Objekten.
+ * @property {Uebersicht} _uebersicht - Einzelnes Uebersicht-Objekt.
+ * @property {any} formen - Speichert die abgerufenen Formen-Daten.
+ * 
+ * @method
+ * @async
+ * @name getFormen
+ * @description Ruft "Formen"-Daten vom `impPhylibServ` Service ab und weist sie der `formen`-Eigenschaft zu.
+ * Verwendet `firstValueFrom`, um das Observable in ein Promise zu konvertieren.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Daten abgerufen und zugewiesen wurden.
+ * @throws Gibt eine Fehlermeldung in die Konsole aus, wenn der Abrufvorgang fehlschlägt.
+ * 
+ * @method
+ * @async
+ * @name callartenPhyto
+ * @description Ruft asynchron die Methode `getArtenPhylibMP` vom `impPhylibServ` Service
+ * mit einem festen Parameterwert von 5 auf. Setzt die `arten`-Eigenschaft auf den Wert, der vom Observable zurückgegeben wird.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn das Observable abgeschlossen ist.
+ * 
+ * @method
+ * @async
+ * @name PhytoseeLLBBimport
+ * @description Importiert Daten aus einem Excel-Arbeitsbuch in das Phytosee-System.
+ * @param {any} workbook - Das Excel-Arbeitsbuch, aus dem Daten importiert werden sollen.
+ * @param {any} valspalten - Die zu validierenden Spalten.
+ * @param {any} tab - Die Anzahl der zu verarbeitenden Blätter.
+ * @param {number} verfahrennr - Die Verfahrensnummer.
+ * @param {boolean} loescheErste5Zeilen - Ob die ersten 5 Zeilen des neuen LLBB-Formats gelöscht werden sollen.
+ * @returns {Promise<string>} Ein Promise, das eine Zeichenkette zurückgibt, die das Ergebnis des Importvorgangs angibt.
+ * @throws Wirft einen Fehler, wenn es Probleme mit den Daten gibt, wie z.B. ungültige Daten oder falsche Spaltenüberschriften.
+ * 
+ * @method
+ * @async
+ * @name Phytoflussexport
+ * @description Exportiert Daten aus einem Workbook in ein spezifisches Format.
+ * @param {any} workbook - Das Workbook-Objekt, das die zu exportierenden Daten enthält.
+ * @param {any} valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten repräsentieren.
+ * @param {any} tab - Die Tab-Nummer, die verarbeitet werden soll.
+ * @param {number} verfahrennr - Die Verfahrensnummer, um die Spalten zu filtern.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Exportprozess abgeschlossen ist.
+ * @remarks Diese Funktion verarbeitet die Workbook-Daten, indem sie die Spalten anhand der angegebenen Verfahrensnummer und des Tabs filtert.
+ * Sie konvertiert das relevante Arbeitsblatt in JSON-Format und verarbeitet jede Zeile, um Daten zu extrahieren und zu transformieren.
+ * Die transformierten Daten werden im `messstellenImp`-Array gespeichert, und verschiedene Servicemethoden werden aufgerufen, um die Daten zu verarbeiten.
+ * 
+ * @method
+ * @async
+ * @name Phytoseeexport
+ * @description Exportiert Daten aus einem Workbook in ein spezifisches Format für Phytosee.
+ * @param {any} workbook - Das Workbook-Objekt, das die zu exportierenden Daten enthält.
+ * @param {any} valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten repräsentieren.
+ * @param {any} tab - Der Tab-Identifikator für die Daten.
+ * @param {number} verfahrennr - Die Verfahrensnummer, um die Spalten zu filtern.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Exportprozess abgeschlossen ist.
+ * @remarks Diese Funktion verarbeitet die Workbook-Daten, indem sie die Spalten anhand der angegebenen Verfahrensnummer und des Tab-Identifikators filtert.
+ * Sie konvertiert das relevante Arbeitsblatt in JSON-Format und verarbeitet jede Zeile, um Daten zu extrahieren und zu transformieren.
+ * Die transformierten Daten werden im `messstellenImp`-Array gespeichert und der `xlsxImportPhylibService.messstellenImp`-Eigenschaft zugewiesen.
+ * Die Funktion behandelt auch spezifische Transformationen für bestimmte Parameter-IDs und verwaltet die Übersicht über Fehler und Importstatus.
+ * 
+ * @autor Dr. Jens Päzolt, Umweltsoft
+ */
 export class PhytoseeServiceService {
 
   constructor(private impPhylibServ: ImpPhylibServ, private xlsxImportPhylibService: XlsxImportPhylibService) { }
@@ -19,6 +97,13 @@ export class PhytoseeServiceService {
   public uebersicht: Uebersicht[] = [];
   public _uebersicht: Uebersicht;
   public formen: any;
+  /**
+   * Ruft die "formen" Daten vom impPhylibServ Service ab und weist sie der `formen` Eigenschaft zu.
+   * Verwendet `firstValueFrom`, um das Observable in ein Promise zu konvertieren.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Daten abgerufen und zugewiesen wurden.
+   * @throws Wird eine Fehlermeldung in die Konsole ausgeben, wenn der Abrufvorgang fehlschlägt.
+   */
   async getFormen() {
     try {
       // Using firstValueFrom to convert the observable to a promise
@@ -31,6 +116,13 @@ export class PhytoseeServiceService {
       console.error('Error fetching formen:', errorMessage);
     }
   }
+  /**
+   * Ruft asynchron die Methode `getArtenPhylibMP` vom `impPhylibServ` Service
+   * mit einem festen Parameterwert von 5 auf. Die Methode setzt die `arten`-Eigenschaft
+   * auf den Wert, der vom Observable zurückgegeben wird.
+   *
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn das Observable abgeschlossen ist.
+   */
   async callartenPhyto() {
     this.arten = null;
     // this.workbookInit(datum,Probenehmer)
@@ -40,6 +132,18 @@ export class PhytoseeServiceService {
     });
   }
 
+  /**
+   * Importiert Daten aus einem Excel-Arbeitsbuch in das Phytosee-System.
+   * 
+   * @param workbook - Das Excel-Arbeitsbuch, aus dem Daten importiert werden sollen.
+   * @param valspalten - Die zu validierenden Spalten.
+   * @param tab - Die Anzahl der zu verarbeitenden Blätter.
+   * @param verfahrennr - Die Verfahrensnummer.
+   * @param loescheErste5Zeilen - Ob die ersten 5 Zeilen des neuen LLBB-Formats gelöscht werden sollen.
+   * @returns Ein Promise, das eine Zeichenkette zurückgibt, die das Ergebnis des Importvorgangs angibt.
+   * 
+   * @throws Wird einen Fehler auslösen, wenn es Probleme mit den Daten gibt, wie z.B. ungültige Daten oder falsche Spaltenüberschriften.
+   */
   async PhytoseeLLBBimport(workbook, valspalten: any, tab: any, verfahrennr: number, loescheErste5Zeilen: boolean): Promise<string> {
 
     // console.log('observable -> ' + value);
@@ -560,6 +664,35 @@ export class PhytoseeServiceService {
     this.xlsxImportPhylibService.messstellenImp = this.messstellenImp;
 
   }
+  /**
+   * Exportiert Daten aus einem Workbook in ein spezifisches Format für Phytosee.
+   * 
+   * @param workbook - Das Workbook-Objekt, das die zu exportierenden Daten enthält.
+   * @param valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten repräsentieren.
+   * @param tab - Der Tab-Identifikator für die Daten.
+   * @param verfahrennr - Die Verfahrensnummer, um die Spalten zu filtern.
+   * 
+   * @returns Ein Promise, das sich auflöst, wenn der Exportprozess abgeschlossen ist.
+   * 
+   * @Bemerkungen
+   * Diese Funktion verarbeitet die Workbook-Daten, indem sie die Spalten anhand der angegebenen Verfahrensnummer
+   * und des Tab-Identifikators filtert. Anschließend wird das relevante Arbeitsblatt in JSON-Format konvertiert und
+   * jede Zeile wird bearbeitet, um Daten zu extrahieren und zu transformieren. Die transformierten Daten werden im
+   * `messstellenImp`-Array gespeichert und der `xlsxImportPhylibService.messstellenImp`-Eigenschaft zugewiesen.
+   * 
+   * Die Funktion behandelt auch spezifische Transformationen für bestimmte Parameter-IDs und verwaltet die Übersicht
+   * über Fehler und Importstatus.
+   * 
+   * @Beispiel
+   * ```typescript
+   * const workbook = ...; // Workbook laden oder erstellen
+   * const valspalten = [...]; // Zu verarbeitende Spalten definieren
+   * const tab = 1; // Tab-Identifikator angeben
+   * const verfahrennr = 123; // Verfahrensnummer angeben
+   * 
+   * await Phytoseeexport(workbook, valspalten, tab, verfahrennr);
+   * ```
+   */
   async Phytoseeexport(workbook, valspalten: any, tab: any, verfahrennr: number) {
     await this.xlsxImportPhylibService.holeMst();
     // console.log(this.xlsxImportPhylibService.mst);
@@ -744,6 +877,12 @@ function bewertung_als_zahl(bewertung: string): number {
   // Gibt die numerische Bewertung zurück
   return bewertung_zahl;
 }
+/**
+ * Konvertiert eine Excel-Datumszahl in eine JavaScript-Datumszeichenkette im Format "DD.MM.YYYY".
+ * 
+ * @param {number} excelDate - Die zu konvertierende Excel-Datumszahl.
+ * @returns {string} Die konvertierte Datumszeichenkette im Format "DD.MM.YYYY". Wenn das Datum ungültig ist, wird "Ungültiges Datum" zurückgegeben.
+ */
 function excelDateToJSDate(excelDate: number): string {
   const excelEpoch = new Date(1899, 11, 30); // Excel epoch start date
   const jsDate = new Date(excelEpoch.getTime() + excelDate * 86400000); // 86400000 ms in a day
@@ -800,8 +939,15 @@ function phytoKlassen(taxon: string): number {
 
   // Gibt die Algenklasse zurück
   return para_id;
-}
-// Funktion, um den passenden Schlüssel zu finden
+} 
+/**
+ * Funktion, um den passenden Schlüssel zu finden: Sucht nach einem Schlüssel im angegebenen Objekt, der die angegebene Suchzeichenfolge enthält.
+ * 
+ * @param obj - Das Objekt, in dem gesucht werden soll.
+ * @param searchString - Die Zeichenfolge, nach der in den Schlüsseln des Objekts gesucht werden soll.
+ * @returns Der erste Schlüssel, der die Suchzeichenfolge enthält, oder null, wenn kein solcher Schlüssel gefunden wird.
+ */
+
 function findKeyWithIncludes(obj, searchString) {
   const keys = Object.keys(obj);
   for (const key of keys) {

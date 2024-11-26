@@ -12,6 +12,34 @@ import {ArchivStammdatenWkComponent} from '../archiv-stammdaten-wk/archiv-stammd
   templateUrl: './stamm-wk.component.html',
   styleUrls: ['./stamm-wk.component.css']
 })
+/**
+ * Komponente, die die StammWkComponent darstellt.
+ * 
+ * @export
+ * @class StammWkComponent
+ * 
+ * @property {WasserkoerperStam[]} wasserkoerperStam - Eingabeeigenschaft für das WasserkoerperStam-Array.
+ * @property {string} gewaesserart - Eingabeeigenschaft für die Art des Gewässers.
+ * @property {EventEmitter<WasserkoerperStam>} newDataWK - Ausgabe-Event-Emitter für neue WasserkoerperStam-Daten.
+ * @property {EventEmitter<Sort>} sortDataWK - Ausgabe-Event-Emitter zum Sortieren von Daten.
+ * @property {string[]} displayedColumns - Array der Spaltennamen, die in der Tabelle angezeigt werden sollen.
+ * @property {WasserkoerperStam[]} dataSource - Datenquelle für die Tabelle.
+ * @property {ArraybuendelWK} arraybuendelWK - Gebündeltes Array von WasserkoerperStam und verwandten Typen.
+ * @property {WasserkoerperStam[]} archivWK - Array der archivierten WasserkoerperStam.
+ * 
+ * @constructor
+ * @param {MatDialog} dialog - Angular Material Dialog-Service.
+ * @param {StammdatenService} stammdatenService - Service zur Handhabung von Stammdaten-Operationen.
+ * 
+ * @method sortData - Sendet das sortDataWK-Event mit dem angegebenen Sortierparameter.
+ * @param {Sort} sort - Der Sortierparameter.
+ * 
+ * @method edit - Öffnet einen Dialog zum Bearbeiten von WasserkoerperStam und sendet neue Daten, wenn Änderungen vorgenommen werden.
+ * @param {WasserkoerperStam} person - Das zu bearbeitende WasserkoerperStam.
+ * 
+ * @method showArchiv - Öffnet einen Dialog, um das Archiv eines WasserkoerperStam anzuzeigen.
+ * @param {WasserkoerperStam} person - Das WasserkoerperStam, dessen Archiv angezeigt werden soll.
+ */
 export class StammWkComponent {
   
   @Input()  wasserkoerperStam: WasserkoerperStam[] = []; 

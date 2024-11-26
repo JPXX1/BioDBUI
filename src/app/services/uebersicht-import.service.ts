@@ -11,6 +11,30 @@ import { DataAbiotik } from '../interfaces/data-abiotik';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Service zur Verwaltung von Importübersichten und zugehörigen Datenoperationen.
+ * 
+ * Der `UebersichtImportService` bietet Methoden zum Abrufen, Aktualisieren, Löschen und Archivieren von Importübersichten.
+ * Er interagiert mit verschiedenen Endpunkten, um Daten zu verwalten und zu verarbeiten.
+ * 
+ * @class
+ * @property {UebersichtImport[]} uebersicht - Array von Importübersichten.
+ * @property {any[]} tempdataabiotik - Temporäres Array zur Speicherung von Abiotik-Daten.
+ * @property {DataAbiotik[]} dataAbiotik - Array zur Speicherung von Abiotik-Daten.
+ * @property {any[]} temp - Temporäres Array zur allgemeinen Datenspeicherung.
+ * @property {UebersichtImport} UebersichtImport - Temporäres Objekt zur Speicherung einer Importübersicht.
+ * @property {string} apiUrl - Basis-URL für API-Endpunkte.
+ * 
+ * @constructor
+ * @param {HttpClient} httpClient - Angular HttpClient zum Durchführen von HTTP-Anfragen.
+ * @param {ImpPhylibServ} impPhylibServ - Service zur Verwaltung von Phylib-Importen.
+ * 
+ * @method
+ * @async
+ * @function getBwMstTaxa - Ruft Daten vom 'viewdataabiotik'-Endpunkt unter Verwendung des angegebenen 'komp'-Parameters ab.
+ * @param {number} komp - Der Parameter, der als 'id' in der HTTP-Anfrage gesendet wird.
+ * @autor Dr. Jens Päzolt, Umweltsoft
+	 */
 export class UebersichtImportService {
   uebersicht:UebersichtImport[];
   tempdataabiotik:any=[];
@@ -20,6 +44,13 @@ export class UebersichtImportService {
   private apiUrl = environment.apiUrl;
   constructor(private httpClient: HttpClient,private impPhylibServ: ImpPhylibServ) { }
 
+  /**
+     * Ruft Daten vom 'viewdataabiotik'-Endpunkt unter Verwendung des angegebenen 'komp'-Parameters ab.
+     * 
+     * @param {number} komp - Der Parameter, der als 'id' in der HTTP-Anfrage gesendet wird.
+     * @returns {Promise<any>} - Ein Promise, das die abgerufenen Daten auflöst.
+     * @throws Wird einen Fehler auslösen, wenn die HTTP-Anfrage fehlschlägt.
+     */
    async getBwMstTaxa(komp: number): Promise<any> {
       let params = new HttpParams().set('id', komp);
       
@@ -32,6 +63,16 @@ export class UebersichtImportService {
   }
 
 
+  /**
+   * Aktualisiert die Importdaten mit den angegebenen Parametern.
+   *
+   * @param anzahlmst - Die Anzahl der Master-Datensätze.
+   * @param anzahlwerte - Die Anzahl der Werte.
+   * @param bemerkung - Eine Bemerkung oder ein Kommentar.
+   * @param id_imp - Die Import-ID.
+   * 
+   * @returns void
+   */
   aktualisiereImportdaten(anzahlmst:number,anzahlwerte:number,bemerkung:string,id_imp:number){
 
     const body = new HttpParams()
@@ -44,6 +85,14 @@ export class UebersichtImportService {
    console.log("response %o, ", resp);  });
 
   }
+  /**
+   * Konvertiert eine Zeichenfolgen-Darstellung eines Datums in ein Date-Objekt basierend auf dem angegebenen Datumsformat.
+   *
+   * @param importiert - Die Zeichenfolgen-Darstellung des zu konvertierenden Datums.
+   * @param dateFormat - Das Format der Datumszeichenfolge.
+   * @returns Das aus der Zeichenfolge geparste Date-Objekt.
+   */
+  
   StringToDate(importiert: string,dateFormat:string): Date {
     // const dateFormat = 'dd.MM.yy HH:mm';
     // const importDate = 
@@ -53,15 +102,27 @@ export class UebersichtImportService {
 // console.log(weeksDifference);
 //     return weeksDifference < 2;
 }
- async start() {
-// this.callUebersicht2();
+
+/**
+ * Startet den Prozess, indem die notwendigen Methoden nacheinander aufgerufen werden.
+ * 
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Prozess abgeschlossen ist.
+ */
+async start() {
+  // this.callUebersicht2();
 
   await this.callUebersicht();
   await this.handle(false);
   // console.log(this.uebersicht);
- }
+}
 
 
+/**
+ * Ruft asynchron die Methode `getimpUebersicht` aus dem `impPhylibServ`-Service auf
+ * und weist das Ergebnis der Eigenschaft `temp` zu.
+ *
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+ */
  async callUebersicht(){
 
   await this.impPhylibServ.getimpUebersicht().forEach(formen_ => {
@@ -69,6 +130,13 @@ export class UebersichtImportService {
     // console.log(formen_);
   });
  }
+
+/**
+ * Löscht Daten aus der MstAbundanz-Tabelle basierend auf der angegebenen Import-ID.
+ *
+ * @param {number} id_imp - Die ID des Imports, für den die Daten gelöscht werden sollen.
+ * @returns {void}
+ */
 
  loescheDatenMstAbundanz(id_imp:number){
  
@@ -79,6 +147,12 @@ export class UebersichtImportService {
    this.httpClient.post(`${this.apiUrl}/deleteMstAbundanz`, body).subscribe(resp => {
   console.log("response %o, ", resp);  });
   }
+  /**
+     * Löscht die MstBewertungen-Daten für die angegebene Import-ID.
+     *
+     * @param {number} id_imp - Die ID des Imports, für den die MstBewertungen-Daten gelöscht werden sollen.
+     * @returns {void}
+     */
   loescheDatenMstBewertungen(id_imp:number){
  
     const body = new HttpParams()
@@ -89,6 +163,12 @@ export class UebersichtImportService {
   console.log("response %o, ", resp);  });
   }
  
+/**
+ * Generiert eine neue Import-ID basierend auf der maximal vorhandenen Import-ID im angegebenen Array.
+ *
+ * @param {UebersichtImport[]} uebersichtImport - Ein Array von UebersichtImport-Objekten.
+ * @returns {number} - Die neue Import-ID, die um eins größer ist als die aktuelle maximale Import-ID.
+ */
  neueImportid(uebersichtImport:UebersichtImport[]):number{
   let UebersichtImport:UebersichtImport;
 let max:number=Number(uebersichtImport[0].id_imp);
@@ -105,6 +185,14 @@ console.log(max)
 let max2=Number(max)+1;
   return max2;
  }
+/**
+ * Ruft die Methode `getimpUebersicht` aus dem `impPhylibServ`-Service auf und abonniert deren Observable.
+ * Die Antwort wird der Eigenschaft `temp` zugewiesen.
+ *
+ * @bemerkungen
+ * Diese Methode wird verwendet, um eine Übersicht abzurufen und in der Eigenschaft `temp` zu speichern.
+ */
+
 callUebersicht2(){
 
   this.impPhylibServ.getimpUebersicht().subscribe(arten_ => {
@@ -115,6 +203,20 @@ callUebersicht2(){
 }
 
 
+/**
+ * Verarbeitet das `temp`-Array und aktualisiert das `uebersicht`-Array.
+ * 
+ * @param {boolean} checked - Ein Flag, das angibt, ob die Anzahl der Elemente in `uebersicht` begrenzt werden soll.
+ * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Verarbeitung abgeschlossen ist.
+ * 
+ * Die Funktion führt die folgenden Schritte aus:
+ * 1. Löscht das `uebersicht`-Array.
+ * 2. Iteriert über das `temp`-Array und ordnet jedes Element einem neuen Objekt mit spezifischen Eigenschaften zu.
+ * 3. Konvertiert die `importiert`-Datumszeichenfolge in ein Date-Objekt mit `StringToDate`.
+ * 4. Fügt das neue Objekt dem `uebersicht`-Array hinzu.
+ * 5. Sortiert das `uebersicht`-Array nach `datumimport` in absteigender Reihenfolge.
+ * 6. Wenn `checked` false ist, wird das `uebersicht`-Array auf die ersten 6 Elemente begrenzt.
+ */
 async handle(checked: boolean) {
   this.uebersicht = [];
   // console.log(this.temp);
@@ -144,6 +246,18 @@ async handle(checked: boolean) {
       this.uebersicht.sort((a, b) => b.datumimport.getTime() - a.datumimport.getTime());
 if (checked===false){this.uebersicht=this.uebersicht.slice(0,6);}
 }
+/**
+ * Ruft Daten für BwMstTaxa basierend auf der angegebenen Import-ID ab und verarbeitet sie.
+ * 
+ * Diese Methode löscht die vorhandenen `tempdataabiotik` und `dataAbiotik` Arrays,
+ * ruft neue Daten mit der Methode `getBwMstTaxa` ab und verarbeitet jedes Element,
+ * um das `dataAbiotik` Array mit formatierten Daten zu füllen.
+ * 
+ * @param {number} impID - Die Import-ID, die verwendet wird, um die BwMstTaxa Daten abzurufen.
+ * @returns {Promise<any>} Ein Promise, das aufgelöst wird, wenn das Abrufen und Verarbeiten der Daten abgeschlossen ist.
+ * @throws Wird einen Fehler auslösen, wenn es ein Problem beim Abrufen der Daten gibt.
+ */
+
 async callgetBwMstTaxa(impID: number): Promise<any> {
   this.tempdataabiotik = [];
   this.dataAbiotik = [];
@@ -175,6 +289,13 @@ async callgetBwMstTaxa(impID: number): Promise<any> {
     //console.log(this.tempdataabiotik);
     }
 
+/**
+ * Archiviert eine neue Importübersicht, indem eine POST-Anfrage an den Server gesendet wird.
+ *
+ * @param {UebersichtImport} uebersichtImport - Das Importübersichtsobjekt, das die zu archivierenden Details enthält.
+ * @returns {Promise<string>} - Ein Promise, das den Antworttext des Servers auflöst.
+ * @throws {Error} - Wirft einen Fehler, wenn die POST-Anfrage fehlschlägt.
+ */
 async  archiviereNeueImportUebersicht(uebersichtImport:UebersichtImport):Promise<string> {
   let url=`${this.apiUrl}/insertArchivImport`;
 
