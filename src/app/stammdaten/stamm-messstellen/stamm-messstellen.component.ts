@@ -8,6 +8,7 @@ import {ArchivStammdatenComponent} from '../archiv-stammdaten-mst/archiv-stammda
 import { MatDialog } from '@angular/material/dialog';
 import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
 import { Overlay } from '@angular/cdk/overlay';
+import { MatSnackBar } from '@angular/material/snack-bar';
 // ];
 @Component({
   selector: 'app-stamm-messstellen',
@@ -30,7 +31,8 @@ arraybuendel:ArraybuendelSel;
   dataSource = this.messstellenStam;
  
 
-  constructor( private overlay: Overlay,public dialog: MatDialog,private stammdatenService:StammdatenService) {
+  constructor( private snackBar: MatSnackBar,private overlay: Overlay,
+    public dialog: MatDialog,private stammdatenService:StammdatenService) {
    
   }  
 
@@ -182,5 +184,33 @@ async showArchiv(event: MouseEvent, person: MessstellenStam) {
     scrollStrategy: this.overlay.scrollStrategies.reposition()
   });
 }
+deleteRow(row: MessstellenStam): void {
+  this.stammdatenService.deleteMessstelle( row).subscribe(
+    () => {
+      // console.log('Row saved:', row);
+      this.snackBar.open('Messstelle erfolgreich erfolgreich gelöscht!', 'Schließen', {
+        duration: 3000, // Dauer der Snackbar in Millisekunden
+        horizontalPosition: 'center', // Position (z.B., start, center, end)
+        verticalPosition: 'top', // Position (z.B., top, bottom)
+      });
+      const data = this.messstellenStam; // Bestehende Daten holen
+      const index = data.findIndex(p => p.id_mst === row.id_mst); // Element finden
+      if (index > -1) {
+        data.splice(index, 1); // Element entfernen
+        this.messstellenStam = [...data]; // Datenquelle aktualisieren
+      }
+    },
+    (error) => {
+      console.error('Messstelle kann nicht gelöscht werden:', error);
+      this.snackBar.open('Messstelle kann nicht gelöscht werden!', 'Schließen', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+    }
+  );
+}
+
+
 
  }

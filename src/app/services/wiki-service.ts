@@ -3,10 +3,22 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export interface WikiTreeEntry {
-  name: string; // Name des Knotens (header1, header2, oder body)
-  children: WikiTreeEntry[]; // Untergeordnete Knoten
+/**
+ * Stellt einen Eintrag in einer Wiki-Baumstruktur dar.
+ * 
+ * @interface WikiEntry
+ * @property {string} name - Der Name des Knotens (z.B. header1, header2 oder body).
+ * @property {WikiTreeEntry[]} children - Die untergeordneten Knoten dieses Eintrags.
+ */
+
+
+export interface WikiEntry {
+  id: number;
+  header1: string;
+  header2: string;
+  body: string;
 }
+
 
 
 
@@ -18,7 +30,13 @@ export class WikiService {
   private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  getWikiTreeEntries(): Observable<WikiTreeEntry[]> {
-    return this.http.get<WikiTreeEntry[]>(`${this.apiUrl}/wiki2`);
+  // getWikiTreeEntries(): Observable<WikiTreeEntry[]> {
+  //   return this.http.get<WikiTreeEntry[]>(`${this.apiUrl}/wiki2`);
+  // }
+  // getTreeData(): Observable<WikiEntry[]> {
+  //   return this.http.get<WikiEntry[]>(`${this.apiUrl}/wiki2`);
+  // }
+  getWikiEntries(): Observable<WikiEntry[]> {
+    return this.http.get<WikiEntry[]>(`${this.apiUrl}/wiki2`);
   }
 }

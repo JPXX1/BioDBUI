@@ -9,8 +9,8 @@
   <!-- Erster MatSelect für Komponenten -->
   <mat-form-field appearance="fill">
     <mat-label>Filtern nach Komponente</mat-label>
-    <mat-select [(value)]="id_komponente" class="custom-width" (selectionChange)="onKomponenteSelectionChange(id_komponente)">
-      <mat-option *ngFor="let komponent of dbKomponenten" [value]="komponent.id" style="width:200px;  font-size: 10px;">
+    <mat-select [(value)]="id_komponente" [panelWidth]="'350px'" (selectionChange)="onKomponenteSelectionChange(id_komponente)">
+      <mat-option *ngFor="let komponent of dbKomponenten" [value]="komponent.id" style="width:300px;">
         {{ komponent.komponente }}
       </mat-option>
     </mat-select>
@@ -19,7 +19,7 @@
   <!-- Zweiter MatSelect für Taxons -->
   <mat-form-field appearance="fill">
     <mat-label>Taxon auswählen</mat-label>
-    <mat-select [(value)]="selectedTaxonIds" class="custom-width">
+    <mat-select [(value)]="selectedTaxonIds" [panelWidth]="'300px'">
       <mat-option *ngFor="let taxon of filteredTaxons" [value]="taxon">
         {{ taxon }}
       </mat-option>

@@ -1041,8 +1041,19 @@ async getArchivMstStamm(parameter :number){
     updateProbenehmer(data: Partial<Probenehmer>): Observable<Probenehmer> {
       return this.httpClient.put<Probenehmer>(`${this.apiUrl}/probenehmer`, data);
     }
-  
-    // deleteProbenehmer(id: number): Observable<any> {
-    //   return this.httpClient.delete(`${this.apiUrl}/${id}`);
+    deleteProbenehmer(data: Partial<Probenehmer>): Observable<{ message: string }> {
+      return this.httpClient.delete<{ message: string }>(`${this.apiUrl}/del_probenehmer`, {
+        body: data, // Include the body as part of the DELETE request
+      });
+    }
+    
+    deleteMessstelle(data: Partial<MessstellenStam>): Observable<{ message: string }> {
+      return this.httpClient.delete<{ message: string }>(`${this.apiUrl}/del_messstelle`, {
+        body: data, // Include the body as part of the DELETE request
+      });
+    }
+    // deleteProbenehmer(data: Partial<Probenehmer>): Observable<Probenehmer> {
+    //   return this.httpClient.delete<Probenehmer>(`${this.apiUrl}/del_probenehmer`,data);
     // }
+    
 }

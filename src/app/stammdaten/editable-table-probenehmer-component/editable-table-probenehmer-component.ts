@@ -152,4 +152,50 @@ export class EditableTableProbenehmerComponent implements OnInit {
     );
   }
   
+
+deleteRow(row: Probenehmer): void {
+  this.service.deleteProbenehmer( row).subscribe(
+    () => {
+      console.log('Row saved:', row);
+      this.snackBar.open('Probenehmer erfolgreich erfolgreich gelöscht!', 'Schließen', {
+        duration: 3000, // Dauer der Snackbar in Millisekunden
+        horizontalPosition: 'center', // Position (z.B., start, center, end)
+        verticalPosition: 'top', // Position (z.B., top, bottom)
+      });
+      const data = this.dataSource.data; // Bestehende Daten holen
+      const index = data.findIndex(p => p.id_pn === row.id_pn); // Element finden
+      if (index > -1) {
+        data.splice(index, 1); // Element entfernen
+        this.dataSource.data = [...data]; // Datenquelle aktualisieren
+      }
+    },
+    (error) => {
+      console.error('Probenehmer kann nicht gelöscht werden:', error);
+      this.snackBar.open('Probenehmer kann nicht gelöscht werden!', 'Schließen', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+    }
+  );
 }
+
+deleteProbenehmer(probenehmerToDelete: Probenehmer): void {
+  this.service.deleteProbenehmer(probenehmerToDelete).subscribe({
+    next: () => {
+      // Erfolgreich gelöscht, jetzt auch aus der Datenquelle entfernen
+      const data = this.dataSource.data; // Bestehende Daten holen
+      const index = data.findIndex(p => p.id_pn === probenehmerToDelete.id_pn); // Element finden
+      if (index > -1) {
+        data.splice(index, 1); // Element entfernen
+        this.dataSource.data = [...data]; // Datenquelle aktualisieren
+      }
+    },
+    error: (err) => {
+      console.error('Fehler beim Löschen des Probenehmers:', err);
+    },
+  });
+}
+
+}
+

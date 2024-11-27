@@ -1,14 +1,16 @@
 .map-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 30px;
-  }
+  position: relative; /* Wichtig für das absolute Positionieren des Buttons */
+  top: 0;
+  left: 0;
+  width: 100%; /* Sicherstellen, dass die Breite 100% beträgt */
+  height: calc(100vh - 60px); /* Höhe anpassen, um Platz für die Margins zu berücksichtigen */
+  margin: 20px 0; /* Nur vertikale Margins */
+  box-sizing: border-box; /* Padding und Border in der Breite und Höhe berücksichtigen */
+}
+
   .map-label {
     position: absolute;
-    top: 0px;
+    top: 60px;
     left: 60px;
     background-color: white; /* Weißer Hintergrund */
     padding: 5px 10px;
@@ -31,7 +33,7 @@
   .legend {
     font-size: 12px; /* Verkleinerte Schriftgröße für die Legende */
     position: absolute;
-    bottom: 20px;
+    bottom: 100px;
     right: 20px;
     background: rgba(255, 255, 255, 0.8);
     padding: 10px;

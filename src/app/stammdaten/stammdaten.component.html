@@ -20,7 +20,7 @@
      
   
       <button mat-button class="helpable button" id="btn-gewaesser" [matMenuTriggerFor]="gewaesser">Gewässer</button>
-      <mat-menu #gewaesser="matMenu" xPosition="before">
+      <mat-menu #gewaesser="matMenu" xPosition="after">
         <button mat-menu-item  (click)="gewaesser1()">Gewässer</button>
         
       </mat-menu>
@@ -32,7 +32,7 @@
         <button mat-menu-item (click)="diaTyp()">Diatomeentyp</button>
         <button mat-menu-item (click)="mpTyp()">Makrophytentyp</button>
       </mat-menu>
-      <button mat-button  (click)="Probenehmer()" class="helpable button" id="btn-probenehmer">Probenehmer</button>
+      <button mat-button  (click)="probenehmer()" class="helpable button" id="btn-probenehmer">Probenehmer</button>
      
      
       

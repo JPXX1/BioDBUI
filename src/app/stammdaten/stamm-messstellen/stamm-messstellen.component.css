@@ -1,7 +1,12 @@
 table {
-  width: 100%;
+  width: 120%;
 }
 .header-table-wk{
+
+  border-style: solid;
+  width: 5%;
+}
+.header-table-wk2{
 
   border-style: solid;
   width: 5%;
@@ -12,7 +17,12 @@ table {
   border-color: grey;
   border-width: 1px;
   font-size: large;}
-  
+  .cell-table-wk2{
+    text-align: center;
+    width: 100px;
+    border-color: grey;
+    border-width: 1px;
+    font-size: large;} 
   .sticky-header {
     width: 100%;
     overflow: auto;

@@ -46,11 +46,20 @@
 
   <!-- Actions Column -->
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Änderungen speichern </th>
+    <th mat-header-cell *matHeaderCellDef> Änderungen speichern/ PN löschen </th>
     <td mat-cell *matCellDef="let element">
       <button mat-icon-button color="primary" (click)="saveRow(element)">
         <mat-icon>save</mat-icon>
       </button>
+      <button
+               
+                  mat-icon-button
+                  color="delete"
+                  class="iconbutton"
+                  (click)="deleteRow(element)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
     </td>
   </ng-container>
 

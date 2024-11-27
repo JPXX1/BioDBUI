@@ -6,33 +6,33 @@
 	<table  mat-table [dataSource]="messstellenStam" class="table sticky-header" matSort (matSortChange)="sortData($event)">
 
 		<ng-container matColumnDef="id_mst">
-		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id_mst" class="header-table-wk"> Mst-ID </th>
-		  <td  mat-cell *matCellDef="let element" class="spalte-wk"> {{element.id_mst}} 
+		  <th  mat-header-cell *matHeaderCellDef  mat-sort-header="id_mst" class="header-table2"> Mst-ID </th>
+		  <td  mat-cell *matCellDef="let element" class="cell-table-wk2"> {{element.id_mst}} 
 			</td>
 			
 		</ng-container>
 		<ng-container matColumnDef="namemst">
 			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="namemst" class="header-table-jahr" > Messstelle</th>
-			<td  mat-cell *matCellDef="let element"class="spalte-jahr"> {{element.namemst}} 
+			<td  mat-cell *matCellDef="let element"class="cell-table-wk2"> {{element.namemst}} 
 			  </td>
 			  
 		  </ng-container>
 		<!-- ['Nr','Messstelle', 'AnzahlTaxa', 'Mst_bekannt', 'Fehler']; -->
 		<!-- Weight Column -->
 		<ng-container matColumnDef="ortslage" >
-			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="ortslage" class="header-table"> Ortslage </th>
-			<td  mat-cell *matCellDef="let element" class="Zelle"> {{element.ortslage}} </td>
+			<th  mat-header-cell *matHeaderCellDef  mat-sort-header="ortslage" class="header-table2"> Ortslage </th>
+			<td  mat-cell *matCellDef="let element" class="cell-table-wk"> {{element.ortslage}} </td>
 			
 		  </ng-container>
       <ng-container matColumnDef="gewaessername" >
         <th  mat-header-cell *matHeaderCellDef   mat-sort-header="gewaessername" class="header-table"> Gewässer </th>
-        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.gewaessername}} </td>
+        <td  mat-cell *matCellDef="let element" class="cell-table-wk"> {{element.gewaessername}} </td>
         
         </ng-container>
         	
         <ng-container matColumnDef="wk_name" >
           <th  mat-header-cell *matHeaderCellDef   mat-sort-header="wk_name" class="header-table"> Wasserkörper </th>
-          <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.wk_name}} </td>
+          <td  mat-cell *matCellDef="let element" class="cell-table-wk"> {{element.wk_name}} </td>
           
           </ng-container>
 
@@ -40,7 +40,7 @@
   <!-- Checkbox Column -->
   <ng-container matColumnDef="repraesent">
     <th  mat-header-cell *matHeaderCellDef   mat-sort-header="repraesent" class="header-table"> repräsentative Mst </th>
-    <td mat-cell *matCellDef="let element" class="Zelle">
+    <td mat-cell *matCellDef="let element" class="cell-table-wk2">
       <mat-checkbox [(ngModel)]="element.repraesent" disabled></mat-checkbox>
       
     </td>
@@ -51,7 +51,7 @@
       </ng-container> -->
       <ng-container matColumnDef="updated_at" >
         <th  mat-header-cell *matHeaderCellDef   mat-sort-header="updated_at" class="header-table"> letzte Änderung </th>
-        <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.updated_at}} </td>
+        <td  mat-cell *matCellDef="let element" class="cell-table-wk2"> {{element.updated_at}} </td>
         
         </ng-container>
       
@@ -67,7 +67,15 @@
               class="iconbutton" color="warn" (click)="showArchiv($event, element)">
         <mat-icon>open_in_new</mat-icon>
       </button>
-      
+      <button
+               
+                  mat-icon-button
+                  color="delete"
+                  class="iconbutton"
+                  (click)="deleteRow(element)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
              
             </td>
           </ng-container>

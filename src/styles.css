@@ -17,9 +17,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
   translate: no; /* Dieses CSS sagt Browsern, dass die Inhalte nicht übersetzt werden sollen */
 }
 .mat-menu-panel {
-  overflow: hidden !important;
-  max-width: none !important;
+  width: auto !important; /* Dynamische Breite */
+  max-width: none !important; /* Keine maximale Breite */
+  white-space: nowrap; /* Kein Umbruch */
 }
+
+.mat-menu-item {
+  white-space: nowrap; /* Kein Zeilenumbruch */
+}
+
 .dialog-centered {
   position: fixed;
   top: 20px; /* Offset oben, optional */

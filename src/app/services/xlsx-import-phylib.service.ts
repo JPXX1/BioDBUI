@@ -1409,8 +1409,8 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 				
 				if (idVerfahren===1 ){
 					this.displayColumnNames.push('Messwerte');
-					this.displayColumnNames.push('fehler1');
-					this.displayColumnNames.push('fehler2');
+					// this.displayColumnNames.push('fehler1');
+					// this.displayColumnNames.push('fehler2');
 					// this.displayColumnNames.push('fehler3');
 					//this.displayColumnNames.push('Import');
 					this.dynamicColumns.push('anzahl');

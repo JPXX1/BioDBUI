@@ -1,14 +1,21 @@
-<mat-nested-tree-node *matTreeNodeDef="let node">
-  <div class="mat-tree-node">
-    <button mat-icon-button matTreeNodeToggle *ngIf="node.children?.length">
-      <mat-icon>
-        {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-      </mat-icon>
-    </button>
-    <span [style.fontWeight]="treeControl.getLevel(node) === 0 ? 'bold' : 'normal'"
-          [style.fontStyle]="treeControl.getLevel(node) === 2 ? 'italic' : 'normal'"
-          [style.color]="treeControl.getLevel(node) === 1 ? 'blue' : (treeControl.getLevel(node) === 2 ? 'green' : 'black')">
-      {{ node.name }}
-    </span>
+<div class="sidebar">
+  <ul>
+    <li
+    *ngFor="let header1 of getGroupedKeys()"
+    (click)="selectHeader1(header1)"
+  >
+    {{ header1 }}
+  </li>
+  </ul>
+</div>
+
+<div class="content">
+  <h1 *ngIf="selectedHeader1">{{ selectedHeader1 }}</h1>
+  <div *ngIf="selectedHeader1">
+    <div *ngFor="let entry of groupedEntries[selectedHeader1]" style="padding-left: 20px;">
+      <h3>{{ entry.header2 }}</h3>
+      <p  class="indented">{{ entry.body }}</p>
+    </div>
   </div>
-</mat-nested-tree-node>
+  <p *ngIf="!selectedHeader1">Bitte wählen Sie einen Eintrag aus der Liste aus.</p>
+</div>

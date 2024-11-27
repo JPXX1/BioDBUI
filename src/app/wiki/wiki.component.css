@@ -1,21 +1,36 @@
-/* Root-Knoten (header1) */
-.mat-tree-level-0 {
-  font-weight: bold;
-  font-size: 16px;
+.sidebar {
+  width: 25%;
+  float: left;
+  background: #f4f4f4;
+  padding: 10px;
+  height: 100vh;
+  overflow-y: auto;
 }
 
-/* Erste Unterebene (header2) */
-.mat-tree-level-1 {
-  font-weight: normal;
-  font-size: 14px;
-  margin-left: 20px; /* Leichte Einrückung */
-  color: blue;
+.content {
+  width: 75%;
+  float: left;
+  padding: 10px;
 }
 
-/* Zweite Unterebene (body) */
-.mat-tree-level-2 {
-  font-style: italic;
-  font-size: 12px;
-  margin-left: 40px;
-  color: green;
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  cursor: pointer;
+  padding: 5px;
+  margin-bottom: 5px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  color:blue;
+}
+
+li:hover {
+  background: #c0c0c0;
+}
+.indented {
+  padding-left: 20px;
+  font-size: larger;
 }
