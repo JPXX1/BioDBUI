@@ -1,11 +1,11 @@
 import { Component,Input,Output,EventEmitter } from '@angular/core';
 import { Sort} from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
-import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
-import { ArraybuendelWK } from 'src/app/interfaces/arraybuendel-wk';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
+import { WasserkoerperStam } from 'src/app/shared/interfaces/wasserkoerper-stam';
+import { ArraybuendelWK } from 'src/app/shared/interfaces/arraybuendel-wk';
 import {EditStammdatenWkComponent} from 'src/app/stammdaten/edit-stammdaten-wk/edit-stammdaten-wk.component';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import {ArchivStammdatenWkComponent} from '../archiv-stammdaten-wk/archiv-stammdaten-wk.component';
 @Component({
   selector: 'app-stamm-wk',

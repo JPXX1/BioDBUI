@@ -1,6 +1,6 @@
 import { Component,OnInit,AfterViewInit,AfterViewChecked } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MapVBSelectionDialogComponent } from 'src/app/map-vbselection-dialog/map-vbselection-dialog.component';
+import { MapVBSelectionDialogComponent } from 'src/app/map/map-vbselection-dialog/map-vbselection-dialog.component';
 import Map from 'ol/Map';
 import { defaults as defaultControls } from 'ol/control';
 import Feature, { FeatureLike } from 'ol/Feature';
@@ -14,17 +14,17 @@ import Point from 'ol/geom/Point';  // Importiere den Punkt-Typ
 import VectorLayer from 'ol/layer/Vector.js';
 import VectorSource from 'ol/source/Vector.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import Overlay from 'ol/Overlay';
 import WMTSCapabilities from 'ol/format/WMTSCapabilities';
 import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS';
-import {VerbreitungartenService} from 'src/app/services/verbreitungarten.service';
+import {VerbreitungartenService} from 'src/app/shared/services/verbreitungarten.service';
 import { environment, environmentgeo } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { bbox as bboxStrategy } from 'ol/loadingstrategy';
 import CircleStyle from 'ol/style/Circle';
-import { HelpService } from 'src/app/services/help.service';
+import { HelpService } from 'src/app/shared/services/help.service';
 
 
 @Component({

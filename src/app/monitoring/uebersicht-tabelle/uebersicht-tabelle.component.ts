@@ -1,9 +1,9 @@
 import { Component, Input,ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { WkUebersicht } from 'src/app/shared/interfaces/wk-uebersicht';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
+import { AnzeigeBewertungService} from 'src/app/shared/services/anzeige-bewertung.service';
 import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-uebersicht-tabelle',

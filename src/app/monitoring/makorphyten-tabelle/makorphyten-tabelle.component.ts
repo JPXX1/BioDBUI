@@ -1,10 +1,10 @@
 // makorphyten-tabelle.component.ts
 import { Component, Input, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
-import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { MstMakrophyten } from 'src/app/shared/interfaces/mst-makrophyten';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
+import { AnzeigeBewertungMPService } from 'src/app/shared/services/anzeige-bewertung-mp.service';
 @Component({
   selector: 'app-makorphyten-tabelle',
   templateUrl: './makorphyten-tabelle.component.html',

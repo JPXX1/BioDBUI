@@ -1,14 +1,16 @@
 import {Component, Input,Output, EventEmitter,ViewChild,ElementRef} from '@angular/core';
 import { Sort} from '@angular/material/sort';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
-import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
+import { MessstellenStam } from 'src/app/shared/interfaces/messstellen-stam';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import {EditStammdatenMstComponent} from '../edit-stammdaten-mst/edit-stammdaten-mst.component';
 import {ArchivStammdatenComponent} from '../archiv-stammdaten-mst/archiv-stammdaten.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
+import { ArraybuendelSel } from 'src/app/shared/interfaces/arraybuendel-sel';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogJaNeinComponent } from 'src/app/shared/dialog-ja-nein/dialog-ja-nein.component';
+
 // ];
 @Component({
   selector: 'app-stamm-messstellen',
@@ -184,11 +186,13 @@ async showArchiv(event: MouseEvent, person: MessstellenStam) {
     scrollStrategy: this.overlay.scrollStrategies.reposition()
   });
 }
-deleteRow(row: MessstellenStam): void {
+deleteRow(row: MessstellenStam): void { let dialog = this.dialog.open(DialogJaNeinComponent);
+  dialog.afterClosed().subscribe(result => {
+    if (result===true){
   this.stammdatenService.deleteMessstelle( row).subscribe(
     () => {
       // console.log('Row saved:', row);
-      this.snackBar.open('Messstelle erfolgreich erfolgreich gelöscht!', 'Schließen', {
+      this.snackBar.open('Messstelle erfolgreich gelöscht!', 'Schließen', {
         duration: 3000, // Dauer der Snackbar in Millisekunden
         horizontalPosition: 'center', // Position (z.B., start, center, end)
         verticalPosition: 'top', // Position (z.B., top, bottom)
@@ -209,7 +213,7 @@ deleteRow(row: MessstellenStam): void {
       });
     }
   );
-}
+} });}
 
 
 

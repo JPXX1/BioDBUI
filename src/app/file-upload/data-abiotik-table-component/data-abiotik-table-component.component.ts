@@ -1,5 +1,5 @@
 import { Component,Input,OnInit,ViewChild,OnChanges, SimpleChanges } from '@angular/core';
-import { DataAbiotik } from 'src/app/interfaces/data-abiotik';
+import { DataAbiotik } from 'src/app/shared/interfaces/data-abiotik';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 

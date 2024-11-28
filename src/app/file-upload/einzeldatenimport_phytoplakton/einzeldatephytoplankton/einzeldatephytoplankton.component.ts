@@ -1,5 +1,5 @@
 import { Component,Input } from '@angular/core';
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 
 @Component({
   selector: 'app-einzeldatephytoplankton',

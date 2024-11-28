@@ -1,11 +1,8 @@
 import { Component, Inject, Input } from '@angular/core';
-import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
+import { FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
-import { MeldeMst } from 'src/app/interfaces/melde-mst';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
-import { ArraybuendelSel } from 'src/app/interfaces/arraybuendel-sel';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
+import { ArraybuendelSel } from 'src/app/shared/interfaces/arraybuendel-sel';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
@@ -34,7 +31,8 @@ export class EditStammdatenMstComponent {
   readonly ymax = 5842261; // Obere Grenze für Hochwert
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
-  constructor(public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel,private fb: FormBuilder) {
 
       this.seefliess=data.mststam.see;

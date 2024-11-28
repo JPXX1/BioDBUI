@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, ElementRef, HostListener, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
-import { HelpService } from '../app/services/help.service';
+import { HelpService } from './shared/services/help.service';
 import { AuthService } from './auth/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 // import { Router } from '@angular/router';

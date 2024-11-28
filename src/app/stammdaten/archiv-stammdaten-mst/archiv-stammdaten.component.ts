@@ -1,6 +1,6 @@
 import { Component,Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import { MessstellenStam } from 'src/app/shared/interfaces/messstellen-stam';
 @Component({
   selector: 'app-archiv-stammdaten',
   templateUrl: './archiv-stammdaten.component.html',

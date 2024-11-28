@@ -1,9 +1,9 @@
 import { Component, Inject, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
-import {ArraybuendelMstaendern} from 'src/app/interfaces/arraybuendel-mstaendern';
-import { MeldeMst } from 'src/app/interfaces/melde-mst';
+import { MessstellenStam } from 'src/app/shared/interfaces/messstellen-stam';
+import {ArraybuendelMstaendern} from 'src/app/shared/interfaces/arraybuendel-mstaendern';
+import { MeldeMst } from 'src/app/shared/interfaces/melde-mst';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({

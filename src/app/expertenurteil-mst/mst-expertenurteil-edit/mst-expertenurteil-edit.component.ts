@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges, ElementRef, Renderer2, QueryList, ViewChildren,ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { MstMitExpertenurteil } from 'src/app/interfaces/mst-mit-expertenurteil';
+import { MstMitExpertenurteil } from 'src/app/shared/interfaces/mst-mit-expertenurteil';
 import { MatSort } from '@angular/material/sort';
-import { MsteditService } from 'src/app/services/mstedit.service';
+import { MsteditService } from 'src/app/shared/services/mstedit.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({

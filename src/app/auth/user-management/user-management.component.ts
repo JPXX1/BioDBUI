@@ -1,7 +1,7 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from 'src/app/shared/services/user.service';
 import { MatTableDataSource } from '@angular/material/table';
-import { User } from 'src/app/interfaces/user';
+import { User } from 'src/app/shared/interfaces/user';
 import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';

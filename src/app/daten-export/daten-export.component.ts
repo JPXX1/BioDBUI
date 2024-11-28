@@ -1,21 +1,21 @@
 import { Component, OnInit,AfterViewInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { StammdatenService } from '../services/stammdaten.service'; 
+import { StammdatenService } from '../shared/services/stammdaten.service'; 
 
-import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
-import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
-import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebersicht.service';
-import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
-import { AnzeigeBewertungService} from 'src/app/services/anzeige-bewertung.service';
+import { MstMakrophyten } from 'src/app/shared/interfaces/mst-makrophyten';
+import { AnzeigeBewertungMPService } from 'src/app/shared/services/anzeige-bewertung-mp.service';
+import { AnzeigenMstUebersichtService } from 'src/app/shared/services/anzeigen-mst-uebersicht.service';
+import { WkUebersicht } from 'src/app/shared/interfaces/wk-uebersicht';
+import { AnzeigeBewertungService} from 'src/app/shared/services/anzeige-bewertung.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import {FarbeBewertungService} from 'src/app/services/farbe-bewertung.service';
+import {FarbeBewertungService} from 'src/app/shared/services/farbe-bewertung.service';
 import { Router } from '@angular/router';
-import {CommentService} from 'src/app/services/comment.service';
+import {CommentService} from 'src/app/shared/services/comment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { HelpService } from '../services/help.service';
+import { HelpService } from '../shared/services/help.service';
 import { AuthService } from '../auth/auth.service';
 
 /**

@@ -1,6 +1,6 @@
 import { Component,  OnInit ,ViewChild,OnChanges,SimpleChanges} from '@angular/core';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 @Component({

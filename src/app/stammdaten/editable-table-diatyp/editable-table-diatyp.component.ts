@@ -1,8 +1,12 @@
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {  MatDialog} from '@angular/material/dialog';
+import { DialogJaNeinComponent } from 'src/app/shared/dialog-ja-nein/dialog-ja-nein.component';
+
 
 @Component({
   selector: 'app-editable-table-diatyp',
@@ -57,7 +61,10 @@ export class EditableTableDiatypComponent  implements OnInit, OnChanges{
   displayedColumns: string[] = ['id', 'typ', 'seefliess','fliess', 'actions'];
   dataSource: MatTableDataSource<TypWrrl>=new MatTableDataSource();
 
-  constructor(private dataService: StammdatenService) {}
+  constructor(   
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private dataService: StammdatenService) {}
   async ngOnInit(): Promise<void> {
     //this.dataSource = await this.dataService.getStammWrrlTyp2();
  
@@ -124,5 +131,34 @@ export class EditableTableDiatypComponent  implements OnInit, OnChanges{
         }
       );
   }
+  deleteRow(row: TypWrrl): void {
+    let dialog = this.dialog.open(DialogJaNeinComponent);
+   dialog.afterClosed().subscribe(result => {
+     if (result===true){
+   this.dataService.deleteDiatyp( row).subscribe(
+     () => {
+       console.log('Row saved:', row);
+       this.snackBar.open('Diatomeentyp erfolgreich gelöscht!', 'Schließen', {
+         duration: 3000, // Dauer der Snackbar in Millisekunden
+         horizontalPosition: 'center', // Position (z.B., start, center, end)
+         verticalPosition: 'top', // Position (z.B., top, bottom)
+       });
+       const data = this.dataSource.data; // Bestehende Daten holen
+       const index = data.findIndex(p => p.id === row.id); // Element finden
+       if (index > -1) {
+         data.splice(index, 1); // Element entfernen
+         this.dataSource.data = [...data]; // Datenquelle aktualisieren
+       }
+     },
+     (error) => {
+       console.error('Diatomeentyp kann nicht gelöscht werden:', error);
+       this.snackBar.open('Diatomeentyp kann nicht gelöscht werden!', 'Schließen', {
+         duration: 3000,
+         horizontalPosition: 'center',
+         verticalPosition: 'top',
+       });
+     }
+   );
+ } });}
 }
 

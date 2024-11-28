@@ -8,6 +8,27 @@ import { AppComponent } from '../../app.component'; // AppComponent importieren
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+/**
+ * Die LoginComponent ist verantwortlich für die Handhabung der Benutzerauthentifizierung.
+ * Sie bietet Funktionen für die Benutzeranmeldung, das Umschalten der Passwortsichtbarkeit
+ * und das Öffnen eines Registrierungs-Popups per E-Mail.
+ * 
+ * @class
+ * @property {string} username - Der vom Benutzer eingegebene Benutzername.
+ * @property {string} password - Das vom Benutzer eingegebene Passwort.
+ * @property {string} errorMessage - Die Fehlermeldung, die im Falle eines fehlgeschlagenen Logins angezeigt wird.
+ * @property {string} passwordFieldType - Der Typ des Passwortfeldes, entweder 'password' oder 'text'.
+ * 
+ * @constructor
+ * @param {AppComponent} appComponent - Die Hauptanwendungskomponente.
+ * @param {AuthService} authService - Der Authentifizierungsdienst, der für die Anmeldung verwendet wird.
+ * @param {Router} router - Der Angular Router, der für die Navigation verwendet wird.
+ * @param {MatDialog} dialog - Der Angular Material Dialog-Service, der zum Öffnen von Dialogen verwendet wird.
+ * 
+ * @method login - Authentifiziert den Benutzer mit dem angegebenen Benutzernamen und Passwort.
+ * @method openRegisterPopup - Öffnet den Standard-Mail-Client mit einer vorab ausgefüllten Registrierungs-E-Mail.
+ * @method togglePasswordVisibility - Schaltet die Sichtbarkeit des Passwortfeldes um.
+ */
 export class LoginComponent {
   username = '';
   password = '';
@@ -32,17 +53,18 @@ export class LoginComponent {
     );
   }
   
-  // login() {
-  //   this.authService.login(this.username, this.password).subscribe(
-  //     response => {
-  //       sessionStorage.setItem('token', response.token);
-  //       this.router.navigate(['/monitoringdaten']);
-  //     },
-  //     error => {
-  //       this.errorMessage = 'Login failed. Please check your credentials and try again.';
-  //     }
-  //   );
-  // }
+  
+   /**
+     * Öffnet den Standard-Mail-Client mit einer vorab ausgefüllten E-Mail, um Zugang zur BioDatenbank EU-WRRL Senat Berlin anzufordern.
+     * Die E-Mail enthält einen Betreff und einen Textkörper.
+     *
+     * Die E-Mail ist an 'vivien.rosin@SenMVKU.berlin.de' adressiert mit dem Betreff 
+     * 'Zugang zur BioDatenbank EU-WRRL Senat Berlin' und einem Textkörper, der Zugangsdaten anfordert.
+     *
+     * @bemerkungen
+     * Diese Funktion erstellt einen mailto-Link mit dem angegebenen Betreff und Textkörper 
+     * und setzt die Fensterposition auf diesen Link, wodurch der Standard-Mail-Client geöffnet wird.
+     */
   openRegisterPopup() {
     // Betreff und Nachrichtentext für die E-Mail definieren
     const mailSubject = 'Zugang zur BioDatenbank EU-WRRL Senat Berlin';
@@ -55,6 +77,10 @@ export class LoginComponent {
     // Öffnet das Standard-Mailprogramm des Benutzers
     window.location.href = mailtoLink;
   }
+  /**
+   * Schaltet die Sichtbarkeit des Passwortfeldes um.
+   * Ändert den Eingabetyp zwischen 'password' und 'text'.
+   */
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }

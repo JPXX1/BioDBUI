@@ -1,15 +1,15 @@
 import { Component ,OnInit,ViewChild,AfterViewInit,AfterViewChecked} from '@angular/core';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
 import {StammMessstellenComponent} from './stamm-messstellen/stamm-messstellen.component';
-import { MessstellenStam } from 'src/app/interfaces/messstellen-stam';
+import { MessstellenStam } from 'src/app/shared/interfaces/messstellen-stam';
 import {StammWkComponent} from './stamm-wk/stamm-wk.component';
 import { MatSort,Sort} from '@angular/material/sort';
-import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
+import { WasserkoerperStam } from 'src/app/shared/interfaces/wasserkoerper-stam';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import {CommentService} from 'src/app/services/comment.service';
+import {CommentService} from 'src/app/shared/services/comment.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import { HelpService } from 'src/app/services/help.service';
+import { HelpService } from 'src/app/shared/services/help.service';
 
 @Component({
   selector: 'app-stammdaten',

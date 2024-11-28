@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WikiService,WikiEntry } from 'src/app/services/wiki-service';
+import { WikiService,WikiEntry } from 'src/app/shared/services/wiki-service';
 
 
 /**

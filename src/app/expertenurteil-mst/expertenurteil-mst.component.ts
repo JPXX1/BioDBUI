@@ -1,21 +1,21 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { StammdatenService } from '../services/stammdaten.service'; 
+import { StammdatenService } from '../shared/services/stammdaten.service'; 
 //import { MstMakrophyten } from 'src/app/interfaces/mst-makrophyten';
-import {MstMitExpertenurteil} from 'src/app/interfaces/mst-mit-expertenurteil';
-import { AnzeigeBewertungMPService } from 'src/app/services/anzeige-bewertung-mp.service';
-import { AnzeigenMstUebersichtService } from 'src/app/services/anzeigen-mst-uebersicht.service';
+import {MstMitExpertenurteil} from 'src/app/shared/interfaces/mst-mit-expertenurteil';
+import { AnzeigeBewertungMPService } from 'src/app/shared/services/anzeige-bewertung-mp.service';
+import { AnzeigenMstUebersichtService } from 'src/app/shared/services/anzeigen-mst-uebersicht.service';
 // import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
-import { AnzeigeBewertungService } from 'src/app/services/anzeige-bewertung.service';
+import { AnzeigeBewertungService } from 'src/app/shared/services/anzeige-bewertung.service';
 
-import { FarbeBewertungService } from 'src/app/services/farbe-bewertung.service';
+import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import { Router } from '@angular/router';
-import { CommentService } from 'src/app/services/comment.service';
+import { CommentService } from 'src/app/shared/services/comment.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HelpService } from '../services/help.service';
+import { HelpService } from '../shared/services/help.service';
 import { AuthService } from '../auth/auth.service';
-import {MsteditService} from 'src/app/services/mstedit.service';
+import {MsteditService} from 'src/app/shared/services/mstedit.service';
 
 @Component({
   selector: 'app-expertenurteil-mst',

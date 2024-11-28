@@ -2,12 +2,12 @@ import { Component, Inject, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators,FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { MeldeMst } from 'src/app/interfaces/melde-mst';
-import {StammdatenService} from 'src/app/services/stammdaten.service';
+import { MeldeMst } from 'src/app/shared/interfaces/melde-mst';
+import {StammdatenService} from 'src/app/shared/services/stammdaten.service';
 
-import { WasserkoerperStam } from 'src/app/interfaces/wasserkoerper-stam';
-import { ArraybuendelWK } from 'src/app/interfaces/arraybuendel-wk';
-import {TypWrrl} from 'src/app/interfaces/typ-wrrl';
+import { WasserkoerperStam } from 'src/app/shared/interfaces/wasserkoerper-stam';
+import { ArraybuendelWK } from 'src/app/shared/interfaces/arraybuendel-wk';
+import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({

@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { StammdatenService } from 'src/app/services/stammdaten.service';
-import {Probenehmer} from 'src/app/interfaces/probenehmer';
+import { StammdatenService } from 'src/app/shared/services/stammdaten.service';
+import {Probenehmer} from 'src/app/shared/interfaces/probenehmer';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {  MatDialog} from '@angular/material/dialog';
+import { DialogJaNeinComponent } from 'src/app/shared/dialog-ja-nein/dialog-ja-nein.component';
 
 @Component({
   selector: 'app-editable-table-probenehmer',
@@ -58,7 +60,8 @@ export class EditableTableProbenehmerComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private service: StammdatenService, private snackBar: MatSnackBar) {}
+  constructor( private dialog: MatDialog,
+    private service: StammdatenService, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.loadProbenehmer();
@@ -153,11 +156,25 @@ export class EditableTableProbenehmerComponent implements OnInit {
   }
   
 
+/**
+ * Löscht eine Zeile aus der Datenquelle und aktualisiert die Ansicht.
+ * 
+ * Diese Methode ruft den Service auf, um ein `Probenehmer`-Objekt zu löschen. Nach erfolgreichem Löschen
+ * entfernt sie das Objekt aus der Datenquelle und zeigt eine Erfolgsmeldung mit einer Snackbar an.
+ * Wenn das Löschen fehlschlägt, wird ein Fehler protokolliert und eine Fehlermeldung mit einer Snackbar angezeigt.
+ * 
+ * @param {Probenehmer} row - Das zu löschende `Probenehmer`-Objekt.
+ * @returns {void}
+ */
+
 deleteRow(row: Probenehmer): void {
+  let dialog = this.dialog.open(DialogJaNeinComponent);
+  dialog.afterClosed().subscribe(result => {
+    if (result===true){
   this.service.deleteProbenehmer( row).subscribe(
     () => {
       console.log('Row saved:', row);
-      this.snackBar.open('Probenehmer erfolgreich erfolgreich gelöscht!', 'Schließen', {
+      this.snackBar.open('Probenehmer erfolgreich gelöscht!', 'Schließen', {
         duration: 3000, // Dauer der Snackbar in Millisekunden
         horizontalPosition: 'center', // Position (z.B., start, center, end)
         verticalPosition: 'top', // Position (z.B., top, bottom)
@@ -177,25 +194,25 @@ deleteRow(row: Probenehmer): void {
         verticalPosition: 'top',
       });
     }
-  );
+  );} });
 }
 
-deleteProbenehmer(probenehmerToDelete: Probenehmer): void {
-  this.service.deleteProbenehmer(probenehmerToDelete).subscribe({
-    next: () => {
-      // Erfolgreich gelöscht, jetzt auch aus der Datenquelle entfernen
-      const data = this.dataSource.data; // Bestehende Daten holen
-      const index = data.findIndex(p => p.id_pn === probenehmerToDelete.id_pn); // Element finden
-      if (index > -1) {
-        data.splice(index, 1); // Element entfernen
-        this.dataSource.data = [...data]; // Datenquelle aktualisieren
-      }
-    },
-    error: (err) => {
-      console.error('Fehler beim Löschen des Probenehmers:', err);
-    },
-  });
-}
+// deleteProbenehmer(probenehmerToDelete: Probenehmer): void {
+//   this.service.deleteProbenehmer(probenehmerToDelete).subscribe({
+//     next: () => {
+//       // Erfolgreich gelöscht, jetzt auch aus der Datenquelle entfernen
+//       const data = this.dataSource.data; // Bestehende Daten holen
+//       const index = data.findIndex(p => p.id_pn === probenehmerToDelete.id_pn); // Element finden
+//       if (index > -1) {
+//         data.splice(index, 1); // Element entfernen
+//         this.dataSource.data = [...data]; // Datenquelle aktualisieren
+//       }
+//     },
+//     error: (err) => {
+//       console.error('Fehler beim Löschen des Probenehmers:', err);
+//     },
+//   });
+// }
 
 }
 
