@@ -1,7 +1,7 @@
 <h2>Messstelle bearbeiten</h2>
 
 <div mat-dialog-content>
-  <form [formGroup]="formInstance" style="height: 100%;">
+  <form [formGroup]="formInstance" style="height: 1000px">
     <div class="mt-5">
       <mat-form-field class="fullWidth" appearance="outline">
         <mat-label>Messstellenname *</mat-label>
@@ -39,24 +39,28 @@
             </mat-form-field>
           </div>
         </td>
+        <td>
+          <div style="margin-left: 14px;">
+
+            <mat-label>Repräsentative Messstelle</mat-label>
+            <mat-checkbox formControlName="repraesent"></mat-checkbox>
+      
+      
+      
+            <mat-button-toggle-group aria-label="Toggle between Left and Right" (change)="onToggleFgwSeeChange($event.value === 'left')">
+              <mat-button-toggle value="left" [checked]="seefliess">Seemessstelle</mat-button-toggle>
+              <mat-button-toggle value="right" [checked]="!seefliess">Fließgew.messstelle</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+        </td>
       </div>
       </tr>
     </table>
-    <div  class="mt-5">
-
-      <mat-label>Repräsentative Messstelle</mat-label>
-      <mat-checkbox formControlName="repraesent"></mat-checkbox>
+  
 
 
-
-      <mat-button-toggle-group aria-label="Toggle between Left and Right" (change)="onToggleFgwSeeChange($event.value === 'left')">
-        <mat-button-toggle value="left" [checked]="seefliess">Seemessstelle</mat-button-toggle>
-        <mat-button-toggle value="right" [checked]="!seefliess">Fließgewässermessstelle</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-
-
-    <div class="mt-5">
+    <div style="margin-top: 35px;">
 
 
       <!-- <mat-label>Wasserkörper *</mat-label> -->

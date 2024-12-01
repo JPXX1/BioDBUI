@@ -76,7 +76,7 @@ export class UserManagementComponent implements OnInit {
     
     // E-Mail-Link mit BCC an alle Nutzer
     const mailSubject = 'Wichtige Informationen';
-    const mailBody = 'Hallo zusammen,\n\nBitte beachtet die folgenden Informationen...';
+    const mailBody = 'Sehr geehrte Damen und Herren,\n\nBitte beachten Sie die folgenden Informationen: ...';
     const mailtoLink = `mailto:?bcc=${encodeURIComponent(emailAddresses)}&subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
   
     // Öffnet das Standard-Mailprogramm mit den gesammelten E-Mails

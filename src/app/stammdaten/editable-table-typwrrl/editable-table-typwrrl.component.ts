@@ -59,9 +59,48 @@ export class EditableTableTypwrrlComponent implements OnInit, OnChanges {
       element[field] = event.target.textContent;
     }
   }
-  save(element: TypWrrl){//typwrrl:string,id:number,seefliess:boolean
-    this.dataService.aktualisiereWrrlTyp(element.typ,element.id,element.seefliess)  
+  save(element: TypWrrl): void {
+    this.dataService.aktualisiereWrrlTyp(element.typ, element.id, element.seefliess).subscribe(
+      (response) => {
+        const aktualisierterEintrag = {
+          id: response.id || element.id,
+          typ: element.typ,
+          seefliess: element.seefliess,
+          fliess: !element.seefliess, // Abgeleitete Eigenschaft
+        };
+  
+        const data = this.dataSource.data;
+        const index = data.findIndex((item) => item.id === element.id);
+  
+        if (index !== -1) {
+          // Vorhandene Zeile aktualisieren
+          data[index] = { ...data[index], ...aktualisierterEintrag };
+        } else {
+          // Neue Zeile hinzufügen (falls nicht vorhanden)
+          data.push(aktualisierterEintrag);
+        }
+  
+        // Datenquelle aktualisieren
+        this.dataSource.data = [...data];
+  
+        // Erfolgsmeldung anzeigen
+        this.snackBar.open('WRRL-Typ erfolgreich gespeichert!', 'Schließen', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+      },
+      (error) => {
+        console.error('Fehler beim Speichern des WRRL-Typs:', error);
+        this.snackBar.open('Fehler beim Speichern des WRRL-Typs!', 'Schließen', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+      }
+    );
   }
+  
   new(){
    
       const newRowData = {

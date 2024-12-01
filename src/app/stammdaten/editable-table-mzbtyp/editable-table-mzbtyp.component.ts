@@ -9,14 +9,14 @@ import {  MatDialog} from '@angular/material/dialog';
 import { DialogJaNeinComponent } from 'src/app/shared/dialog-ja-nein/dialog-ja-nein.component';
 
 @Component({
-  selector: 'app-editable-table-mptyp',
-  templateUrl: './editable-table-mptyp.component.html',
-  styleUrls: ['./editable-table-mptyp.component.css']
+  selector: 'app-editable-table-mzbtyp',
+  templateUrl: './editable-table-mzbtyp.component.html',
+  styleUrls: ['./editable-table-mzbtyp.component.css']
 })
 /**
  * Komponente zur Anzeige und Bearbeitung einer Tabelle von TypWrrl-Daten.
  * 
- * @class EditableTableMptypComponent
+ * @class EditableTableMZBtypComponent
  * @implements {OnInit, OnChanges, AfterViewChecked, AfterViewInit}
  * 
  * @property {MatSort} sort - Referenz zur MatSort-Direktive für die Sortierung der Tabelle.
@@ -55,7 +55,7 @@ import { DialogJaNeinComponent } from 'src/app/shared/dialog-ja-nein/dialog-ja-n
  * 
  * @autor Dr. Jens Päzolt, Umweltsoft
  */
-export class EditableTableMptypComponent implements OnInit, OnChanges, AfterViewChecked, AfterViewInit {
+export class EditableTableMZBtypComponent implements OnInit, OnChanges, AfterViewChecked, AfterViewInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   displayedColumns: string[] = ['id', 'typ', 'seefliess', 'fliess', 'actions'];
@@ -69,10 +69,10 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
   ) {}
 
   async ngOnInit(): Promise<void> {
-    await this.dataService.callMptyp();
-    await this.dataService.wandleTypMP(true, null);
+    await this.dataService.callMZBtyp();
+    await this.dataService.wandleTypMZB(true, null);
     console.log(this.dataService.mptyp);
-    this.dataSource.data = this.dataService.mptyp;
+    this.dataSource.data = this.dataService.mzbtyp;
     this.dataSource.sort = this.sort;
   }
 
@@ -85,8 +85,8 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['mpTyp']) {
-      this.dataSource.data = this.dataService.mptyp;
+    if (changes['mzbTyp']) {
+      this.dataSource.data = this.dataService.mzbtyp;
     }
   }
 
@@ -113,44 +113,39 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
   }
 
   save(element: TypWrrl): void {
-    const updatedData = {
-      id: element.id,
-      mp_typ: element.typ,
-      seefliess: element.seefliess
-    };
-  
-    this.dataService.aktualisiereMpTyp(element.typ, element.id, element.seefliess).subscribe(
+    this.dataService.aktualisiereMZBTyp(element.typ, element.id, element.seefliess).subscribe(
       (response) => {
-        let aktualisierterTyp: TypWrrl = {} as TypWrrl;
-        aktualisierterTyp.id = response.id || element.id;
-        aktualisierterTyp.typ = element.typ;
-        aktualisierterTyp.seefliess = element.seefliess;
-        aktualisierterTyp.fliess = !element.seefliess; // Abgeleitete Eigenschaft
+        const aktualisierterEintrag = {
+          id: response.id || element.id,
+          typ: element.typ,
+          seefliess: element.seefliess,
+          fliess: !element.seefliess, // Abgeleitete Eigenschaft
+        };
   
         const data = this.dataSource.data;
         const index = data.findIndex((item) => item.id === element.id);
   
         if (index !== -1) {
-          // Vorhandenen Eintrag aktualisieren
-          data[index] = { ...data[index], ...aktualisierterTyp };
+          // Vorhandene Zeile aktualisieren
+          data[index] = { ...data[index], ...aktualisierterEintrag };
         } else {
-          // Falls nicht vorhanden, neuen Eintrag hinzufügen
-          data.push(aktualisierterTyp);
+          // Neue Zeile hinzufügen (falls nicht vorhanden)
+          data.push(aktualisierterEintrag);
         }
   
         // Datenquelle aktualisieren
         this.dataSource.data = [...data];
   
-        // Snackbar anzeigen
-        this.snackBar.open('Makrophyten-Typ erfolgreich gespeichert!', 'Schließen', {
+        // Erfolgsmeldung anzeigen
+        this.snackBar.open('Makrozoobenthos-Typ erfolgreich gespeichert!', 'Schließen', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
         });
       },
       (error) => {
-        console.error('Fehler beim Speichern des Makrophyten-Typs:', error);
-        this.snackBar.open('Fehler beim Speichern des Makrophyten-Typs!', 'Schließen', {
+        console.error('Fehler beim Speichern des Makrozoobenthos-Typs:', error);
+        this.snackBar.open('Fehler beim Speichern des Makrozoobenthos-Typs!', 'Schließen', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -166,7 +161,7 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
       field2: true
     };
 
-    this.dataService.addRowMpWRRL(newRowData).subscribe(
+    this.dataService.addRowMZBWRRL(newRowData).subscribe(
       (response) => {
         let neuerTyp: TypWrrl = {} as TypWrrl;
         neuerTyp.id = response.id;
@@ -175,7 +170,7 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
         neuerTyp.fliess = false;
         const data = this.dataSource.data;
         data.push(neuerTyp);
-        this.snackBar.open('Neuer Makrophytentyp angelegt!', 'Schließen', {
+        this.snackBar.open('Neuer Makrozoobenthostyp angelegt!', 'Schließen', {
           duration: 3000,
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -192,10 +187,10 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
     let dialog = this.dialog.open(DialogJaNeinComponent);
    dialog.afterClosed().subscribe(result => {
      if (result===true){
-   this.dataService.deleteMPtyp( row).subscribe(
+   this.dataService.deleteMZBtyp( row).subscribe(
      () => {
        console.log('Row saved:', row);
-       this.snackBar.open('Makrophytentyp erfolgreich gelöscht!', 'Schließen', {
+       this.snackBar.open('Makrozoobenthostyp erfolgreich gelöscht!', 'Schließen', {
          duration: 3000, // Dauer der Snackbar in Millisekunden
          horizontalPosition: 'center', // Position (z.B., start, center, end)
          verticalPosition: 'top', // Position (z.B., top, bottom)
@@ -208,8 +203,8 @@ export class EditableTableMptypComponent implements OnInit, OnChanges, AfterView
        }
      },
      (error) => {
-       console.error('Makrophytentyp kann nicht gelöscht werden:', error);
-       this.snackBar.open('Makrophytentyp kann nicht gelöscht werden!', 'Schließen', {
+       console.error('Makrozoobenthostyp kann nicht gelöscht werden:', error);
+       this.snackBar.open('Makrozoobenthostyp kann nicht gelöscht werden!', 'Schließen', {
          duration: 3000,
          horizontalPosition: 'center',
          verticalPosition: 'top',

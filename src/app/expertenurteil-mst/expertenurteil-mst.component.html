@@ -79,10 +79,10 @@
         
         
         
-          <mat-slider discrete min="{{minstart}}" max="{{maxstart}}"  style="margin-left:10px" class="custom-slider">
+          <mat-slider min="{{minstart}}" max="{{maxstart}}" (change)="formatLabel()" style="margin-left:10px" class="custom-slider">
             
             <input formControlName="max" matSliderThumb class="custom-slider">
-          </mat-slider>
+          </mat-slider><span style="margin-left:15px">{{maxlabel}}</span>
         
           
         

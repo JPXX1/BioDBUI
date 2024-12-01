@@ -75,10 +75,10 @@
     <div class="form-column">
      
       <div class="helpable" id="auswahl-zeit">
-        <mat-slider discrete min="{{minstart}}" max="{{maxstart}}"  style="margin-left:10px">
+       <span style="margin-right: 10px;">{{min}}</span> <mat-slider min="{{minstart}}" max="{{maxstart}}" (change)="formatLabel()" style="margin-left:10px">
           <input formControlName="min" matSliderStartThumb>
           <input formControlName="max" matSliderEndThumb>
-        </mat-slider>
+        </mat-slider><span style="margin-left: 10px;">{{max}}</span>
         
       
       </div> 

@@ -57,7 +57,7 @@
 
 <!-- Nutzer1 Checkbox -->
 <ng-container matColumnDef="nutzer1" >
-  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nutzer1 </th>
+  <th mat-header-cell *matHeaderCellDef mat-sort-header> Gast </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer1" disabled></mat-checkbox>
   </td>
@@ -65,7 +65,7 @@
 
 <!-- Nutzer2 Checkbox -->
 <ng-container matColumnDef="nutzer2">
-  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nutzer2 </th>
+  <th mat-header-cell *matHeaderCellDef mat-sort-header> normaler Anwender </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer2" disabled></mat-checkbox>
   </td>
@@ -73,7 +73,7 @@
 
 <!-- Nutzer3 Checkbox -->
 <ng-container matColumnDef="nutzer3">
-  <th mat-header-cell *matHeaderCellDef  mat-sort-header> Nutzer3 </th>
+  <th mat-header-cell *matHeaderCellDef  mat-sort-header> Stammdaten </th>
   <td mat-cell *matCellDef="let user">
     <mat-checkbox [checked]="user.nutzer3" disabled></mat-checkbox>
   </td>

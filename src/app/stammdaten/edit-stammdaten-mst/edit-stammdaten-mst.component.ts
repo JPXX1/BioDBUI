@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {TypWrrl} from 'src/app/shared/interfaces/typ-wrrl';
 import { ArraybuendelSel } from 'src/app/shared/interfaces/arraybuendel-sel';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-edit-stammdaten-mst',
   templateUrl: './edit-stammdaten-mst.component.html',
@@ -32,7 +32,7 @@ export class EditStammdatenMstComponent {
   // wk:any=[];
 //  constructor(private formBuilder: FormBuilder) {}^
   constructor(
-    public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
+    private snackBar: MatSnackBar,public dialogRef: MatDialogRef<EditStammdatenMstComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ArraybuendelSel,private fb: FormBuilder) {
 
       this.seefliess=data.mststam.see;
@@ -178,7 +178,11 @@ onItemSelectMeldemst(item: any) {
 save(): void {
    // Führe die Validierung der Koordinaten durch
    if (!this.validateCoordinates()) {
-    // Verhindere das Speichern, wenn die Koordinaten ungültig sind
+    this.snackBar.open(this.errorMessage, 'Schließen', {
+      duration: 3000, // Dauer der Snackbar in Millisekunden
+      horizontalPosition: 'center', // Position (z.B., start, center, end)
+      verticalPosition: 'top', // Position (z.B., top, bottom)
+    });
     return;
   }
 //  console.log(this.formInstance.value)

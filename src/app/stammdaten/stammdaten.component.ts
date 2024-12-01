@@ -94,7 +94,9 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
   public gewaesserart:string;
   public PPTypAnzeige:boolean=false;
   public DiaTypAnzeige:boolean=false;
+  public MzbTypAnzeige:boolean=false;
   public MpTypAnzeige:boolean=false;
+  
   helpText: string = '';
 
 //sort Mst
@@ -296,6 +298,7 @@ this.wkStam1=this.sortedDataWK;
  async  seeMst(){
   this.seefliess=true;
   this.MpTypAnzeige=false;
+  this.MzbTypAnzeige=false;
   await  this.stammdatenService.start(true,false);
   this.PPTypAnzeige=false;
   this.DiaTypAnzeige=false;
@@ -336,6 +339,7 @@ this.wkStam1=this.sortedDataWK;
 async gewaesser1(){
   this.MpTypAnzeige=false;
   this.DiaTypAnzeige=false;
+  this.MzbTypAnzeige=false;
   this.PPTypAnzeige=false;
   this.MessstellenAnzeige=false;
     this.WKAnzeige=false;
@@ -360,6 +364,7 @@ this.ProbenehmerAnzeige=false;
    */
   async wrrlTyp(){
     this.MpTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -377,10 +382,31 @@ this.ProbenehmerAnzeige=false;
   async probenehmer(){
     this.ProbenehmerAnzeige=true;
     this.MpTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
     this.WKAnzeige=false;
     this.TypWrrlAnzeige=false;
+    this.PPTypAnzeige=false;
+    this.DiaTypAnzeige=false;
+  }
+   /**
+   * Behandelt die Anzeige-Logik für den MpTyp-Abschnitt.
+   * 
+   * Diese Methode setzt die Sichtbarkeit verschiedener UI-Komponenten im Zusammenhang 
+   * mit dem MpTyp-Abschnitt. Sie verbirgt die Abschnitte Probenehmer, Messstellen, 
+   * Gewaesser, WK, TypWrrl, PPTyp und DiaTyp und zeigt den MpTyp-Abschnitt an.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeige-Logik abgeschlossen ist.
+   */
+   async mzbTyp(){ 
+    this.ProbenehmerAnzeige=false;
+    this.MzbTypAnzeige=true;
+    this.MpTypAnzeige=false;
+    this.MessstellenAnzeige=false;
+    this.GewaesserAnzeige=false;
+    this.WKAnzeige=false;
+this.TypWrrlAnzeige=false;
     this.PPTypAnzeige=false;
     this.DiaTypAnzeige=false;
   }
@@ -395,6 +421,7 @@ this.ProbenehmerAnzeige=false;
    */
   async mpTyp(){ 
     this.ProbenehmerAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.MpTypAnzeige=true;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -420,6 +447,7 @@ this.TypWrrlAnzeige=false;
    */
   async diaTyp(){
     this.MpTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
     this.WKAnzeige=false;
@@ -445,6 +473,7 @@ this.TypWrrlAnzeige=false;
    */
   async ppTyp(){
     this.MpTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.DiaTypAnzeige=false;
     this.MessstellenAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -467,6 +496,7 @@ this.TypWrrlAnzeige=false;
   async fgwWk()
  
   {this.DiaTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.MpTypAnzeige=false;
     this.PPTypAnzeige=false;
     this.GewaesserAnzeige=false;
@@ -494,6 +524,7 @@ this.ProbenehmerAnzeige=false;}
   async seeWk()
   {await  this.stammdatenService.startwk(true,false);
     this.DiaTypAnzeige=false;
+    this.MzbTypAnzeige=false;
     this.MpTypAnzeige=false;
     this.seefliess=true;
   this.MessstellenAnzeige=false;
@@ -521,6 +552,7 @@ this.ProbenehmerAnzeige=false;}
   async fgwMst(){
    await this.stammdatenService.start(false,false);
    this.DiaTypAnzeige=false;
+   this.MzbTypAnzeige=false;
    this.MpTypAnzeige=false;
    this.seefliess=false;
    //console.log (this.stammdatenService.messstellenarray)

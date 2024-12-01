@@ -78,6 +78,8 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
   componentTypeControl = new FormControl([]); // For mat-button-toggle-group
   minstart:number=2005;
   maxstart:number= new Date().getFullYear();
+  min:number=this.minstart;
+  max:number=this.maxstart; 
   isHelpActive: boolean = false;
 	helpText: string = '';
   itemsAbfrage = [
@@ -87,7 +89,7 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
   ];
   constructor( private authService: AuthService,private sanitizer: DomSanitizer,private commentService: CommentService, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private farbeBewertungService:FarbeBewertungService,private anzeigeBewertungService:AnzeigeBewertungService,private anzeigenMstUebersichtService:AnzeigenMstUebersichtService,private fb: FormBuilder, private anzeigeBewertungMPService:AnzeigeBewertungMPService,private stammdatenService: StammdatenService) {
     this.form = this.fb.group({
-      min: new FormControl(2010),
+      min: new FormControl(this.minstart),
       max: new FormControl( new Date().getFullYear()),
       selectedComponents: [[]],
       selectedWasserkorper: [[]],
@@ -104,7 +106,10 @@ export class DatenExportComponent implements OnInit,AfterViewInit  {
     this.waterBodyTypeControl.valueChanges.subscribe(() => this.filterWaterBodies());
     this.componentTypeControl.valueChanges.subscribe(() => this.onToggleChange()); // Subscribe to value changes
   }
-
+  formatLabel() {
+    this.max = this.form.get('max')?.value;
+    this.min=this.form.get('min')?.value;
+  } 
   /**
    * Handles the change event for the dropdown selection.
    * 

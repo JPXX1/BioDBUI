@@ -59,10 +59,10 @@
           <td></td>
           <td>
             <div style="margin-left:20px;" class="helpable" id="auswahl-zeit">
-              <mat-slider discrete min="2005" [max]="maxstart" (change)="updateSetting(min, max, value, Artvalue,true)" style="margin-left:10px">
+              <span>{{ min }}</span> <mat-slider    min="2005" [max]="maxstart" (change)="updateSetting(min, max, value, Artvalue,true)" style="margin-left:10px">
                 <input [(ngModel)]="min" matSliderStartThumb>
                 <input [(ngModel)]="max" matSliderEndThumb>
-              </mat-slider>
+              </mat-slider>  <span style="margin-left: 10px;">{{ max }}</span>
             </div>
           </td>
         </tr>

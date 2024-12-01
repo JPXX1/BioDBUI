@@ -7,7 +7,6 @@ import { AnzeigeBewertungMPService } from 'src/app/shared/services/anzeige-bewer
 import { AnzeigenMstUebersichtService } from 'src/app/shared/services/anzeigen-mst-uebersicht.service';
 // import { WkUebersicht } from 'src/app/interfaces/wk-uebersicht';
 import { AnzeigeBewertungService } from 'src/app/shared/services/anzeige-bewertung.service';
-
 import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
 import { Router } from '@angular/router';
 import { CommentService } from 'src/app/shared/services/comment.service';
@@ -61,6 +60,10 @@ see_fliess:boolean=false;
     componentTypeControl = new FormControl([]); // For mat-button-toggle-group
     minstart:number=2005;
     maxstart:number= new Date().getFullYear();
+    max:number=this.maxstart; 
+    maxlabel:number=this.maxstart;
+    // min:number=this.minstart; 
+    currentValue:number;
     isHelpActive: boolean = false;
     helpText: string = '';
     itemsAbfrage = [
@@ -92,6 +95,10 @@ see_fliess:boolean=false;
       this.componentTypeControl.valueChanges.subscribe(() => this.onToggleChange()); // Subscribe to value changes
     }
 
+
+    formatLabel() {
+      this.maxlabel = this.form.get('max')?.value;
+    }
     /**
      * Behandelt das Änderungsereignis für die Dropdown-Auswahl.
      * 

@@ -65,7 +65,7 @@ arraybuendel:ArraybuendelSel;
     await this.stammdatenService.callGewaesser();
     await this.stammdatenService.wandleGewaesser(false);
   
-    console.log(this.stammdatenService.gewaesser);
+    // console.log(this.stammdatenService.gewaesser);
     let wk = this.stammdatenService.wk;
     let gewaesser: TypWrrl[] = this.stammdatenService.gewaesser;
   
@@ -82,7 +82,7 @@ arraybuendel:ArraybuendelSel;
     const DIALOG_HEIGHT = 1000; // Höhe des Dialogs
   
     let leftPosition = 0;
-    let topPosition = 0;
+    let topPosition = 30;
   
     if (event) {
       // Position basierend auf Event berechnen

@@ -64,6 +64,7 @@ import {Probenehmer} from 'src/app/shared/interfaces/probenehmer';
  * @method callDiatyp - Ruft asynchron die getStammDiaTyp-Methode auf und weist das Ergebnis diatyp_t zu.
  * @method callGewaesser - Ruft asynchron die getStammGewasser-Methode auf und verarbeitet jedes Element im zurückgegebenen Array.
  * @method callMptyp - Ruft asynchron die getStammMpTyp-Methode auf und verarbeitet jedes Element im zurückgegebenen Array.
+ * @method callMZBtyp - Ruft asynchron die getStammMZBTyp-Methode auf und verarbeitet jedes Element im zurückgegebenen Array.
  * @method callPptyp - Ruft asynchron die getStammPpTyp-Methode auf und weist das Ergebnis pptyp_t zu.
  * @method callKomponenten - Ruft asynchron die getKomponenten-Methode auf und weist das Ergebnis komponenten zu.
  * @method callWrrltyp - Ruft asynchron die getStammWrrlTyp-Methode auf und verarbeitet das Ergebnis.
@@ -72,6 +73,7 @@ import {Probenehmer} from 'src/app/shared/interfaces/probenehmer';
  * @method neueMst - Erstellt ein neues MessstellenStam-Objekt mit Standardwerten und fügt es in die Datenbank ein.
  * @method wandleTypDia - Konvertiert und filtert das diatyp_t-Array basierend auf den angegebenen Parametern.
  * @method wandleTypMP - Verarbeitet und transformiert das mptyp_t-Array basierend auf den angegebenen Parametern.
+ * @method wandleTypMZB - Verarbeitet und transformiert das mzbtyp_t-Array basierend auf den angegebenen Parametern.
  * @method wandleTypPP - Konvertiert und filtert das pptyp_t-Array basierend auf den angegebenen Parametern und aktualisiert das pptyp-Array.
  * @method wandleGewaesser - Verarbeitet die Liste der Gewässer und aktualisiert das gewaesser-Array basierend auf den angegebenen Kriterien.
  * @method filterWK - Filtert das wk-Array basierend auf den angegebenen Kriterien und füllt das wkarray mit den gefilterten Ergebnissen.
@@ -86,10 +88,12 @@ import {Probenehmer} from 'src/app/shared/interfaces/probenehmer';
  * @method addRowGewaesser - Fügt eine neue Zeile zur Gewässertabelle hinzu.
  * @method addRowTypWRRL - Fügt eine neue Zeile zur WRRL-Typ-Tabelle hinzu.
  * @method addRowPPWRRL - Fügt eine neue Zeile zur PP WRRL-Tabelle hinzu.
+ * @method addRowMZBWRRL - Fügt eine neue Zeile zur MZB-Tabelle hinzu.
  * @method addRowMpWRRL - Fügt eine neue Zeile zur MP WRRL-Tabelle hinzu.
  * @method addRowDiaWRRL - Fügt eine neue Zeile zur Dia WRRL-Tabelle hinzu.
  * @method aktualisierePPTyp - Aktualisiert den PP-Typ in der Datenbank.
  * @method aktualisiereMpTyp - Aktualisiert den MP-Typ in der Datenbank.
+ * @method aktualisiereMZBTyp - Aktualisiert den MZB-Typ in der Datenbank.
  * @method aktualisiereDiaTyp - Aktualisiert den Dia-Typ in der Datenbank.
  * @method aktualisiereWrrlTyp - Aktualisiert den WRRL-Typ in der Datenbank.
  * @method aktualisiereGewaesser - Aktualisiert das Gewässer in der Datenbank.
@@ -113,6 +117,7 @@ export class StammdatenService {
   public wrrltyp:TypWrrl[];
   public diatyp:TypWrrl[];
   public mptyp:TypWrrl[];
+  public mzbtyp:TypWrrl[];
   public pptyp:TypWrrl[];
   public gewaesser:TypWrrl[];
   public mst:any;
@@ -120,6 +125,7 @@ export class StammdatenService {
   public komponenten:any;
   public diatyp_t:any;
   public mptyp_t:any;
+  public mzbtyp_t:any;
   public pptyp_t:any;
   public wrrltyp_t:any;
   public gewaesser_T:any;
@@ -212,6 +218,14 @@ async startwk(kat:boolean,allewk:boolean){
    */
   getStammDiaTyp() {
     return this.httpClient.get(`${this.apiUrl}/stamDiaTypen`);
+  }
+  /**
+   * Ruft die Liste der StammMZBTypen von der API ab.
+   *
+   * @returns Ein Observable, das die Antwort von der API enthält.
+   */
+  getStammMZBTyp() {
+    return this.httpClient.get(`${this.apiUrl}/stamMZBTypen`);
   }
   /**
    * Ruft die Liste der StammMpTypen von der API ab.
@@ -326,6 +340,21 @@ async startwk(kat:boolean,allewk:boolean){
       });
     }
     /**
+     * Ruft asynchron die Methode `getStammMZBTyp` auf und verarbeitet jedes Element im zurückgegebenen Array.
+     * 
+     * Diese Methode wartet auf den Abschluss der Methode `getStammMZBTyp`, die ein Array von Elementen zurückgibt.
+     * Anschließend iteriert sie über jedes Element im Array, weist es der Eigenschaft `mzbtyp_t` zu und gibt es in der Konsole aus.
+     * 
+     * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+     */
+    async callMZBtyp() {
+
+      await this.getStammMZBTyp().forEach(formen_ => {
+        this.mzbtyp_t = formen_;
+        // console.log(formen_);
+      });
+    }
+    /**
      * Ruft asynchron die Methode `getStammMpTyp` auf und verarbeitet jedes Element im zurückgegebenen Array.
      * 
      * Diese Methode wartet auf den Abschluss der Methode `getStammMpTyp`, die ein Array von Elementen zurückgibt.
@@ -337,7 +366,7 @@ async startwk(kat:boolean,allewk:boolean){
 
       await this.getStammMpTyp().forEach(formen_ => {
         this.mptyp_t = formen_;
-        console.log(formen_);
+        // console.log(formen_);
       });
     }
     /**
@@ -536,6 +565,29 @@ async startwk(kat:boolean,allewk:boolean){
           }
       })
       }
+      /**
+     * Verarbeitet und transformiert asynchron das `mzbtyp_t` Array basierend auf den angegebenen Parametern.
+     * 
+     * @param mzbtypbearbeiten - Ein boolescher Wert, der angibt, ob der Typ bearbeitet werden soll.
+     * @param seefliess - Ein boolescher Wert, der den Fließzustand angibt, oder null, um alle Fließzustände zu verarbeiten.
+     * 
+     * @returns Ein Promise, das aufgelöst wird, wenn die Transformation abgeschlossen ist.
+     */
+    async wandleTypMZB(mzbtypbearbeiten:boolean, seefliess:boolean){
+      let fliess:boolean;
+      let temp: any = this.mzbtyp_t;
+      this.mzbtyp=[];
+      temp.map(async (f) => {
+        if (seefliess===null){
+          if (f.seefliess===true){fliess=false;}
+          if (f.seefliess===false){fliess=true;}
+          if ((f.mzb_typ!=='kein Typ' && mzbtypbearbeiten===true) || mzbtypbearbeiten===false){
+          this.mzbtyp.push({id:f.id,typ:f.mzb_typ,seefliess:f.seefliess,fliess:fliess})}}else{
+            if (f.seefliess===seefliess || f.seefliess===null )
+              {  this.mzbtyp.push({id:f.id,typ:f.mzb_typ,seefliess:f.seefliess,fliess:fliess})}
+          }
+      })
+      }
     /**
      * Konvertiert und filtert das `pptyp_t` Array basierend auf den angegebenen Parametern und aktualisiert das `pptyp` Array.
      *
@@ -601,7 +653,7 @@ async startwk(kat:boolean,allewk:boolean){
     async filterWK(kat:boolean,allewk:boolean){
 
    
-      let temp: any = this.wk;
+      let temp: any = this.wk.filter((f) => f.wk_name!=='n.b.');
 
       this.wkarray =[];
      
@@ -611,8 +663,8 @@ async startwk(kat:boolean,allewk:boolean){
             
          
     if (allewk===false){
-          if (f.see===kat){
-    
+          if (f.see===kat ){
+  
           //erzeugt Array mit WK
           
          let gewasserart:boolean=true;
@@ -629,6 +681,8 @@ async startwk(kat:boolean,allewk:boolean){
               wrrl_typ:f.wrrl_typ,
               mp_typ:f.mp_typ,
               dia_typ:f.dia_typ,
+              mzb_typ:f.mzb_typ,
+              mzb_typ_str:f.mzb_typ_str,
               pp_typ:f.pp_typ,
               pp_typ_str:f.pp_typ_str,
               dia_typ_str:f.dia_typ_str,
@@ -639,7 +693,7 @@ async startwk(kat:boolean,allewk:boolean){
            
             // this.messstellenarray.push(this.messstellenStam);
             // else if(f.Jahr===parseInt(filter)){this.dbMPUebersichtMst.push(f)}
-    }}else{let gewasserart:boolean=true;
+    }}else {let gewasserart:boolean=true;
       this.wkarray.push({ id:f.id,
         wk_name: f.wk_name,
         see:f.see,
@@ -653,6 +707,8 @@ async startwk(kat:boolean,allewk:boolean){
         wrrl_typ:f.wrrl_typ,
         mp_typ:f.mp_typ,
         dia_typ:f.dia_typ,
+        mzb_typ:f.mzb_typ,
+        mzb_typ_str:f.mzb_typ_str,
         pp_typ:f.pp_typ,
         pp_typ_str:f.pp_typ_str,
         dia_typ_str:f.dia_typ_str,
@@ -867,48 +923,42 @@ archiviereMstStamm(messstellenStam:MessstellenStam){
  * 
  * @returns void
  */
-speichereWK(wasserkoerperStam:WasserkoerperStam){
+speichereWK(wasserkoerperStam: WasserkoerperStam): Observable<any> {
   const body = new HttpParams()
-  .set('id',wasserkoerperStam.id)
-  .set('wk_name',wasserkoerperStam.wk_name)
-  .set('see', wasserkoerperStam.see)
-  .set('kuenstlich', wasserkoerperStam.kuenstlich)
-  .set('hmwb',wasserkoerperStam.hmwb)
-  .set('bericht_eu',wasserkoerperStam.bericht_eu)
-  .set('id_gewaesser',wasserkoerperStam.id_gewaesser)
-  .set('eu_cd_wb',wasserkoerperStam.eu_cd_wb)
-  .set('land',wasserkoerperStam.land)
-  .set('wrrl_typ',wasserkoerperStam.wrrl_typ)
-  .set('mp_typ',wasserkoerperStam.mp_typ)
-  .set('dia_typ',wasserkoerperStam.dia_typ)
-  .set('pp_typ',wasserkoerperStam.pp_typ)
+    .set('id', wasserkoerperStam.id.toString())
+    .set('wk_name', wasserkoerperStam.wk_name)
+    .set('see', wasserkoerperStam.see.toString())
+    .set('kuenstlich', wasserkoerperStam.kuenstlich.toString())
+    .set('hmwb', wasserkoerperStam.hmwb.toString())
+    .set('bericht_eu', wasserkoerperStam.bericht_eu)
+    .set('id_gewaesser', wasserkoerperStam.id_gewaesser.toString())
+    .set('eu_cd_wb', wasserkoerperStam.eu_cd_wb)
+    .set('land', wasserkoerperStam.land)
+    .set('wrrl_typ', wasserkoerperStam.wrrl_typ)
+    .set('mp_typ', wasserkoerperStam.mp_typ)
+    .set('dia_typ', wasserkoerperStam.dia_typ)
+    .set('pp_typ', wasserkoerperStam.pp_typ);
 
-  
-  this.httpClient.post(`${this.apiUrl}/insertStammWK`, body).subscribe(resp => {
-    console.log("response %o, ", resp);
-  });    
-     
+  // Rückgabe des HTTP-Requests als Observable
+  return this.httpClient.post<any>(`${this.apiUrl}/insertStammWK`, body);
 }
-speichereMst(messstellenStam:MessstellenStam){
- 
+
+speichereMst(messstellenStam: MessstellenStam): Observable<any> {
   const body = new HttpParams()
-  .set('id_mst',messstellenStam.id_mst)
-  .set('id_wk',messstellenStam.id_wk)
-  .set('idgewaesser', messstellenStam.idgewaesser)
-  .set('namemst', messstellenStam.namemst)
-  .set('ortslage',messstellenStam.ortslage)
-  .set('repraesent',messstellenStam.repraesent)
-  .set('rw_etrs',messstellenStam.rw_etrs)
-  .set('hw_etrs',messstellenStam.hw_etrs)
-  .set('see',messstellenStam.see)
-  
+    .set('id_mst', messstellenStam.id_mst.toString())
+    .set('id_wk', messstellenStam.id_wk.toString())
+    .set('idgewaesser', messstellenStam.idgewaesser.toString())
+    .set('namemst', messstellenStam.namemst)
+    .set('ortslage', messstellenStam.ortslage)
+    .set('repraesent', messstellenStam.repraesent)
+    .set('rw_etrs', messstellenStam.rw_etrs.toString())
+    .set('hw_etrs', messstellenStam.hw_etrs.toString())
+    .set('see', messstellenStam.see.toString());
 
-
-  
-  this.httpClient.post(`${this.apiUrl}/insertStammMst`, body).subscribe(resp => {
-    console.log("response %o, ", resp);
-  });    
+  // Rückgabe des HTTP-Requests als Observable
+  return this.httpClient.post<any>(`${this.apiUrl}/insertStammMst`, body);
 }
+
 
 
 
@@ -962,70 +1012,76 @@ async getArchivMstStamm(parameter :number){
     addRowMpWRRL(data: any): Observable<any> {
       return this.httpClient.post<any>(`${this.apiUrl}/addMpWrrl`, data);
     }
+    addRowMZBWRRL(data: any): Observable<any> {
+      return this.httpClient.post<any>(`${this.apiUrl}/addMZBWrrl`, data);
+    }
     addRowDiaWRRL(data: any): Observable<any> {
       return this.httpClient.post<any>(`${this.apiUrl}/addDiaWrrl`, data);
     }
-    aktualisierePPTyp(typwrrl:string,id:number,seefliess:boolean){
+    aktualisierePPTyp(typwrrl: string, id: number, seefliess: boolean): Observable<any> {
+      const body = new HttpParams()
+        .set('id', id.toString()) // Konvertiert die ID in einen String
+        .set('pp_typ', typwrrl) // Typ WRRL
+        .set('seefliess', seefliess.toString()); // Konvertiert Boolean zu String
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamPPTyp`, body);
+    }
+    
+    aktualisiereMpTyp(typwrrl: string, id: number, seefliess: boolean): Observable<any> {
+      const body = new HttpParams()
+        .set('id', id.toString()) // Konvertiert die ID in einen String
+        .set('mp_typ', typwrrl) // Typ WRRL
+        .set('seefliess', seefliess.toString()); // Konvertiert Boolean zu String
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamMpTyp`, body);
+    }
+    
+    aktualisiereMZBTyp(typwrrl: string, id: number, seefliess: boolean): Observable<any> {
+      const body = new HttpParams()
+        .set('id', id.toString()) // Konvertiert die ID in einen String
+        .set('mzb_typ', typwrrl) // Typ WRRL
+        .set('seefliess', seefliess.toString()); // Konvertiert Boolean zu String
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamMZBTyp`, body);
+    }
+    
 
+    aktualisiereDiaTyp(typwrrl: string, id: number, seefliess: boolean): Observable<any> {
       const body = new HttpParams()
-      .set('id',id)
-      .set('pp_typ',typwrrl)
-      .set('seefliess',seefliess)
-      
-     
-      this.httpClient.post(`${this.apiUrl}/updateStamPPTyp`,body).subscribe(resp => {
-     console.log("response %o, ", resp);  });
-  
+        .set('id_dia', id.toString()) // Konvertierung von Zahlen in Strings
+        .set('dia_typ', typwrrl)
+        .set('seefliess', seefliess.toString()); // Boolean zu String konvertieren
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamDiaTyp`, body);
     }
-    aktualisiereMpTyp(typwrrl:string,id:number,seefliess:boolean){
+    
+    aktualisiereWrrlTyp(typwrrl: string, id: number, seefliess: boolean): Observable<any> {
+      const body = new HttpParams()
+        .set('id', id.toString()) // Konvertierung von Zahlen in Strings
+        .set('wrrl_typ', typwrrl)
+        .set('seefliess', seefliess.toString()); // Boolean zu String konvertieren
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamWrrlTyp`, body);
+    }
+    
+    
 
+    aktualisiereGewaesser(gewaessername: string, id: number, seefliess: boolean): Observable<any> {
+      const kat = seefliess ? 's' : 'f'; // Kategorie basierend auf seefliess
       const body = new HttpParams()
-      .set('id',id)
-      .set('mp_typ',typwrrl)
-      .set('seefliess',seefliess)
-      
-     
-      this.httpClient.post(`${this.apiUrl}/updateStamMpTyp`,body).subscribe(resp => {
-     console.log("response %o, ", resp);  });
-  
+        .set('id', id.toString()) // Konvertiert ID in einen String
+        .set('name', gewaessername) // Gewässername
+        .set('kategorie', kat); // Kategorie (s oder f)
+    
+      // Rückgabe des HTTP-Requests als Observable
+      return this.httpClient.post<any>(`${this.apiUrl}/updateStamGewaesser`, body);
     }
-    aktualisiereDiaTyp(typwrrl:string,id:number,seefliess:boolean){
-
-      const body = new HttpParams()
-      .set('id_dia',id)
-      .set('dia_typ',typwrrl)
-      .set('seefliess',seefliess)
-      
-     
-      this.httpClient.post(`${this.apiUrl}/updateStamDiaTyp`,body).subscribe(resp => {
-     console.log("response %o, ", resp);  });
-  
-    }
-    aktualisiereWrrlTyp(typwrrl:string,id:number,seefliess:boolean){
-
-      const body = new HttpParams()
-      .set('id',id)
-      .set('wrrl_typ',typwrrl)
-      .set('seefliess',seefliess)
-      
-     
-      this.httpClient.post(`${this.apiUrl}/updateStamWrrlTyp`,body).subscribe(resp => {
-     console.log("response %o, ", resp);  });
-  
-    }
-    aktualisiereGewaesser(gewaessername:string,id:number,seefliess:boolean){
-      let kat:string;
-      if (seefliess===true){kat='s'}else{kat='f'}
-      const body = new HttpParams()
-      .set('id',id)
-      .set('name',gewaessername)
-      .set('kategorie',kat)
-      
-     
-      this.httpClient.post(`${this.apiUrl}/updateStamGewaesser`,body).subscribe(resp => {
-     console.log("response %o, ", resp);  });
-  
-    }
+    
     getProbenehmer(): Observable<Probenehmer[]> {
       return this.httpClient.get<Probenehmer[]>(`${this.apiUrl}/impProbenehmer`);
     }
@@ -1053,6 +1109,11 @@ async getArchivMstStamm(parameter :number){
     }
     deleteMPtyp(data: Partial<TypWrrl>): Observable<{ message: string }> {
       return this.httpClient.delete<{ message: string }>(`${this.apiUrl}/del_mptyp`, {
+        body: data, // Include the body as part of the DELETE request
+      });
+    }
+    deleteMZBtyp(data: Partial<TypWrrl>): Observable<{ message: string }> {
+      return this.httpClient.delete<{ message: string }>(`${this.apiUrl}/del_mzbtyp`, {
         body: data, // Include the body as part of the DELETE request
       });
     }

@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 /**
- * Service verantwortlich für die Handhabung von Perlodes-Import- und Exportvorgängen.
+ * Service verantwortlich für die Handhabung von Perlodes-Import- und Exportdateien.
  * 
  * Dieser Service bietet Methoden zum:
  * - Abrufen von ArtenMZB-Daten von einer API.
@@ -69,7 +69,7 @@ export class PerlodesimportService {
 
 
     /**
-     * Exportiert Daten aus einer Arbeitsmappe in ein spezifisches Format für Perlodes.
+     * Importiert Daten aus einer Arbeitsmappe in ein spezifisches Format für PerlodesExport.
      * 
      * @param workbook - Das Arbeitsmappenobjekt, das die zu exportierenden Daten enthält.
      * @param valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten darstellen.
@@ -88,6 +88,7 @@ export class PerlodesimportService {
      * 7. Ruft die Methode `groupNAch` von `xlsxImportPhylibService` auf, um die Daten zu gruppieren.
      */
     async Perlodesexport(workbook, valspalten: any, tab: any,verfahrennr : number){
+      this.xlsxImportPhylibService.messstellenImp=[];
       await this.xlsxImportPhylibService.holeMst();
       this.xlsxImportPhylibService.displayColumnNames=[];
       this.xlsxImportPhylibService.dynamicColumns=[];

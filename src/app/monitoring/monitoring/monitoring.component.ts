@@ -462,7 +462,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
       await Promise.all(
         this.anzeigeBewertungService.wkUebersicht.map(async (f) => {
 
-          if (f.WKname.includes(value) && (f.Jahr >= this.min && f.Jahr <= this.max)) {
+          if (f.WKname.toLowerCase().includes(value.toLowerCase()) && (f.Jahr >= this.min && f.Jahr <= this.max)) {
 
             this.FilterwkUebersicht.push(f);
           }

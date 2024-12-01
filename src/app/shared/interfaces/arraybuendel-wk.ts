@@ -6,6 +6,7 @@ export interface ArraybuendelWK {
     diatyp:TypWrrl[];
     mptyp:TypWrrl[];
     pptyp:TypWrrl[];
+    mzbtyp:TypWrrl[];
     wrrltyp:TypWrrl[];
     gewaesser:TypWrrl[];
 

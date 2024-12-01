@@ -87,6 +87,52 @@ onFormChange(): void {
  * @param {string} vornahme - Der Vorname des Benutzers.
  * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn der eindeutige Login generiert und der Benutzer gespeichert wurde.
  */
+
+
+adminchange(newValue: boolean){
+if (newValue){
+
+  this.data.user.nutzer3=true;
+   this.data.user.nutzer2=true;
+
+  this.data.user.nutzer1=true;
+}
+
+
+}
+
+nutzer3change(newValue: boolean){
+  if (newValue){
+  this.data.user.nutzer2=true;
+
+  this.data.user.nutzer1=true;
+}else {
+  
+ 
+  this.data.user.administrator=false;
+}
+}
+nutzer2change(newValue: boolean){
+  if (newValue){
+ 
+
+  this.data.user.nutzer1=true;
+}else {
+  this.data.user.nutzer3=false;
+  this.data.user.nutzer2=false;
+  this.data.user.administrator=false;
+}
+}
+nutzer1change(newValue: boolean){
+  if (!newValue){
+ 
+
+
+  this.data.user.nutzer3=false;
+  this.data.user.nutzer2=false;
+  this.data.user.administrator=false;
+}
+}
 async generateUniqueLogin(vornahme: string): Promise<void> {
   // Überprüfen, ob bereits ein Login vorhanden ist
   if (this.data.user.login && this.data.user.login.trim() !== '') {

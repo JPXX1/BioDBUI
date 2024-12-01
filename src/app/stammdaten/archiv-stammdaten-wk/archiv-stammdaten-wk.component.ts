@@ -27,7 +27,7 @@ import { WasserkoerperStam } from 'src/app/shared/interfaces/wasserkoerper-stam'
  */
 export class ArchivStammdatenWkComponent { 
   wasserkoerperStam: WasserkoerperStam[] = []; 
-  displayedColumns: string[] = ['id_wk', 'wk_name', 'see','kuenstlich','hmwb','bericht_eu','eu_cd_wb','land','pp_typ_str','dia_typ_str','wrrl_typ_str','mp_typ_str','gewaessername','updated_at'];
+  displayedColumns: string[] = ['id_wk', 'wk_name', 'see','kuenstlich','hmwb','bericht_eu','eu_cd_wb','land','pp_typ_str','dia_typ_str','wrrl_typ_str','mp_typ_str','mzb_typ_str','gewaessername','updated_at'];
   dataSource = this.wasserkoerperStam;
 
   constructor(

@@ -1,5 +1,5 @@
 <div class="container">
-    <h2>Archiv Stand Änderungen</h2>
+    <h2>Archiv: Stand Änderungen</h2>
     <!-- <form> -->
       <button mat-icon-button class="close-button" (click)="onClose()">
         <mat-icon>close</mat-icon>
@@ -80,6 +80,11 @@
                     <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.dia_typ_str}} </td>
                     
                     </ng-container>
+                    <ng-container matColumnDef="mzb_typ_str" >
+                      <th  mat-header-cell *matHeaderCellDef    class="header-table"> mzb_typ_str </th>
+                      <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.mzb_typ_str}} </td>
+                      
+                      </ng-container>
                     <ng-container matColumnDef="mp_typ_str" >
                         <th  mat-header-cell *matHeaderCellDef    class="header-table"> mp_typ_str </th>
                         <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.mp_typ_str}} </td>
@@ -90,6 +95,7 @@
                             <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.wrrl_typ_str}} </td>
                             
                             </ng-container>
+          
             <ng-container matColumnDef="updated_at" >
               <th  mat-header-cell *matHeaderCellDef   class="header-table"> letzte Änderung </th>
               <td  mat-cell *matCellDef="let element" class="Zelle"> {{element.updated_at}} </td>

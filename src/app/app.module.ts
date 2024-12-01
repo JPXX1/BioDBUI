@@ -62,6 +62,7 @@ import { EditableTableGewaesserComponent } from './stammdaten/editable-table-gew
 import { EditableTableTypPPComponent } from './stammdaten/editable-table-typ-pp/editable-table-typ-pp.component';
 import { EditableTableDiatypComponent } from './stammdaten/editable-table-diatyp/editable-table-diatyp.component';
 import { EditableTableMptypComponent } from './stammdaten/editable-table-mptyp/editable-table-mptyp.component';
+import { EditableTableMZBtypComponent } from 'src/app/stammdaten/editable-table-mzbtyp/editable-table-mzbtyp.component';
 import { DatenExportComponent } from './daten-export/daten-export.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
@@ -132,7 +133,7 @@ const routes: Routes = [
 	//  { path: '', redirectTo: '/file-upload', pathMatch: 'full' },
   ]
 @NgModule({ 
-declarations: [ WikiComponent,WKExpertenurteilEditComponent,SelectjahrComponent,
+declarations: [ EditableTableMZBtypComponent,WikiComponent,WKExpertenurteilEditComponent,SelectjahrComponent,
 	AppComponent, SelectUebersichtImportComponent,EditStammdatenMstComponent,StammWkComponent,
 	FileUploadComponent, InfoBoxComponent,SelectjahrComponent, EineldatenimpComponent,  SelectProbenehmerComponent, MonitoringComponent, UebersichtTabelleComponent, MakorphytenTabelleComponent, MakrophytenMstUebersichtComponent, MapComponent, 
 	StammdatenComponent, StammMessstellenComponent, SelectWasserkoerperComponent, EditStammdatenMstComponent, ArchivStammdatenComponent, StammWkComponent, EditStammdatenWkComponent, ArchivStammdatenWkComponent, 

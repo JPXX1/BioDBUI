@@ -28,6 +28,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
  * @property {FormGroup} formInstanceWK - Die Formulargruppe für die Wasserkörperdaten.
  * @property {string} wk_name1 - Der Name des zu bearbeitenden Wasserkörpers.
  * @property {TypWrrl[]} dropdownTypPP - Dropdown-Optionen für den PP-Typ.
+ * @property {TypWrrl[]} dropdownTypMZB - Dropdown-Optionen für den PP-Typ.
  * @property {TypWrrl[]} dropdownTypMP - Dropdown-Optionen für den MP-Typ.
  * @property {TypWrrl[]} dropdownTypDia - Dropdown-Optionen für den Dia-Typ.
  * @property {TypWrrl[]} dropdownTypWRRL - Dropdown-Optionen für den WRRL-Typ.
@@ -35,6 +36,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
  * @property {IDropdownSettings} dropdownSettingsGew - Dropdown-Einstellungen für Gewässer.
  * @property {IDropdownSettings} dropdownSettingsDia - Dropdown-Einstellungen für Dia.
  * @property {IDropdownSettings} dropdownSettingsPP - Dropdown-Einstellungen für PP.
+ * @property {IDropdownSettings} dropdownSettingsMZB - Dropdown-Einstellungen für MZB.
  * @property {IDropdownSettings} dropdownSettingsMP - Dropdown-Einstellungen für MP.
  * @property {IDropdownSettings} dropdownSettingsWRRL - Dropdown-Einstellungen für WRRL.
  * 
@@ -55,6 +57,9 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
  * @method onItemSelectPP - Behandelt die Auswahl eines Elements im PP-Dropdown.
  * @param {any} item - Das ausgewählte Element.
  * 
+ * @method onItemSelectMZB - Behandelt die Auswahl eines Elements im WRRL-Dropdown.
+ * @param {any} item - Das ausgewählte Element.
+ * 
  * @method onItemSelectWrrl - Behandelt die Auswahl eines Elements im WRRL-Dropdown.
  * @param {any} item - Das ausgewählte Element.
  * 
@@ -67,6 +72,7 @@ export class EditStammdatenWkComponent {
   formInstanceWK: FormGroup;
   wk_name1:string;
   
+  dropdownTypMZB:TypWrrl[]=[];
   dropdownTypPP:TypWrrl[]=[];
   dropdownTypMP:TypWrrl[]=[];
   dropdownTypDia:TypWrrl[]=[];
@@ -78,6 +84,7 @@ export class EditStammdatenWkComponent {
   dropdownSettingsDia:IDropdownSettings = {};
   dropdownSettingsPP:IDropdownSettings = {};
   dropdownSettingsMP:IDropdownSettings = {};
+  dopdownSettingsMZB:IDropdownSettings = {};
   dropdownSettingsWRRL:IDropdownSettings = {};
 
   constructor(public dialogRef: MatDialogRef<EditStammdatenWkComponent>,
@@ -101,6 +108,8 @@ export class EditStammdatenWkComponent {
       pp_typ_str: ['', Validators.required],
       dia_typ_str: ['', Validators.required],
       mp_typ_str: ['', Validators.required],
+      mzb_typ: ['', Validators.required],
+      mzb_typ_str: ['', Validators.required],
       wrrl_typ_str: ['', Validators.required],
       gewaessername: ['', Validators.required],
       updated_at: ['', Validators.required],
@@ -122,11 +131,13 @@ this.wk_name1="Wasserkörper '" +data.wkstam.wk_name+ "' (Nr. "+data.wkstam.id+ 
     this.dropdownSettingsDia =  this.dropdownSettingsGew;
     this.dropdownSettingsPP=this.dropdownSettingsDia;
     this.dropdownSettingsMP=this.dropdownSettingsDia;
+    this.dopdownSettingsMZB=this.dropdownSettingsDia;
     this.dropdownSettingsWRRL=this.dropdownSettingsDia;
 	
       this.dropdownTypGewaesser=data.gewaesser;
 			this.dropdownTypDia=data.diatyp;
       this.dropdownTypMP=data.mptyp;
+      this.dropdownTypMZB=data.mzbtyp;
       this.dropdownTypPP=data.pptyp;
       this.dropdownTypWRRL=data.wrrltyp;
     
@@ -147,6 +158,11 @@ this.wk_name1="Wasserkörper '" +data.wkstam.wk_name+ "' (Nr. "+data.wkstam.id+ 
   console.log(item);
   this.formInstanceWK.get('mp_typ').setValue(item.id);
   this.formInstanceWK.get('mp_typ_str').setValue(item.typ);
+ }
+ onItemSelectMZB(item: any){
+  console.log(item);
+  this.formInstanceWK.get('mzb_typ').setValue(item.id);
+  this.formInstanceWK.get('mzb_typ_str').setValue(item.typ);
  }
  onItemSelectPP(item: any){
   console.log(item);

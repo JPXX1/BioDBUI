@@ -37,10 +37,11 @@
 
   <!-- Checkboxen -->
   <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-    <mat-checkbox [(ngModel)]="data.user.administrator" name="administrator">Administrator</mat-checkbox>
-    <mat-checkbox [(ngModel)]="data.user.nutzer1" name="nutzer1">Nutzer 1</mat-checkbox>
-    <mat-checkbox [(ngModel)]="data.user.nutzer2" name="nutzer2">Nutzer 2</mat-checkbox>
-    <mat-checkbox [(ngModel)]="data.user.nutzer3" name="nutzer3">Nutzer 3</mat-checkbox>
+   
+    <mat-checkbox [(ngModel)]="data.user.nutzer1" (ngModelChange)="nutzer1change($event)" name="nutzer1">Gast</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.nutzer2" (ngModelChange)="nutzer2change($event)" name="nutzer2">normaler Anwender - Datenexport</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.nutzer3" (ngModelChange)="nutzer3change($event)" name="nutzer3">Stammdaten</mat-checkbox>
+    <mat-checkbox [(ngModel)]="data.user.administrator" (ngModelChange)="adminchange($event)" name="administrator">Administrator</mat-checkbox>
   </div>
 
   <!-- Buttons -->

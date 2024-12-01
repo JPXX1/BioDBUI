@@ -101,9 +101,23 @@ export class EditableTableDiatypComponent  implements OnInit, OnChanges{
       element[field] = event.target.textContent;
     }
   }
-  save(element: TypWrrl){//typwrrl:string,id:number,seefliess:boolean
-    this.dataService.aktualisiereDiaTyp(element.typ,element.id,element.seefliess)  
+  save(element: TypWrrl) {
+    this.dataService.aktualisiereDiaTyp(element.typ, element.id, element.seefliess).subscribe(
+      resp => {
+        this.snackBar.open('Diatomeentyp erfolgreich gespeichert!', 'Schließen', {
+          duration: 3000, // Dauer der Snackbar in Millisekunden
+          horizontalPosition: 'center', // Position (z.B., start, center, end)
+          verticalPosition: 'top', // Position (z.B., top, bottom)
+        });
+        // Weitere Verarbeitung des Responses hier
+      },
+      error => {
+        console.error('Fehler beim Speichern:', error);
+        // Fehlerhandling hier
+      }
+    );
   }
+  
   new(){
    
       const newRowData = {
@@ -116,14 +130,18 @@ export class EditableTableDiatypComponent  implements OnInit, OnChanges{
           
           let neuerTyp:TypWrrl= {} as TypWrrl;
        
-          neuerTyp.id=response.id;
+          neuerTyp.id=response.id_dia;
           neuerTyp.typ='neuer Typ';
           neuerTyp.seefliess=true;
           neuerTyp.fliess=false;
           const data = this.dataSource.data;
           data.push(neuerTyp);
           this.dataSource.data = data; 
-          
+          this.snackBar.open('Diatomeentyp erfolgreich angelegt!', 'Schließen', {
+            duration: 3000, // Dauer der Snackbar in Millisekunden
+            horizontalPosition: 'center', // Position (z.B., start, center, end)
+            verticalPosition: 'top', // Position (z.B., top, bottom)
+          });
           this.dataSource.data = [...this.dataSource.data];
         },
         (error) => {
