@@ -504,93 +504,118 @@ if (validIds.includes(result.id_verfahren)) {
 	
 	}
 	
-		/**
-		 * Überprüft asynchron, ob Messwerte bereits vorhanden sind.
-		 * 
-		 * Diese Methode führt eine Reihe von Überprüfungen und Operationen durch, um festzustellen, 
-		 * ob Messwerte für ein ausgewähltes Jahr und einen ausgewählten Probennehmer bereits im System vorhanden sind. 
-		 * Sie gibt dem Benutzer über eine InfoBox Rückmeldung und behandelt doppelte Messwerte, indem sie den Benutzer 
-		 * mit einem Bestätigungsdialog auffordert.
-		 * 
-		 * Die Methode folgt diesen Schritten:
-		 * 1. Überprüft, ob das Jahr und der Probennehmer ausgewählt sind.
-		 * 2. Protokolliert die Länge der ursprünglichen Messdaten, die Verfahrensnummer und die importierten Messstationen.
-		 * 3. Abhängig von der Verfahrensnummer ruft sie verschiedene Methoden auf, um vorhandene Messwerte zu überprüfen.
-		 * 4. Wenn doppelte Messwerte gefunden werden, fordert sie den Benutzer mit einem Bestätigungsdialog auf, die Duplikate zu entfernen.
-		 * 5. Gibt dem Benutzer über eine InfoBox Rückmeldung basierend auf den Ergebnissen der Überprüfungen.
-		 * 
-		 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Überprüfungen und Operationen abgeschlossen sind.
-		 */
-	async pruefeObMesswerteschonVorhanden(){
-		this.jahr = this.child1.selected; this.probenehmer = this.childPN.selectedPN;
-
+		
+	
+	
+	async pruefeObMesswerteschonVorhanden(): Promise<void> {
+		this.jahr = this.child1.selected;
+		this.probenehmer = this.childPN.selectedPN;
+	
+		// Überprüfen, ob das Jahr und der Probenehmer ausgewählt sind
 		if (!this.jahr) {
 			this.InfoBox('Bitte erst das Untersuchungsjahr auswählen.');
-		} else {
+			return;
+		}
+	
+		if (!this.probenehmer) {
+			this.InfoBox('Bitte erst den Probenehmer auswählen.');
+			return;
+		}
+	
+		// Log für Debugging
+		console.log(this.MessDataOrgi.length);
+		console.log(this.valExceltabsService.NrVerfahren);
+		console.log(this.xlsxImportPhylibService.messstellenImp);
+	
+		// Bedingungen prüfen und Funktionen basierend auf `NrVerfahren` ausführen
+		const { NrVerfahren } = this.valExceltabsService;
+		const { messstellenImp } = this.xlsxImportPhylibService;
+	
+		if (this.MessDataOrgi.length === 0 && messstellenImp.length === 0) {
+			this.InfoBox('Bitte erst eine Importdatei hochladen.');
+			return;
+		}
+	
+		switch (NrVerfahren) {
+			case 1://Phylib-Import
+			case 3://Perlodes-Import
+			case 6://Phytosee-ImportLLBB
+				await this.handlePruefen(NrVerfahren);
+				if (this.xlsxImportPhylibService.vorhanden) {
+					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+				}else{this.InfoBox('Daten lassen sich importieren.');}
+				break;
+				case 4://Perlodes-Export
 
-			if (!this.probenehmer) {
-				this.InfoBox("Bitte erst den Probenehmer auswählen.");
-			} else {
-				console.log(this.MessDataOrgi.length)
-				console.log(this.valExceltabsService.NrVerfahren)
-				console.log(this.xlsxImportPhylibService.messstellenImp)
-				if ((this.MessDataOrgi.length > 0 && (this.valExceltabsService.NrVerfahren === 1 || 
-					this.valExceltabsService.NrVerfahren === 3 || 
-					this.valExceltabsService.NrVerfahren === 6)) || this.xlsxImportPhylibService.messstellenImp.length > 0) {
-					if (this.valExceltabsService.NrVerfahren!==5 && this.valExceltabsService.NrVerfahren!==7){
-						
-						if(this.valExceltabsService.NrVerfahren!==6 ){
-							
-						  await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);}else{
-							//Verfahren=6//
-							await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
-						}}
-					else {
-						//Verfahren=5 u. Verfahren=7
-						await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr();}
-					
-					if (this.xlsxImportPhylibService.vorhanden == true) { this.InfoBox("Daten lassen sich nicht oder nur teilweise importieren.") ;}  
-						if (this.xlsxImportPhylibService.doppelteMesswerte()===true){
-							const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-								width: '250px',
-								data: { message: 'Es wurden doppelte Messwerte gefunden. Möchten Sie fortfahren und die doppelten Werte entfernen?' }
-							  });
-							  dialogRef.afterClosed().subscribe(result => {
-								if (result === true) {
-								  // Der Benutzer hat "Ja" gewählt -> Distinct anwenden
-								  const distinctObjects = Array.from(
-									new Map(this.xlsxImportPhylibService.MessDataImp.map(item => [JSON.stringify(item), item])).values()
-								  );
-								  this.xlsxImportPhylibService.MessDataImp = distinctObjects;
-						
-								  // Setze die InfoBox-Nachricht
-								  //this.InfoBox ("Die doppelten Messwerte wurden entfernt.Die Daten sind zum Import bereit.");
-								  this.InfoBox ("Die doppelten Messwerte wurden entfernt."+this.MessageImportierbareDaten()); 
-								  this.ImportIntoDB = false; 
-								}else {
-									// Der Benutzer hat "Nein" gewählt -> Abbrechen
-									this.InfoBox ("Der Import wurde abgebrochen.");
-									//console.log(this.InfoBox);
-								  }
-								});
-						
-						  
-
-							//this.InfoBox="Die Importdatei enthält mind. einen doppelten Messwert:" + this.xlsxImportPhylibService.MstDoppelteDS+ ". Der Import wird abgebrochen.";
-						} else 
-						{
-							
-							this.InfoBox (this.MessageImportierbareDaten());
-							// this.InfoBox ("Daten sind zum import bereit.");
-							this.ImportIntoDB = false; };
-				} else {
-					 this.InfoBox ("Bitte erst eine Importdatei hochladen.");
 				
-				}
-
-			}
+				console.log(this.xlsxImportPhylibService.vorhanden);
+				if (this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhanden(this.jahr)) {
+					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+				}else{this.InfoBox('Daten lassen sich importieren.');}
+				break;
+	
+			case 5://Phytosee-Export
+			case 7://Phytofluss-Export
+				await this.xlsxImportPhylibService.pruefeObMesswerteAbiotikschonVorhandenmitJahr();
+				if (this.xlsxImportPhylibService.vorhanden) {
+					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+				}else{this.InfoBox('Daten lassen sich importieren.');}
+				break;
+	
+			default:
+				this.InfoBox('Unbekanntes Verfahren.');
+				return;
+		}
+	
+		// Überprüfen, ob Daten vorhanden sind
+		if (this.xlsxImportPhylibService.vorhanden) {
+			this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+			return;
+		}
+	
+		// Überprüfen auf doppelte Messwerte
+		if (this.xlsxImportPhylibService.doppelteMesswerte()) {
+			this.handleDoppelteMesswerte();
+		} else {
+			this.InfoBox(this.MessageImportierbareDaten());
+			this.ImportIntoDB = false;
 		}
 	}
+	
+	private async handlePruefen(NrVerfahren: number): Promise<void> {
+		if (NrVerfahren === 6) {
+			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
+		} else {
+			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);
+		}
+	}
+	
+	private handleDoppelteMesswerte(): void {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: '250px',
+			data: {
+				message: 'Es wurden doppelte Messwerte gefunden. Möchten Sie fortfahren und die doppelten Werte entfernen?'
+			}
+		});
+	
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				// Doppelte Werte entfernen
+				const distinctObjects = Array.from(
+					new Map(
+						this.xlsxImportPhylibService.MessDataImp.map(item => [JSON.stringify(item), item])
+					).values()
+				);
+				this.xlsxImportPhylibService.MessDataImp = distinctObjects;
+				this.InfoBox('Die doppelten Messwerte wurden entfernt. ' + this.MessageImportierbareDaten());
+				this.ImportIntoDB = false;
+			} else {
+				// Import abbrechen
+				this.InfoBox('Der Import wurde abgebrochen.');
+			}
+		});
+	}
+	
 	/**
 	 * Generiert eine Nachricht, die den Importstatus der Daten angibt.
 	 *
@@ -789,7 +814,7 @@ if (validIds.includes(result.id_verfahren)) {
 			 */
 			async addfile()     
 		{  this.ImportDatenAnzeige=false;
-
+			this.xlsxImportPhylibService.MessDataImp=[]
 
 			this.zone.run(() => this.startLoading());
 

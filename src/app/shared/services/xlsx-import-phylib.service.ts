@@ -895,6 +895,33 @@ doppelteMesswerte(): boolean {
 	}}}
 
 	  }
+
+	  async pruefeObMesswerteAbiotikschonVorhanden(jahr:string):Promise<boolean> {
+		let jahrtemp: string; this.vorhanden = false;
+		this.uebersichtGeprueft=this.uebersicht;
+		
+		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
+			
+		if (this.uebersicht[a].import1==="checked"){ //import möglich
+			jahrtemp = ('15.07.' + jahr); 
+			await this.holeMesswerteAbiotikausDB(jahrtemp);
+			// console.log(this.MWausDB);
+			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
+
+			let mstID=mstee[0].id_mst;
+			const messtellenImp_temp=this.messstellenImp.filter(g=>g.id_mst===mstID);
+			const tmpMWteil=this.MWausDB.filter(g=>g.id_mst===mstID && messtellenImp_temp.some(m => m.id_para === g.id_para))
+
+
+			if (tmpMWteil.length>0){ 
+				this.vorhanden = true;
+				this.groupNachPruefung(this.uebersicht[a]);
+				// const relMW=this.MessDataImp.filter(g=>g._Messstelle===mstID);
+
+		
+	}}}
+	return this.vorhanden;
+	  }
 	/**
 	 * Überprüft asynchron, ob Messwerte für das Jahr bereits vorhanden sind.
 	 * 
