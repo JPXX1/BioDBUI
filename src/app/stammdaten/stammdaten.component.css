@@ -1,3 +1,50 @@
 .button{
     border: 2px solid rgb(128, 126, 126); 
     margin-left: 5px;/* Roter Rahmen */}
+    
+    button#btn-probenehmer.active {
+        background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+        /*color: white;  Optional: Textfarbe */
+        border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+      }
+      
+      button#btn-probenehmer {
+        transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+      }
+    button#btn-Typen.active {
+        background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+        /*color: white;  Optional: Textfarbe */
+        border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+      }
+      
+      button#btn-Typen {
+        transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+      }
+ 
+    button#btn-gewaesser.active {
+        background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+        /*color: white;  Optional: Textfarbe */
+        border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+      }
+      
+      button#btn-gewaesser {
+        transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+      }
+    button#btn-messstellen.active {
+        background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+        /*color: white;  Optional: Textfarbe */
+        border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+      }
+      
+      button#btn-messstellen {
+        transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+      }
+      button#btn-wasserkoerper.active {
+        background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+        /*color: white;  Optional: Textfarbe */
+        border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+      }
+      
+      button#btn-wasserkoerper {
+        transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+      }

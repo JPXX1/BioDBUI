@@ -2,7 +2,7 @@
 <span>
  
     <div style="margin-left:180px;">
-        <button mat-button class="helpable button" id="btn-messstellen" [matMenuTriggerFor]="messstellen" >Messstellen</button>
+        <button mat-button class="helpable button"  [class.active]="isbtnmstButton"  id="btn-messstellen" [matMenuTriggerFor]="messstellen" >Messstellen</button>
         <mat-menu #messstellen="matMenu" xPosition="after">
           <button mat-menu-item (click)="fgwMst()">FließgewässerMst</button>
           <button mat-menu-item (click)="seeMst()">SeegewässerMst</button>
@@ -10,7 +10,7 @@
       <!-- <button mat-menu-item (click)="handleMakrophytenClick()">Taxadaten</button> -->
     </mat-menu>
       
-      <button mat-button class="helpable button" id="btn-wasserkoerper" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
+      <button mat-button class="helpable button" [class.active]="isbtnwkButton"  id="btn-wasserkoerper" [matMenuTriggerFor]="wasserkoerper" >Wasserkörper</button>
       <mat-menu #wasserkoerper="matMenu" xPosition="after">
         <button mat-menu-item (click)="fgwWk()">FließgewässerWK</button>
         <button mat-menu-item (click)="seeWk()">SeegewässerWK</button>
@@ -19,13 +19,10 @@
   
      
   
-      <button mat-button class="helpable button" id="btn-gewaesser" [matMenuTriggerFor]="gewaesser">Gewässer</button>
-      <mat-menu #gewaesser="matMenu" xPosition="after">
-        <button mat-menu-item  (click)="gewaesser1()">Gewässer</button>
-        
-      </mat-menu>
+      <button mat-button class="helpable button" (click)="gewaesser1()" [class.active]="isbtngewasser" id="btn-gewaesser" >Gewässer</button>
+     
   
-      <button mat-button [matMenuTriggerFor]="Typen" class="helpable button" id="btn-Typen">Typen</button>
+      <button mat-button [matMenuTriggerFor]="Typen" [class.active]="isbtntypButton"  class="helpable button" id="btn-Typen">Typen</button>
       <mat-menu #Typen="matMenu" xPosition="after">
         <button mat-menu-item (click)="wrrlTyp()">WrrlTyp</button>
         <button mat-menu-item (click)="ppTyp()">Phytoplanktontyp</button>
@@ -34,7 +31,7 @@
         <button mat-menu-item (click)="mzbTyp()">Makrozoobenthostyp</button>
         
       </mat-menu>
-      <button mat-button  (click)="probenehmer()" class="helpable button" id="btn-probenehmer">Probenehmer</button>
+      <button mat-button  (click)="probenehmer()" [class.active]="isbtnpnButton" class="helpable button" id="btn-probenehmer">Probenehmer</button>
      
      
       

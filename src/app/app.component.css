@@ -21,7 +21,7 @@ router-outlet + * {
 }
 /* app.component.css */
 .help-button-active {
-  background-color: lightgray;
+  background-color: rgb(20, 220, 220);
 }
 
 .help-button {

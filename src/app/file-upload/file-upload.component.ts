@@ -815,7 +815,7 @@ if (validIds.includes(result.id_verfahren)) {
 			async addfile()     
 		{  this.ImportDatenAnzeige=false;
 			this.xlsxImportPhylibService.MessDataImp=[]
-
+			this.ArtenNichtBekannt=false;
 			this.zone.run(() => this.startLoading());
 
 			try {

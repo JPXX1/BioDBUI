@@ -1,5 +1,5 @@
 <div style="margin-left: 200px; position: absolute;top: 80px; display: flex; align-items: center">
-  <button mat-button id="kartButton" [matMenuTriggerFor]="karten" class="helpable button" style="margin-right: 20px;">
+  <button mat-button id="kartButton"   [class.active]="iskartButton"  [matMenuTriggerFor]="karten" class="helpable button" style="margin-right: 20px;">
     Bericht-EU
   </button>
   <mat-menu #karten="matMenu" xPosition="after" [style.width.px]="600">
@@ -17,7 +17,7 @@
   
   </mat-menu>
   
-  <button mat-button id="bwmstButton" [matMenuTriggerFor]="mstb" class="helpable button" style="margin-right: 20px;">
+  <button mat-button id="bwmstButton" [class.active]="isbwmstButton"  [matMenuTriggerFor]="mstb" class="helpable button" style="margin-right: 20px;">
     Ergebnisse aus dem Monitoring
   </button>
   <mat-menu #mstb="matMenu" xPosition="after">
@@ -42,7 +42,7 @@
 
   </mat-menu>
   
-  <button mat-button id="mstButton" [matMenuTriggerFor]="mst" class="helpable button" style="margin-right: 20px;">
+  <button mat-button id="mstButton" [class.active]="ismstButton"  [matMenuTriggerFor]="mst" class="helpable button" style="margin-right: 20px;">
     Messstellen
   </button>
   <mat-menu #mst="matMenu" xPosition="after" [style.width.px]="400">
@@ -65,7 +65,7 @@
     </mat-form-field>
     
   </mat-menu>
-  <button id="verbreitung" class="helpable button" mat-button (click)="openDialogVerbreitung()">Verbreitungskarten</button>
+  <button id="verbreitung"  [class.active]="isverbreitung" class="helpable button" mat-button (click)="openDialogVerbreitung()">Verbreitungskarten</button>
 </div>
 <div class="map-container">
   <div id="ol-map" class="map-container" style="margin-top: 100px; margin-bottom: 5%; width: 100%; height: 110%;">

@@ -142,7 +142,6 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     private router: Router,
     private authService: AuthService,
     private Farbebewertg: FarbeBewertungService
-    
   ) {}
     // WMTS capabilities URL
     private wmtsCapabilitiesUrl = 'https://sgx.geodatenzentrum.de/wmts_basemapde/1.0.0/WMTSCapabilities.xml';
@@ -163,6 +162,10 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
   taxon:string='';
   // filteredTaxons: { id_komponente: number, taxon: string }[] = [];
   isFliesgewasserChecked: boolean = false;
+  iskartButton:boolean=false;
+  isverbreitung:boolean=false;
+  isbwmstButton:boolean=false;
+  ismstButton:boolean=false;
   isstartbp3Checked:boolean=false;
   isstartbp2Checked:boolean=false;
   isstartbp1Checked:boolean=false;
@@ -336,9 +339,11 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
      *    - Ruft `filterVerbreitungMessstellenLayer` mit den gefilterten Messstellen-IDs auf.
      */
     openDialogVerbreitung(): void {
+      this.isverbreitung=true;
       this.map.removeLayer(this.VerbreitungMessstellenLayer);
       this.map.addLayer(this.VerbreitungMessstellenLayer);
       const dialogRef = this.dialog.open(MapVBSelectionDialogComponent, {
+        
         width: '600px',
         data: {
           idkomp:this.id_komponente,
@@ -351,6 +356,7 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
       
   //Verbreitung von Arten-Dialog
       dialogRef.afterClosed().subscribe(result => {
+        this.isverbreitung=false;
         this.map.removeLayer(this.VerbreitungMessstellenLayer);
         this.verbreitung_text='';
         if (result) {
@@ -976,7 +982,10 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
    * - Entfernt die Ebenen `view_geo_wk_oezk_bp1` und `view_geo_lw_oezk_bp1` von der Karte.
    */
   startbp1(checked: boolean) {
-    if (checked){this.map.removeLayer(this.view_geo_wk_oezk_bp3);
+    // this.getkartButtonAktivColor();
+    if (checked){
+      this.iskartButton=true;  
+    this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_wk_oezk_bp2);
     this.map.addLayer(this.view_geo_wk_oezk_bp1);
 
@@ -988,10 +997,11 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     this.mstnachoben();
     this.isstartbp2Checked=false;
     this.isstartbp3Checked=false;}else{
-
+      this.iskartButton=false;
       this.map.removeLayer(this.view_geo_wk_oezk_bp1);
       this.map.removeLayer(this.view_geo_lw_oezk_bp1);
     }
+    
   }
 
   /**
@@ -1012,7 +1022,7 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
    */
   startbp2(checked: boolean) {
     if (checked){
-
+      this.iskartButton=true;
      
     this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_wk_oezk_bp1);
@@ -1026,7 +1036,9 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
     this.isstartbp1Checked=false;}else{
       this.map.removeLayer(this.view_geo_wk_oezk_bp2);
       this.map.removeLayer(this.view_geo_lw_oezk_bp2);
+      this.iskartButton=false;
     }
+    // this.getkartButtonAktivColor();
   }
 
   /**
@@ -1046,7 +1058,11 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
    * - Entfernt die Ebenen `view_geo_wk_oezk_bp3` und `view_geo_lw_oezk_bp3` von der Karte.
    */
   startbp3(checked: boolean) {
+    
+   
+
     if (checked){
+      this.iskartButton=true;
     this.map.removeLayer(this.view_geo_wk_oezk_bp2);
     this.map.removeLayer(this.view_geo_wk_oezk_bp1);
     this.map.addLayer(this.view_geo_wk_oezk_bp3);
@@ -1058,12 +1074,14 @@ ctx.fillText('Messstelle', textXPosition, y);  // Platziere den Text mittig unte
   this.isstartbp2Checked=false;
   this.isstartbp1Checked=false;
   this.mstnachoben();}else{
+    this.iskartButton=false;
     this.map.removeLayer(this.view_geo_wk_oezk_bp3);
     this.map.removeLayer(this.view_geo_lw_oezk_bp3);
   }
+  
   }
 
- 
+  
 
   /**
    * Schaltet die Sichtbarkeit einer einzelnen BP-Ebene auf der Karte um.
@@ -1154,6 +1172,7 @@ private clearLegend() {
     this.isDritterBPChecked = false;
     this.isVierterBPChecked = false;
     this.toggleSingleBpLayer(checked, this.source_lw_bp1_with_pie);
+    if (checked){this.isbwmstButton=true;}else{ this.isbwmstButton=false;}
   }
   /**
    * Behandelt die Auswahl der zweiten BP (BP2) Ebene auf der Karte.
@@ -1173,7 +1192,7 @@ private clearLegend() {
    
     
     if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp2);
-    this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp2);}
+    this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp2);this.isbwmstButton=true;}else{ this.isbwmstButton=false;}
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = checked;
     this.isDritterBPChecked = false;
@@ -1214,7 +1233,7 @@ private clearLegend() {
     this.view_geo_aus_daten_rw_oezk_bp3.set('name', 'view_geo_aus_daten_rw_oezk_bp3');
     this.removeallbp();
     if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp3);
-      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp3);}
+      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp3);this.isbwmstButton=true;}else{ this.isbwmstButton=false;}
 
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = false;
@@ -1239,7 +1258,8 @@ private clearLegend() {
     this.view_geo_aus_daten_rw_oezk_bp4.set('name', 'view_geo_aus_daten_rw_oezk_bp4');
     this.removeallbp();
     if (checked){this.map.addLayer(this.view_geo_aus_daten_lw_oezk_bp4);
-      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp4);}
+      this.map.addLayer(this.view_geo_aus_daten_rw_oezk_bp4);
+      this.isbwmstButton=true;}else{ this.isbwmstButton=false;}
     this.isErsterBPChecked = false;
     this.isZweiterBPChecked = false;
     this.isDritterBPChecked = false;
@@ -1286,13 +1306,13 @@ startalleSee(checked: boolean) {
   this.map.removeLayer(this.seeLayer);
   if (!checked){this.isrepraesentSeeChecked=false;this.isRepraesentCheckedSEEdisable=true;
     if (this.isFliesgewasserChecked===false){
-      this.messstellenFilter='';this.isFilterdisable=true;
-  }
+      this.messstellenFilter='';this.isFilterdisable=true;this.ismstButton=false;
+  } else{this.ismstButton=true;}
   }
   if (checked) {this.isFilterdisable=false;
     this.isRepraesentCheckedSEEdisable=false;
   this.showAllFeatures(this.sourceSeeMessstellen, this.seeLayer);
-  }
+  this.ismstButton=true;}
 }
 /**
  * Schaltet die Sichtbarkeit und Interaktivität der "Fliesgewasser"-Ebene auf der Karte um.
@@ -1307,10 +1327,11 @@ startalleFGW(checked: boolean) {
   if (!checked){this.isrepraesentFGWChecked=false;
     this.isRepraesentCheckedFGWdisable=true;
     if (this.isSeeChecked===false){
-      this.messstellenFilter='';this.isFilterdisable=true;
-  }
+      this.messstellenFilter='';this.isFilterdisable=true;this.ismstButton=false;
+    } else{this.ismstButton=true;}
 }
   if (checked) {
+    this.ismstButton=true;
     this.isFilterdisable=false;
     this.isRepraesentCheckedFGWdisable=false;
   this.showAllFeatures(this.sourceFliesgewasserMessstellen, this.fliesgewasserLayer);
@@ -1592,5 +1613,16 @@ const landesgrenzeLayer = new VectorLayer({
   
   
   }
-  
+  // getkartButtonAktivColor() {
+    
+  //   const kartButton = document.getElementById('kartButton');
+  //   this._renderer2.setStyle(kartButton, 'background-color', 'rgb(20,220,220)'); 
+  //   const bwmstButton = document.getElementById('berichtsEUButton');
+  //   this._renderer2.removeStyle(bwmstButton,'background-color');  
+  //   const mstButton = document.getElementById('mpButton');
+  //   this._renderer2.removeStyle(mstButton, 'background-color'); 
+  //   const verbreitung = document.getElementById('mzButton');
+  //   this._renderer2.removeStyle(verbreitung, 'background-color');  
+
+  // }
 }

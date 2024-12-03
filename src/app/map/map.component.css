@@ -81,6 +81,43 @@
     width: 500px; /* Setzt die Breite des spezifischen mat-form-field */
   }
 
+  button#kartButton.active {
+    background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+    /*color: white;  Optional: Textfarbe */
+    border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+  }
+  
+  button#kartButton {
+    transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+  }
+  
+  button#bwmstButton.active {
+    background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+    /*color: white;  Optional: Textfarbe */
+    border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+  }
+  
+  button#bwmstButton {
+    transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+  }
+  button#mstButton.active {
+    background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+    /*color: white;  Optional: Textfarbe */
+    border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+  }
+  
+  button#mstButton {
+    transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+  }
+  button#verbreitung.active {
+    background-color: rgb(20, 220, 220); /* Hintergrundfarbe für aktiven Zustand */
+    /*color: white;  Optional: Textfarbe */
+    border: 1px solid rgb(0, 180, 180); /* Optional: Rahmenfarbe */
+  }
+  
+  button#verbreitung {
+    transition: background-color 0.3s, color 0.3s; /* Weicher Übergang */
+  }
   app-center-button {
     
     position: fixed;

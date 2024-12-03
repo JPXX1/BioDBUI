@@ -1,9 +1,10 @@
 <h1 mat-dialog-title>Verbreitungskarten</h1>
-<div style="margin-left:20px; margin-top: 20px;" class="helpable" id="auswahl-zeit">
-  <mat-slider discrete min="2005" [max]="maxstart" (change)="updateSetting(min, max)" style="margin-left:10px">
+<div style="margin-left:20px; margin-top: 20px; width: 300px;" class="helpable" id="auswahl-zeit">
+  <span style="margin-right:10px">{{min}}</span><mat-slider min="2005" [max]="maxstart" (change)="updateSetting(min, max)" style="margin-left:10px">
+   
     <input [(ngModel)]="min" matSliderStartThumb>
     <input [(ngModel)]="max" matSliderEndThumb>
-  </mat-slider>
+  </mat-slider> <span style="margin-left:10px">{{max}}</span>
 </div>
 <div mat-dialog-content>
   <!-- Erster MatSelect für Komponenten -->

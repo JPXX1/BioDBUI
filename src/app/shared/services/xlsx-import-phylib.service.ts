@@ -1171,7 +1171,7 @@ doppelteMesswerte(): boolean {
 	async holeMesswerteausDB(datum: string) {
 		// this.workbookInit(datum,Probenehmer)
 		await this.impPhylibServ.kontrollPhylibMesswerte2(datum).forEach(value => {
-			this.MWausDB = value;
+			 this.MWausDB = value;
 			//console.log('observable -> ' + this.MWausDB);
 		});
 	}

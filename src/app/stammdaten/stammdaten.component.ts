@@ -82,6 +82,11 @@ export class StammdatenComponent implements OnInit,AfterViewInit,AfterViewChecke
     // private stammWkComponent:StammWkComponent
   ){this.sortedData = this.messstellenStam1.slice();this.sortedDataWK = this.wkStam1.slice();}
   TypWrrlAnzeige:boolean=false;
+  isbtnpnButton=false;
+  isbtntypButton=false;
+  isbtnmstButton=false;
+  isbtnwkButton=false;
+  isbtngewasser=false;
   ProbenehmerAnzeige:boolean=false;
   isHelpActive: boolean = false;
   seefliess:boolean;
@@ -296,6 +301,12 @@ this.wkStam1=this.sortedDataWK;
  * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Methode abgeschlossen ist.
  */
  async  seeMst(){
+  
+  this.isbtnpnButton=false;
+  this.isbtntypButton=false;
+  this.isbtngewasser=false;
+  this.isbtnmstButton=true;
+  this.isbtnwkButton=false;
   this.seefliess=true;
   this.MpTypAnzeige=false;
   this.MzbTypAnzeige=false;
@@ -337,6 +348,11 @@ this.wkStam1=this.sortedDataWK;
  */
 
 async gewaesser1(){
+  this.isbtnpnButton=false;
+  this.isbtntypButton=false;
+  this.isbtngewasser=true;
+  this.isbtnmstButton=false;
+  this.isbtnwkButton=false;
   this.MpTypAnzeige=false;
   this.DiaTypAnzeige=false;
   this.MzbTypAnzeige=false;
@@ -363,6 +379,11 @@ this.ProbenehmerAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
    */
   async wrrlTyp(){
+    this.isbtnpnButton=false;
+    this.isbtntypButton=true;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false;
     this.MpTypAnzeige=false;
     this.MzbTypAnzeige=false;
     this.DiaTypAnzeige=false;
@@ -380,6 +401,11 @@ this.ProbenehmerAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsänderungen abgeschlossen sind.
    */
   async probenehmer(){
+    this.isbtnpnButton=true;
+    this.isbtntypButton=false;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false;
     this.ProbenehmerAnzeige=true;
     this.MpTypAnzeige=false;
     this.MzbTypAnzeige=false;
@@ -400,6 +426,11 @@ this.ProbenehmerAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeige-Logik abgeschlossen ist.
    */
    async mzbTyp(){ 
+    this.isbtnpnButton=false;
+    this.isbtntypButton=true;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false;
     this.ProbenehmerAnzeige=false;
     this.MzbTypAnzeige=true;
     this.MpTypAnzeige=false;
@@ -419,7 +450,12 @@ this.TypWrrlAnzeige=false;
    * 
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Anzeige-Logik abgeschlossen ist.
    */
-  async mpTyp(){ 
+  async mpTyp(){
+    this.isbtnpnButton=false;
+    this.isbtntypButton=true;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false; 
     this.ProbenehmerAnzeige=false;
     this.MzbTypAnzeige=false;
     this.MpTypAnzeige=true;
@@ -446,6 +482,11 @@ this.TypWrrlAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsaktualisierungen abgeschlossen sind.
    */
   async diaTyp(){
+    this.isbtnpnButton=false;
+    this.isbtntypButton=true;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false;
     this.MpTypAnzeige=false;
     this.MzbTypAnzeige=false;
     this.MessstellenAnzeige=false;
@@ -472,6 +513,11 @@ this.TypWrrlAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Sichtbarkeitsaktualisierungen abgeschlossen sind.
    */
   async ppTyp(){
+    this.isbtnpnButton=false;
+    this.isbtntypButton=true;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=false;
+    this.isbtnmstButton=false;
     this.MpTypAnzeige=false;
     this.MzbTypAnzeige=false;
     this.DiaTypAnzeige=false;
@@ -494,8 +540,13 @@ this.TypWrrlAnzeige=false;
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die asynchronen Operationen abgeschlossen sind.
    */
   async fgwWk()
- 
-  {this.DiaTypAnzeige=false;
+  
+  { this.isbtnpnButton=false;
+    this.isbtntypButton=false;
+    this.isbtngewasser=false;
+    this.isbtnwkButton=true;
+    this.isbtnmstButton=false;
+  this.DiaTypAnzeige=false;
     this.MzbTypAnzeige=false;
     this.MpTypAnzeige=false;
     this.PPTypAnzeige=false;
@@ -522,7 +573,12 @@ this.ProbenehmerAnzeige=false;}
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Methode abgeschlossen ist.
    */
   async seeWk()
-  {await  this.stammdatenService.startwk(true,false);
+
+  { this.isbtnpnButton=false;
+    this.isbtntypButton=false;this.isbtngewasser=false;
+    this.isbtnwkButton=true;
+    this.isbtnmstButton=false;
+    await  this.stammdatenService.startwk(true,false);
     this.DiaTypAnzeige=false;
     this.MzbTypAnzeige=false;
     this.MpTypAnzeige=false;
@@ -550,6 +606,11 @@ this.ProbenehmerAnzeige=false;}
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Initialisierung und Aktualisierungen abgeschlossen sind.
    */
   async fgwMst(){
+    this.isbtnpnButton=false;
+    this.isbtntypButton=false;
+    this.isbtngewasser=false;
+    this.isbtnmstButton=true;
+    this.isbtnwkButton=false;
    await this.stammdatenService.start(false,false);
    this.DiaTypAnzeige=false;
    this.MzbTypAnzeige=false;
