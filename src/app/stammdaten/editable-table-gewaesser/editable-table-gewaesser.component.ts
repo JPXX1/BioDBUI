@@ -32,10 +32,11 @@ import { MatTableDataSource } from '@angular/material/table';
  * @autor Dr. Jens Päzolt, Umweltsoft
  */
 export class EditableTableGewaesserComponent implements OnInit, OnChanges {
-  constructor(private dataService: StammdatenService) { this.dataSource = new MatTableDataSource(this.dataService.gewaesser) }
+  constructor(  private dataService: StammdatenService) { this.dataSource = new MatTableDataSource(this.dataService.gewaesser) }
   displayedColumns: string[] = ['id', 'typ', 'seefliess', 'fliess', 'actions'];
   dataSource: MatTableDataSource<TypWrrl>;
-
+  isHelpActive: boolean = false;
+  helpText: string = '';
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   async ngOnInit(): Promise<void> {
@@ -43,6 +44,12 @@ export class EditableTableGewaesserComponent implements OnInit, OnChanges {
     await this.dataService.wandleGewaesser(true);
     this.dataSource.data = this.dataService.gewaesser;
     this.dataSource.sort = this.sort;
+  
+ 
+
+        
+      
+  
   }
 
   ngOnChanges(changes: SimpleChanges) {

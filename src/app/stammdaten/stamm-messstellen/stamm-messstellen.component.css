@@ -1,5 +1,5 @@
 table {
-  width: 120%;
+  width: 180%;
 }
 .header-table-wk{
 
@@ -13,7 +13,7 @@ table {
 }
 .cell-table-wk{
   text-align: center;
-  width: 150px;
+  width: 200px;
   border-color: grey;
   border-width: 1px;
   font-size: large;}

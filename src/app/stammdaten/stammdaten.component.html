@@ -38,7 +38,7 @@
       
       </div>
       </span>
-      <div  class="card helpable" *ngIf="MessstellenAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%"> 
+      <div  class="card helpable" id="tab-messtellen" *ngIf="MessstellenAnzeige == true" style="margin-left:180px;vertical-align: top; width: 80%"> 
         <div fxLayout="row" fxLayoutAlign="start center">  
           <mat-form-field style="width: 30%;">
           <mat-label>Filter</mat-label>
@@ -50,10 +50,10 @@
             neue Messstelle anlegen
           </button>
         </div>
-      <app-stamm-messstellen [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)"id="tab-messtellen" class="helpable" ></app-stamm-messstellen>
+      <app-stamm-messstellen id="tab-messstellen" [messstellenStam]="messstellenStam1" (sortData1)="sortData($event)" (newData)="handleData($event)" class="helpable" ></app-stamm-messstellen>
     </div>
 
-    <div class="card  helpable" *ngIf="WKAnzeige == true" style="margin-left:100px;width: 90%;vertical-align: top;"  id="tab-wasserkoerper" > 
+    <div class="card  helpable" *ngIf="WKAnzeige == true" style="margin-left:100px;width: 90%;vertical-align: top;"  id="tab-gewaesser" > 
       
         <div fxLayout="row" fxLayoutAlign="start center">  
           <mat-form-field style="width: 30%;">
@@ -66,26 +66,26 @@
       
     </div>
       
-    <div class="card" *ngIf="TypWrrlAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-wrrltyp" *ngIf="TypWrrlAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-typwrrl></app-editable-table-typwrrl>
     </div>
-    <div class="card" *ngIf="GewaesserAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable"  id="tab-gewaesser" *ngIf="GewaesserAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-gewaesser></app-editable-table-gewaesser>
     </div>
 
 
-    <div class="card" *ngIf="PPTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-pptyp" *ngIf="PPTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-typ-pp></app-editable-table-typ-pp>
     </div>
-    <div class="card" *ngIf="DiaTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-diatyp" *ngIf="DiaTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-diatyp></app-editable-table-diatyp>
     </div>
-    <div class="card" *ngIf="MzbTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-mzbtyp" *ngIf="MzbTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-mzbtyp></app-editable-table-mzbtyp>
     </div>
-    <div class="card" *ngIf="MpTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-mptyp" *ngIf="MpTypAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-mptyp></app-editable-table-mptyp>
     </div>
-    <div class="card" *ngIf="ProbenehmerAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
+    <div class="card helpable" id="tab-probenehmer" *ngIf="ProbenehmerAnzeige == true" style="margin-left:100px;vertical-align: top; width: 90%">
       <app-editable-table-probenehmer></app-editable-table-probenehmer>
     </div>

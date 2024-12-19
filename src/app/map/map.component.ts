@@ -186,7 +186,8 @@ export class MapComponent implements OnInit,AfterViewInit,AfterViewChecked {
     { color: this.getColor('2'), label: 'gut (2)' },
     { color: this.getColor('3'), label: 'mäßig (3)' },
     { color: this.getColor('4'), label: 'unbefriedigend (4)' },
-    { color: this.getColor('5'), label: 'schlecht (5)' }
+    { color: this.getColor('5'), label: 'schlecht (5)' },
+    { color: '#FFC0CB', label: 'keine Daten' }
      
   ];
 
@@ -728,7 +729,7 @@ mstsee = new Style({
     }),
     '99': new Style({
       stroke: new Stroke({
-        color: 'grey',
+        color: '#FFC0CB',
         width: 4,
       }),
     }),
@@ -786,7 +787,7 @@ mstsee = new Style({
         width: 1,
       }),
       fill: new Fill({
-        color: 'grey',
+        color: '#FFC0CB',
       }),
     }),
   };
@@ -1458,7 +1459,7 @@ this.dbKomponenten = this.verbreitungartenService.dbKomponenten;
 // Stil ohne Füllung (nur Umrandung)
 const styleWithoutFill = new Style({
   stroke: new Stroke({
-    color: '#0000FF', // Schwarze Umrandung
+    color: '#800080', // Rosa Umrandung
     width: 2,         // Linienbreite
   }),
   fill: null, // Keine Füllung

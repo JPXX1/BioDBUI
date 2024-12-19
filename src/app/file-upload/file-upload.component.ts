@@ -507,6 +507,18 @@ if (validIds.includes(result.id_verfahren)) {
 		
 	
 	
+		/**
+		 * Überprüft asynchron, ob Messwerte bereits vorhanden sind.
+		 * 
+		 * Diese Methode führt mehrere Überprüfungen und Operationen durch:
+		 * 1. Stellt sicher, dass sowohl das Jahr als auch der Probenehmer ausgewählt sind.
+		 * 2. Protokolliert Debugging-Informationen.
+		 * 3. Überprüft Bedingungen basierend auf dem Wert von `NrVerfahren` und führt entsprechende Funktionen aus.
+		 * 4. Zeigt entsprechende Nachrichten basierend auf den Ergebnissen der Überprüfungen an.
+		 * 5. Überprüft, ob Daten bereits vorhanden sind, und handhabt doppelte Messwerte.
+		 * 
+		 * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Überprüfungen und Operationen abgeschlossen sind.
+		 */
 	async pruefeObMesswerteschonVorhanden(): Promise<void> {
 		this.jahr = this.child1.selected;
 		this.probenehmer = this.childPN.selectedPN;
@@ -582,6 +594,15 @@ if (validIds.includes(result.id_verfahren)) {
 		}
 	}
 	
+		/**
+		 * Handhabt den Verifizierungsprozess basierend auf der angegebenen Verfahrensnummer.
+		 * 
+		 * @param NrVerfahren - Die Verfahrensnummer zur Bestimmung des Verifizierungsprozesses.
+		 * @returns Ein Promise, das aufgelöst wird, wenn der Verifizierungsprozess abgeschlossen ist.
+		 * 
+		 * Wenn die Verfahrensnummer 6 ist, wird überprüft, ob die Messwerte für das aktuelle Jahr bereits vorhanden sind.
+		 * Andernfalls wird überprüft, ob die Messwerte für das angegebene Jahr bereits vorhanden sind.
+		 */
 	private async handlePruefen(NrVerfahren: number): Promise<void> {
 		if (NrVerfahren === 6) {
 			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
@@ -590,6 +611,16 @@ if (validIds.includes(result.id_verfahren)) {
 		}
 	}
 	
+		/**
+		 * Handhabt die Erkennung und Entfernung doppelter Messwerte.
+		 * Öffnet einen Bestätigungsdialog, um den Benutzer zu fragen, ob er mit der Entfernung der Duplikate fortfahren möchte.
+		 * Wenn der Benutzer bestätigt, entfernt es die doppelten Werte aus den importierten Messdaten.
+		 * Wenn der Benutzer abbricht, wird der Importvorgang abgebrochen.
+		 *
+		 * @private
+		 * @method handleDoppelteMesswerte
+		 * @returns {void}
+		 */
 	private handleDoppelteMesswerte(): void {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
 			width: '250px',
