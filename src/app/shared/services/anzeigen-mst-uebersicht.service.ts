@@ -119,7 +119,7 @@ public value:string;
      * Generiert Anzeigespaltennamen für eine Tabelle.
      * 
      * Diese Methode initialisiert das `displayColumnNames` Array und füllt es mit 
-     * Standardspaltennamen wie 'Wasserköper' und 'Messstelle'. Wenn der `komponente` 
+     * Standardspaltennamen wie 'Wasserkörper' und 'Messstelle'. Wenn der `komponente` 
      * Parameter wahr ist, fügt sie auch 'Komponente' zu den Spaltennamen hinzu. 
      * Zusätzlich fügt sie eindeutige Jahre aus dem `uniqueJahr` Array zu den Spaltennamen hinzu.
      * 
@@ -127,7 +127,7 @@ public value:string;
      */
   erzeugeDisplayColumnNames(komponente:boolean){
     this.displayColumnNames=[];
-    this.displayColumnNames.push('Wasserköper');
+    this.displayColumnNames.push('Wasserkörper');
     this.displayColumnNames.push('Messstelle');
     if (komponente===true){ this.displayColumnNames.push('Komponente');}
     for (let a = 0, l = this.uniqueJahr.length; a < l; a += 1) {
