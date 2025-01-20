@@ -242,7 +242,7 @@ arrayNeuFuellen(komp: number) {
     this.mstMakrophytenKl.mst = this.dbBewertungMst[i].namemst;
     this.mstMakrophytenKl.gewaessername=this.dbBewertungMst[i].gewaessername;
     if (komp === 5) { this.mstMakrophytenKl.datum = this.dbBewertungMst[i].datumpn} 
-   
+    if (komp === 0) { this.mstMakrophytenKl.datum = this.dbBewertungMst[i].datumpn}
     this.mstMakrophytenKl.jahr = this.dbBewertungMst[i].jahr;
     this.mstMakrophytenKl.roteListeD = this.dbBewertungMst[i].rld;
     this.mstMakrophytenKl.cf = this.dbBewertungMst[i].cf;

@@ -97,6 +97,7 @@ export class PhytoseeServiceService {
   public uebersicht: Uebersicht[] = [];
   public _uebersicht: Uebersicht;
   public formen: any;
+  ArtenNichtBekanntIsVisible:boolean=false;
   /**
    * Ruft die "formen" Daten vom impPhylibServ Service ab und weist sie der `formen` Eigenschaft zu.
    * Verwendet `firstValueFrom`, um das Observable in ein Promise zu konvertieren.
@@ -123,14 +124,24 @@ export class PhytoseeServiceService {
    *
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn das Observable abgeschlossen ist.
    */
-  async callartenPhyto() {
-    this.arten = null;
+  async callartenPhyto(qk:number) {
+  
     // this.workbookInit(datum,Probenehmer)
-    await this.impPhylibServ.getArtenPhylibMP(5).forEach(value => {
+    await this.impPhylibServ.getArtenPhylibMP(qk).forEach(value => {
       this.arten = value;
       // console.log('observable -> ' + value);
     });
+    //console.log(this.arten)
   }
+  async  filterArtenAsync() {
+    this.arten = (
+        await Promise.all(
+            this.arten.map(async (arten) => {
+                return arten.id_art != null ? arten : null;
+            })
+        )
+    ).filter(arten => arten != null); // Entferne null-Werte
+}
 
   /**
    * Importiert Daten aus einem Excel-Arbeitsbuch in das Phytosee-System.
@@ -183,7 +194,9 @@ export class PhytoseeServiceService {
     this.arten = [];
 
     await this.xlsxImportPhylibService.holeMst();
-    await this.callartenPhyto();
+    this.arten = null;
+    await this.callartenPhyto(2);
+    await this.callartenPhyto(5);
 
     try {
       for (let i = 0; i < tab; i++) {
@@ -447,7 +460,300 @@ export class PhytoseeServiceService {
   }
 
 
+/**
+   * Importiert Daten aus einem Excel-Arbeitsbuch, Phytosee-Import-Dateien.
+   * 
+   * @param workbook - Das Excel-Arbeitsbuch, aus dem Daten importiert werden sollen.
+   * @param valspalten - Die zu validierenden Spalten.
+   * @param tab - Die Anzahl der zu verarbeitenden Blätter.
+   * @param verfahrennr - Die Verfahrensnummer.
+   * @returns Ein Promise, das eine Zeichenkette zurückgibt, die das Ergebnis des Importvorgangs angibt.
+   * 
+   * @throws Wird einen Fehler auslösen, wenn es Probleme mit den Daten gibt, wie z.B. ungültige Daten oder falsche Spaltenüberschriften.
+   */
+async Phytoseeimport(workbook, valspalten: any, tab: any, verfahrennr: number): Promise<string> {
+this.ArtenNichtBekanntIsVisible=false;
+  // console.log('observable -> ' + value);
+  this.getFormen();
+  this.uebersicht = [];
+  this.xlsxImportPhylibService.MessDataOrgi = [];
+  this.xlsxImportPhylibService.displayColumnNames = [];
+  this.xlsxImportPhylibService.dynamicColumns = [];
+  this.xlsxImportPhylibService.MessDataImp = [];
+  this.xlsxImportPhylibService.messstellenImp = [];
+  this.xlsxImportPhylibService.messstellenImp = [];
+  //let reader = new FileReader();
 
+  // var sheets;
+  let Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf; let RLD;
+  let aTaxonzusatz: string; let aMessstelle: string; let aParameter: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
+  // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
+  let bidmst; let bideinh; let bwert;
+  let importp: string; let mstOK: string; let ok: string; let typ: string; let nutzung: string; let taxaliste: string;
+  let FehlerInfo: string = "Import erfolgreich";
+  let datum: Date;
+  let einh1: string = '6';
+  let einh2: string = '7';
+  let einh3: string = '9';
+  let einh4: string = '8';
+
+  let para_id1: number = 2;
+  let para_id2: number = 3;
+  let para_id3: number = 4;
+  let para_id4: number = 5;
+  let gewaesser: string;
+  let XL_row_object;
+  let json_Messstelle;
+  let mst_alt: string;
+  let abundanz: string; let biovolKonz: string; let spezBioVoll: string; let relBioVol: string;
+  let mst: string;
+  this.arten = [];
+
+  await this.xlsxImportPhylibService.holeMst();
+  this.arten = null;
+  await this.callartenPhyto(2);
+ // console.log(this.arten);
+  await this.callartenPhyto(5);
+  // console.log(this.arten);
+  await this.filterArtenAsync();
+// console.log(this.arten);
+  try {
+ 
+
+      //console.log(workbook.SheetNames[i]);
+      XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[tab]]);
+      json_Messstelle = JSON.stringify(XL_row_object);
+      
+        // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+       
+
+        const obj = JSON.parse(json_Messstelle);
+        // abundaz, Biovolumen, Zellzahl etc. finden
+        //let head_0= findKeyWithIncludes(obj[0], "id");
+        let head_1 = findKeyWithIncludes(obj[0], "zellzahl");
+        let head_2 = findKeyWithIncludes(obj[0], "biovolumen mm3/l");
+        let head_3 = findKeyWithIncludes(obj[0], "zellvolumen");
+        //let head_4 = findKeyWithIncludes(obj[0], "relativ");
+        if (head_1 === null) { head_1 = findKeyWithIncludes(obj[0], "zellzahl"); }
+        if (head_2 === null) { head_2 = findKeyWithIncludes(obj[0], "biovol"); }
+        if (head_3 === null) { head_3 = findKeyWithIncludes(obj[0], "zellvol"); }
+       // if (head_4 === null) { head_4 = findKeyWithIncludes(obj[0], "bv"); }
+        //abundanz=obj[index]['Zellzahl (Zellen mL-1)']; biovolKonz=obj[index]['Biovol. (mm3L-1)']; spezBioVoll=obj[index]['Zellvol. (µm³)']; relBioVol=obj[index]['% BV'];
+
+
+        if (head_1 !== null && head_2 !== null && head_3 !== null ) {
+          // console.log(this.uebersicht);
+          // Here is your object
+          let o: number = 1;
+          obj.forEach((val, index) => {
+            if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
+              // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
+              if (index > 0) {
+                //console.log(val + " / " + obj[index][i] + ": " + i);
+                // console.log(obj.length)
+                o = o + 1;
+
+
+                abundanz = null; biovolKonz = null; spezBioVoll = null; relBioVol = null;
+                const datumString: string = excelDateToJSDate(obj[index]['Datum Probenahme']); // Beispiel: '2023-10-01'
+                // Überprüfe, ob das Datum ungültig ist
+                if (datumString === "Ungültiges Datum") {
+                  FehlerInfo = "Fehler: ungültiges Datum in Exceltabelle";
+                  throw new Error(FehlerInfo);
+                }
+                // Konvertiere das Datum in eine Date-Instanz
+                const datum: Date = new Date(datumString);
+
+                gewaesser = obj[index]['Gewässer'];
+                mst = obj[index]['MS-Nr'];
+                if (mst === undefined) { mst = obj[index]['MS-Nr']; }
+                
+                  aMessstelle = mst;
+                
+
+
+                let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == aMessstelle);
+               
+                //console.log(mst);
+
+                if (
+                  mstee.length !== 0) {
+                  mstOK = "";
+                  mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                  gewaesser=mstee[0].name_synonym
+                }
+                else {
+                  aMessstelle = mst;
+                  mstOK = "checked";
+                }
+
+
+
+
+                //}
+
+                this._uebersicht = {} as Uebersicht;
+                if (mst !== undefined) {
+                  if (mstOK === "checked") { importp = ""; } else {
+                    importp = "checked";
+                  }
+
+                }
+
+                Form = 6; //(ohne Taxonzus)
+                aForm = '-';
+                aTaxonzusatz = undefined;
+                //neue Importtabelle
+                //if (loescheErste5Zeilen === true) {
+
+                abundanz = obj[index][head_1]; biovolKonz = obj[index][head_2]; spezBioVoll = obj[index][head_3]; 
+                //Taxonzusatz des Phytoplanktons 5-10µm, ...
+                aTaxonzusatz = undefined;
+
+                aTaxonzusatz = obj[index]['Taxonanmerk'];
+
+
+                if (aTaxonzusatz !== undefined) {
+                  // Angenommen, this.formen ist ein Array von Objekten und aTaxonzusatz ist 
+                  // die Variable, mit der verglichen wird
+                  aTaxonzusatz = aTaxonzusatz.replace(/\s+/g, '');
+                  // console.log(this.formen);
+                  // Filtere die Elemente aus this.formen, deren importname mit aTaxonzusatz übereinstimmt
+                  const gefilterteFormen = this.formen.filter(form => aTaxonzusatz.includes(form.importname.replace(/µm/g, '')) && form.id_taxonzus > 6);
+
+                  // Ausgabe der gefilterten Elemente
+                  if (gefilterteFormen.length > 0) {
+                    Form = gefilterteFormen[0].id_taxonzus;
+                    aForm=gefilterteFormen[0].importname.replace(/µm/g, '') +'µm';
+                  }else{aTaxonzusatz = '';Form = 6;aForm = '-';;}
+                }
+               
+
+
+
+                aParameter = 'Zellzahl';
+                Messwert = abundanz;
+                aTiefe = obj[index]['Proben-tiefe (m)'];
+                aProbe = '-';
+                
+                aEinheit = 'm/L';
+                //für array und  this.MessDataImp (ImortMesswerte)
+                Einheit = einh1;
+                //Form=6;
+                Probe = 11;
+                Tiefe = 2;
+                cf = false;
+                if (Messwert > 0) {
+
+
+                
+
+
+
+
+                  Taxon = obj[index]['ID'];
+
+                  
+                
+                  if (Taxon !== undefined) { // zummengefasste Taxa z.B.SummeKlasse Bacillariophyceae
+                    
+                       let taxon_ = this.arten
+                    
+                    .filter(arten => arten.id_art === Taxon);
+
+
+                    //console.log(JSON.stringify(this.arten[0]));
+
+                    //let taxon_ = this.arten.filter(arten => arten.id_art === Taxon);
+                    if (taxon_.length > 0) {
+                      Taxon = taxon_[0].id_taxon;
+                      aTaxon = taxon_[0].taxon; RLD = taxon_[0].rld;
+                      if (aForm!='-'){
+                        aTaxon=aTaxon+' ' +aForm}
+                      
+                      ok = "";
+                    }
+                    else {
+
+                      Taxon =obj[index]['Taxoname nach HTL'];
+                      let taxon_ = this.arten
+                      .filter(arten => arten.taxon === Taxon);
+  
+                      if (taxon_.length > 0) {
+                        Taxon = taxon_[0].id_taxon;
+                        aTaxon = taxon_[0].taxon; RLD = taxon_[0].rld;
+                        if (aForm!='-'){
+                          aTaxon=aTaxon+' ' +aForm}
+                        
+                        ok = "";}
+                      else{
+                        Taxon='';
+
+                      ok = "checked";
+                      aTaxon = obj[index]['Taxoname nach HTL'] + '/ ID_ART nicht bekannt';
+                      this.ArtenNichtBekanntIsVisible=true;
+                      // var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
+                      // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
+
+                    }}
+                    importp = "checked";
+                    if (ok === "checked" || mstOK === "checked") { importp = ""; }
+
+                    this._uebersicht = {} as Uebersicht;
+                    this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Datum: datumString, _Probe: aProbe, _Taxon: aTaxon, _Parameter: aParameter, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1, _RoteListeD: RLD });
+//console.log (this.xlsxImportPhylibService.MessDataOrgi)
+                    this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: abundanz, _Einheit: einh1, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 2, _RoteListeD: RLD });
+                    this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: biovolKonz, _Einheit: einh2, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 3, _RoteListeD: RLD });
+                    this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: spezBioVoll, _Einheit: einh3, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 4, _RoteListeD: RLD });
+                    //this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: relBioVol, _Einheit: einh4, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 5, _RoteListeD: RLD });
+
+                    this._uebersicht.mst = aMessstelle; this._uebersicht.fehler1 = mstOK;
+                    this._uebersicht.fehler2 = ok; this._uebersicht.fehler3 = ""; this._uebersicht.import1 = importp;
+                    this.xlsxImportPhylibService._uebersicht = this._uebersicht;
+                    this.xlsxImportPhylibService.schalteSpalte('sp3', gewaesser);
+                    this.xlsxImportPhylibService.groupNAch();
+                    Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = ""; RLD = null;
+                    aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+                 
+                  } 
+
+
+                }
+
+
+
+
+
+
+
+
+              }
+            }
+
+          })
+        } else {
+          FehlerInfo = "Fehler: falsche Spaltenüberschriften in Exceltabelle";
+          throw new Error(FehlerInfo);
+
+        }
+      
+
+      //of(array);
+
+
+
+      //  this.xlsxImportPhylibService.MessDataImp = array;
+    
+    console.log(this.xlsxImportPhylibService.MessDataImp); 
+    this.uebersicht = this.xlsxImportPhylibService.uebersicht; return FehlerInfo;
+   
+
+  } catch (error) {
+    // Fehlerbehandlung
+    // console.log(this.xlsxImportPhylibService.MessDataImp);
+    return FehlerInfo;
+  }
+}
   /**
 * Exportiert Daten aus einem Workbook in ein spezifisches Format.
 * 
@@ -743,7 +1049,9 @@ export class PhytoseeServiceService {
       if (obj[index] !== null) {
         for (var i in obj[index]) {
           bwert = obj[index][i];
-          const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => i.includes(excelspalten.spalten_name));
+          const  newString_i = i.replace("-", "");
+          console.log(newString_i)
+          const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => newString_i.includes(excelspalten.spalten_name));
           if (valspaltenfiter2.length === 1) {
             // Überprüft, ob die Spalte 'Jahr' existiert, bevor sie zugewiesen wird
             if ('Jahr' in obj[index]) {

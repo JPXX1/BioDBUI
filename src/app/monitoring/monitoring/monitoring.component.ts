@@ -583,9 +583,11 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     this.UebersichtWKausMstAnzeigen=false;
   this.MZBAnzeige=false;
   this.PhythoplanktonAnzeige=true;
+  console.log(this.anzeigeBewertungMPService.Taxa_Phyto)
   if(this.anzeigeBewertungMPService.Taxa_Phyto.length===0){
   await this.anzeigeBewertungMPService.callBwMstTaxa(5);
 }
+this.anzeigeBewertungMPService.displayedColumnsMP(5);
  // await this.anzeigeBewertungMPService.FilterRichtigesArray(5,this.value,this.Artvalue,this.min,this.max);
   // console.log(this.anzeigeBewertungMPService.mstMakrophyten);
   this.filtertaxadaten(5);//this.mstTaxaMP=this.anzeigeBewertungMPService.mstMakrophyten;
@@ -684,6 +686,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
   this.komp_id=3;
   this.DiatomeenAnzeige=false;
   this.anzeigeTaxadaten=true;
+  this.PhythoplanktonAnzeige=false;
   this.MakrophytenAnzeige=false;
   this.FilterAnzeige=true;
   this.anzeigeBewertungMPService.value=this.value ;this.anzeigeBewertungMPService.Artvalue=this.Artvalue;

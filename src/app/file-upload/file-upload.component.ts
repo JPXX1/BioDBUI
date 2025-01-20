@@ -258,7 +258,7 @@ handleJahrSelected(selectedJahr: number) {
 	this.ArtenNichtBekannt = !this.ArtenNichtBekannt;
 
 	if (this.ArtenNichtBekannt===true){
-		const MessDataImpoD: Messwerte[] = this.xlsxImportPhylibService.MessDataImp.filter(item => typeof item._Taxon === 'string' && !item._Taxon.includes('ID_ART nicht bekannt'));
+		const MessDataImpoD: Messwerte[] = this.xlsxImportPhylibService.MessDataImp.filter(item => typeof item._Taxon === 'string' && !item._Taxon.includes(''));
 		const MessDataTemp: Messwerte[] = this.MessDataOrgi.filter(item => typeof item._Taxon === 'string' && !item._Taxon.includes('ID_ART nicht bekannt'));
 				
 		this.MessDataOrgi=MessDataTemp;
@@ -557,6 +557,12 @@ if (validIds.includes(result.id_verfahren)) {
 					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
 				}else{this.InfoBox('Daten lassen sich importieren.');}
 				break;
+				case 8://Phytosee-Import
+				await this.handlePruefen(NrVerfahren);
+				if (this.xlsxImportPhylibService.vorhanden) {
+					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+				}else{this.InfoBox('Daten lassen sich importieren.');}
+				break;
 				case 4://Perlodes-Export
 
 				
@@ -604,7 +610,7 @@ if (validIds.includes(result.id_verfahren)) {
 		 * Andernfalls wird überprüft, ob die Messwerte für das angegebene Jahr bereits vorhanden sind.
 		 */
 	private async handlePruefen(NrVerfahren: number): Promise<void> {
-		if (NrVerfahren === 6) {
+		if (NrVerfahren === 6 || NrVerfahren === 8) {
 			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
 		} else {
 			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);
@@ -722,11 +728,12 @@ if (validIds.includes(result.id_verfahren)) {
 			
 			{
 				//PhytoLLBB_import(6) und PhytoflussExport(7) haben ein anderes Datum
-				if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===7)	
+				if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===7 || this.valExceltabsService.NrVerfahren===8 || this.valExceltabsService.NrVerfahren===9)	
 					{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
 				// Import Artdaten für Phytoplankton, MZB, Phylib
 			if (this.valExceltabsService.NrVerfahren===1 || 
-				this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6){
+				this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6
+				|| this.valExceltabsService.NrVerfahren===8|| this.valExceltabsService.NrVerfahren===9){
 			if (this.MessDataOrgi.length>0 ){
 				// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
 				// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
@@ -870,7 +877,7 @@ if (validIds.includes(result.id_verfahren)) {
 			let valexcelspalten: any=this.valExceltabsService.valspalten
 
 			//importUebrsicht ID verfahren festlegen
-			
+			let message="";
 			
 			
 			// console.log(this.valExceltabsService.NrVerfahren);
@@ -911,7 +918,7 @@ if (validIds.includes(result.id_verfahren)) {
 						this.Datimptab=false;this.Datimptabphyto=false;
 						break;
 					case 3:
-						let message="";
+						
 						this.newuebersichtImport.id_komp=3;
 						// this.xlsxImportPhylibService.uebersicht=[];
 						this.xlsxImportPhylibService.MessDataOrgi=[];
@@ -968,6 +975,34 @@ if (validIds.includes(result.id_verfahren)) {
 					this.InfoBox("Phytofluss-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
 					this.Datimptab=false;this.Datimptabphyto=false;
 					this.displayableColumns(7);
+					// this.dataSource.sort=this.sort;
+					
+					this.pruefen=false;
+					break;
+					case 8: //PhytoseeImport
+					// code block
+					;
+					 await this.phytoseeServiceService.Phytoseeimport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					this.Datimptab=false;this.Datimptabphyto=false;
+					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+					this.ArtenNichtBekanntIsVisible=this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
+						if (this.ArtenNichtBekanntIsVisible===true){message=" Einige Arten sind nicht bekannt.";}
+						// this.ArtenNichtBekanntIsVisible=this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
+
+						this.InfoBox("Phytosee-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei. " +message);
+					
+					this.displayableColumns(8);
+					// this.dataSource.sort=this.sort;
+					
+					this.pruefen=false;
+					break;
+					case 9: //PhytoflussImport
+					// code block
+					// await this.phytoseeServiceService.Phytoflussexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					this.InfoBox("Phytofluss-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
+					this.Datimptab=false;this.Datimptabphyto=false;
+					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+					this.displayableColumns(9);
 					// this.dataSource.sort=this.sort;
 					
 					this.pruefen=false;
@@ -1107,7 +1142,7 @@ displayableColumns(idverfahren:number){
 	 */
 	
 	handleRowClick(row){
-		if (this.valExceltabsService.NrVerfahren===6){
+		if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===8){
 		this.Datimptabphyto=true;
 		this.Datimptab=false;}
 		else{

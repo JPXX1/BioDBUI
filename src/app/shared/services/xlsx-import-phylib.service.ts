@@ -1397,7 +1397,7 @@ return bemerkung;
 		let showHandleRowClick: boolean = false; 
 		valspaltenfiter.sort((a,b)=>{return compare(a.namespalteng,b.namespalteng,true)});
 
-if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=true;}
+if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6 || idVerfahren===8 || idVerfahren===9){showHandleRowClick=true;}
 
 		this.displayColumnNames=[];this.dynamicColumns=[];
 		this.displayColumnNames.push('Nr');
@@ -1406,7 +1406,7 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
 				}
-				if  (idVerfahren===6 || idVerfahren===7 ){
+				if  (idVerfahren===6 || idVerfahren===7 || idVerfahren===8 || idVerfahren===9 ){
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
 				}
@@ -1427,7 +1427,11 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 					this.displayColumnNames.push('ÖZK');
 					this.dynamicColumns.push('sp5');
 				}
-
+				if (idVerfahren===8 || idVerfahren===9)
+				{
+					this.displayColumnNames.push('Gewässer');
+					this.dynamicColumns.push('sp3');
+				}
 
 		for (let i = 0, l = valspaltenfiter.length; i < l; i += 1) {
 			this.displayColumnNames.push(valspaltenfiter[i].anzeigename);
@@ -1444,7 +1448,7 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 				}
 			}
 		}
-		if  (idVerfahren===3 || idVerfahren===6){
+		if  (idVerfahren===3 || idVerfahren===6 || idVerfahren===8 || idVerfahren===9){
 			this.displayColumnNames.push('Messwerte');
 			this.displayColumnNames.push('fehler1');
 					this.displayColumnNames.push('fehler2');
@@ -1466,7 +1470,7 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6){showHandleRowClick=tr
 		this.dynamicColumns.push('import1');
 		
 		 // Füge die Aktionsspalte hinzu, falls relevant
-		 if ([1, 2, 3, 4, 5, 6,7].includes(idVerfahren)) {
+		 if ([1, 2, 3, 4, 5, 6,7,8,9].includes(idVerfahren)) {
 			this.dynamicColumns.push('actions');
 		  }
 		

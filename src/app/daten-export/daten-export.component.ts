@@ -582,7 +582,7 @@ if (this.mstMakrophyten.length>0){
     const worksheetData = this.mstMakrophyten.map(item => [
         item.gewaessername,
         item.mst,
-        item.jahr,
+        item.datum,
         item.taxon,
         item.dvnr,
         item.wert,
@@ -600,7 +600,7 @@ if (this.mstMakrophyten.length>0){
     const headers = [
         'Gewässername',
         'Messstelle',
-        'Untersuchungsjahr',
+        'Datum Probenahme',
         'Taxon (DVNr)',
         'DVNR',
         'Wert',
@@ -867,6 +867,7 @@ async ArtabundanzenAbfragen(selectedComponents,selectedItems,yearFrom:string,yea
 this.anzeigeBewertungMPService.arrayNeuFuellen(0);
     this.mstMakrophyten=this.anzeigeBewertungMPService.mstMakrophyten;
     this.ArtenAnzeige=true;
+    this.anzeigeBewertungMPService.displayedColumnsMP(5);
 
 }
 
