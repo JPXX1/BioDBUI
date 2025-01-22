@@ -998,7 +998,7 @@ if (validIds.includes(result.id_verfahren)) {
 					break;
 					case 9: //PhytoflussImport
 					// code block
-					// await this.phytoseeServiceService.Phytoflussexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
+					 await this.phytoseeServiceService.Phytosflussimport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
 					this.InfoBox("Phytofluss-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
 					this.Datimptab=false;this.Datimptabphyto=false;
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;

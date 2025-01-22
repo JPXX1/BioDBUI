@@ -13,6 +13,7 @@ export interface Messwerte {
     _idAbundanz:number;
     MstOK:string;
     OK:string;
+    _zellvolumen?:string;
     _AnzahlTaxa: number;
     _RoteListeD: string;
 }

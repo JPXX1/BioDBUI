@@ -133,6 +133,29 @@ export class PhytoseeServiceService {
     });
     //console.log(this.arten)
   }
+
+  async callartenPhytoKombination() {
+  
+    await this.callartenPhyto(2);
+
+  //   let taxon_sort= this.arten
+  //   .sort((a, b) => a.taxon.localeCompare(b.taxon));
+  // console.log(taxon_sort)
+   // console.log(this.arten);
+   let arten
+   await this.impPhylibServ.getArtenPhylibMP(5).forEach(value => {
+     arten = value;
+    // console.log('observable -> ' + value);
+  });
+   //zusammenführen 
+  this.arten = [...(this.arten || []), ...arten];
+   
+  
+   let taxon_sor1t= this.arten
+   .sort((a, b) => a.taxon.localeCompare(b.taxon));
+  console.log(taxon_sor1t)
+    await this.filterArtenAsync();
+  }
   async  filterArtenAsync() {
     this.arten = (
         await Promise.all(
@@ -511,11 +534,7 @@ this.ArtenNichtBekanntIsVisible=false;
 
   await this.xlsxImportPhylibService.holeMst();
   this.arten = null;
-  await this.callartenPhyto(2);
- // console.log(this.arten);
-  await this.callartenPhyto(5);
-  // console.log(this.arten);
-  await this.filterArtenAsync();
+ await this.callartenPhytoKombination();
 // console.log(this.arten);
   try {
  
@@ -544,11 +563,11 @@ this.ArtenNichtBekanntIsVisible=false;
         if (head_1 !== null && head_2 !== null && head_3 !== null ) {
           // console.log(this.uebersicht);
           // Here is your object
-          let o: number = 1;
+          let o: number = 0;
           obj.forEach((val, index) => {
             if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
               // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
-              if (index > 0) {
+              if (index => 0) {
                 //console.log(val + " / " + obj[index][i] + ": " + i);
                 // console.log(obj.length)
                 o = o + 1;
@@ -648,7 +667,9 @@ this.ArtenNichtBekanntIsVisible=false;
 
                 
 
-
+                  let taxon_sort= this.arten
+                  .sort((a, b) => a.taxon.localeCompare(b.taxon));
+                console.log(taxon_sort)
 
 
                   Taxon = obj[index]['ID'];
@@ -674,7 +695,7 @@ this.ArtenNichtBekanntIsVisible=false;
                       ok = "";
                     }
                     else {
-
+                      console.log(this.arten)
                       Taxon =obj[index]['Taxoname nach HTL'];
                       let taxon_ = this.arten
                       .filter(arten => arten.taxon === Taxon);
@@ -754,6 +775,404 @@ this.ArtenNichtBekanntIsVisible=false;
     return FehlerInfo;
   }
 }
+
+async holeMesstellen(workbook):Promise<gewaessermst[]>{
+  let XL_row_object;
+  let XL_row_object_Probenahme;
+  let json_Messstelle;
+  let gewaesser:string;
+  let mst:string;
+  XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        json_Messstelle = JSON.stringify(XL_row_object);
+        
+          // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+         
+  let gewaessermst:gewaessermst[] = [];
+          const obj = JSON.parse(json_Messstelle);
+          obj.forEach((val, index) => {
+            gewaesser='';mst='';
+            gewaesser = obj[index]['Gewaessername'];
+            mst = obj[index]['GesGewNr-intern'];
+
+            
+            gewaessermst.push({mst,gewaesser});
+
+           
+                     
+          })
+          return gewaessermst;
+}
+
+
+async holeDaten(workbook):Promise<datenPhtofluss[]>{
+  let XL_row_object;
+  let XL_row_object_Probenahme;
+  let json_Messstelle;
+ let lfd_nr:string;
+ let idart:number;
+ let biovol:number;
+ let zellvol:string;
+ let zellzahl:number;
+  XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[2]]);
+        json_Messstelle = JSON.stringify(XL_row_object);
+        
+          // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+         
+  let datenPhtofluss:datenPhtofluss[] = [];
+          const obj = JSON.parse(json_Messstelle);
+          obj.forEach((val, index) => {
+            lfd_nr='';idart=null;zellvol='';zellzahl=null;
+            lfd_nr = obj[index]['Laufende Nr'];
+            idart = obj[index]['T_ID'];
+            zellvol = obj[index]['Biovolumen mm3 l-1'];
+            zellzahl = obj[index]['Zellzahl/ml'];
+            
+            datenPhtofluss.push({lfd_nr,idart,biovol,zellvol,zellzahl});
+
+           
+                     
+          })
+          return datenPhtofluss;
+}
+async hole_PNDatum(workbook,gewaessermst:gewaessermst[]):Promise<gewaessermstPN[]>{
+  let XL_row_object;
+  let XL_row_object_Probenahme;
+  let json_Messstelle;let lfd_nr;let datum;
+  let gewaesser;
+  let mst;
+  XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[1]]);
+        json_Messstelle = JSON.stringify(XL_row_object);
+        
+          // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+         
+  let gewaessermstPN:gewaessermstPN[] = [];
+          const obj = JSON.parse(json_Messstelle);
+          obj.forEach((val, index) => {
+            gewaesser='';lfd_nr='';
+            lfd_nr = obj[index]['Laufende Nr'];
+            gewaesser = obj[index]['Gewaessername'];
+            gewaesser=gewaesser?.replace(/\s+/g, '').toLowerCase();
+            // datum = obj[index]['Datum'];
+
+
+
+            const datum: string = excelDateToJSDate(obj[index]['Datum']); // Beispiel: '2023-10-01'
+            // Überprüfe, ob das Datum ungültig ist
+            // if (datumString === "Ungültiges Datum") {
+            //   FehlerInfo = "Fehler: ungültiges Datum in Exceltabelle";
+            //   throw new Error(FehlerInfo);
+            // }
+            // Konvertiere das Datum in eine Date-Instanz
+            
+
+
+
+            // console.log(gewaessermst[0].gewaesser.replace(/\s+/g, '').toLowerCase())
+            const mstgw = gewaessermst.filter(s => 
+              (s.gewaesser?.replace(/\s+/g, '').toLowerCase() || '') === 
+              gewaesser
+          );
+          
+          
+            mst=mstgw[0].mst;
+            gewaessermstPN.push({gewaesser,mst,lfd_nr,datum});
+
+            
+          })
+          return gewaessermstPN;
+}
+
+async Phytosflussimport(workbook, valspalten: any, tab: any, verfahrennr: number): Promise<string> {
+  this.ArtenNichtBekanntIsVisible=false;
+    // console.log('observable -> ' + value);
+    this.getFormen();
+    this.uebersicht = [];
+    this.xlsxImportPhylibService.MessDataOrgi = [];
+    this.xlsxImportPhylibService.displayColumnNames = [];
+    this.xlsxImportPhylibService.dynamicColumns = [];
+    this.xlsxImportPhylibService.MessDataImp = [];
+    this.xlsxImportPhylibService.messstellenImp = [];
+    this.xlsxImportPhylibService.messstellenImp = [];
+    //let reader = new FileReader();
+  
+    // var sheets;
+    let Messstelle: string; var Probe; var Taxon; var Form; var Messwert; var Einheit; var Tiefe; var cf; let RLD;
+    let aTaxonzusatz: string; let aMessstelle: string; let aParameter: string; let aProbe: string; let aTaxon; let aForm: string; let aMesswert; let aEinheit; let aTiefe; let acf;
+    // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
+    let bidmst; let bideinh; let bwert;
+    let importp: string; let mstOK: string; let ok: string; let typ: string; let nutzung: string; let taxaliste: string;
+    let FehlerInfo: string = "Import erfolgreich";
+    let datum: Date;
+    let einh1: string = '6';
+    let einh2: string = '7';
+    let einh3: string = '9';
+    let einh4: string = '8';
+  
+    let para_id1: number = 2;
+    let para_id2: number = 3;
+    let para_id3: number = 4;
+    let para_id4: number = 5;
+    let gewaesser: string;
+    let XL_row_object;
+    let json_Messstelle;
+    let mst_alt: string;
+    let abundanz: string; let biovolKonz: string; let spezBioVoll: string; let relBioVol: string;
+    let mst: string;
+    this.arten = [];
+  
+    const messtellen = await this.holeMesstellen(workbook);
+const mstdatum =await this.hole_PNDatum(workbook, messtellen);
+//const datenPhtofluss=this.holeDaten(workbook);
+// :Promise<datenPhtofluss[]>{
+    await this.xlsxImportPhylibService.holeMst();
+    this.arten = null;
+   await this.callartenPhytoKombination();
+  // console.log(this.arten);
+    try {
+   
+  
+        //console.log(workbook.SheetNames[i]);
+        XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[tab]]);
+        json_Messstelle = JSON.stringify(XL_row_object);
+        
+          // Entferne die ersten 5 Zeilen wenn neues LLBB-Format
+         
+  
+          const obj = JSON.parse(json_Messstelle);
+          // abundaz, Biovolumen, Zellzahl etc. finden
+          //let head_0= findKeyWithIncludes(obj[0], "id");
+          let head_1 = findKeyWithIncludes(obj[0], "Laufende Nr");
+          let head_2 = findKeyWithIncludes(obj[0], "T_ID");
+          let head_3 = findKeyWithIncludes(obj[0], "Biovolumen mm3 l-1");
+          let head_4 = findKeyWithIncludes(obj[0], "Zellzahl/ml");
+          let head_5=findKeyWithIncludes(obj[0],"Zellvol µm3")
+        //   if (head_1 === null) { head_1 = findKeyWithIncludes(obj[0], "zellzahl"); }
+        //   if (head_2 === null) { head_2 = findKeyWithIncludes(obj[0], "biovol"); }
+        //   if (head_3 === null) { head_3 = findKeyWithIncludes(obj[0], "zellvol"); }
+        //  if (head_4 === null) { head_4 = findKeyWithIncludes(obj[0], "bv"); }
+          //abundanz=obj[index]['Zellzahl (Zellen mL-1)']; biovolKonz=obj[index]['Biovol. (mm3L-1)']; spezBioVoll=obj[index]['Zellvol. (µm³)']; relBioVol=obj[index]['% BV'];
+  
+  
+          if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null && head_5 !== null) {
+            // console.log(this.uebersicht);
+            // Here is your object
+            let o: number = 0;
+            obj.forEach((val, index) => {
+              if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
+                // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
+                if (index => 0) {
+                  //console.log(val + " / " + obj[index][i] + ": " + i);
+                  // console.log(obj.length)
+                  o = o + 1;
+  
+  
+                  abundanz = null; biovolKonz = null; spezBioVoll = null; relBioVol = null;
+                  
+                  // Konvertiere das Datum in eine Date-Instanz
+                 
+                 const mstdatum1= mstdatum.filter(s=>s.lfd_nr===obj[index][head_1])
+                  gewaesser = mstdatum1[0].gewaesser;
+                 const datumString= mstdatum1[0].datum;
+
+                  aMessstelle = mstdatum1[0].mst;
+                
+                  
+                   
+                  
+  
+  
+                  let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == aMessstelle);
+                 
+                  //console.log(mst);
+  
+                  if (
+                    mstee.length !== 0) {
+                    mstOK = "";
+                    mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                    gewaesser=mstee[0].name_synonym
+                  }
+                  else {
+                    aMessstelle = mst;
+                    mstOK = "checked";
+                  }
+  
+  
+  
+  
+                  //}
+  
+                  this._uebersicht = {} as Uebersicht;
+                  if (mst !== undefined) {
+                    if (mstOK === "checked") { importp = ""; } else {
+                      importp = "checked";
+                    }
+  
+                  }
+  
+                  Form = 6; //(ohne Taxonzus)
+                  aForm = '-';
+                  aTaxonzusatz = undefined;
+                  //neue Importtabelle
+                  //if (loescheErste5Zeilen === true) {
+
+                  // let head_2 = findKeyWithIncludes(obj[0], "T_ID");
+                  // let head_3 = findKeyWithIncludes(obj[0], "Biovolumen mm3 l-1");
+                  // let head_4 = findKeyWithIncludes(obj[0], "Zellzahl/ml");
+                  // let head_5=findKeyWithIncludes(obj[0],"Zellvol µm3")
+                   let zellvolumen=obj[index][head_5];
+                   let biovolumen= obj[index][head_3];
+                   let zellzahl= obj[index][head_4];
+
+                  abundanz = obj[index][head_1]; biovolKonz = obj[index][head_3]; spezBioVoll = obj[index][head_3]; 
+                  //Taxonzusatz des Phytoplanktons 5-10µm, ...
+                  aTaxonzusatz = undefined;
+  
+                  // aTaxonzusatz = obj[index]['Taxonanmerk'];
+  
+  
+                  if (aTaxonzusatz !== undefined) {
+                    // Angenommen, this.formen ist ein Array von Objekten und aTaxonzusatz ist 
+                    // die Variable, mit der verglichen wird
+                    aTaxonzusatz = aTaxonzusatz.replace(/\s+/g, '');
+                    // console.log(this.formen);
+                    // Filtere die Elemente aus this.formen, deren importname mit aTaxonzusatz übereinstimmt
+                    const gefilterteFormen = this.formen.filter(form => aTaxonzusatz.includes(form.importname.replace(/µm/g, '')) && form.id_taxonzus > 6);
+  
+                    // Ausgabe der gefilterten Elemente
+                    if (gefilterteFormen.length > 0) {
+                      Form = gefilterteFormen[0].id_taxonzus;
+                      aForm=gefilterteFormen[0].importname.replace(/µm/g, '') +'µm';
+                    }else{aTaxonzusatz = '';Form = 6;aForm = '-';;}
+                  }
+                 
+  
+  
+  
+                  aParameter = 'Zellzahl';
+                  Messwert = abundanz;
+                  aTiefe = obj[index]['Proben-tiefe (m)'];
+                  aProbe = '-';
+                  
+                  aEinheit = 'm/L';
+                  //für array und  this.MessDataImp (ImortMesswerte)
+                  Einheit = einh1;
+                  //Form=6;
+                  Probe = 11;
+                  Tiefe = 2;
+                  cf = false;
+                  if (Messwert > 0) {
+  
+  
+                  
+  
+                    let taxon_sort= this.arten
+                    .sort((a, b) => a.taxon.localeCompare(b.taxon));
+                  console.log(taxon_sort)
+  
+  
+                    Taxon = head_2;
+  
+                    
+                  
+                    if (Taxon !== undefined) { // zummengefasste Taxa z.B.SummeKlasse Bacillariophyceae
+                      
+                         let taxon_ = this.arten
+                      
+                      .filter(arten => arten.id_art === Taxon);
+  
+  
+                      //console.log(JSON.stringify(this.arten[0]));
+  
+                      //let taxon_ = this.arten.filter(arten => arten.id_art === Taxon);
+                      if (taxon_.length > 0) {
+                        Taxon = taxon_[0].id_taxon;
+                        aTaxon = taxon_[0].taxon; RLD = taxon_[0].rld;
+                        if (aForm!='-'){
+                          aTaxon=aTaxon+' ' +aForm}
+                        
+                        ok = "";
+                      }
+                      else {
+                        //console.log(this.arten)
+                        Taxon =head_2;
+                        let taxon_ = this.arten
+                        .filter(arten => arten.taxon === Taxon);
+    
+                        if (taxon_.length > 0) {
+                          Taxon = taxon_[0].id_taxon;
+                          aTaxon = taxon_[0].taxon; RLD = taxon_[0].rld;
+                          if (aForm!='-'){
+                            aTaxon=aTaxon+' ' +aForm}
+                          
+                          ok = "";}
+                        else{
+                          Taxon='';
+  
+                        ok = "checked";
+                        aTaxon = '/ ID_ART nicht bekannt';
+                        this.ArtenNichtBekanntIsVisible=true;
+                        // var taxon2 = this.arten.filter(arten => arten.dvnr == Taxon);
+                        // if (taxon2.length !== 0) { aTaxon = taxon2[0].taxon; ok=false;}
+  
+                      }}
+                      importp = "checked";
+                      if (ok === "checked" || mstOK === "checked") { importp = ""; }
+  
+                      this._uebersicht = {} as Uebersicht;
+                      this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Datum: datumString, _Probe: aProbe, _Taxon: aTaxon, _Parameter: aParameter, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1, _RoteListeD: RLD });
+  //console.log (this.xlsxImportPhylibService.MessDataOrgi)
+                      this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: abundanz, _Einheit: einh1, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 2, _RoteListeD: RLD });
+                      this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: biovolKonz, _Einheit: einh2, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 3, _RoteListeD: RLD });
+                      this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: spezBioVoll, _Einheit: einh3, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 4, _RoteListeD: RLD });
+                      //this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: relBioVol, _Einheit: einh4, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 5, _RoteListeD: RLD });
+  
+                      this._uebersicht.mst = aMessstelle; this._uebersicht.fehler1 = mstOK;
+                      this._uebersicht.fehler2 = ok; this._uebersicht.fehler3 = ""; this._uebersicht.import1 = importp;
+                      this.xlsxImportPhylibService._uebersicht = this._uebersicht;
+                      this.xlsxImportPhylibService.schalteSpalte('sp3', gewaesser);
+                      this.xlsxImportPhylibService.groupNAch();
+                      Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = ""; RLD = null;
+                      aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+                   
+                    } 
+  
+  
+                  }
+  
+  
+  
+  
+  
+  
+  
+  
+                }
+              }
+  
+            })
+          } else {
+            FehlerInfo = "Fehler: falsche Spaltenüberschriften in Exceltabelle";
+            throw new Error(FehlerInfo);
+  
+          }
+        
+  
+        //of(array);
+  
+  
+  
+        //  this.xlsxImportPhylibService.MessDataImp = array;
+      
+      console.log(this.xlsxImportPhylibService.MessDataImp); 
+      this.uebersicht = this.xlsxImportPhylibService.uebersicht; return FehlerInfo;
+     
+  
+    } catch (error) {
+      // Fehlerbehandlung
+      // console.log(this.xlsxImportPhylibService.MessDataImp);
+      return FehlerInfo;
+    }
+  }
   /**
 * Exportiert Daten aus einem Workbook in ein spezifisches Format.
 * 
@@ -1266,4 +1685,24 @@ function findKeyWithIncludes(obj, searchString) {
     }
   }
   return null;
+}
+interface gewaessermst{
+gewaesser:string;
+mst:string;
+
+}
+interface gewaessermstPN{
+  gewaesser:string;
+  mst:string;
+  lfd_nr:string;
+  datum :string;
+           
+}
+interface datenPhtofluss{
+  lfd_nr:string;
+  idart:number;
+  biovol:number;
+  zellvol:string;
+  zellzahl:number;
+           
 }
