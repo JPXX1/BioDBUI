@@ -583,7 +583,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     this.UebersichtWKausMstAnzeigen=false;
   this.MZBAnzeige=false;
   this.PhythoplanktonAnzeige=true;
-  console.log(this.anzeigeBewertungMPService.Taxa_Phyto)
+  //console.log(this.anzeigeBewertungMPService.Taxa_Phyto)
   if(this.anzeigeBewertungMPService.Taxa_Phyto.length===0){
   await this.anzeigeBewertungMPService.callBwMstTaxa(5);
 }

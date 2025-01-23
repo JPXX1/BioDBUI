@@ -836,7 +836,7 @@ doppelteMesswerte(): boolean {
 	// Schleife durch das ursprüngliche Array
 	for (let a = 0, le = this.MessDataImp.length; a < le; a += 1) {
 	  // Kombiniere verschiedene Eigenschaften zu einem String
-	  const temp: string = this.MessDataImp[a]._Messstelle + "," + this.MessDataImp[a]._Einheit + "," + this.MessDataImp[a]._Datum + "," + this.MessDataImp[a]._Form + "," + this.MessDataImp[a]._Taxon + "," + this.MessDataImp[a]._Tiefe;
+	  const temp: string = this.MessDataImp[a]._Messstelle + "," + this.MessDataImp[a]._Einheit + "," + this.MessDataImp[a]._Datum + "," + this.MessDataImp[a]._Form + "," + this.MessDataImp[a]._Taxon + "," + this.MessDataImp[a]._Tiefe +","+this.MessDataImp[a]._zellvolumen;
 	  // Füge den kombinierten String zum TempSet hinzu
 	  TempSet.push(temp);
 	  console.log(temp);

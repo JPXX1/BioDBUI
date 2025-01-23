@@ -287,6 +287,7 @@ export class ImpPhylibServ {
               id_import: id_import,
               id_tiefe: MessDataImp._Tiefe,
               id_abundanz: MessDataImp._idAbundanz,
+              zellvolumen:MessDataImp._zellvolumen,
               cf: MessDataImp._cf,
               wert: MessDataImp._Messwert
             })    

@@ -563,6 +563,12 @@ if (validIds.includes(result.id_verfahren)) {
 					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
 				}else{this.InfoBox('Daten lassen sich importieren.');}
 				break;
+				case 9://Phytofluss-Import
+				await this.handlePruefen(NrVerfahren);
+				if (this.xlsxImportPhylibService.vorhanden) {
+					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
+				}else{this.InfoBox('Daten lassen sich importieren.');}
+				break;
 				case 4://Perlodes-Export
 
 				
@@ -610,7 +616,7 @@ if (validIds.includes(result.id_verfahren)) {
 		 * Andernfalls wird überprüft, ob die Messwerte für das angegebene Jahr bereits vorhanden sind.
 		 */
 	private async handlePruefen(NrVerfahren: number): Promise<void> {
-		if (NrVerfahren === 6 || NrVerfahren === 8) {
+		if (NrVerfahren === 6 || NrVerfahren === 8 || NrVerfahren === 9) {
 			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhandenJahr();
 		} else {
 			await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr);
@@ -984,6 +990,7 @@ if (validIds.includes(result.id_verfahren)) {
 					;
 					 await this.phytoseeServiceService.Phytoseeimport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
 					this.Datimptab=false;this.Datimptabphyto=false;
+					
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					this.ArtenNichtBekanntIsVisible=this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
 						if (this.ArtenNichtBekanntIsVisible===true){message=" Einige Arten sind nicht bekannt.";}
@@ -1142,7 +1149,7 @@ displayableColumns(idverfahren:number){
 	 */
 	
 	handleRowClick(row){
-		if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===8){
+		if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===8  || this.valExceltabsService.NrVerfahren===9){
 		this.Datimptabphyto=true;
 		this.Datimptab=false;}
 		else{

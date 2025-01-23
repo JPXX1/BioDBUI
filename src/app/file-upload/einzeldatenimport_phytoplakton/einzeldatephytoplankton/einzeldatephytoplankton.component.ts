@@ -34,7 +34,7 @@ import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.s
 export class EinzeldatephytoplanktonComponent {
   constructor(private Farbebewertg: FarbeBewertungService) { }	
   @Input()  Einzeldat:messdata[]=[];	
-  displayedColumns: string[] = ['mst', 'datum', 'taxon', 'parameter', 'wert', 'einheit'];
+  displayedColumns: string[] = ['mst', 'datum', 'taxon','form', 'parameter', 'wert', 'einheit'];
  
   /**
    * Ruft die Farbe ab, die dem angegebenen OZK-Wert zugeordnet ist.

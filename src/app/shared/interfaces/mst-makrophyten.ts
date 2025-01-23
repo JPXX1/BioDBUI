@@ -12,6 +12,7 @@ export interface MstMakrophyten {
     cf: boolean;
     tiefe_m: string;
     einheit: string;
+    zellvolumen?:string;
     komponente:number;
     dvnr:number;
     expurteil:string;

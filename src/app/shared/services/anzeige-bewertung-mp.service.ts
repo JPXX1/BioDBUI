@@ -119,7 +119,7 @@ public value:string;
   await this.getBwMstTaxa(komp).forEach(formen_ => {
     this.dbBewertungMst = formen_;
 
-    console.log(this.dbBewertungMst);
+   // console.log(this.dbBewertungMst);
    
   });
 this.arrayNeuFuellen(komp);
@@ -193,7 +193,7 @@ FilterRichtigesArray(komp: number, FilterMst: string, art: string, min: number, 
  */
 displayedColumnsMP(komp: number) {
 if (komp === 5) {
-  this.displayedColumns= ['mst', 'gewaessername','datum', 'taxon', 'wert', 'einheit', 'taxonzusatz',  'letzteAenderung'];
+  this.displayedColumns= ['mst', 'gewaessername','datum', 'taxon','zellvolumen' ,'wert', 'einheit', 'taxonzusatz',  'letzteAenderung'];
 }else {
 
 
@@ -250,7 +250,7 @@ arrayNeuFuellen(komp: number) {
     this.mstMakrophytenKl.firma = this.dbBewertungMst[i].firma;
     this.mstMakrophytenKl.taxonzusatz = this.dbBewertungMst[i].taxonzusatz;
     this.mstMakrophytenKl.taxon = `${this.dbBewertungMst[i].taxon} (${this.dbBewertungMst[i].dvnr})`;
-    
+    this.mstMakrophytenKl.zellvolumen=this.dbBewertungMst[i].zellvol;
 
       this.mstMakrophytenKl.wert = this.dbBewertungMst[i].wert;
     
@@ -259,6 +259,7 @@ arrayNeuFuellen(komp: number) {
     this.mstMakrophytenKl.letzte_aenderung = this.dbBewertungMst[i].letzte_aenderung;
     this.mstMakrophytenKl.dvnr = this.dbBewertungMst[i].dvnr;
     this.mstMakrophyten.push(this.mstMakrophytenKl);
+    console.log(  this.mstMakrophytenKl.einheit )
 
   }
   this.mstMakrophyten.sort((a, b) => b.jahr - a.jahr || a.mst.localeCompare(b.mst) || a.tiefe_m.localeCompare(b.tiefe_m) || a.taxon.localeCompare(b.taxon));
