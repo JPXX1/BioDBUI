@@ -1,4 +1,4 @@
-import {ElementRef, HostListener,NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
+import {ElementRef,Injector, HostListener,NgZone,Component, OnInit,Output ,ViewChild,Injectable,EventEmitter,AfterViewInit} from '@angular/core';
 import { FileUploadService } from '../shared/services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { HelpService } from '../shared/services/help.service';
@@ -201,7 +201,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	// Inject service 
 	
 	constructor (private el: ElementRef,private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
-		private xlsxImportPhylibService:XlsxImportPhylibService,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
+		private xlsxImportPhylibService:XlsxImportPhylibService,private injector: Injector,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
 		
@@ -857,7 +857,14 @@ if (validIds.includes(result.id_verfahren)) {
 			 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Dateiverarbeitung abgeschlossen ist.
 			 */
 			async addfile()     
-		{  this.ImportDatenAnzeige=false;
+		{ 
+			this.valExceltabsService = this.injector.get(ValExceltabsService);
+			this.xlsxImportPhylibService = this.injector.get(XlsxImportPhylibService);
+			this.phytoseeServiceService = this.injector.get(PhytoseeServiceService);
+			this.perlodesimportService = this.injector.get(PerlodesimportService);
+			
+			
+			this.ImportDatenAnzeige=false;
 			this.xlsxImportPhylibService.MessDataImp=[]
 			this.ArtenNichtBekannt=false;
 			this.zone.run(() => this.startLoading());

@@ -210,7 +210,23 @@ exceltabsauslesen(workbook) {
     await this.callvalexceltabs();
     
     //Anzahl Tabs ermitteln
-    let tabs = workbook.SheetNames.length;
+
+    const sheetNames = workbook.SheetNames;
+
+    // Anzahl der Tabs mit Inhalt ermitteln
+    let tabs = 0;
+    
+    sheetNames.forEach((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+    
+      // Prüfen, ob das Sheet nicht leer ist
+      if (sheet && sheet['!ref']) {
+        tabs++;
+      }
+    });
+
+
+    // let tabs = workbook.SheetNames.length;
     let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === tabs);
     this.exceltabsauslesen(workbook);//liest Exceltabs aus
     this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
@@ -265,7 +281,7 @@ exceltabsauslesen(workbook) {
       //Phytofluss-Exportdatei
       else if (valexceltabsfilter.length ===2 && valexceltabsfilter4 === 1 && this.excelspaltenimport.length>0) {
         valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[1].namentabs);
-      if (valexceltabsfilter4 === 4) {
+      if (valexceltabsfilter4 === 2) {
         this.waehleVerfahren(7);
       }}
       

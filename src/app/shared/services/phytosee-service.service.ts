@@ -247,14 +247,16 @@ export class PhytoseeServiceService {
           let head_2 = findKeyWithIncludes(obj[0], "biovolumenkonzentration");
           let head_3 = findKeyWithIncludes(obj[0], "spezifisch");
           let head_4 = findKeyWithIncludes(obj[0], "relativ");
+          let head_idArt= findKeyWithIncludes(obj[0], "id n. mischke");
           if (head_1 === null) { head_1 = findKeyWithIncludes(obj[0], "zellzahl"); }
           if (head_2 === null) { head_2 = findKeyWithIncludes(obj[0], "biovol"); }
           if (head_3 === null) { head_3 = findKeyWithIncludes(obj[0], "zellvol"); }
           if (head_4 === null) { head_4 = findKeyWithIncludes(obj[0], "bv"); }
+          if (head_idArt === null) { head_idArt = findKeyWithIncludes(obj[0], "mischke"); }
           //abundanz=obj[index]['Zellzahl (Zellen mL-1)']; biovolKonz=obj[index]['Biovol. (mm3L-1)']; spezBioVoll=obj[index]['Zellvol. (µm³)']; relBioVol=obj[index]['% BV'];
 
 
-          if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null) {
+          if (head_1 !== null && head_2 !== null && head_3 !== null && head_4 !== null && head_idArt !== null) {
             // console.log(this.uebersicht);
             // Here is your object
             let o: number = 1;
@@ -379,7 +381,7 @@ export class PhytoseeServiceService {
                   Tiefe = 1;
                   cf = false;
                   if (Messwert > 0) {
-                    Taxon = obj[index]['ID n. Mischke'];
+                    Taxon = obj[index][head_idArt];
                     if (Taxon !== undefined) { // zummengefasste Taxa z.B.SummeKlasse Bacillariophyceae
 
 
