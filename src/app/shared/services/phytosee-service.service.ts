@@ -415,7 +415,16 @@ export class PhytoseeServiceService {
                      // this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: spezBioVoll, _Einheit: einh3, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 4, _RoteListeD: RLD });
                      // this.xlsxImportPhylibService.MessDataImp.push({ _Nr: o, _Messstelle: mst, _Datum: datumString, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: relBioVol, _Einheit: einh4, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 5, _RoteListeD: RLD });
 
+                      //neu 29.01.2025
 
+                     this._uebersicht.mst = aMessstelle; this._uebersicht.fehler1 = mstOK;
+                     this._uebersicht.fehler2 = ok; this._uebersicht.fehler3 = ""; this._uebersicht.import1 = importp;
+                     this.xlsxImportPhylibService._uebersicht = this._uebersicht;
+                     this.xlsxImportPhylibService.schalteSpalte('sp3', gewaesser);
+                     this.xlsxImportPhylibService.groupNAch();
+                     Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = ""; RLD = null;
+                     aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+                    
                     } else {
                       //Algenklassen je Mst und PN-Datum werden in Data_Abiotik gespeichert
                       aTaxon = obj[index]['Taxon'];

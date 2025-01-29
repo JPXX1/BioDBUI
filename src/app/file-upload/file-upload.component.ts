@@ -972,7 +972,9 @@ if (validIds.includes(result.id_verfahren)) {
 					break;
 					case 6://LLBB_Ilat Import
 					// this.InfoBox="";
-					const result=await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,workbook.SheetNames.length,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
+					console.log(this.valExceltabsService.tabs)
+					const result=await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,this.valExceltabsService.tabs,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
+					
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
 					if (result===("Import erfolgreich")){ 
 						this.pruefen=false;
@@ -1104,9 +1106,11 @@ if (validIds.includes(result.id_verfahren)) {
 			console.log(this.xlsxImportPhylibService.MessDataImp)
 			for (let c = 0, l = this.xlsxImportPhylibService.MessDataImp.length;c < l; c += 1) {
 
-				
+				console.log(  this.xlsxImportPhylibService.MessDataImp[c]._Messstelle)
 				if (Number(this.xlsxImportPhylibService.MessDataImp[c]._Messstelle)===mst_id_alt){
 
+					this.xlsxImportPhylibService.MessDataImp[c]._Messstelle=mst_id_neu;
+				}else if( this.xlsxImportPhylibService.MessDataImp[c]._Messstelle===name_alt){
 					this.xlsxImportPhylibService.MessDataImp[c]._Messstelle=mst_id_neu;
 				}
 			}

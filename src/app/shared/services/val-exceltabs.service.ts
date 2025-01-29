@@ -52,6 +52,7 @@ export class ValExceltabsService {
   public loescheErste5Zeilen:boolean;
   constructor(private impPhylibServ: ImpPhylibServ) { }
   VorhandeneVerfahren:number[]=[];
+  public tabs:number;
 
 
 
@@ -225,7 +226,7 @@ exceltabsauslesen(workbook) {
       }
     });
 
-
+this.tabs=tabs;
     // let tabs = workbook.SheetNames.length;
     let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === tabs);
     this.exceltabsauslesen(workbook);//liest Exceltabs aus
