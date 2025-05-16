@@ -101,7 +101,7 @@ const routes: Routes = [
 	{ path: 'impeinzeldat', component: EineldatenimpComponent },
 	{ path: 'datenimport', component: FileUploadComponent 
 		,canActivate: [RoleGuard],  // Guard aktivieren
-		data: { expectedRole: 'administrator' }  // Die erwartete Rolle
+		data: { expectedRole: 'nutzer3' }  // Die erwartete Rolle
 
 	},
 	{ path: 'monitoringdaten', component: MonitoringComponent 
