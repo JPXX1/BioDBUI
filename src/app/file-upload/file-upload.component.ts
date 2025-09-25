@@ -200,7 +200,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 
 	// Inject service 
 	
-	constructor (private el: ElementRef,private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,private Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
+	constructor (private el: ElementRef,private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,public Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
 		private xlsxImportPhylibService:XlsxImportPhylibService,private injector: Injector,private valExceltabsService:ValExceltabsService,private phytoseeServiceService:PhytoseeServiceService,
 		public dialog: MatDialog,private stammdatenService:StammdatenService) { 
 
@@ -216,7 +216,10 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
  * 
  * @param selectedJahr - Das ausgewählte Jahr.
  */
-
+logValue(colName: string, value: any) {
+	console.log('Spalte:', colName, 'Wert:', value);
+	return value;
+  }
 handleJahrSelected(selectedJahr: number) {
 	this.ImportIntoDB=true;
 	this.pruefen=false;
@@ -301,6 +304,8 @@ handleJahrSelected(selectedJahr: number) {
 	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Initialisierung abgeschlossen ist.
 	 */
 	async ngOnInit() {
+
+		
 		if (!this.authService.isLoggedIn()) {
 			this.router.navigate(['/login']);
 			
@@ -312,7 +317,7 @@ handleJahrSelected(selectedJahr: number) {
 		this.helpService.helpActive$.subscribe(active => this.isHelpActive = active);
 			this.helpService.helpText$.subscribe(text => this.helpText = text);
 		this.uebersichtImport=this.uebersichtImportService.uebersicht;
-		//console.log(this.uebersichtImport);
+		
 	}}
 	/**
 	 * Handhabt das Änderungsereignis für einen Wert.
@@ -896,7 +901,7 @@ if (validIds.includes(result.id_verfahren)) {
 			// console.log(this.valExceltabsService.NrVerfahren);
 			this.xlsxImportPhylibService.uebersicht=[];
 			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
-			console.log(this.valExceltabsService.NrVerfahren);
+			// console.log(this.valExceltabsService.NrVerfahren);
 				switch(this.valExceltabsService.NrVerfahren) {
 					
 				  case 1:
@@ -951,7 +956,7 @@ if (validIds.includes(result.id_verfahren)) {
 					case 4://MZB export
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.newuebersichtImport.id_komp=3;
-					await this.perlodesimportService.Perlodesexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
+					await this.perlodesimportService.PerlodesexportStart(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
 					// this.xlsxImportPhylibService.uebersicht=[];
 					this.InfoBox("Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
 					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
@@ -1139,12 +1144,37 @@ displayableColumns(idverfahren:number){
 	this.showHandleRowClick=this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;
-
+// console.log(this.dynamicColumns);
+// console.log(this.displayColumnNames);
 	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
 	this.dataSource.paginator = this.paginator;
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
 }
+
+getCellBackground(i: number, colName: string, value: any): string | null {
+	const header = this.displayColumnNames[i];
+  // Regel 2: Spalten mit "sicher" → Ampel-Logik
+	if (header.toLowerCase().includes('sicher')) {
+		if (String(value).toLowerCase() === 'ja') {
+		  return '#ccffcc'; // hellgrün
+		}
+		if (String(value).toLowerCase() === 'nein') {
+		  return '#ffcccc'; // hellrot
+		}
+		return '#ffffff';   // default weiß
+	  } else
+	// Regel 1: Spalten mit "ÖZK" → Farbservice
+	if (header.includes('ÖZK')) {
+	  return this.Farbebewertg.getColor(value);
+	}
+  
+	
+  
+	// Standard: keine Färbung
+	return null;
+  }
+  
 	/**
 	 * Handhabt das Klick-Ereignis auf eine Zeile in der Tabelle.
 	 * 

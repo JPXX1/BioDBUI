@@ -66,7 +66,127 @@ export class PerlodesimportService {
     }
 
 
+    async PerlodesexportStart(workbook, valspalten: any, tab: any,verfahrennr : number){
+      
+      await this.Perlodesexport(workbook, valspalten, tab,verfahrennr);
+      await this.PerlodesexportAD(workbook,"Saprobie","sp11",5,106);
+      await this.PerlodesexportAD(workbook,"AD Scores","sp12",9,107);
+    }
+  /**
+     * Importiert Daten aus einer Arbeitsmappe in ein spezifisches Format für PerlodesExport.
+     * 
+     * @param workbook - Das Arbeitsmappenobjekt, das die zu exportierenden Daten enthält.
+     * @param valspalten - Ein Array von Objekten, die die zu verarbeitenden Spalten darstellen.
+     * @param tab - Der Index des Tabs in der Arbeitsmappe, der verarbeitet werden soll.
+     * @param verfahrennr - Die Verfahrensnummer, die zum Filtern der Spalten verwendet wird.
+     * 
+     * @returns Ein Promise, das aufgelöst wird, wenn der Exportvorgang abgeschlossen ist.
+     * 
+     * Die Funktion führt die folgenden Schritte aus:
+     * 1. Ruft notwendige Daten mit der Methode `holeMst` von `xlsxImportPhylibService` ab.
+     * 2. Initialisiert und leert bestimmte Eigenschaften von `xlsxImportPhylibService`.
+     * 3. Filtert die Spalten basierend auf der angegebenen `verfahrennr` und `tab`.
+     * 4. Konvertiert das angegebene Blatt in der Arbeitsmappe in das JSON-Format.
+     * 5. Iteriert über die JSON-Daten, um jede Zeile und Spalte zu verarbeiten.
+     * 6. Aktualisiert das `_uebersicht`-Objekt und das `messstellenImp`-Array basierend auf den verarbeiteten Daten.
+     * 7. Ruft die Methode `groupNAch` von `xlsxImportPhylibService` auf, um die Daten zu gruppieren.
+     */
+async PerlodesexportAD(workbook,tabname,spalte,zeile:number,bidpara:number){
+      // this.xlsxImportPhylibService.messstellenImp=[];
+      // await this.xlsxImportPhylibService.holeMst();
+      // this.xlsxImportPhylibService.displayColumnNames=[];
+      // this.xlsxImportPhylibService.dynamicColumns=[];
+      // this.xlsxImportPhylibService.displayColumnNames.push('Nr');
+      // this.xlsxImportPhylibService.dynamicColumns.push('nr');
+      let aMessstelle: string;
+      let mst: string;let importp:string;let typ;
+      // this.uebersicht=[];
+      // var Oekoregion; var Makrophytenveroedung; var Begruendung; var Helophytendominanz; var Diatomeentyp; var Phytobenthostyp; var Makrophytentyp; var WRRLTyp; var Gesamtdeckungsgrad; var Veggrenze;
+      // this.messstellenImp = [];let mstarray=[];
+     
+      // let XL_row_object;
+      let json_Messstelle;let mstOK: string;
+      let bidmst; ; let bideinh; let bwert;
 
+      const sheet = workbook.Sheets[tabname]; // direkter Zugriff per Blattname
+      const XL_row_object = XLSX.utils.sheet_to_json(sheet);
+      
+      // XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames['Saprobie']]);
+      json_Messstelle = JSON.stringify(XL_row_object);
+      const obj = JSON.parse(json_Messstelle);
+     
+        obj.forEach((val, index) => {
+          if (obj[index] !== null) {
+            for (var i in obj[index]) {
+
+
+              if (index===0){
+                if (i!=='Probe'){
+
+ 
+
+      // mstarray.push(i);
+
+                  mst = i;
+                aMessstelle=mst;
+                //taxonzus=new Taxonzus();
+                let mstee = this.xlsxImportPhylibService.mst.filter(messstellen => messstellen.namemst == mst);
+
+                //console.log(mst);
+
+                if (
+                  mstee.length !== 0) {
+                    mstOK = "";
+                  mst = mstee[0].id_mst; aMessstelle = mstee[0].namemst;
+                 bwert = obj[zeile][i]; 
+                  bidmst = mstee[0].id_mst; 
+                    
+                  
+                 
+                  // bwert = obj[index][i];
+    
+                  // bidpara = 106;
+    
+                  bideinh = 13;
+                }
+                else {
+                  aMessstelle = mst;
+                  mstOK = "checked";
+                }
+               
+                 
+              }
+              this._uebersicht= {} as Uebersicht;
+             if ( mst!== undefined){
+              if (mstOK==="checked") {importp="";}else{
+                importp="checked";}
+                  //this.xlsxImportPhylibService.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
+                  this._uebersicht.mst=aMessstelle;
+                  //this._uebersicht.sp3=typ;this._uebersicht.sp4=taxaliste;
+                  // this._uebersicht.sp5=nutzung;s
+                  this._uebersicht.fehler1=mstOK;
+                  this._uebersicht.fehler2="";this._uebersicht.fehler3="";
+                  this._uebersicht.import1=importp;
+                  this.xlsxImportPhylibService.messstellenImp.push({ id_mst: bidmst, datum: null, id_einh: bideinh, id_para: bidpara, wert: bwert, id_import: null, id_pn: null ,uebersicht:this._uebersicht});
+               
+                  
+                  this.xlsxImportPhylibService._uebersicht=this._uebersicht;
+                  this.xlsxImportPhylibService.schalteSpalte(spalte,bwert);
+                  // console.log(this.xlsxImportPhylibService._uebersicht);
+                  // console.log(this.xlsxImportPhylibService.uebersicht);
+                  this.xlsxImportPhylibService.groupNAch();
+                }
+
+              }
+                
+                  
+            }
+          }
+        
+      
+    
+  });
+}
 
     /**
      * Importiert Daten aus einer Arbeitsmappe in ein spezifisches Format für PerlodesExport.

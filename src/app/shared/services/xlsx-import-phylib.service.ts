@@ -715,9 +715,9 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 		let  _fehler2: string=this._uebersicht.fehler2;
 		let _fehler3: string=this._uebersicht.fehler3;
 		let importp:string=this._uebersicht.import1;
-		
+		// console.log(this.uebersicht.length);
 		if (mst!==undefined){
-		if (this.uebersicht.length == 0) {
+		if (this.uebersicht.length=== 0) {
 
 			if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
 			
@@ -754,9 +754,9 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 						if (this.uebersicht[i].sp8!==undefined){var _sp8_: string = this.uebersicht[i].sp8}else{var _sp8_=_sp8};
 						if (this.uebersicht[i].sp9!==undefined){var _sp9_: string = this.uebersicht[i].sp9}else{var _sp9_=_sp9};
 						if (this.uebersicht[i].sp10!==undefined){var _sp10_: string = this.uebersicht[i].sp10}else{var _sp10_=_sp10};
-						if (this.uebersicht[i].sp11!==undefined){var _sp11_: string = this.uebersicht[i].sp11};
-						if (this.uebersicht[i].sp12!==undefined){var _sp12_: string = this.uebersicht[i].sp12};
-						if (this.uebersicht[i].sp13!==undefined){var _sp13_: string = this.uebersicht[i].sp13};
+						if (this.uebersicht[i].sp11!==undefined){var _sp11_: string = this.uebersicht[i].sp11}else{var _sp11_=_sp11};
+						if (this.uebersicht[i].sp12!==undefined){var _sp12_: string = this.uebersicht[i].sp12}else{var _sp12_=_sp12};
+						if (this.uebersicht[i].sp13!==undefined){var _sp13_: string = this.uebersicht[i].sp13}else{var _sp13_=_sp13};
 						let _fehler1_:string;
 						let _fehler2_:string;
 						let _fehler3_:string;

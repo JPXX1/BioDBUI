@@ -35,25 +35,44 @@ export class FarbeBewertungService {
      * - Wenn `OZK` mit '5' beginnt und entweder mit '°' oder '*' endet und seine Länge weniger als 4 beträgt oder seine Länge 1 ist, gibt sie 'rgb(226, 0, 26)' zurück.
      * - Für jede andere Eingabe gibt sie 'rgb(255, 255, 255)' (weiß) zurück.
      */
-  getColor(OZK: string): string {
-    switch (true) {
-      case OZK && OZK.startsWith('1') && ((OZK.length < 4 && OZK.endsWith('°')) || (OZK.length < 4 && OZK.endsWith('*')) || OZK.length === 1):
-        return 'rgb(0, 158, 224)';
-        case OZK && OZK.startsWith('2') && ((OZK.length < 4 && OZK.endsWith('°')) || (OZK.length < 4 && OZK.endsWith('*')) || OZK.length === 1):
-    
-        return 'rgb(0, 144, 54)';
-        case OZK && OZK.startsWith('3') && ((OZK.length < 4 && OZK.endsWith('°')) || (OZK.length < 4 && OZK.endsWith('*')) || OZK.length === 1):
-    
-        return 'rgb(255, 255, 0)';
-        case OZK && OZK.startsWith('4') && ((OZK.length < 4 && OZK.endsWith('°')) || (OZK.length < 4 && OZK.endsWith('*')) || OZK.length === 1):
-    
-        return 'rgb(255, 153, 0)';
-        case OZK && OZK.startsWith('5') && ((OZK.length < 4 && OZK.endsWith('°')) ||(OZK.length < 4 && OZK.endsWith('*')) || OZK.length === 1):
-    
-        return 'rgb(226, 0, 26)';
-      default:
-        return 'rgb(255, 255, 255)'; // white
-    }}
+    /** Farbzuordnung 0–5; alles andere = weiß */
+  getColor(val: number | string): string {
+    const num = this.toOZKNumber(val);
+    if (num == null) return 'rgb(255, 255, 255)';
+
+    switch (num) {
+      case 0: return 'rgb(224, 224, 224)'; // grau
+      case 1: return 'rgb(0, 158, 224)';   // blau
+      case 2: return 'rgb(0, 144, 54)';    // grün
+      case 3: return 'rgb(255, 255, 0)';   // gelb
+      case 4: return 'rgb(255, 153, 0)';   // orange
+      case 5: return 'rgb(226, 0, 26)';    // rot
+      default: return 'rgb(255, 255, 255)'; // weiß
+    }
+  }
+  
+    /** Robust: akzeptiert 0–5 als Zahl oder String, inkl. "1*", "2°", "3 " etc. */
+  private toOZKNumber(val: unknown): number | null {
+    if (val == null) return null;
+
+    if (typeof val === 'number' && Number.isFinite(val)) return val;
+
+    // String normalisieren
+    const s = String(val).trim();
+    if (!s) return null;
+
+    // 1) Muster wie "1", "1*", "1°"
+    const m = s.match(/^([0-5])(?:\s*[°*])?$/);
+    if (m) return Number(m[1]);
+
+    // 2) Falls der String mit 0–5 beginnt, nimm die erste Ziffer
+    const m2 = s.match(/^([0-5])/);
+    if (m2) return Number(m2[1]);
+
+    // 3) Letzter Fallback: numerisch interpretieren (Komma berücksichtigen)
+    const n = Number(s.replace(',', '.'));
+    return Number.isFinite(n) ? Math.round(n) : null;
+  }
   /**
      * Gibt den entsprechenden RGB-Farbcode basierend auf dem angegebenen RL-Wert zurück.
      *
