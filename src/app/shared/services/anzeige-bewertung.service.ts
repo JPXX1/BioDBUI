@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { WkUebersicht } from 'src/app/shared/interfaces/wk-uebersicht';
 import { environment } from '../../../environments/environment';
-
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Metric } from 'src/app/shared/interfaces/metric';
 @Injectable({
   providedIn: 'root'
 })
@@ -53,6 +55,7 @@ export class AnzeigeBewertungService {
   public wkUebersicht: WkUebersicht[] = [];
   public wkUebersichtaMst: WkUebersicht[] = [];
   private apiUrl = environment.apiUrl;
+  metricArray: Metric[] = [];
   //public FilterwkUebersicht: WkUebersicht[] = [];
   public _uebersicht: WkUebersicht;
   // public _uebersichtaMst: WkUebersicht;
@@ -117,6 +120,21 @@ async startBWUebersichtAusMst(){
     return this.httpClient.get(`${this.apiUrl}/stamWasserkoerper`);
   }
 
+/**
+   * Ruft asynchron die Methode `getMonitoringParameter` auf und weist das Ergebnis `AbfrageMonitoringIndices` zu.
+   * 
+   * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Operation abgeschlossen ist.
+   */
+getMonitoringParameter(komp_id: number): Observable<Metric[]> {
+  return this.httpClient
+    .get<Metric[]>(`${this.apiUrl}/AbfrageMonitoringIndices`)
+
+    .pipe(
+      map(params => params.filter(p => p.id_komp === komp_id))
+    );
+}
+
+  
   /**
    * Ruft asynchron die Methode `getStamWasserkoerper` auf und weist das Ergebnis `dbStamWk` zu.
    * 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MstUebersicht } from 'src/app/shared/interfaces/mst-uebersicht';
 import { AnzeigeBewertungService } from './anzeige-bewertung.service';
@@ -102,19 +103,32 @@ public value:string;
    * @param {number} komp_id - Die ID der zu verarbeitenden Komponente.
    * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die gesamte Verarbeitung abgeschlossen ist.
    */
-  async call(filter:string,art:string,min:number,max:number,komp_id:number) {
+  async call(filter:string,art:string,min:number,max:number,komp_id:number, para_id?:number):Promise<number> {
 
+ if (para_id===undefined){para_id=this.mapKomponenteParameter(komp_id);  
+  await this.callBwUebersichtExp(komp_id);}else{
+  await this.callBwUebersicht(komp_id,para_id);}
  
-  await this.callBwUebersichtExp(komp_id);
+
+
   await this.filterMst(filter,art,min,max);
    this.uniqueMstSortCall();
    this.uniqueJahrSortCall();
      this.datenUmwandeln();
     this.erzeugeDisplayedColumnNames(false);
      this.erzeugeDisplayColumnNames(false);
-    
+    return para_id;
   }
  
+// Hilfsfunktion fürs Mapping KOMP_id->OEKZ
+mapKomponenteParameter(id_komp: number): number {
+  switch (id_komp) {
+    case 1: return 39;
+    // case 2: return 20;
+    case 3: return 21;
+    case 5: return 94;
+    default: return 94;
+  }}
    /**
      * Generiert Anzeigespaltennamen für eine Tabelle.
      * 
@@ -134,7 +148,7 @@ public value:string;
       this.displayColumnNames.push(this.uniqueJahr[a])  
 
   }}
-
+  
   /**
    * Filtert das `dbMPUebersichtMst` Array basierend auf den angegebenen Filterkriterien.
    * 
@@ -287,6 +301,22 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
    * @throws {Error} Wirft einen Fehler, wenn die Antwort kein Array ist.
    */
   
+ 
+
+  async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise<any[]> {
+    const response = await firstValueFrom(
+      this.httpClient.post<any[]>(`${this.apiUrl}/bwMstUebersicht`, { selectedItems })
+    );
+    console.log(response);
+    if (!Array.isArray(response)) {
+      throw new Error('Die Antwort ist kein Array');
+    }
+    return response.filter(item => Number(item.id) === filterId);
+    // return response.filter(item => item.id === filterId);
+  }
+  
+  
+
   async getBwMSTUebersicht(selectedItems: number[]): Promise<any[]> {
     const response = await this.httpClient.post(`${this.apiUrl}/bwMstUebersicht`, { selectedItems }).toPromise();
     
@@ -314,12 +344,18 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
    * 3. Stellt sicher, dass die abgerufenen Daten im Array-Format vorliegen.
    * 4. Mappt die Daten auf eine spezifische Struktur und weist sie `dbMPUebersichtMst` zu.
    */
-  async callBwUebersicht(komp_id: number) {
+  async callBwUebersicht(komp_id: number, para_id?: number) {
     let selectedItems: number[] = [];
     selectedItems.push(komp_id);
   
+    let formen_: any[]; // außerhalb des if/else definieren
+  
     try {
-      const formen_ = await this.getBwMSTUebersicht(selectedItems);
+      if (para_id !== undefined) {
+        formen_ = await this.getBwMSTUebersichtPara(selectedItems, para_id);
+      } else {
+        formen_ = await this.getBwMSTUebersicht(selectedItems);
+      }
   
       // Falls kein Array, konvertiere es zu einem Array
       const dataArray = Array.isArray(formen_) ? formen_ : [formen_];
@@ -344,10 +380,11 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
         begruendung: form.begruendung,
         expertenurteilChanged: new Date(form.expertenurteil_changed),
         idNu: form.id_nu,
-        ausblenden:form.ausblenden
+        ausblenden: form.ausblenden
       }));
   
-     // console.log('Verarbeitete Daten: ', this.dbMPUebersichtMst);
+      // console.log('Verarbeitete Daten: ', this.dbMPUebersichtMst);
+  
     } catch (error) {
       console.error('Fehler beim Abrufen der Übersicht:', error);
     }
@@ -373,9 +410,9 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
   async callBwUebersichtExp(komp_id: number) {
     let selectedItems: number[] = [];
     selectedItems.push(komp_id);
-  
+  let para_id:number=this.mapKomponenteParameter(komp_id);
     try {
-      const formen_ = await this.getBwMSTUebersicht(selectedItems);
+      const formen_ = await this.getBwMSTUebersichtPara(selectedItems, para_id);
   
       // Falls kein Array, konvertiere es zu einem Array
       const dataArray = Array.isArray(formen_) ? formen_ : [formen_];

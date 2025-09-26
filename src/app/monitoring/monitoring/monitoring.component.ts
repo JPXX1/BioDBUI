@@ -12,7 +12,8 @@ import { Router } from '@angular/router';
 import {CommentService} from 'src/app/shared/services/comment.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { HelpService } from 'src/app/shared/services/help.service';
-
+import { Metric } from 'src/app/shared/interfaces/metric';
+import { param } from 'jquery';
 @Component({
   selector: 'app-monitoring',
   templateUrl: './monitoring.component.html',
@@ -131,6 +132,7 @@ export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewCheck
   public mstUebersicht:MstUebersicht[]=[];//MstBewertungKreuztabelle
   public MakrophytenAnzeige:boolean=false;
   public MZBAnzeige:boolean=false;
+  public metricArrayAnzeige:boolean=false;
   PhythoplanktonAnzeige:boolean=false;
   public MakrophytenMstAnzeige:boolean=false;
   public UebersichtAnzeigen:boolean=true;
@@ -142,7 +144,9 @@ export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewCheck
   public props: any[]=[];
   public repreasent:number=2;
  public FilterWKname:string;
-
+ selectedMetric?: Metric; 
+ metricArray: Metric[] = [];
+ metric: Metric;
  helpText: string = '';
  maxstart=new Date().getFullYear();
   value = '';valueJahr = '';
@@ -182,6 +186,25 @@ export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewCheck
             verticalPosition: 'bottom',
           });
         }
+
+        loadMetrics(komp_id: number) {
+          this.anzeigeBewertungService.getMonitoringParameter(komp_id).subscribe({
+            next: (metrics) => {
+              this.metricArray = metrics;
+              console.log('Lade Metrics:', this.metricArray);
+            },
+            error: (err) => {
+              console.error('Fehler beim Laden der Metriken:', err);
+            }
+          });
+        } 
+        onSelectionChangeMetric(metric: Metric) {
+          this.selectedMetric = metric;
+          // this.anzeigeBewertungService.selectedMetric = metric;
+          console.log('Ausgewählte Metrik:', this.selectedMetric);
+
+
+        }   
   /**
    * Schaltet die Sichtbarkeit des Hilfebereichs um.
    * Diese Methode wechselt die `isHelpActive`-Eigenschaft zwischen `true` und `false`.
@@ -213,7 +236,7 @@ export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewCheck
     // /console.log(this.FilterwkUebersicht);
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk");
-    this.onValueChangeFilter( '','');
+    this.onValueChangeFilter( '','',null);
 
     
 	}}
@@ -253,13 +276,13 @@ export class MonitoringComponent implements  OnInit,AfterViewInit,AfterViewCheck
     {
       if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
       
-      this.onValueChangeFilter('','');
+      this.onValueChangeFilter('','',null);
       //this.FilterwkUebersicht = this.anzeigeBewertungService.wkUebersicht;
     }else if (this.UebersichtWKausMstAnzeigen===true){
       if (this.anzeigeBewertungService.getBwWKUebersichtAusMst.length=== 0){this.handleUebersichtWKausMst();}
 
     }
-    else{this.onValueChangeFilter('','');}
+    else{this.onValueChangeFilter('','',null);}
     }
 
 
@@ -321,7 +344,7 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
   }
   async mstalleauswaehlen(value:number,filter:string,artfilter:string){
     this.repreasent=value;
-   await this.onValueChangeFilter(filter,artfilter);
+   await this.onValueChangeFilter(filter,artfilter,null);
     
      }
 
@@ -335,13 +358,13 @@ if ( this.MZBAnzeige===false && this.MakrophytenAnzeige===true)
    * @param Artvalue - Der Typ oder die Kategorie des Wertes.
    * @param ausGUI - Ein Boolean, der angibt, ob die Aktualisierung aus der GUI ausgelöst wurde.
    */
-   updateSetting(min:number,max:number,value: string,Artvalue: string,ausGUI:boolean) {
-  
+   updateSetting(min:number,max:number,value: string,Artvalue: string,ausGUI:boolean,metric?:Metric){ 
+    // this.selectedMetric=metric;
     if (ausGUI===true){
-      this.onValueChangeFilter(value,Artvalue); 
+      this.onValueChangeFilter(value,Artvalue,metric); 
       // this.filtertaxadaten(this.komp_id);
       // 
-      }else {this.onValueChangeFilter(value,Artvalue); }
+      }else {this.onValueChangeFilter(value,Artvalue,metric); }
     // this.minold=min;
     // this.maxold=max;
   }
@@ -407,7 +430,7 @@ switch(komp){
    * 
    * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn die Filterung und die Aktualisierungen der Benutzeroberfläche abgeschlossen sind.
    */
-  async onValueChangeFilter(value: string, Artvalue: string) {
+  async onValueChangeFilter(value: string, Artvalue: string,metric:Metric){
     this.anzeigeBewertungService.value=value;
     this.anzeigenMstUebersichtService.value=value;
     this.anzeigenMstUebersichtService.Artvalue=Artvalue;
@@ -452,7 +475,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
         }))
         
       if (this.MakrophytenMstAnzeige === true) {
-        await this.handleMakrophytenMPClick(this.komp_id);
+        await this.handleMakrophytenMPClick(this.komp_id,metric);
 
       } else if (this.MakrophytenAnzeige === true) {
         await this.handleMakrophytenTaxaClick();
@@ -469,7 +492,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
           //else if(f.Jahr===parseInt(value)){this.FilterwkUebersicht.push(f)}
         }))
       if (this.MakrophytenMstAnzeige === true) {
-        await this.handleMakrophytenMPClick(this.komp_id);
+        await this.handleMakrophytenMPClick(this.komp_id,metric);
 
       } else if (this.MakrophytenAnzeige === true) {
         await this.handleMakrophytenTaxaClick();
@@ -479,7 +502,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
      
         
       if (this.MakrophytenMstAnzeige === true) {
-        await this.handleMakrophytenMPClick(this.komp_id);
+        await this.handleMakrophytenMPClick(this.komp_id,metric);
 
       } else if (this.anzeigeTaxadaten === true) {
         await this.filtertaxadaten(this.komp_id);
@@ -548,7 +571,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
     
     this.getButtonAktivUebersicht();
     this.FilterWKnameSetzenWK("wk1");
-    this.onValueChangeFilter( '','');
+    this.onValueChangeFilter( '','',null);
     this.DiatomeenAnzeige=false;
     this.MZBAnzeige=false;
     this.PhythoplanktonAnzeige=false;
@@ -705,7 +728,13 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
   this.getButtonAktivColorMZ();
 }
 //mst-Bewertungen (komponente)
-  async handleMakrophytenMPClick(komp_id:number){
+  async handleMakrophytenMPClick(komp_id:number,metric?:Metric){ //Mst-Bewertungen MP
+    let para:number;
+    console.log(this.selectedMetric);
+    if (metric){
+      para=Number(metric.id);}
+    this.metricArrayAnzeige=true;
+    this.loadMetrics(komp_id);
     this.anzeigeTaxadaten=false;
     this.FilterWKnameSetzenWK("mst");
     // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
@@ -718,8 +747,9 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.PhythoplanktonAnzeige=false;
     this.UebersichtAnzeigen=false;
     this.UebersichtWKausMstAnzeigen=false;
-    await this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id);
-   // await this.anzeigenMstUebersichtService.callBwUebersichtExp(komp_id);
+    para = await  this.anzeigenMstUebersichtService.call(this.value,this.Artvalue,this.min,this.max,komp_id,para);
+    this.selectedMetric = this.metricArray.find(m => m.id === para.toString()) || null;
+    console.log(this.selectedMetric);
     this.props=[];
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
@@ -730,7 +760,10 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
       this.getButtonAktivColorMZ();}else if (komp_id===5){
         this.getButtonAktivColorPhytol();}
   }
-
+  compareMetrics(m1: Metric, m2: Metric): boolean {
+    return m1 && m2 ? Number(m1.id) === Number(m2.id) : m1 === m2;
+  }
+  
 
   /**
    * Startet die `start` Methode des `stammdatenService` mit den angegebenen Parametern
