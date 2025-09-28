@@ -529,6 +529,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
    */
   handleUebersichtWK(){
     this.FilterWKnameSetzenWK("wk")
+    this.metricArrayAnzeige=false;
     this.anzeigeTaxadaten=false;
     // if (this.anzeigeBewertungService.wkUebersicht.length=== 0){this.ngOnInit();}
     this.MZBAnzeige=false;
@@ -561,6 +562,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
    * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Methode abgeschlossen ist.
    */
   async handleUebersichtWKausMst(){
+    this.metricArrayAnzeige=false;
     this.anzeigeTaxadaten=false;
     await  this.anzeigeBewertungService.startBWUebersichtAusMst();
     this.FilterwkUebersicht=[];
@@ -594,6 +596,7 @@ else if (!value && this.FilterWKname==="Filter Wasserkörper") {
    */
   async handlePhytoplanktonTaxaClick(){ //Taxadaten PP
     this.komp_id=5;
+    this.metricArrayAnzeige=false;
     this.anzeigeTaxadaten=true;
     this.MakrophytenAnzeige=false;
     this.DiatomeenAnzeige=false;
@@ -629,6 +632,7 @@ this.anzeigeBewertungMPService.displayedColumnsMP(5);
    */
   async handleMakrophytenTaxaClick(){ //Taxadaten MP
     this.anzeigeTaxadaten=true;
+    this.metricArrayAnzeige=false;
     this.komp_id=1;
     // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
     this.FilterAnzeige=true;
@@ -669,6 +673,7 @@ this.anzeigeBewertungMPService.displayedColumnsMP(5);
 
  async handleDiatomeenTaxaClick(){ //Taxadaten Diatomeen
   this.anzeigeTaxadaten=true;
+  this.metricArrayAnzeige=false;
   this.komp_id=2;
   // this.updateSetting(this.min, this.max, this.value, this.Artvalue,false);
   this.FilterAnzeige=true;
@@ -707,6 +712,7 @@ this.DiatomeenAnzeige=true;
  */
 async handleMZBTaxaClick(){ //Taxadaten MZB
   this.komp_id=3;
+  this.metricArrayAnzeige=false;
   this.DiatomeenAnzeige=false;
   this.anzeigeTaxadaten=true;
   this.PhythoplanktonAnzeige=false;
@@ -730,7 +736,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
 //mst-Bewertungen (komponente)
   async handleMakrophytenMPClick(komp_id:number,metric?:Metric){ //Mst-Bewertungen MP
     let para:number;
-    console.log(this.selectedMetric);
+  this.FilterAnzeige=false;
     if (metric){
       para=Number(metric.id);}
     this.metricArrayAnzeige=true;
@@ -751,6 +757,7 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.selectedMetric = this.metricArray.find(m => m.id === para.toString()) || null;
     console.log(this.selectedMetric);
     this.props=[];
+    console.log(this.anzeigenMstUebersichtService.mstUebersicht);
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
     this.props.push(this.anzeigenMstUebersichtService.displayedColumns);

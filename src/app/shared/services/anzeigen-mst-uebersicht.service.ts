@@ -561,6 +561,7 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
       let dbBewertungMSTTemp0: any = this.dbMPUebersichtMst.filter(excelspalten => excelspalten.namemst === this.uniqueMst[a]);
       let dbBewertungMSTTemp: any =dbBewertungMSTTemp0.sort();
 
+      console.log(this.dbMPUebersichtMst);
       this.mstUebersichtKl = {} as MstUebersicht;
       if (dbBewertungMSTTemp.length>0){
         
@@ -568,7 +569,10 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
         this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
         this.mstUebersichtKl.komponente=dbBewertungMSTTemp[0].komponente;
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
-        
+        //wichtig für die ausschliesliche Färbung der OEKZ
+          if (dbBewertungMSTTemp[i].id===this.mapKomponenteParameter(dbBewertungMSTTemp[i].idKomp).toString()){
+            this.mstUebersichtKl.isOEZK=true;
+          }else{this.mstUebersichtKl.isOEZK=false;}
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){
 
           case 0: {

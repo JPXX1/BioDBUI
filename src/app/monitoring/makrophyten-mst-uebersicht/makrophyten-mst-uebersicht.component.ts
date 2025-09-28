@@ -17,9 +17,14 @@ export class MakrophytenMstUebersichtComponent {
   // thi
   dataSource=this.pros[0];
   
-getColor(OZK){
-  return this.Farbebewertg.getColor(OZK);
+// getColor(OZK){
+//   return this.Farbebewertg.getColor(OZK);
    
+// }
+getColor(value: any, element: any): string | null {
+  if (!element.isOEZK) {
+    return null;
+  }
+  return this.Farbebewertg.getColor(value);
 }
-
 }

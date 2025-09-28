@@ -41,7 +41,7 @@ private apiUrl = environment.apiUrl;
  */
   public async fetchDataFromDb(komp: number,idWkArray: string[],  jahr: string): Promise<MstMitExpertenurteil[]> {
     // Die Methode erwartet eine HTTP-Anfrage oder kann Daten direkt aus einem Array verarbeiten
-    await this.anzeigenMstUebersichtService.callBwUebersicht(komp);
+    await this.anzeigenMstUebersichtService.callBwUebersichtExp(komp);
   
     const dbMPUebersichtMst = await this.anzeigenMstUebersichtService.dbMPUebersichtMst; // asynchrone Methode
     

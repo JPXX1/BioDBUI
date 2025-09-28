@@ -4,6 +4,7 @@ export interface MstUebersicht {
     mst: string;
     komponente:string;
     repreasent:boolean;
+    isOEZK:boolean;
     sp1: string;
     sp2: string;
     sp3: string;
