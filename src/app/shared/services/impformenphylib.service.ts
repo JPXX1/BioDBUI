@@ -3,7 +3,7 @@ import { HttpClient,HttpParams } from '@angular/common/http';
 import { Messwerte } from 'src/app/shared/interfaces/messwerte';
 import { Observable,throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-
+import { Einheit } from 'src/app/shared/interfaces/einheiten';
 import { MessstellenImp } from 'src/app/shared/interfaces/messstellen-imp';
 @Injectable({
   providedIn: 'root'
@@ -53,13 +53,19 @@ export class ImpPhylibServ {
    *
    * @returns Ein Observable, das die Liste von Einheiten enthält.
    */
-  getEinheiten(){ 
+  // getEinheiten(){ 
   
-    return this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
+  //   return this.httpClient.get(`${this.apiUrl}/impeinheitenphylib`);
        
    
        
-     }
+  //    }
+
+     getEinheiten(): Observable<Einheit[]> {
+      return this.httpClient.get<Einheit[]>(`${this.apiUrl}/impeinheitenphylib`);
+      // return this.http.get<Einheit[]>(this.url);
+    }
+    
     /**
      * Ruft die Stammdaten vom Server ab.
      *
@@ -206,13 +212,27 @@ export class ImpPhylibServ {
        * @returns {Observable<any>} Ein Observable, das die Antwort von der API enthält.
        */
  
-       getArtenPhylibMP(parameter :number){ 
+      //  getArtenPhylibMP(parameter :number){ 
 
-        let params = new HttpParams().set('id',parameter);
-        // console.log(params.toString())
-        //const params: { id: 1 };
-        return this.httpClient.get(`${this.apiUrl}/impArten`, {params});
-        }
+      //   let params = new HttpParams().set('id',parameter);
+      //   // console.log(params.toString())
+      //   //const params: { id: 1 };
+      //   return this.httpClient.get(`${this.apiUrl}/impArten`, {params});
+      //   }
+
+      getArtenPhylibMP(ids: number | number[]) {
+        let params = new HttpParams();
+      
+        let arr = Array.isArray(ids) ? ids : [ids];  // immer Array machen
+      
+        arr.forEach(id => {
+          params = params.append('id', id.toString());
+        });
+      
+        return this.httpClient.get(`${this.apiUrl}/impArten`, { params });
+      }
+      
+      
         /**
          * Sendet eine POST-Anfrage, um Phylib Messstellen-Daten einzufügen.
          *

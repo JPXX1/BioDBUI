@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ImpPhylibServ } from './impformenphylib.service';
 import * as XLSX from 'xlsx';
-
+import { Einheit } from 'src/app/shared/interfaces/einheiten';
 import { MstIndex } from 'src/app/shared/interfaces/mst-index';
 import { Uebersicht } from 'src/app/shared/interfaces/uebersicht';
 import { Messwerte } from 'src/app/shared/interfaces/messwerte';
@@ -75,9 +75,11 @@ export class XlsxImportPhylibService {
 
 	constructor(private impPhylibServ: ImpPhylibServ,
 		private UebersichtImportService:UebersichtImportService) { }
-
+public initialisiert:boolean=false;
 	public MstDoppelteDS:string;
-	public einheiten: any;
+	// public einheiten: any;
+	public einheiten: Einheit[] = [];
+
 	public mst: any;
 	public formen: any;
 	public arten: any;
@@ -117,7 +119,7 @@ export class XlsxImportPhylibService {
 	callarten() {
 		
 
-		this.impPhylibServ.getArtenPhylibMP(1).subscribe(arten_ => {
+		this.impPhylibServ.getArtenPhylibMP([1,2,5]).subscribe(arten_ => {
 			this.arten = arten_;
 			//console.log(this.arten);
 			//return einheiten;
@@ -140,65 +142,90 @@ export class XlsxImportPhylibService {
 	 * @async
 	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn alle Daten abgerufen wurden.
 	 */
-	async ngOnInit() {
-		try {
-			// Using firstValueFrom to convert the observable to a promise
-			this.formen = await firstValueFrom(this.impPhylibServ.getFormen());
-			//console.log(this.formen);
-		  } catch (err) {
-  // Asserting that err is an instance of Error
-  const errorMessage = (err as Error).message;
-  this.InfoBox += " " + errorMessage;
-  console.error('Error fetching formen:', errorMessage);
-}
+// 	async ngOnInit() {
+// 		try {
+// 			// Using firstValueFrom to convert the observable to a promise
+// 			this.formen = await firstValueFrom(this.impPhylibServ.getFormen());
+// 			//console.log(this.formen);
+// 		  } catch (err) {
+//   // Asserting that err is an instance of Error
+//   const errorMessage = (err as Error).message;
+//   this.InfoBox += " " + errorMessage;
+//   console.error('Error fetching formen:', errorMessage);
+// }
 
 		
 
-try {
-	// Converting the Observable to a Promise using firstValueFrom
-	this.tiefen = await firstValueFrom(this.impPhylibServ.getTiefen());
-	// console.log(this.tiefen);
-  } catch (err: unknown) {
-	// Using a type guard to check and access the error message
-	if (err instanceof Error) {
-	  this.InfoBox += " " + err.message;
-	} else {
-	  this.InfoBox += " An error occurred.";
+// try {
+// 	// Converting the Observable to a Promise using firstValueFrom
+// 	this.tiefen = await firstValueFrom(this.impPhylibServ.getTiefen());
+// 	// console.log(this.tiefen);
+//   } catch (err: unknown) {
+// 	// Using a type guard to check and access the error message
+// 	if (err instanceof Error) {
+// 	  this.InfoBox += " " + err.message;
+// 	} else {
+// 	  this.InfoBox += " An error occurred.";
+// 	}
+// 	console.error('Error fetching tiefen:', err);
+//   }
+
+		
+
+		
+// 		try {
+// 			this.einheiten = await firstValueFrom(this.impPhylibServ.getEinheiten());
+// 			// console.log(this.einheiten);
+// 		  } catch (err: unknown) {
+// 			// Using a type guard to check and access the error message
+// 			if (err instanceof Error) {
+// 			  this.InfoBox += " " + err.message;
+// 			} else {
+// 			  this.InfoBox += " An error occurred.";
+// 			}
+// 			console.error('Error fetching tiefen:', err);
+// 		  }
+		
+// 		  try {
+// 			this.parameterabiot = await firstValueFrom(this.impPhylibServ.getParameterAbiot());
+// 		  } catch (err: unknown) {
+// 			// Using a type guard to check and access the error message
+// 			if (err instanceof Error) {
+// 			  this.InfoBox += " " + err.message;
+// 			} else {
+// 			  this.InfoBox += " An error occurred.";
+// 			}
+// 			console.error('Error fetching tiefen:', err);
+// 		  }
+
+
+// 	}
+async ngOnInit() {
+	try {
+	  const [
+		formen,
+		tiefen,
+		einheiten,
+		parameterabiot
+	  ] = await Promise.all([
+		firstValueFrom(this.impPhylibServ.getFormen()),
+		firstValueFrom(this.impPhylibServ.getTiefen()),
+		firstValueFrom(this.impPhylibServ.getEinheiten()),
+		firstValueFrom(this.impPhylibServ.getParameterAbiot())
+	  ]);
+  
+	  this.formen = formen;
+	  this.tiefen = tiefen;
+	  this.einheiten = einheiten;
+	  this.parameterabiot = parameterabiot;
+  
+	  this.initialisiert = true;
+  
+	} catch (err) {
+	  console.error('Initialisierung fehlgeschlagen', err);
 	}
-	console.error('Error fetching tiefen:', err);
   }
-
-		
-
-		
-		try {
-			this.einheiten = await firstValueFrom(this.impPhylibServ.getEinheiten());
-			// console.log(this.einheiten);
-		  } catch (err: unknown) {
-			// Using a type guard to check and access the error message
-			if (err instanceof Error) {
-			  this.InfoBox += " " + err.message;
-			} else {
-			  this.InfoBox += " An error occurred.";
-			}
-			console.error('Error fetching tiefen:', err);
-		  }
-		
-		  try {
-			this.parameterabiot = await firstValueFrom(this.impPhylibServ.getParameterAbiot());
-		  } catch (err: unknown) {
-			// Using a type guard to check and access the error message
-			if (err instanceof Error) {
-			  this.InfoBox += " " + err.message;
-			} else {
-			  this.InfoBox += " An error occurred.";
-			}
-			console.error('Error fetching tiefen:', err);
-		  }
-
-
-	}
-
+  
 	/**
 	 * Ruft asynchron die MST-Daten mithilfe des impPhylibServ-Dienstes ab und weist sie der mst-Eigenschaft zu.
 	 * 
@@ -577,8 +604,8 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 									this.MessDataOrgi.push({ _Nr: o, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 									
 									this._uebersicht.mst=aMessstelle;this._uebersicht.fehler1=mstOK;this._uebersicht.fehler2=ok;this._uebersicht.fehler3="";this._uebersicht.import1=importp;
-									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = null; cf = null; ok = ""; mstOK = "";RLD=null;
-									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = null; acf = null;
+									Messstelle = null; Probe = null; Taxon = null; Form = null; Messwert = null; Einheit = null; Tiefe = 1; cf = null; ok = ""; mstOK = "";RLD=null;
+									aMessstelle = null; aProbe = null; aTaxon = null; aForm = null; aMesswert = null; aEinheit = null; aTiefe = '-'; acf = null;
 									this.groupNAch();
 								}
 
@@ -638,6 +665,7 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 
 							}
 							if (i == 'Einheit') {
+								console.log('einheiten:', this.einheiten, Array.isArray(this.einheiten));
 
 								var EinheitName: string = obj[index][i];
 								let einh = this.einheiten.filter((einheit) => einheit.importname == EinheitName);
@@ -675,12 +703,16 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 				//of(array);
 			}
 		}
+
+									
 									array.push({ _Nr: array.length+1, _Messstelle: mst, _Tiefe: Tiefe, _Probe: Probe, _Taxon: Taxon, _Form: Form, _Messwert: Messwert, _Einheit: Einheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD  });
 									this.MessDataOrgi.push({ _Nr: array.length+1, _Messstelle: aMessstelle, _Tiefe: aTiefe, _Probe: aProbe, _Taxon: aTaxon, _Form: aForm, _Messwert: Messwert, _Einheit: aEinheit, _cf: cf, MstOK: mstOK, OK: ok, _AnzahlTaxa: 1, _idAbundanz: 1,_RoteListeD:RLD });
 								
 		this.MessDataImp = array;
 		
 	}
+
+	  
 
 		/**
 		 * Gruppiert und verarbeitet Daten asynchron basierend auf der bereitgestellten Übersicht.

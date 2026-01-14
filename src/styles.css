@@ -16,11 +16,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;
 .notranslate {
   translate: no; /* Dieses CSS sagt Browsern, dass die Inhalte nicht übersetzt werden sollen */
 }
-.mat-menu-panel {
-  width: auto !important; /* Dynamische Breite */
-  max-width: none !important; /* Keine maximale Breite */
-  white-space: nowrap; /* Kein Umbruch */
+/* Header-ZEILE einfärben */
+tr.cdk-header-row {
+  background-color: rgb(238, 237, 236);
 }
+
+/* Header-ZELLEN normalisieren */
+th.cdk-header-cell {
+  font-weight: normal;   /* Browser-default überschreiben */
+  background-color: transparent;
+}
+
+
 
 .mat-menu-item {
   white-space: nowrap; /* Kein Zeilenumbruch */
@@ -42,3 +49,11 @@ mat-dialog-content {
   overflow: hidden;
   height: auto;
 }
+
+/* templateUrl: './eineldatenimp.component.html', */
+th.mat-header-cell {
+  font-weight: normal;
+  background-color: rgb(238, 237, 236);
+}
+
+

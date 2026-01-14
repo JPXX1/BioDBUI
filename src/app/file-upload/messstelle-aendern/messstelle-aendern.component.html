@@ -5,15 +5,30 @@
 
 <div mat-dialog-content>
   <form [formGroup]="formInstance" style="height: 800px;">
-    
+ 
     <div class="mt-5">
-      <mat-label>andere Messstelle auswählen</mat-label>
-      <ng-multiselect-dropdown [placeholder]="MeldeMst" [settings]="dropdownMeldeSettings" [data]="dropdownMeldeMst"
+      <mat-label>Gewässer auswählen um Messstellen zu filtern</mat-label>
+    
+      <ng-multiselect-dropdown
+        
+        placeholder="Gewässer"
+        [settings]="dropdownGewaesserSettings"
+        [data]="dropdownGewaesserList"
+        (onSelect)="onGewaesserSelect($event)">
+      </ng-multiselect-dropdown>
+    </div>
+
+       
+    <div class="mt-5">
+      <mat-label>Messstelle auswählen</mat-label>
+      <ng-multiselect-dropdown 
+      [placeholder]="MeldeMst" 
+      [settings]="dropdownMeldeSettings" 
+      [data]="dropdownMeldeMst"
         (onSelect)="onItemSelectMeldemst($event)">
       </ng-multiselect-dropdown>
 
     </div>
-
   </form>
 </div>
 

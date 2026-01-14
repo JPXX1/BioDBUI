@@ -45,14 +45,15 @@ export class MessstelleAendernComponent {
 
   Mst_name:string;
   
-  wk:any;
+  gewaesser:any;
   formInstance: FormGroup;
   
   MeldeMst:string;
-  dropdownList:WasserkoerperSelect[]=[];
+  Gewässer:string;
+  dropdownGewaesserList:GewaesserSelect[]=[];
   dropdownMeldeMst:MeldeMst[]=[]
   //selectedItems:WasserkoerperSelect[]=[];
-  dropdownSettings:IDropdownSettings = {};
+  dropdownGewaesserSettings: IDropdownSettings = {};
   dropdownMeldeSettings:IDropdownSettings = {};
  
   // wk:any=[];
@@ -65,6 +66,8 @@ export class MessstelleAendernComponent {
       this.formInstance = this.fb.group({
         id_mst: ['', Validators.required],
         namemst: ['', Validators.required],
+        idgewaesser: ['', Validators.required],
+        gewaessername: ['', Validators.required],
 
       
        
@@ -87,14 +90,47 @@ this.dropdownMeldeSettings={
 
 
 }
+this.dropdownGewaesserSettings = {
+  singleSelection: true,
+  idField: 'idgewaesser',
+  textField: 'gewaessername',
+  allowSearchFilter: true,
+  closeDropDownOnSelection: true
+};
+
 for (let a=0,ls=this.data.mststam.length; a < ls; a += 1){
 let temp:MessstellenStam={} as MessstellenStam;
 
 temp.id_mst=this.data.mststam[a].id_mst;
 temp.namemst=this.data.mststam[a].namemst;
-
+console.log(temp.namemst);
   this.dropdownMeldeMst.push(temp);
 }
+console.log(
+  'distinct idgewaesser in mststam:',
+  new Set(this.data.mststam.map(m => m.idgewaesser)).size
+);
+
+const gewaesserDistinct = Array.from(
+
+  
+  new Map(
+    this.data.mststam.map(m => [
+      m.idgewaesser,
+      {
+        idgewaesser: m.idgewaesser,
+        gewaessername: m.gewaessername
+      }
+    ])
+  ).values()
+).sort((a, b) =>
+  a.gewaessername.localeCompare(b.gewaessername, 'de', {
+    sensitivity: 'base'
+  })
+);
+console.log(gewaesserDistinct);
+this.dropdownGewaesserList = gewaesserDistinct;
+
 
      
   
@@ -120,6 +156,24 @@ onItemSelectMeldemst(item: any) {
 
 }
 
+onGewaesserSelect(item: any) {
+  console.log('Gewässer gewählt:', item);
+
+  // Formularfelder setzen
+  this.formInstance.get('idgewaesser')?.setValue(item.idgewaesser);
+  this.formInstance.get('gewaessername')?.setValue(item.gewaessername);
+
+  // Messstellen nach Gewässer filtern
+  this.dropdownMeldeMst = this.data.mststam
+    .filter(m => m.idgewaesser === item.idgewaesser)
+    .map(m => ({
+      id_mst: m.id_mst,
+      namemst: m.namemst,
+      repraesent: m.repraesent ?? false
+    }));
+}
+
+
 
 /**
  * Speichert die aktuellen Formulardaten und schließt den Dialog.
@@ -141,7 +195,7 @@ save(): void {
  * Schnittstelle, die eine Auswahl eines Wasserkörpers (Wasserbody) darstellt.
  */
 
-interface WasserkoerperSelect {
+interface GewaesserSelect {
 
-  id:number;
-  wk_name: string;}
+  idgewaesser:number;
+  gewaessername: string;}

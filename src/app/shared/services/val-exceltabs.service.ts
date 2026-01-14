@@ -125,27 +125,35 @@ export class ValExceltabsService {
 exceltabsauslesen(workbook) {
   let tabs = "";
   let tabsvier = "";
-  
-  for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-    // Holt den Namen des aktuellen Tabs und wandelt ihn in Kleinbuchstaben um
-    const tabNeu = workbook.SheetNames[i].toLowerCase();
-    
+
+  // 🔹 SheetNames kopieren, lowercase & alphabetisch sortieren
+  const sortedSheetNames = [...workbook.SheetNames]
+    .map(name => name.toLowerCase())
+    .sort((a, b) => a.localeCompare(b, 'de')); // ASC, deutsch
+
+  const l = sortedSheetNames.length;
+
+  for (let i = 0; i < l; i++) {
+    const tabNeu = sortedSheetNames[i];
+
     if (i + 1 < l) {
       if (i < 3) {
-        tabsvier = tabsvier + tabNeu + ";";
+        tabsvier += tabNeu + ";";
       }
       if (i === 3) {
-        tabsvier = tabsvier + tabNeu;
+        tabsvier += tabNeu;
       }
-      tabs = tabs + tabNeu + ";";
-    } else if (i + 1 === l) {
-      tabs = tabs + tabNeu;
+      tabs += tabNeu + ";";
+    } else {
+      tabs += tabNeu;
+      tabsvier += tabNeu;
     }
   }
-  
+
   this.ExceltabsimpVier = tabsvier;
   this.Exceltabsimpalle = tabs;
 }
+
 
     /**
      * Zählt die Vorkommen von Einträgen aus den Excel-Import-Registerkarten, die dem angegebenen Filter entsprechen.
@@ -220,16 +228,18 @@ exceltabsauslesen(workbook) {
     sheetNames.forEach((sheetName) => {
       const sheet = workbook.Sheets[sheetName];
     
-      // Prüfen, ob das Sheet nicht leer ist
+      // Prüfen, ob das Sheet nicht leer ist und ermittelt die Anzahl der Tabs aus dem Worksheet
       if (sheet && sheet['!ref']) {
         tabs++;
       }
     });
 
 this.tabs=tabs;
-    // let tabs = workbook.SheetNames.length;
+    // liest die erwarteten Exceltabsnamen aus der Postgres-Tabelle val_exceltabs aus, 
+    // die entsprechende zahl an Tabs haben
     let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === tabs);
     this.exceltabsauslesen(workbook);//liest Exceltabs aus
+    this.sanitizeWorkbook(workbook); // Sanitize workbook to fix broken !ref ranges
     this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
 
     if (valexceltabsfilter.length === 1) {//wenn nur eine Vorlage für ein Tab vorhanden ist
@@ -353,29 +363,100 @@ this.tabs=tabs;
    * und extrahiert die Spaltennamen aus der ersten Zeile jedes Blattes. Die Spaltennamen werden dann
    * zusammen mit dem entsprechenden Blattnamen im Array `excelspaltenimport` gespeichert.
    */
-  spaltenauslesen( workbook) {
+  spaltenauslesen(workbook) {
 
-    this.excelspaltenimport=[];
-    let XL_row_object;
-    let json_daten;
-    for (let a = 0, l = workbook.SheetNames.length; a < l; a += 1) {
-      
-      let Tabname=workbook.SheetNames[a];
-    XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[a]]);
-    json_daten = JSON.stringify(XL_row_object);
-    const obj = JSON.parse(json_daten);
-    obj.forEach((val, index) => {
-      if (obj[index] !== null && index===0) {
-        for (var i in obj[index]) {
-          let temp:TabSpalte={} as TabSpalte;
-
-         temp.Spaltenname=i.toLowerCase();
-         temp.Tabname=Tabname.toLowerCase();
-          this.excelspaltenimport.push(temp);
+    this.excelspaltenimport = [];
+  
+    for (const sheetName of workbook.SheetNames) {
+  
+      const sheet = workbook.Sheets[sheetName];
+  
+      const range = XLSX.utils.decode_range(sheet['!ref']);
+      const headerRow = range.s.r; // meist 0
+  
+      for (let c = range.s.c; c <= range.e.c; c++) {
+  
+        const cellRef = XLSX.utils.encode_cell({ r: headerRow, c });
+        const cell = sheet[cellRef];
+  
+        // ⛔ Abbruch bei erster leerer Spalte
+        if (!cell || cell.v === undefined || cell.v === null || cell.v === '') {
+          break;
         }
+  
+        this.excelspaltenimport.push({
+          Spaltenname: String(cell.v).trim().toLowerCase(),
+          Tabname: sheetName.toLowerCase()
+        });
       }
-    })}
+    }
   }
+ /**
+ * Sanitiert Excel-Sheets mit fehlerhaftem Used-Range (!ref).
+ *
+ * Hintergrund:
+ * Manche Excel-Dateien enthalten ein kaputtes !ref (z. B. A1:AMJ1048576),
+ * wodurch XLSX-Funktionen extrem langsam werden oder hängen.
+ *
+ * Strategie:
+ * - Iteriert über alle Sheets (Sheetnamen sind variabel)
+ * - Erkennt offensichtlich kaputte Used-Ranges
+ * - Liest ausschließlich die Header-Zeile
+ * - Bestimmt die letzte echte Spalte
+ * - Verkleinert !ref auf den real genutzten Bereich
+ *
+ * Wichtig:
+ * - Repariert NUR die In-Memory-Struktur (keine Änderung der Excel-Datei!)
+ * - Sicher für Import-/Analyse-Zwecke
+ * - Verändert keine Zellwerte
+ *
+ * @param workbook XLSX-Workbook-Objekt
+ */
+
+sanitizeWorkbook(workbook: XLSX.WorkBook) {
+
+  for (const sheetName of workbook.SheetNames) {
+
+    const sheet = workbook.Sheets[sheetName];
+    if (!sheet || !sheet['!ref']) continue;
+
+    const ref = sheet['!ref'];
+
+    // Excel-Maximum → sicher kaputt
+    if (!ref.includes('1048576')) continue;
+
+    const range = XLSX.utils.decode_range(ref);
+    const headerRow = range.s.r;
+
+    let lastCol = range.s.c;
+    let emptyCount = 0;
+
+    for (let c = range.s.c; c <= range.e.c; c++) {
+
+      const cellRef = XLSX.utils.encode_cell({ r: headerRow, c });
+      const cell = sheet[cellRef];
+
+      if (!cell || cell.v === '' || cell.v == null) {
+        emptyCount++;
+        if (emptyCount >= 2) break;
+        continue;
+      }
+
+      emptyCount = 0;
+      lastCol = c;
+    }
+
+    // Neues, sauberes ref (nur Header-Zeile)
+    sheet['!ref'] = XLSX.utils.encode_range({
+      s: { r: headerRow, c: range.s.c },
+      e: { r: headerRow, c: lastCol }
+    });
+
+    console.warn(`Sheet "${sheetName}" hatte kaputtes !ref → korrigiert`);
+  }
+}
+
+  
   /**
    * Filtert und verarbeitet Excel-Spalten basierend auf dem angegebenen Tabellennamen.
    * 

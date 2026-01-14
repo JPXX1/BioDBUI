@@ -146,8 +146,8 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(MatSort) sort: MatSort;
 	@Output() newData =new EventEmitter<MessstellenStam>();
 
-	@HostListener('window:resize', ['$event'])
-	@HostListener('window:scroll', ['$event'])
+	// @HostListener('window:resize', ['$event'])
+	// @HostListener('window:scroll', ['$event'])
 	/**
 	 * Setzt die Skalierung des Elements auf 1 zurück, wenn eine Änderung festgestellt wird.
 	 * Diese Methode verhindert das Zoomen, indem sie den Transformationsmaßstab auf 1 setzt
@@ -1056,7 +1056,7 @@ if (validIds.includes(result.id_verfahren)) {
 		
 		
 		await this.stammdatenService.callBwUebersicht();
-		await this.stammdatenService.filterMst(true,false);
+		await this.stammdatenService.filterMst(true,true);
 	
 	  //console.log(this.stammdatenService.wk)
 	  let name_alt:string=person.mst;
