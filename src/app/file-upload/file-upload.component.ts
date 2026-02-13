@@ -2,6 +2,7 @@ import {ElementRef,Injector, HostListener,NgZone,Component, OnInit,Output ,ViewC
 import { FileUploadService } from '../shared/services/file-upload.service';
 import * as XLSX from 'xlsx';
 import { HelpService } from '../shared/services/help.service';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import {PerlodesimportService} from '../shared/services/perlodesimport.service';
 import { Messwerte } from 'src/app/shared/interfaces/messwerte';
 import { Uebersicht } from 'src/app/shared/interfaces/uebersicht';
@@ -145,7 +146,10 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	@Output() newData =new EventEmitter<MessstellenStam>();
+	@ViewChild('importPanel') importPanel!: MatExpansionPanel;
+	@ViewChild('panelElement', { read: ElementRef }) panelElement!: ElementRef;
 
+	private observer!: IntersectionObserver;
 	// @HostListener('window:resize', ['$event'])
 	// @HostListener('window:scroll', ['$event'])
 	/**
@@ -197,7 +201,7 @@ export class FileUploadComponent implements OnInit,AfterViewInit {
 	shortLink: string = "";
 	loading: boolean = false; // Flag variable 
 	file: File = null; // Variable to store file 
-
+	showImportHistory = true;
 	// Inject service 
 	
 	constructor (private el: ElementRef,private zone: NgZone, private snackBar: MatSnackBar,private helpService: HelpService,private router: Router,private authService: AuthService,private anzeigeBewertungMPService:AnzeigeBewertungMPService,private uebersichtImportService:UebersichtImportService,public Farbebewertg:FarbeBewertungService,private perlodesimportService:PerlodesimportService,private fileUploadService: FileUploadService,
@@ -221,6 +225,7 @@ logValue(colName: string, value: any) {
 	return value;
   }
 handleJahrSelected(selectedJahr: number) {
+	 this.importPanel.close();
 	this.ImportIntoDB=true;
 	this.pruefen=false;
     // console.log("Ausgewähltes Jahr:", selectedJahr);
@@ -246,6 +251,7 @@ handleJahrSelected(selectedJahr: number) {
  * @param selectedPN - Die ausgewählte Probenehmernummer.
  */
   handlePNSelected(selectedPN: number) {
+	 this.importPanel.close();
 	this.ImportIntoDB=true;
 	this.pruefen=false;
 
@@ -448,7 +454,24 @@ if (validIds.includes(result.id_verfahren)) {
 	  ngAfterViewInit() {
 	
 	//	const elements = document.querySelectorAll('.helpable') as NodeListOf<HTMLElement>;
-		this.helpService.registerMouseoverEvents();}
+		this.helpService.registerMouseoverEvents();
+	
+	//expansion-pannel einklappen, wenn nicht mehr sichtbar
+  this.observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+
+      // Wenn Panel nicht mehr sichtbar ist
+      if (!entry.isIntersecting && this.importPanel.expanded) {
+        this.importPanel.close();
+      }
+
+    });
+  }, {
+    threshold: 0.1   // ab 10% sichtbar gilt als sichtbar
+  });
+
+  this.observer.observe(this.panelElement.nativeElement);
+	}
 
 
 	
@@ -525,6 +548,7 @@ if (validIds.includes(result.id_verfahren)) {
 		 * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn die Überprüfungen und Operationen abgeschlossen sind.
 		 */
 	async pruefeObMesswerteschonVorhanden(): Promise<void> {
+		 this.importPanel.close();
 		this.jahr = this.child1.selected;
 		this.probenehmer = this.childPN.selectedPN;
 	
@@ -555,6 +579,7 @@ if (validIds.includes(result.id_verfahren)) {
 	
 		switch (NrVerfahren) {
 			case 1://Phylib-Import
+		
 			case 3://Perlodes-Import
 			case 6://Phytosee-ImportLLBB
 				await this.handlePruefen(NrVerfahren);
@@ -574,6 +599,7 @@ if (validIds.includes(result.id_verfahren)) {
 					this.InfoBox('Daten lassen sich nicht oder nur teilweise importieren.');
 				}else{this.InfoBox('Daten lassen sich importieren.');}
 				break;
+				case 2://Phylib-Bewertungen-Export
 				case 4://Perlodes-Export
 
 				
@@ -726,6 +752,7 @@ if (validIds.includes(result.id_verfahren)) {
 	 */
 	async	importIntoDB(){
 		// this.zone.run(() => this.startLoading());
+		 this.importPanel.close();
 			let useincludeDate:boolean=false;
 			this.jahr=this.child1.selected;
 			this.probenehmer=this.childPN.selectedPN;
@@ -759,9 +786,16 @@ if (validIds.includes(result.id_verfahren)) {
 				
 				 const message =await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
 				this.InfoBox(message);
-				this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
-				this.uebersichtImport.push(this.newuebersichtImport);
+				// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+				// this.uebersichtImport.push(this.newuebersichtImport);
+				// return;
+				if (message==="Datenimport erfolgreich durchgeführt."){
+					this.updateImportHistorie();
+					
+				}
+				
 				return;
+
 			}}
 				else 
 				// hier werden die Bewertungen importiert
@@ -783,15 +817,20 @@ if (validIds.includes(result.id_verfahren)) {
 				
 					//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				
+					this.archivImportErzeugen();
 				
-				this.archivImportErzeugen();
 				this.xlsxImportPhylibService.holeMst();
 				const message=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
 				this.InfoBox(message);
+				if (message==="Datenimport erfolgreich durchgeführt."){
+					this.updateImportHistorie();
+									}
 				
-				this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
-				this.uebersichtImport.push(this.newuebersichtImport);
 				return;
+
+				// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+				// this.uebersichtImport.push(this.newuebersichtImport);
+				// return;
 			}}
 				else 
 				{this.InfoBox("Bitte erst eine Importdatei hochladen.")}
@@ -801,6 +840,14 @@ if (validIds.includes(result.id_verfahren)) {
 
 
 			}
+
+			private async updateImportHistorie() {
+				await this.uebersichtImportService.start();
+				this.uebersichtImport = [...this.uebersichtImportService.uebersicht];
+				
+			  }
+			  
+
 			//sortiert Importübersicht 	
 	sortData(sort: Sort) {
 		/**
@@ -863,10 +910,11 @@ if (validIds.includes(result.id_verfahren)) {
 			 */
 			async addfile()     
 		{ 
-			this.valExceltabsService = this.injector.get(ValExceltabsService);
-			this.xlsxImportPhylibService = this.injector.get(XlsxImportPhylibService);
-			this.phytoseeServiceService = this.injector.get(PhytoseeServiceService);
-			this.perlodesimportService = this.injector.get(PerlodesimportService);
+			 this.importPanel.close();
+			// this.valExceltabsService = this.injector.get(ValExceltabsService);
+			// this.xlsxImportPhylibService = this.injector.get(XlsxImportPhylibService);
+			// this.phytoseeServiceService = this.injector.get(PhytoseeServiceService);
+			// this.perlodesimportService = this.injector.get(PerlodesimportService);
 			
 			
 			this.ImportDatenAnzeige=false;
@@ -1032,7 +1080,29 @@ if (validIds.includes(result.id_verfahren)) {
 					this.InfoBox("Keine Importdatei.");
 				}
 				 this.dataSource.sort=this.sort;
-			}   }finally { this.zone.run(() => this.stopLoading());} 
+			}   }
+			
+			finally {
+				this.zone.run(() => {
+			  
+				  // ✅ 1️⃣ Neue Referenz (reicht völlig!)
+				  this.uebersichtImport = this.uebersichtImport.map(row => ({
+					...row,
+					_showDelete: this.uebersichtImportService.isWithinFourWeeks(row.importiert)
+				  }));
+				  
+			  
+				  // ✅ 2️⃣ Sort neu binden (sicher)
+				  if (this.dataSource && this.sort) {
+					this.dataSource.sort = this.sort;
+				  }
+			  
+				  // ✅ 3️⃣ Loading stoppen
+				  this.stopLoading();
+				});
+			  }
+			  
+			
 			}
 
 	/**
@@ -1051,6 +1121,7 @@ if (validIds.includes(result.id_verfahren)) {
 	
 	async edit(person: Uebersicht) {
 		let mst_id_alt
+		this.importPanel.close();
 		// console.log(this.xlsxImportPhylibService.MessDataImp)
 		// let mststam1:MessstellenStam[]=this.stammdatenService.messstellenarray;
 		
@@ -1071,12 +1142,15 @@ if (validIds.includes(result.id_verfahren)) {
 	
 		// person.wknamen=(this.stammdatenService.wk);
 		const dialogRef = this.dialog.open(MessstelleAendernComponent, {
-		  width: '800px',height: '800px',
+		  		    width: '400px', maxHeight: '80vh',
 		  data: temp
 		  });
 	 
 	  
 		dialogRef.afterClosed().subscribe(result => {
+		if (!result || !result.id_mst || result.id_mst === '') {
+ 			 return;
+		} else
 		  if (result) {
 			let mst_id_neu=result.id_mst;
 			// let Uebersicht =this.xlsxImportPhylibService.uebersicht.filter(dd=>dd.mst===person.mst)
@@ -1142,15 +1216,81 @@ displayableColumns(idverfahren:number){
 	if (idverfahren===4 || idverfahren===5) {tab=2;} else {tab=0;}
 	
 	this.showHandleRowClick=this.xlsxImportPhylibService.waehleSpaltenUebersicht(idverfahren,this.valExceltabsService.valspalten,tab);
+	if (idverfahren===2){
+
+		this.leerespaltenausschliessen();
+		
+	}
+	else {
 	this.displayColumnNames=this.xlsxImportPhylibService.displayColumnNames;
 	this.dynamicColumns=this.xlsxImportPhylibService.dynamicColumns;
 // console.log(this.dynamicColumns);
 // console.log(this.displayColumnNames);
 	this.uebersicht = this.xlsxImportPhylibService.uebersicht;
 	this.dataSource = new MatTableDataSource(this.xlsxImportPhylibService.uebersicht);
+	}
 	this.dataSource.paginator = this.paginator;
 	this.paginator._intl.itemsPerPageLabel="Zeilen pro Seite";
 }
+
+leerespaltenausschliessen(): void {
+
+	const daten = this.xlsxImportPhylibService.uebersicht;
+  
+	// feste Spalten
+	const fixedLeft  = ['nr', 'mst'];
+	const fixedRight = ['fehler1', 'import1', 'actions'];
+  
+	// sp-Spalten + passende Header (indexgleich!)
+	const spOnly: string[] = [];
+	const displaySpOnly: string[] = [];
+  
+	this.xlsxImportPhylibService.dynamicColumns.forEach((col, i) => {
+	  if (/^sp\d+$/.test(col)) {
+		spOnly.push(col);
+		displaySpOnly.push(this.xlsxImportPhylibService.displayColumnNames[i]);
+	  }
+	});
+  
+	// filtern (JETZT indexsicher!)
+	const filtered = this.xlsxImportPhylibService.filterVisibleColumns(
+	  daten,
+	  spOnly,
+	  displaySpOnly
+	);
+  
+	// finale Reihenfolge
+	this.dynamicColumns = [
+	  ...fixedLeft,
+	  ...filtered.dynamic,
+	  ...fixedRight
+	];
+  
+	this.displayColumnNames = [
+	  'Nr',
+	  'Messstelle',
+	  ...filtered.display,
+	  'Fehler',
+	  'Import',
+	  ''
+	];
+  
+	this.dataSource = new MatTableDataSource(daten);
+  }
+  
+  truncateWords(value: any, maxWords: number): string {
+	if (value === null || value === undefined) {
+	  return '';
+	}
+  
+	const words = value.toString().trim().split(/\s+/);
+	return words.length > maxWords
+	  ? words.slice(0, maxWords).join(' ') + '...'
+	  : value;
+  }
+  
+ 
+	
 
 getCellBackground(i: number, colName: string, value: any): string | null {
 	const header = this.displayColumnNames[i];
@@ -1190,6 +1330,7 @@ getCellBackground(i: number, colName: string, value: any): string | null {
 	 */
 	
 	handleRowClick(row){
+		this.importPanel.close();
 		if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===8  || this.valExceltabsService.NrVerfahren===9){
 		this.Datimptabphyto=true;
 		this.Datimptab=false;}

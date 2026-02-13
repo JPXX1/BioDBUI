@@ -218,30 +218,34 @@ exceltabsauslesen(workbook) {
     //holt sich alle Exceltabs aus Postgres (Tabelle val_exceltabs)
     await this.callvalexceltabs();
     
-    //Anzahl Tabs ermitteln
+//     //Anzahl Tabs ermitteln
 
-    const sheetNames = workbook.SheetNames;
+//     const sheetNames = workbook.SheetNames;
 
-    // Anzahl der Tabs mit Inhalt ermitteln
-    let tabs = 0;
+//     // Anzahl der Tabs mit Inhalt ermitteln
+//     let tabs = 0;
     
-    sheetNames.forEach((sheetName) => {
-      const sheet = workbook.Sheets[sheetName];
+//     sheetNames.forEach((sheetName) => {
+//       const sheet = workbook.Sheets[sheetName];
     
-      // Prüfen, ob das Sheet nicht leer ist und ermittelt die Anzahl der Tabs aus dem Worksheet
-      if (sheet && sheet['!ref']) {
-        tabs++;
-      }
-    });
+//       // Prüfen, ob das Sheet nicht leer ist und ermittelt die Anzahl der Tabs aus dem Worksheet
+//       if (sheet && sheet['!ref']) {
+//         tabs++;
+//       }
+//     });
 
-this.tabs=tabs;
+// this.tabs=tabs;
+// console.log (this.Exceltabsimpalle);
+// console.log (this.tabs);
     // liest die erwarteten Exceltabsnamen aus der Postgres-Tabelle val_exceltabs aus, 
     // die entsprechende zahl an Tabs haben
-    let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === tabs);
-    this.exceltabsauslesen(workbook);//liest Exceltabs aus
+   
+    // this.exceltabsauslesen(workbook);//liest Exceltabs aus
     this.sanitizeWorkbook(workbook); // Sanitize workbook to fix broken !ref ranges
-    this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
+    // this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
+this.analysiereWorkbook(workbook);
 
+ let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === this.tabs);
     if (valexceltabsfilter.length === 1) {//wenn nur eine Vorlage für ein Tab vorhanden ist
       //Anzahl der Tabs ist eindeutig für Verfahrensauswahl
       if (valexceltabsfilter[0].ident_kriterium === 1) {
@@ -371,7 +375,16 @@ this.tabs=tabs;
   
       const sheet = workbook.Sheets[sheetName];
   
-      const range = XLSX.utils.decode_range(sheet['!ref']);
+//leere sheets (ohne Daten) überspringen
+
+if (!sheet || !sheet['!ref']) {
+  console.warn("Leeres Sheet übersprungen:", sheetName);
+  continue;
+}
+
+const range = XLSX.utils.decode_range(sheet['!ref']);
+
+
       const headerRow = range.s.r; // meist 0
   
       for (let c = range.s.c; c <= range.e.c; c++) {
@@ -391,6 +404,77 @@ this.tabs=tabs;
       }
     }
   }
+  private analysiereWorkbook(workbook: XLSX.WorkBook) {
+
+  this.excelspaltenimport = [];
+
+  let tabs = "";
+  let tabsvier = "";
+  let validSheetNames: string[] = [];
+
+  for (const sheetName of workbook.SheetNames) {
+
+    const sheet = workbook.Sheets[sheetName];
+
+    // 🔹 Leere Sheets überspringen
+    if (!sheet || !sheet['!ref']) {
+      console.warn("Leeres Sheet übersprungen:", sheetName);
+      continue;
+    }
+
+    const range = XLSX.utils.decode_range(sheet['!ref']);
+
+    // Optional: wirklich leere Sheets erkennen
+    if (range.e.r === 0 && range.e.c === 0) {
+      console.warn("Sheet ohne echte Daten:", sheetName);
+      continue;
+    }
+
+    validSheetNames.push(sheetName.toLowerCase());
+
+    const headerRow = range.s.r;
+
+    for (let c = range.s.c; c <= range.e.c; c++) {
+
+      const cellRef = XLSX.utils.encode_cell({ r: headerRow, c });
+      const cell = sheet[cellRef];
+
+      if (!cell || cell.v == null || cell.v === '') {
+        break;
+      }
+
+      this.excelspaltenimport.push({
+        Spaltenname: String(cell.v).trim().toLowerCase(),
+        Tabname: sheetName.toLowerCase()
+      });
+    }
+  }
+
+  // 🔹 Tabs alphabetisch sortieren
+  const sortedSheetNames = validSheetNames
+    .sort((a, b) => a.localeCompare(b, 'de'));
+
+  const l = sortedSheetNames.length;
+
+  for (let i = 0; i < l; i++) {
+
+    const tabNeu = sortedSheetNames[i];
+
+    if (i + 1 < l) {
+      if (i < 3) tabsvier += tabNeu + ";";
+      if (i === 3) tabsvier += tabNeu;
+      tabs += tabNeu + ";";
+    } else {
+      tabs += tabNeu;
+      tabsvier += tabNeu;
+    }
+  }
+
+  this.tabs = l;
+  this.ExceltabsimpVier = tabsvier;
+  this.Exceltabsimpalle = tabs;
+}
+
  /**
  * Sanitiert Excel-Sheets mit fehlerhaftem Used-Range (!ref).
  *

@@ -1,0 +1,26 @@
+Error loading WMTS layer: TypeError: Failed to fetch
+    at /home/jens/angular-file-upload/node_modules/zone.js/fesm2015/zone.js:1498:36
+    at proto.<computed> (/home/jens/angular-file-upload/node_modules/zone.js/fesm2015/zone.js:962:24)
+    at /home/jens/angular-file-upload/src/app/map/map.component.ts:295:28
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep (/home/jens/angular-file-upload/node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:3:1)
+    at _next (/home/jens/angular-file-upload/node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:22:1)
+    at /home/jens/angular-file-upload/node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:27:1
+    at new ZoneAwarePromise (/home/jens/angular-file-upload/node_modules/zone.js/fesm2015/zone.js:1411:21)
+    at /home/jens/angular-file-upload/node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:19:1
+    at MapComponent.loadWmtsLayer (http://localhost:4200/main.js:9417:7) {stack: 'TypeError: Failed to fetch
+    at http://loca…sLayer (http://localhost:4200/main.js:9417:7)', message: 'Failed to fetch'}
+
+Globaler Fehler: Cannot read properties of undefined (reading 'removeLayer')
+global-error-handler.service.ts:44
+Stack: TypeError: Cannot read properties of undefined (reading 'removeLayer')
+    at MapComponent.removeallbp (http://localhost:4200/main.js:10047:14)
+    at MapComponent.vierterBP (http://localhost:4200/main.js:10094:10)
+    at MapComponent_Template_mat_checkbox_click_15_listener (http://localhost:4200/main.js:10466:22)
+    at executeListenerWithErrorHandling (http://localhost:4200/vendor.js:61345:12)
+    at wrapListenerIn_markDirtyAndPreventDefault (http://localhost:4200/vendor.js:61376:18)
+    at HTMLElement.<anonymous> (http://localhost:4200/vendor.js:120243:112)
+    at _ZoneDelegate.invokeTask (http://localhost:4200/polyfills.js:8206:171)
+    at http://localhost:4200/vendor.js:55519:49
+    at AsyncStackTaggingZoneSpec.onInvokeTask (http://localhost:4200/vendor.js:55519:30)
+    at _ZoneDelegate.invokeTask (http://localhost:4200/polyfills.js:8206:54)

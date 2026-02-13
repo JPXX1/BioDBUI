@@ -1,40 +1,49 @@
-<span style="font-size:x-large;font-weight:500;"
-  
-  [innerHTML]="Mst_name"> 
-></span>
+<h2 mat-dialog-title>{{ Mst_name }}</h2>
 
 <div mat-dialog-content>
-  <form [formGroup]="formInstance" style="height: 800px;">
- 
-    <div class="mt-5">
-      <mat-label>Gewässer auswählen um Messstellen zu filtern</mat-label>
-    
-      <ng-multiselect-dropdown
+  <form [formGroup]="formInstance">
+
+    <!-- Gewässer -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Gewässer auswählen</mat-label>
+      <mat-select
+        formControlName="idgewaesser"
+        (selectionChange)="onGewaesserChange($event.value)">
         
-        placeholder="Gewässer"
-        [settings]="dropdownGewaesserSettings"
-        [data]="dropdownGewaesserList"
-        (onSelect)="onGewaesserSelect($event)">
-      </ng-multiselect-dropdown>
-    </div>
+        <mat-option *ngFor="let g of dropdownGewaesserList"
+                    [value]="g.idgewaesser">
+          {{ g.gewaessername }}
+        </mat-option>
 
-       
-    <div class="mt-5">
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Messstelle -->
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Messstelle auswählen</mat-label>
-      <ng-multiselect-dropdown 
-      [placeholder]="MeldeMst" 
-      [settings]="dropdownMeldeSettings" 
-      [data]="dropdownMeldeMst"
-        (onSelect)="onItemSelectMeldemst($event)">
-      </ng-multiselect-dropdown>
+      <mat-select
+        formControlName="id_mst"
+        (selectionChange)="onMessstelleChange($event.value)">
+        
+        <mat-option *ngFor="let m of dropdownMeldeMst"
+                    [value]="m.id_mst">
+          {{ m.namemst }}
+        </mat-option>
 
-    </div>
+      </mat-select>
+    </mat-form-field>
+
   </form>
 </div>
 
-<div class="mt-5" mat-dialog-actions>
-  <button mat-raised-button color="primary" [disabled]="formInstance.dirty && formInstance.errors" (click)="save()"
-    cdkFocusInitial>Änderungen speichern</button>
-  <button mat-raised-button mat-dialog-close>Abbrechen</button>
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="primary"
+          [disabled]="formInstance.invalid"
+          (click)="save()">
+    Änderungen speichern
+  </button>
 
+  <button mat-button mat-dialog-close>
+    Abbrechen
+  </button>
 </div>

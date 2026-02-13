@@ -17,7 +17,7 @@ export class AuthService {
         }
     
         login(username: string, password: string): Observable<any> {
-            if (username === 'admin' && password === 'umweltsoft') {
+            if ((username === 'admin' && password === 'umweltsoft') || (username === 'antje' && password === 'koehler')) {
               // Wenn der Admin sich anmeldet, gib alle Rollen zurück
               const adminRoles = {
                 token: 'admin-token', // Beispiel für ein Token

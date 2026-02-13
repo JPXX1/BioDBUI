@@ -1,6 +1,5 @@
-import { Component,Input,EventEmitter,Output } from '@angular/core';
+import { Component,Input,EventEmitter,Output,OnChanges, SimpleChanges } from '@angular/core';
 import { Sort} from '@angular/material/sort';
-import { differenceInWeeks, parse } from 'date-fns';
 import { UebersichtImport } from 'src/app/shared/interfaces/uebersicht-import';
 import {DialogJaNeinComponent} from 'src/app/shared/dialog-ja-nein/dialog-ja-nein.component';
 import {UebersichtImportService} from 'src/app/shared/services/uebersicht-import.service';
@@ -26,12 +25,12 @@ export class SelectUebersichtImportComponent {
   temp:any=[];
   constructor(public dialog: MatDialog,private uebersichtImportService:UebersichtImportService) { }
  
-  isWithinFourWeeks(dateString: string): boolean {
-    const date = this.parseDate(dateString);
-    const now = new Date();
-    return differenceInWeeks(now, date) <= 4;
+ 
+  
+  showDeleteButton(row: any): boolean {
+    return this.uebersichtImportService.isWithinFourWeeks(row?.importiert);
   }
-
+  
   sortData(sort: Sort) {
     const data = this.uebersicht.slice(); // Erstelle eine Kopie des Arrays
 
@@ -55,16 +54,45 @@ export class SelectUebersichtImportComponent {
 
  
  // Vergleichsfunktion für Datum mit Hilfe von date-fns
- compareDates(dateA: string, dateB: string, isAsc: boolean): number {
-  const parsedDateA = this.parseDate(dateA);
-  const parsedDateB = this.parseDate(dateB);
-  return (parsedDateA < parsedDateB ? -1 : 1) * (isAsc ? 1 : -1);
+ compareDates(
+  dateA: string | null | undefined,
+  dateB: string | null | undefined,
+  isAsc: boolean
+): number {
+  const a = this.uebersichtImportService.parseDate(dateA);
+  const b = this.uebersichtImportService.parseDate(dateB);
+
+  // 🔒 beide fehlen → gleich
+  if (!a && !b) return 0;
+
+  // 🔒 nur A fehlt → nach unten
+  if (!a) return isAsc ? 1 : -1;
+
+  // 🔒 nur B fehlt → nach unten
+  if (!b) return isAsc ? -1 : 1;
+
+  // ✅ beide gültig
+  return (a.getTime() - b.getTime()) * (isAsc ? 1 : -1);
 }
 
-// Datumsparser mit date-fns
-parseDate(dateString: string): Date {
-  return parse(dateString, 'dd.MM.yy HH:mm', new Date()); // Parsen des Strings mit dem Format
+private sortByImportDateDesc(): void {
+  if (!this.uebersicht || this.uebersicht.length === 0) {
+    return;
+  }
+
+  this.uebersicht = [...this.uebersicht].sort((a, b) =>
+    this.compareDates(
+      a.importiert,
+      b.importiert,
+      /* isAsc */ false   // 🔴 DESC → neueste oben
+    )
+  );
 }
+
+
+// parseDate(dateString: string): Date {
+//   return parse(dateString, 'dd.MM.yy HH:mm', new Date()); // Parsen des Strings mit dem Format
+// }
 
 // Generische Vergleichsfunktion für andere Felder
 compare(a: any, b: any, isAsc: boolean): number {
@@ -113,7 +141,10 @@ this.openEmojiDialog(zeile);
 
 }
 
-
+ngOnChanges(changes: SimpleChanges): void {
+  if (changes['uebersicht'] && this.uebersicht?.length) {
+    this.sortByImportDateDesc();
+  }}
 handleRowClick(zeile){
 console.log(zeile);
 this.importID.emit(zeile);

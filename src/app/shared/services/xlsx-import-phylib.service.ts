@@ -264,7 +264,7 @@ async ngOnInit() {
 		let json_Messstelle; var Messstelle: string; let mstOK: string;
 		let bidmst; let bidpara; let bideinh; let bwert;
 		// for (let i = 0, l = workbook.SheetNames.length; i < l; i += 1) {
-			const valspaltenfiteranzeige = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1 && excelspalten.id_tab === tab);
+			// const valspaltenfiteranzeige = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.anzeige_tab2_tab1 === 1 && excelspalten.id_tab === tab);
 	
 		
 		const valspaltenfiter = valspalten.filter(excelspalten => excelspalten.id_verfahren === verfahrennr && excelspalten.import_spalte === true);
@@ -306,7 +306,7 @@ async ngOnInit() {
 							
 					} else {
 						const valspaltenfiter2 = valspaltenfiter.filter(excelspalten => excelspalten.spalten_name === i);
-						const valspaltenfiteranzeige2 =valspaltenfiteranzeige.filter(excelspalten => excelspalten.spalten_name === i);
+						// const valspaltenfiteranzeige2 =valspaltenfiteranzeige.filter(excelspalten => excelspalten.spalten_name === i);
 
 						if (valspaltenfiter2.length === 1) {
 							//Oekoregion = obj[index][i];
@@ -338,6 +338,38 @@ async ngOnInit() {
 	//console.log(this.messstellenImp);
 	this.dynamicColumns.push('fehler1');this.dynamicColumns.push('actions');}
 
+
+
+/**
+ * Normalisiert einen Spalten- oder Headernamen für robuste Vergleiche.
+ *
+ * - wandelt in Kleinbuchstaben um
+ * - ersetzt deutsche Umlaute (ä/ö/ü/ß)
+ * - ersetzt ausgewählte Sonderzeichen durch Leerzeichen
+ * - entfernt Mehrfach-Leerzeichen
+ * - trimmt führende und nachfolgende Leerzeichen
+ *
+ * Die Wortstruktur bleibt erhalten, sodass Vergleiche mit
+ * === oder includes() zuverlässig funktionieren.
+ *
+ * @param v  Beliebiger Wert (z.B. Excel-Header, kann auch null/undefined sein)
+ * @returns Normalisierter String
+ */
+ norm(v: unknown): string {
+	return String(v ?? "")
+	  .toLowerCase()
+	  .trim()
+	  .replace(/ä/g, "ae")
+	  .replace(/ö/g, "oe")
+	  .replace(/ü/g, "ue")
+	  .replace(/ß/g, "ss")
+	  .replace(/[%()\/\-.,]/g, " ")
+	  .replace(/\s+/g, " ")
+	  .trim();
+  }
+  
+	  
+
 /**
  * Aktualisiert die angegebene Spalte in der Übersicht mit dem gegebenen Wert und setzt optional das Jahr.
  *
@@ -352,56 +384,32 @@ schalteSpalte(Spalte:string,wert:string,jahr?:string) {
 
 	if (jahr!==undefined){this._uebersicht.jahr=jahr;}
 	
-	switch(Spalte) { 
-		case "sp3": { 
-			this._uebersicht.sp3= wert;
-		   break; 
-		} 
-		case "sp4": { 
-			this._uebersicht.sp4= wert;
-		   break; 
-		} 
-		case "sp5": { 
-			this._uebersicht.sp5= wert;
-		   break; 
-		} 
-		case "sp6": { 
-			this._uebersicht.sp6= wert;
-		   break; 
-		} 
-		case "sp7": { 
-			this._uebersicht.sp7= wert;
-		   break; 
-		} 
-		case "sp8": { 
-			this._uebersicht.sp8= wert;
-		   break; 
-		} 
-		case "sp9": { 
-			this._uebersicht.sp9= wert;
-		   break; 
-		} 
-		case "sp10": { 
-			this._uebersicht.sp10= wert;
-		   break; 
-		} 
-		case "sp11": { 
-			this._uebersicht.sp11= wert;
-		   break; 
-		} 
-		case "sp12": { 
-			this._uebersicht.sp12= wert;
-		   break; 
-		} 
-		case "sp13": { 
-			this._uebersicht.sp13= wert;
-		   break; 
-		} 
-		default: { 
-		   //statements; 
-		   break; 
-		} 
-	 } 
+	switch (Spalte) {
+		case "sp3":  { this._uebersicht.sp3  = wert; break; }
+		case "sp4":  { this._uebersicht.sp4  = wert; break; }
+		case "sp5":  { this._uebersicht.sp5  = wert; break; }
+		case "sp6":  { this._uebersicht.sp6  = wert; break; }
+		case "sp7":  { this._uebersicht.sp7  = wert; break; }
+		case "sp8":  { this._uebersicht.sp8  = wert; break; }
+		case "sp9":  { this._uebersicht.sp9  = wert; break; }
+		case "sp10": { this._uebersicht.sp10 = wert; break; }
+		case "sp11": { this._uebersicht.sp11 = wert; break; }
+		case "sp12": { this._uebersicht.sp12 = wert; break; }
+		case "sp13": { this._uebersicht.sp13 = wert; break; }
+		case "sp14": { this._uebersicht.sp14 = wert; break; }
+		case "sp15": { this._uebersicht.sp15 = wert; break; }
+		case "sp16": { this._uebersicht.sp16 = wert; break; }
+		case "sp17": { this._uebersicht.sp17 = wert; break; }
+		case "sp18": { this._uebersicht.sp18 = wert; break; }
+		case "sp19": { this._uebersicht.sp19 = wert; break; }
+		case "sp20": { this._uebersicht.sp20 = wert; break; }
+		case "sp21": { this._uebersicht.sp21 = wert; break; }
+		case "sp22": { this._uebersicht.sp22 = wert; break; }
+	  
+		default:
+		  break;
+	  }
+	  
 
 }
 
@@ -732,17 +740,28 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 		// console.log(this._uebersicht);
 		let mst: string=this._uebersicht.mst;
 		let jahr: string=this._uebersicht.jahr;
-		let _sp3: string=this._uebersicht.sp3;
-		let _sp4: string=this._uebersicht.sp4;
-		let _sp5: string=this._uebersicht.sp5;
-		let _sp6:string=this._uebersicht.sp6;
-		let _sp7: string=this._uebersicht.sp7;
-		let _sp8: string=this._uebersicht.sp8;
-		let _sp9: string=this._uebersicht.sp9;
-		let _sp10: string=this._uebersicht.sp10;
-		let _sp11: string=this._uebersicht.sp11;
-		let _sp12: string=this._uebersicht.sp12;
-		let _sp13: string=this._uebersicht.sp13;
+		let _sp3: string  = this._uebersicht.sp3;
+		let _sp4: string  = this._uebersicht.sp4;
+		let _sp5: string  = this._uebersicht.sp5;
+		let _sp6: string  = this._uebersicht.sp6;
+		let _sp7: string  = this._uebersicht.sp7;
+		let _sp8: string  = this._uebersicht.sp8;
+		let _sp9: string  = this._uebersicht.sp9;
+		let _sp10: string = this._uebersicht.sp10;
+		let _sp11: string = this._uebersicht.sp11;
+		let _sp12: string = this._uebersicht.sp12;
+		let _sp13: string = this._uebersicht.sp13;
+
+		let _sp14: string = this._uebersicht.sp14;
+		let _sp15: string = this._uebersicht.sp15;
+		let _sp16: string = this._uebersicht.sp16;
+		let _sp17: string = this._uebersicht.sp17;
+		let _sp18: string = this._uebersicht.sp18;
+		let _sp19: string = this._uebersicht.sp19;
+		let _sp20: string = this._uebersicht.sp20;
+		let _sp21: string = this._uebersicht.sp21;
+		let _sp22: string = this._uebersicht.sp22;
+
 		let _fehler1: string=this._uebersicht.fehler1;
 		let  _fehler2: string=this._uebersicht.fehler2;
 		let _fehler3: string=this._uebersicht.fehler3;
@@ -753,7 +772,15 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 
 			if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
 			
-			 this.uebersicht.push({ nr: this.uebersicht.length + 1,jahr:jahr, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
+			 this.uebersicht.push({ nr: this.uebersicht.length + 1,jahr:jahr, mst: mst, anzahl: 0, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,sp14: _sp14,
+				sp15: _sp15,
+				sp16: _sp16,
+				sp17: _sp17,
+				sp18: _sp18,
+				sp19: _sp19,
+				sp20: _sp20,
+				sp21: _sp21,
+				sp22: _sp22,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
 		} else {
 			//let messgroup = this.uebersicht.filter(dd => dd.mst === mst);
@@ -762,7 +789,15 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 			if (messgroup.length === 0) {
 				//nur BEwertungsdaten=Exportdateien
 				if (_fehler1 === "" && _fehler2==="" ) { importp = "checked"; } else {importp="";}
-				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0,jahr:jahr, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
+				this.uebersicht.push({ nr: this.uebersicht.length + 1, mst: mst, anzahl: 0,jahr:jahr, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7, sp8: _sp8, sp9: _sp9, sp10: _sp10, sp11: _sp11,sp12: _sp12, sp13: _sp13,sp14: _sp14,
+					sp15: _sp15,
+					sp16: _sp16,
+					sp17: _sp17,
+					sp18: _sp18,
+					sp19: _sp19,
+					sp20: _sp20,
+					sp21: _sp21,
+					sp22: _sp22,fehler1: _fehler1, fehler2: _fehler2, fehler3: _fehler3,import1:importp});
 
 			//	this.MessDataGr.push({ _Nr: this.MessDataGr.length + 1, _Messstelle: mst, _AnzahlTaxa: 0, _TypMP: _typmp, _TypDIA: _typdia, _TypWRRL: _typwrrl, _TypPhytoBenthos: _typphytobenth, _UMG: _umg, _Veroedung: _veroedung, _B_veroedung: _b_veroedung, _Helo_dom: _helo_dom, _Oekoreg: _oekoreg, MstOK: mstok, OK: ok, KeineMP: keinemp, gesamtdeckg: _gesamtdeckg },);
 			}
@@ -789,6 +824,17 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 						if (this.uebersicht[i].sp11!==undefined){var _sp11_: string = this.uebersicht[i].sp11}else{var _sp11_=_sp11};
 						if (this.uebersicht[i].sp12!==undefined){var _sp12_: string = this.uebersicht[i].sp12}else{var _sp12_=_sp12};
 						if (this.uebersicht[i].sp13!==undefined){var _sp13_: string = this.uebersicht[i].sp13}else{var _sp13_=_sp13};
+						var _sp13_: string = this.uebersicht[i].sp13 !== undefined ? this.uebersicht[i].sp13 : _sp13;
+						var _sp14_: string = this.uebersicht[i].sp14 !== undefined ? this.uebersicht[i].sp14 : _sp14;
+						var _sp15_: string = this.uebersicht[i].sp15 !== undefined ? this.uebersicht[i].sp15 : _sp15;
+						var _sp16_: string = this.uebersicht[i].sp16 !== undefined ? this.uebersicht[i].sp16 : _sp16;
+						var _sp17_: string = this.uebersicht[i].sp17 !== undefined ? this.uebersicht[i].sp17 : _sp17;
+						var _sp18_: string = this.uebersicht[i].sp18 !== undefined ? this.uebersicht[i].sp18 : _sp18;
+						var _sp19_: string = this.uebersicht[i].sp19 !== undefined ? this.uebersicht[i].sp19 : _sp19;
+						var _sp20_: string = this.uebersicht[i].sp20 !== undefined ? this.uebersicht[i].sp20 : _sp20;
+						var _sp21_: string = this.uebersicht[i].sp21 !== undefined ? this.uebersicht[i].sp21 : _sp21;
+						var _sp22_: string = this.uebersicht[i].sp22 !== undefined ? this.uebersicht[i].sp22 : _sp22;
+
 						let _fehler1_:string;
 						let _fehler2_:string;
 						let _fehler3_:string;
@@ -809,7 +855,16 @@ funktionIndexMst(workbook,spaltennameMst:string,tabNrMst:number) {
 
 
 						this.uebersicht.splice(i, 1);//löscht vorhandenen DS
-						this.uebersicht.push({ nr:_nr_, mst: _mst_, jahr:jahr,anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_,import1:_importp});
+						this.uebersicht.push({ nr:_nr_, mst: _mst_, jahr:jahr,anzahl: _anzahl_, sp3: _sp3, sp4: _sp4, sp5: _sp5, sp6: _sp6, sp7:_sp7_, sp8: _sp8_, sp9: _sp9_, sp10: _sp10_, sp11: _sp11_,sp12: _sp12_, sp13: _sp13_,
+							sp14: _sp14,
+							sp15: _sp15,
+							sp16: _sp16,
+							sp17: _sp17,
+							sp18: _sp18,
+							sp19: _sp19,
+							sp20: _sp20,
+							sp21: _sp21,
+							sp22: _sp22,fehler1: _fehler1_, fehler2: _fehler2_, fehler3: _fehler3_,import1:_importp});
 
 						//this.MessDataGr.push({ _Nr, _Messstelle, _AnzahlTaxa, _TypMP, _TypDIA, _TypWRRL, _TypPhytoBenthos, _UMG, _Veroedung, _B_veroedung, _Helo_dom, _Oekoreg, MstOK, OK, KeineMP, gesamtdeckg: agesamtdeckg });
 						 //
@@ -1373,7 +1428,7 @@ return bemerkung;
 	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
 		let jahrtemp: string;
 		
-		console.log(jahrtemp);
+		// console.log(jahrtemp);
 		let g=0;
 		let b=0;
 		// for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
@@ -1429,11 +1484,13 @@ return bemerkung;
 		let showHandleRowClick: boolean = false; 
 		valspaltenfiter.sort((a,b)=>{return compare(a.namespalteng,b.namespalteng,true)});
 
-if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6 || idVerfahren===8 || idVerfahren===9){showHandleRowClick=true;}
+if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6 || idVerfahren===8 || idVerfahren===9){
+	showHandleRowClick=true;}
 
 		this.displayColumnNames=[];this.dynamicColumns=[];
 		this.displayColumnNames.push('Nr');
 				this.dynamicColumns.push('nr');
+				
 				if  (idVerfahren===4 ){
 					this.displayColumnNames.push('Mst');
 					this.dynamicColumns.push('mst');
@@ -1505,11 +1562,104 @@ if (idVerfahren===1 || idVerfahren===3 || idVerfahren===6 || idVerfahren===8 || 
 		 if ([1, 2, 3, 4, 5, 6,7,8,9].includes(idVerfahren)) {
 			this.dynamicColumns.push('actions');
 		  }
-		
-		
+		  console.log('displayColumnNames:'+this.displayColumnNames);
+		  console.log('dynamicColumns'+this.dynamicColumns);
 	return showHandleRowClick;
-}}
+}
+/**
+ * @description
+ * @author Dr. Jens Päzolt, UmweltSoft
+ * @date 20-10-2024
+ * @private
+ * @memberof XlsxImportPhylibService
+ */
+private readonly fixedColumns = [
+	'nr',
+	'mst',
+	'fehler1',
+	'import1',
+	'actions'
+  ];
+  
+	/**
+ * Filtert sichtbare Spalten basierend auf den Daten in der Übersicht.
+ *
+ * @param data - Ein Array von Uebersicht-Objekten, das die Daten enthält.
+ * @param dynamicCols - Ein Array von dynamischen Spaltennamen.
+ * @param displayCols - Ein Array von Anzeige-Spaltennamen.
+ * @returns Ein Objekt mit den gefilterten dynamischen und Anzeige-Spalten.
+ *
+ * - `sp12`: Blendet `sp21` aus, wenn `sp12` leer ist.
+ * - `sp3`: Blendet `sp6` aus, wenn `sp3` leer ist.
+ * 
+ * Die Methode überprüft jede dynamische Spalte, um festzustellen, ob sie in den Daten
+ * sichtbare Werte enthält. Wenn eine Spalte sichtbare Werte hat, wird sie zu den
+ * Ergebnisarrays hinzugefügt.
+ */
+	filterVisibleColumns(
+		data: Uebersicht[],
+		dynamicCols: string[],
+		displayCols: string[]
+	  ): { dynamic: string[]; display: string[] } {
+	  
+		const hasValueMap = new Map<string, boolean>();
+	  
+		// 1️⃣ prüfen: hat Spalte irgendwo Inhalt?
+		dynamicCols.forEach(col => {
+		  const hasValue = data.some(row => {
+			const value = (row as any)[col];
+			return value !== null
+			  && value !== undefined
+			  && value.toString().trim() !== '';
+		  });
+		  hasValueMap.set(col, hasValue);
+		});
+	  
+		// 2️⃣ Abhängigkeitsregeln anwenden
+		Object.entries(this.dependencyRules).forEach(([sourceCol, targetCols]) => {
+		  if (hasValueMap.get(sourceCol) === false) {
+			targetCols.forEach(target => hasValueMap.set(target, false));
+		  }
+		});
+	  
+		// 3️⃣ Ergebnis – INDEXGLEICH!
+		const resultDynamic: string[] = [];
+		const resultDisplay: string[] = [];
+	  
+		dynamicCols.forEach((col, index) => {
+		  if (hasValueMap.get(col)) {
+			resultDynamic.push(col);
+			resultDisplay.push(displayCols[index]);
+		  }
+		});
+	  
+		return {
+		  dynamic: resultDynamic,
+		  display: resultDisplay
+		};
+	  }
+	  
+	  
+	  
+	
 
+  
+/**
+ * Abhängigkeitsregeln für die bedingte Sichtbarkeit von Spalten.
+ *
+ * Ist eine Schlüssel-Spalte vollständig leer (null / undefined / leerer String),
+ * werden alle zugeordneten Ziel-Spalten ausgeblendet.
+ *
+ * Regeln:
+ * - `sp12`: Blendet `sp21` **und** `sp22` aus, wenn `sp12` leer ist.
+ * - `sp3` : Blendet `sp6` aus, wenn `sp3` leer ist.
+ */
+private readonly dependencyRules: Record<string, string[]> = {
+	sp12: ['sp21','sp22'],
+	sp3:  ['sp6']
+  };
+  
+}
 
 /**
  * Filtert nicht eindeutige Werte aus einem Array heraus.

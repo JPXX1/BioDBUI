@@ -1,7 +1,19 @@
-router-outlet + * {
-  margin-top: 64px; /* Höhe der Toolbar berücksichtigen */
+/* router-outlet + * {
+  margin-top: 64px; 
   display: block;
+} */
+
+/* router-outlet + app-* {
+  margin-top: 64px;
+  display: block;
+} */
+
+/* Höhe der Toolbar kompensieren */
+.app-content {
+  margin-top: 54px;
 }
+
+
 
 .sticky {
   position: sticky;

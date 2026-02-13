@@ -3,7 +3,7 @@ import {ImpPhylibServ} from './impformenphylib.service';
 import { UebersichtImport } from 'src/app/shared/interfaces/uebersicht-import';
 import { HttpClient,HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import {  parse } from 'date-fns';
+import {  differenceInWeeks,parse } from 'date-fns';
 import { DataAbiotik } from 'src/app/shared/interfaces/data-abiotik';
 
 
@@ -147,6 +147,41 @@ async start() {
    this.httpClient.post(`${this.apiUrl}/deleteMstAbundanz`, body).subscribe(resp => {
   console.log("response %o, ", resp);  });
   }
+
+
+ //  compareDates(dateA: string, dateB: string, isAsc: boolean): number {
+//   const parsedDateA = this.parseDate(dateA);
+//   const parsedDateB = this.parseDate(dateB);
+//   return (parsedDateA < parsedDateB ? -1 : 1) * (isAsc ? 1 : -1);
+// }
+
+// Datumsparser mit date-fns
+parseDate(dateString: string | null | undefined): Date | null {
+  if (!dateString || typeof dateString !== 'string') {
+    return null;
+  }
+
+  const trimmed = dateString.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const parsed = parse(trimmed, 'dd.MM.yy HH:mm', new Date());
+
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
+  isWithinFourWeeks(dateString: string | null | undefined): boolean {
+    const date = this.parseDate(dateString);
+  
+    // 🔒 ABSICHERUNG (entscheidend!)
+    if (!date) {
+      return false;
+    }
+  
+    const now = new Date();
+    return differenceInWeeks(now, date) <= 4;
+  }
   /**
      * Löscht die MstBewertungen-Daten für die angegebene Import-ID.
      *
@@ -238,7 +273,8 @@ async handle(checked: boolean) {
                   id_imp: f.id_imp,
                   id_verfahren: f.id_verfahren,
                   import_export: f.import_export,
-                  id_komp: f.id_komp
+                  id_komp: f.id_komp,
+                  _showDelete: this.isWithinFourWeeks(f.importiert)
               });
           }
       ));

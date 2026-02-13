@@ -1,0 +1,38 @@
+/* :host {
+    display: block;
+    height: 100%;
+  } */
+  
+  /* ::ng-deep .mat-dialog-content {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-bottom: 16px; 
+  } */
+
+  :host ::ng-deep .mat-dialog-content {
+  overflow: visible !important;
+}
+
+  :host ::ng-deep ng-multiselect-dropdown {
+  font-size: 0.8rem;   /* ca. halb so groß wie x-large */
+}
+
+:host ::ng-deep .multiselect-dropdown .dropdown-btn {
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  min-height: 28px;
+}
+
+:host ::ng-deep .multiselect-item-checkbox {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+}
+
+:host ::ng-deep .multiselect-item-checkbox div {
+  padding: 2px 0;
+}
+
+:host ::ng-deep .dropdown-list {
+  font-size: 0.8rem;
+  line-height: 1.2;
+}

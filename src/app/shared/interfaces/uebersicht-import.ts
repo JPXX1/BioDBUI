@@ -15,4 +15,6 @@ export interface UebersichtImport {
     id_imp:number;
     id_komp:number;
     import_export:boolean;
+    _showDelete:boolean;
+    
 }

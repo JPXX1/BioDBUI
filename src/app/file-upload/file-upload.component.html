@@ -66,7 +66,7 @@
   </mat-card>
   <div class="grid-item" style="width: 90%;margin-left: 2%;" class="helpable" id="panel-importhistorie">
     <mat-accordion>
-      <mat-expansion-panel (opened)="panelOpenState = true" (afterExpand)="openexpand()" (afterCollapse)="close()" (closed)="panelOpenState = false">
+      <mat-expansion-panel #importPanel #panelElement (opened)="panelOpenState = true" (afterExpand)="openexpand()" (afterCollapse)="close()" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>Importhistorie</mat-panel-title>
         
@@ -78,7 +78,27 @@
                (click)="ausblendenImporthistorie()" 
                style="right: 100px;">  Importhistorie vollständig anzeigen
               </label>
-        <p><app-select-uebersicht-import [uebersicht]="uebersichtImport" (sortDataue)="sortData($event)" (importID)="handleData($event)" style="width:480%"></app-select-uebersicht-import></p>
+              <ng-container *ngIf="showImportHistory">
+
+                <!-- <label>
+                  <input type="checkbox"
+                         [checked]="ImpHistoryisChecked"
+                         (click)="ausblendenImporthistorie()">
+                  Importhistorie vollständig anzeigen
+                </label> -->
+              
+                <p>
+                  <app-select-uebersicht-import
+                    [uebersicht]="uebersichtImport"
+                    (sortDataue)="sortData($event)"
+                    (importID)="handleData($event)">
+                  </app-select-uebersicht-import>
+                </p>
+              
+              </ng-container>
+              
+              
+              <!-- <p><app-select-uebersicht-import [uebersicht]="uebersichtImport" (sortDataue)="sortData($event)" (importID)="handleData($event)" style="width:480%"></app-select-uebersicht-import></p> -->
       </mat-expansion-panel>
     </mat-accordion>
   </div>
@@ -93,11 +113,17 @@
             <th mat-header-cell *matHeaderCellDef class="header-table-rl" mat-sort-header>
               {{ displayColumnNames[i] }}
             </th>
-            
-            <td mat-cell *matCellDef="let element" class="spalte-rl"
-            [style.backgroundColor]="getCellBackground(i, colName, element[colName])">
-           {{ element[colName] }}
-          </td>
+                      <td mat-cell *matCellDef="let element" class="spalte-rl"
+                        [style.backgroundColor]="getCellBackground(i, colName, element[colName])">
+
+                      {{ colName === 'sp8'
+                          ? truncateWords(element[colName], 2)
+                          : element[colName]
+                      }}
+
+                    </td>
+
+           
 
             <!-- <td mat-cell *matCellDef="let element" class="spalte-rl"
                 [style.backgroundColor]="colName.includes('ÖZK') ? Farbebewertg.getColor(element[colName]) : null">

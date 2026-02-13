@@ -13,7 +13,16 @@ export interface Uebersicht {
 		sp10:string;
 		sp11:string;
 		sp12:string;
-		sp13:string;
+		sp13: string;
+		sp14: string;
+		sp15: string;
+		sp16: string;
+		sp17: string;
+		sp18: string;
+		sp19: string;
+		sp20: string;
+		sp21: string;
+		sp22: string;
         fehler1:string;
         fehler2:string;
         fehler3:string;
