@@ -128,11 +128,17 @@ async startBWUebersichtAusMst(){
 getMonitoringParameter(komp_id: number): Observable<Metric[]> {
   return this.httpClient
     .get<Metric[]>(`${this.apiUrl}/AbfrageMonitoringIndices`)
-
     .pipe(
-      map(params => params.filter(p => p.id_komp === komp_id))
+      map(params =>
+        params
+          .filter(p => p.id_komp === komp_id)
+          .sort((a, b) =>
+            a.parameter.localeCompare(b.parameter, 'de', { sensitivity: 'base' })
+          )
+      )
     );
 }
+
 
   
   /**

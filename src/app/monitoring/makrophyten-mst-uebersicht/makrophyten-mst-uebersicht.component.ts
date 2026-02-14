@@ -27,4 +27,10 @@ getColor(value: any, element: any): string | null {
   }
   return this.Farbebewertg.getColor(value);
 }
+
+isYearColumn(col: string): boolean {
+  return col?.toLowerCase().startsWith('sp');
+}
+
+
 }

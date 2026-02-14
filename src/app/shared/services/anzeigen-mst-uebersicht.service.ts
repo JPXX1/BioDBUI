@@ -113,7 +113,7 @@ public value:string;
 
   await this.filterMst(filter,art,min,max);
    this.uniqueMstSortCall();
-   this.uniqueJahrSortCall();
+   this.uniqueJahrSortCall(min,max);
      this.datenUmwandeln();
     this.erzeugeDisplayedColumnNames(false);
      this.erzeugeDisplayColumnNames(false);
@@ -124,7 +124,7 @@ public value:string;
 mapKomponenteParameter(id_komp: number): number {
   switch (id_komp) {
     case 1: return 39;
-    // case 2: return 20;
+     case 2: return 72;
     case 3: return 21;
     case 5: return 94;
     default: return 94;
@@ -202,78 +202,23 @@ mapKomponenteParameter(id_komp: number): number {
    * Abhängig von der Länge des `uniqueJahr` Arrays fügt sie eine entsprechende Anzahl von 'sp' Spalten
    * (z.B. 'sp1', 'sp2', ..., 'sp15') zum `displayedColumns` Array hinzu.
    */
-  erzeugeDisplayedColumnNames(komponente:boolean){
-  this.displayedColumns=[];
+  erzeugeDisplayedColumnNames(komponente: boolean) {
+
+  this.displayedColumns = [];
+
   this.displayedColumns.push('wk');
   this.displayedColumns.push('mst');
-if (komponente===true){ this.displayedColumns.push('komponente');}
 
-  switch (this.uniqueJahr.length){
-
-    case 1: {
-      this.displayedColumns.push('sp1');
-      break;
-    }
-    case 2: {
-      this.displayedColumns.push('sp1','sp2');
-      break;
-    }
-    case 3: {
-      this.displayedColumns.push('sp1','sp2','sp3');
-      break;
-    }
-    case 4: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4');
-      break;
-    }
-    case 5: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5');
-      break;
-    }
-    case 6: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6');
-      break;
-    }
-    case 7: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7');
-      break;
-    }
-    case 8: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8');
-      break;
-    }
-    case 9: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9');
-      break;
-    }
-    case 10: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10');
-      break;
-    }
-    case 11: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11');
-      break;
-    }
-    case 12: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12');
-      break;
-    }
-    case 13: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13');
-      break;
-    }
-    case 14: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','sp14');
-      break;
-    }
-    case 15: {
-      this.displayedColumns.push('sp1','sp2','sp3','sp4','sp5','sp6','sp7','sp8','sp9','sp10','sp11','sp12','sp13','sp14','sp15');
-      break;
-    }
-    
-  
-}
+  if (komponente === true) {
+    this.displayedColumns.push('komponente');
   }
+
+  // Dynamisch sp1 ... spN erzeugen
+  for (let i = 1; i <= this.uniqueJahr.length; i++) {
+    this.displayedColumns.push('sp' + i);
+  }
+}
+
   /**
    * Ruft die BW WK Übersicht basierend auf den ausgewählten Elementen ab.
    * 
@@ -302,8 +247,16 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
    */
   
  
-
-  async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise<any[]> {
+/**
+ * @description
+ * @author Dr. Jens Päzolt, UmweltSoft
+ * @date 20-10-2024
+ * @param {number[]} selectedItems
+ * @param {number} filterId
+ * @return {*}  {Promise<any[]>}
+ * @memberof AnzeigenMstUebersichtService
+ */
+async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise<any[]> {
     const response = await firstValueFrom(
       this.httpClient.post<any[]>(`${this.apiUrl}/bwMstUebersicht`, { selectedItems })
     );
@@ -311,7 +264,7 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
     if (!Array.isArray(response)) {
       throw new Error('Die Antwort ist kein Array');
     }
-    return response.filter(item => Number(item.id) === filterId);
+    return response.filter(item => Number(item.id_para) === filterId);
     // return response.filter(item => item.id === filterId);
   }
   
@@ -424,6 +377,7 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
       .map(form => ({
         wkName: form.wk_name,
         id: form.id,
+        id_para:form.id_para,
         parameter: form.parameter,
         idMst: form.id_mst,
         namemst: form.namemst,
@@ -484,21 +438,31 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
      * 
      * @returns {void}
      */
-    uniqueJahrSortCall(){
+    // uniqueJahrSortCall(){
 
-      let array:string[]=[];
-      for (let i = 0, l = this.dbMPUebersichtMst.length; i < l; i += 1) {
+    //   let array:string[]=[];
+    //   for (let i = 0, l = this.dbMPUebersichtMst.length; i < l; i += 1) {
   
-        array.push(this.dbMPUebersichtMst[i].jahr);
+    //     array.push(this.dbMPUebersichtMst[i].jahr);
   
            
-      }
+    //   }
       
-      let temp =  [...new Set(array)] ;
-      this.uniqueJahr =temp
+    //   let temp =  [...new Set(array)] ;
+    //   this.uniqueJahr =temp
 
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-    }
+    //   .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    // }
+
+    uniqueJahrSortCall(min: number, max: number) {
+
+  this.uniqueJahr = [];
+
+  for (let y = min; y <= max; y++) {
+    this.uniqueJahr.push(String(y));
+  }
+}
+
 
       /**
        * Bestimmt den Index des angegebenen Jahres im uniqueJahr-Array.
@@ -570,7 +534,7 @@ if (komponente===true){ this.displayedColumns.push('komponente');}
         this.mstUebersichtKl.komponente=dbBewertungMSTTemp[0].komponente;
         for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
         //wichtig für die ausschliesliche Färbung der OEKZ
-          if (dbBewertungMSTTemp[i].id===this.mapKomponenteParameter(dbBewertungMSTTemp[i].idKomp).toString()){
+          if (dbBewertungMSTTemp[i].id_para===this.mapKomponenteParameter(dbBewertungMSTTemp[i].idKomp).toString()){
             this.mstUebersichtKl.isOEZK=true;
           }else{this.mstUebersichtKl.isOEZK=false;}
         switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){

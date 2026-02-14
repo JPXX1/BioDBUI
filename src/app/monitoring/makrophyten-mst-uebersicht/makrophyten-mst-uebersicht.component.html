@@ -5,10 +5,17 @@
 		  {{pros[1][i]}}
 		</th>
 		<td mat-cell *matCellDef="let element"
+    		[style.background-color]="isYearColumn(colName) ? getColor(element[colName], element) : null"
+   			 class="Zelle">
+ 					 {{ element[colName] }}
+			</td>
+
+
+		<!-- <td mat-cell *matCellDef="let element"
 		[style.background-color]="getColor(element[colName], element)"
 		class="Zelle">
 	  {{ element[colName] }}
-		</td>
+		</td> -->
 		<!-- <td mat-cell *matCellDef="let element" [style.background-color]="getColor(element[colName])" class="Zelle">
 		  {{element[colName]}}
 		</td> -->

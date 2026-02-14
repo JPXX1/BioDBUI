@@ -986,12 +986,13 @@ doppelteMesswerte(): boolean {
 	  async pruefeObMesswerteAbiotikschonVorhanden(jahr:string):Promise<boolean> {
 		let jahrtemp: string; this.vorhanden = false;
 		this.uebersichtGeprueft=this.uebersicht;
-		
+		jahrtemp = ('15.07.' + jahr); 
+		await this.holeMesswerteAbiotikausDB(jahrtemp);
 		for (let a = 0, le = this.uebersicht.length; a < le; a += 1) {
 			
 		if (this.uebersicht[a].import1==="checked"){ //import möglich
-			jahrtemp = ('15.07.' + jahr); 
-			await this.holeMesswerteAbiotikausDB(jahrtemp);
+			
+			
 			// console.log(this.MWausDB);
 			let mstee = this.mst.filter(messstellen => messstellen.namemst === this.uebersicht[a].mst);
 
@@ -1242,13 +1243,17 @@ doppelteMesswerte(): boolean {
 	 * @param {string} datum - Das Datum, für das die Messwerte abgerufen werden sollen.
 	 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Messwerte abgerufen und verarbeitet wurden.
 	 */
-	async holeMesswerteAbiotikausDB(datum: string) {
-		// this.workbookInit(datum,Probenehmer)
-		await this.impPhylibServ.kontrollPhylibMessstellen(datum).forEach(value => {
-			this.MWausDB = value;
-			//console.log('observable -> ' + this.MWausDB);
-		});
-	}
+async holeMesswerteAbiotikausDB(datum: string) {
+  try {
+    this.MWausDB = await firstValueFrom(
+      this.impPhylibServ.kontrollPhylibMessstellen(datum)
+    );
+  } catch (err) {
+    console.error('Fehler beim Laden der Messwerte', err);
+    this.MWausDB = [];
+  }
+}
+
 	/**
 		 * Ruft asynchron Messwerte aus der Datenbank für ein bestimmtes Datum ab.
 		 * 

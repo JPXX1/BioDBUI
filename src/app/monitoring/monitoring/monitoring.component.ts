@@ -761,9 +761,13 @@ async handleMZBTaxaClick(){ //Taxadaten MZB
     this.props.push(this.anzeigenMstUebersichtService.mstUebersicht) ;
     this.props.push(this.anzeigenMstUebersichtService.displayColumnNames);
     this.props.push(this.anzeigenMstUebersichtService.displayedColumns);
-    // console.log(this.props);
+    console.log(this.anzeigenMstUebersichtService.mstUebersicht);
+    console.log(this.anzeigenMstUebersichtService.displayColumnNames);
+    console.log(this.anzeigenMstUebersichtService.displayedColumns);
     if (komp_id===1){
-    this.getButtonAktivColorMP();}else if (komp_id===3){
+    this.getButtonAktivColorMP();}
+    else if (komp_id===2){
+      this.getButtonAktivColorDia();}else if (komp_id===3){
       this.getButtonAktivColorMZ();}else if (komp_id===5){
         this.getButtonAktivColorPhytol();}
   }

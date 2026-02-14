@@ -228,6 +228,7 @@ handleJahrSelected(selectedJahr: number) {
 	 this.importPanel.close();
 	this.ImportIntoDB=true;
 	this.pruefen=false;
+	//this.jahr=selectedJahr;
     // console.log("Ausgewähltes Jahr:", selectedJahr);
     // Hier kannst du beliebige Logik einfügen, z.B. das Jahr speichern oder verarbeiten
   }

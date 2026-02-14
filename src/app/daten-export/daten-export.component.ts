@@ -920,7 +920,7 @@ this.anzeigenMstUebersichtService.dbMPUebersichtMst = filteredArray;
    await this.anzeigenMstUebersichtService.filterMst('','',Number(yearFrom),Number(yearTo));
   
      this.anzeigenMstUebersichtService.uniqueMstSortCall();
-     this.anzeigenMstUebersichtService.uniqueJahrSortCall();
+     this.anzeigenMstUebersichtService.uniqueJahrSortCall(Number(yearFrom),Number(yearTo));
        this.anzeigenMstUebersichtService.datenUmwandeln();
       this.anzeigenMstUebersichtService.erzeugeDisplayedColumnNames(true);
        this.anzeigenMstUebersichtService.erzeugeDisplayColumnNames(true);
