@@ -129,11 +129,20 @@ arraybuendel:ArraybuendelSel;
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
     });
   
+
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.newData.emit(result);
-      }
-    });
+  if (!result) return;
+
+  this.stammdatenService.speichereMst(result).subscribe(() => {
+    console.log("Gespeichert");
+  });
+});
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result) {
+    //     this.newData.emit(result);
+    //   }
+    // });
   }
   
   

@@ -942,22 +942,28 @@ speichereWK(wasserkoerperStam: WasserkoerperStam): Observable<any> {
   // Rückgabe des HTTP-Requests als Observable
   return this.httpClient.post<any>(`${this.apiUrl}/insertStammWK`, body);
 }
-
 speichereMst(messstellenStam: MessstellenStam): Observable<any> {
-  const body = new HttpParams()
-    .set('id_mst', messstellenStam.id_mst.toString())
-    .set('id_wk', messstellenStam.id_wk.toString())
-    .set('idgewaesser', messstellenStam.idgewaesser.toString())
-    .set('namemst', messstellenStam.namemst)
-    .set('ortslage', messstellenStam.ortslage)
-    .set('repraesent', messstellenStam.repraesent)
-    .set('rw_etrs', messstellenStam.rw_etrs.toString())
-    .set('hw_etrs', messstellenStam.hw_etrs.toString())
-    .set('see', messstellenStam.see.toString());
-
-  // Rückgabe des HTTP-Requests als Observable
-  return this.httpClient.post<any>(`${this.apiUrl}/insertStammMst`, body);
+  return this.httpClient.post<any>(
+    `${this.apiUrl}/insertStammMst`,
+    messstellenStam
+  );
 }
+
+// speichereMst(messstellenStam: MessstellenStam): Observable<any> {
+//   const body = new HttpParams()
+//     .set('id_mst', messstellenStam.id_mst.toString())
+//     .set('id_wk', messstellenStam.id_wk.toString())
+//     .set('idgewaesser', messstellenStam.idgewaesser.toString())
+//     .set('namemst', messstellenStam.namemst)
+//     .set('ortslage', messstellenStam.ortslage)
+//     .set('repraesent', messstellenStam.repraesent)
+//     .set('rw_etrs', messstellenStam.rw_etrs.toString())
+//     .set('hw_etrs', messstellenStam.hw_etrs.toString())
+//     .set('see', messstellenStam.see.toString());
+
+//   // Rückgabe des HTTP-Requests als Observable
+//   return this.httpClient.post<any>(`${this.apiUrl}/insertStammMst`, body);
+// }
 
 
 

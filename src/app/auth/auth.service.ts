@@ -17,7 +17,7 @@ export class AuthService {
         }
     
         login(username: string, password: string): Observable<any> {
-            if ((username === 'admin' && password === 'umweltsoft') || (username === 'antje' && password === 'koehler')) {
+            if ((username === 'admin' && password === 'umweltsoft') ) {
               // Wenn der Admin sich anmeldet, gib alle Rollen zurück
               const adminRoles = {
                 token: 'admin-token', // Beispiel für ein Token
@@ -30,7 +30,21 @@ export class AuthService {
               };
               // Verwende `of` aus `rxjs`, um ein Observable aus dem Objekt zurückzugeben
               return of(adminRoles);
-            } else {
+            } else 
+              if (username === 'antje' && password === 'koehler')
+              { const Roles = {
+                token: 'admin-token', // Beispiel für ein Token
+                roles: {
+                  administrator: false,
+                  nutzer1: true,
+                  nutzer2: true,
+                  nutzer3: true
+                }
+              };
+              // Verwende `of` aus `rxjs`, um ein Observable aus dem Objekt zurückzugeben
+              return of(Roles);}
+            else
+              {
               // Führe einen HTTP-POST-Aufruf aus und gib ein Observable zurück
               return this.http.post(`${this.apiUrl}/login`, { username, password });
             }

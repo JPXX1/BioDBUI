@@ -105,14 +105,16 @@ public value:string;
    */
   async call(filter:string,art:string,min:number,max:number,komp_id:number, para_id?:number):Promise<number> {
 
- if (para_id===undefined){para_id=this.mapKomponenteParameter(komp_id);  
+ if (para_id===undefined){para_id=this.mapKomponenteParameter(komp_id); }
+if ([21, 39, 72, 94].includes(para_id)) {
+
   await this.callBwUebersichtExp(komp_id);}else{
   await this.callBwUebersicht(komp_id,para_id);}
  
 
 
   await this.filterMst(filter,art,min,max);
-   this.uniqueMstSortCall();
+   await this.uniqueMstSortCall();
    this.uniqueJahrSortCall(min,max);
      this.datenUmwandeln();
     this.erzeugeDisplayedColumnNames(false);
@@ -317,6 +319,7 @@ async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise
       this.dbMPUebersichtMst = dataArray.map(form => ({
         wkName: form.wk_name,
         id: form.id,
+        id_para:form.id_para,
         parameter: form.parameter,
         idMst: form.id_mst,
         namemst: form.namemst,
@@ -413,7 +416,7 @@ async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise
    * 
    * Das sortierte und eindeutige Array wird dann der `uniqueMst` Eigenschaft zugewiesen.
    */
-   uniqueMstSortCall(){
+   async uniqueMstSortCall(){
 
     let array:string[]=[];
     for (let i = 0, l = this.dbMPUebersichtMst.length; i < l; i += 1) {
@@ -516,97 +519,48 @@ async getBwMSTUebersichtPara(selectedItems: number[], filterId: number): Promise
        * - Das `MstUebersicht` Objekt hat Eigenschaften `wk`, `mst`, `komponente` und `sp1` bis `sp15`.
        * - Die Methode `anwelcherStelleStehtdasJahr` wird verwendet, um die Position des Jahres zu bestimmen und den entsprechenden Wert der passenden Eigenschaft zuzuweisen.
        */
-      datenUmwandeln(){
- 
-        this.mstUebersicht=[];
+    datenUmwandeln() {
 
-    for (let a = 0, l = this.uniqueMst.length; a < l; a += 1) {
-      
-      let dbBewertungMSTTemp0: any = this.dbMPUebersichtMst.filter(excelspalten => excelspalten.namemst === this.uniqueMst[a]);
-      let dbBewertungMSTTemp: any =dbBewertungMSTTemp0.sort();
+  this.mstUebersicht = [];
 
-      console.log(this.dbMPUebersichtMst);
-      this.mstUebersichtKl = {} as MstUebersicht;
-      if (dbBewertungMSTTemp.length>0){
-        
-        this.mstUebersichtKl.wk=dbBewertungMSTTemp[0].wkName;
-        this.mstUebersichtKl.mst=dbBewertungMSTTemp[0].namemst;
-        this.mstUebersichtKl.komponente=dbBewertungMSTTemp[0].komponente;
-        for (let i = 0, l = dbBewertungMSTTemp.length; i < l; i += 1) {
-        //wichtig für die ausschliesliche Färbung der OEKZ
-          if (dbBewertungMSTTemp[i].id_para===this.mapKomponenteParameter(dbBewertungMSTTemp[i].idKomp).toString()){
-            this.mstUebersichtKl.isOEZK=true;
-          }else{this.mstUebersichtKl.isOEZK=false;}
-        switch (this.anwelcherStelleStehtdasJahr(dbBewertungMSTTemp[i].jahr)){
+  for (const mstName of this.uniqueMst) {
 
-          case 0: {
-            
-            this.mstUebersichtKl.sp1 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 1: {
-            this.mstUebersichtKl.sp2 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 2: {
-            this.mstUebersichtKl.sp3 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 3: {
-            this.mstUebersichtKl.sp4 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 4: {
-            this.mstUebersichtKl.sp5 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 5: {
-            this.mstUebersichtKl.sp6 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 6: {
-            this.mstUebersichtKl.sp7 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 7: {
-            this.mstUebersichtKl.sp8 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 8: {
-            this.mstUebersichtKl.sp9 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 9: {
-            this.mstUebersichtKl.sp10 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 10: {
-            this.mstUebersichtKl.sp11 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 11: {
-            this.mstUebersichtKl.sp12 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 12: {
-            this.mstUebersichtKl.sp13 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 13: {
-            this.mstUebersichtKl.sp14 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          case 14: {
-            this.mstUebersichtKl.sp15 = dbBewertungMSTTemp[i].wert;
-            break;
-          }
-          
-        }
+    const rows = this.dbMPUebersichtMst
+      .filter(e => e.namemst === mstName)
+      .sort((a, b) => Number(a.jahr) - Number(b.jahr));
 
-        if (i+1 === l){this.mstUebersicht.push(this.mstUebersichtKl);} //letzter Wert }}}}
+    if (!rows.length) continue;
+
+    const item: MstUebersicht = {
+      wk: rows[0].wkName,
+      mst: rows[0].namemst,
+      komponente: rows[0].komponente,
+      repreasent: rows[0].repraesent,
+      isOEZK: false,
+      werte: new Array(this.uniqueJahr.length).fill('')
+    };
+
+    for (const ds of rows) {
+
+      const idx = this.anwelcherStelleStehtdasJahr(ds.jahr);
+      if (idx < 0) continue;
+
+      item.werte[idx] = ds.wert;
+
+      if (
+        String(ds.id_para) ===
+        String(this.mapKomponenteParameter(ds.idKomp))
+      ) {
+        item.isOEZK = true;
       }
-    
-  }
-}
     }
+
+    this.mstUebersicht.push(item);
+  }
+
+  this.mstUebersicht = [...this.mstUebersicht];
+}
+
+
+
   }

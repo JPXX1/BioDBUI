@@ -1,36 +1,41 @@
-import { Component,Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { FarbeBewertungService } from 'src/app/shared/services/farbe-bewertung.service';
-
+import { MstUebersicht } from 'src/app/shared/interfaces/mst-uebersicht';
 
 @Component({
   selector: 'app-makrophyten-mst-uebersicht',
   templateUrl: './makrophyten-mst-uebersicht.component.html',
   styleUrls: ['./makrophyten-mst-uebersicht.component.css']
 })
-export class MakrophytenMstUebersichtComponent {
-@Input()  pros:any [] = [];	
+export class MakrophytenMstUebersichtComponent implements OnChanges {
 
-  constructor(private Farbebewertg: FarbeBewertungService) { }
+  @Input() pros: any[] = [];
 
-  displayColumnNames:string[]=this.pros[1]//['wk','mst','2001'];
-  displayedColumns: string[] = this.pros[2];//['wk','mst','2001'];
-  // thi
-  dataSource=this.pros[0];
-  
-// getColor(OZK){
-//   return this.Farbebewertg.getColor(OZK);
-   
-// }
-getColor(value: any, element: any): string | null {
-  if (!element.isOEZK) {
-    return null;
+  dataSource = new MatTableDataSource<MstUebersicht>();
+  displayColumnNames: string[] = [];
+  displayedColumns: string[] = [];
+
+  constructor(private farbeBewertung: FarbeBewertungService) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.pros || this.pros.length < 3) return;
+
+    this.displayColumnNames = this.pros[1];
+    this.displayedColumns = this.pros[2];
+    this.dataSource.data = this.pros[0];
   }
-  return this.Farbebewertg.getColor(value);
-}
 
-isYearColumn(col: string): boolean {
-  return col?.toLowerCase().startsWith('sp');
-}
+  getIndex(colName: string): number {
+    return Number(colName.replace('sp', '')) - 1;
+  }
 
+  getColor(value: any, element: MstUebersicht): string | null {
+    if (!element?.isOEZK) return null;
+    return this.farbeBewertung.getColor(value);
+  }
 
+  isYearColumn(col: string): boolean {
+    return col?.toLowerCase().startsWith('sp');
+  }
 }
