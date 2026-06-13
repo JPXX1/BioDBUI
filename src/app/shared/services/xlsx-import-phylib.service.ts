@@ -1302,24 +1302,25 @@ async holeMesswerteAbiotikausDB(datum: string) {
 		 * @param probenehmer - Der Probennehmer, der mit den Daten verbunden ist.
 		 * @returns Eine Zeichenkette, die das Ergebnis des Importvorgangs angibt.
 		 */
-	importBewertungIntoDB(jahr: string, probenehmer: string): string {
-		
-		this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
-		let rueckgabe:string="";
-		if (this.vorhanden === true || this.vorhandenMst === true) {
+	async importBewertungIntoDB(jahr: string, probenehmer: string): Promise<string> {
+  
+  // ✅ await – wartet bis Prüfung wirklich fertig ist
+  await this.pruefeObMessstellenschonVorhanden(jahr, probenehmer);
 
-			if (this.vorhanden === true){
-				rueckgabe= "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
-		} 
-			if (this.vorhandenMst === true) {
-				rueckgabe= "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann leider nicht fortgesetzt werden.";
-			}} else {
-				
-				this.importMessstellenBewertungIntoDB(jahr, probenehmer);
-				rueckgabe= "Datenimport erfolgreich durchgeführt."
-			}
-			return rueckgabe;
-	}
+  if (this.vorhanden === true) {
+    return "Es sind bereits Taxadaten der Importdatei in der Datenbank vorhanden. " +
+           "Der Import kann leider nicht fortgesetzt werden.";
+  }
+
+  if (this.vorhandenMst === true) {
+    return "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. " +
+           "Der Import kann leider nicht fortgesetzt werden.";
+  }
+
+  // ✅ await – falls importMessstellenBewertungIntoDB async ist
+  await this.importMessstellenBewertungIntoDB(jahr, probenehmer);
+  return "Datenimport erfolgreich durchgeführt.";
+}
 	/**
 	 * Importiert Messwerte in die Datenbank.
 	 *
@@ -1430,42 +1431,54 @@ return bemerkung;
 		 * Schließlich wird die Importdatenübersicht mit der Anzahl der verarbeiteten Einträge aktualisiert.
 		 *Import der Bewertungsergebnisse wenn in der Exportdatei Jahre mitgeliefert werden
 		* wird das verwendet, sonst das aus dem Auswahlfeld	( nur für PhytoSee und Phytofluss verwendet)*/
-	importMessstellenBewertungIntoDB(jahr: string, probenehmer: string) {
-		let jahrtemp: string;
-		
-		// console.log(jahrtemp);
-		let g=0;
-		let b=0;
-		// for (let i = 0, l = this.messstellenImp.length; i < l; i += 1) {
-			const uebersichtfiltert=this.uebersicht.filter(daten=>daten.import1==="checked")
-			for (let a = 0, le = uebersichtfiltert.length; a < le; a += 1) {
+	async importMessstellenBewertungIntoDB(jahr: string, probenehmer: string): Promise<void> {
+  let jahrtemp: string;
+  let g = 0;
+  let b = 0;
 
-				// if (this.uebersicht[a].import1==="checked"){ //import möglich
-					g = g + 1;
-					let mstee = this.mst.filter(messstellen => messstellen.namemst === uebersichtfiltert[a].mst);
-					if (mstee.length>0){
-					let mstID=mstee[0].id_mst;
-					const tmpMWteil=this.messstellenImp.filter(g=>g.id_mst===mstID)
+  const uebersichtfiltert = this.uebersicht.filter(
+    daten => daten.import1 === "checked"
+  );
 
-					// Entfernt doppelte Werte aus dem Array
-					const distinctTmpMWteil = Array.from(new Set(tmpMWteil));
+  for (const uebersicht of uebersichtfiltert) {
+    g = g + 1;
 
-					// distinctTmpMWteil enthält jetzt nur noch eindeutige Werte
-	
-					if (distinctTmpMWteil.length>0){ 
-						for (let i = 0, l = distinctTmpMWteil.length; i < l; i += 1) {
-							b=b+1;
-							if (distinctTmpMWteil[i].jahr===undefined){
-								jahrtemp = ("15.07." + jahr);}else{
-									jahrtemp = ("15.07." + distinctTmpMWteil[i].jahr);
-								}
-			this.impPhylibServ.postMessstellenPhylib(distinctTmpMWteil[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp);
+    const mstee = this.mst.filter(
+      messstellen => messstellen.namemst === uebersicht.mst
+    );
 
-		}}}}
-		
-   
-		this.UebersichtImportService.aktualisiereImportdaten(g,b,"",this.uebersichtImport.id_imp);
-	}
+    if (mstee.length === 0) continue;  // ← statt tiefe Verschachtelung
+
+    const mstID = mstee[0].id_mst;
+    const tmpMWteil = this.messstellenImp.filter(g => g.id_mst === mstID);
+
+    // Entfernt doppelte Werte
+    const distinctTmpMWteil = Array.from(new Set(tmpMWteil));
+
+    if (distinctTmpMWteil.length === 0) continue;  // ← statt tiefe Verschachtelung
+
+    for (const eintrag of distinctTmpMWteil) {
+      b = b + 1;
+
+      jahrtemp = eintrag.jahr === undefined
+        ? "15.07." + jahr
+        : "15.07." + eintrag.jahr;
+
+      // ✅ await – wartet bis HTTP-Call wirklich fertig ist
+      await this.impPhylibServ.postMessstellenPhylib(
+        eintrag,
+        jahrtemp,
+        probenehmer,
+        this.uebersichtImport.id_imp
+      );
+    }
+  }
+
+  // ✅ läuft jetzt erst NACH allen HTTP-Calls
+  this.UebersichtImportService.aktualisiereImportdaten(
+    g, b, "", this.uebersichtImport.id_imp
+  );
+}
 	
 	/**
 	 * Wählt und konfiguriert die anzuzeigenden Spalten basierend auf der angegebenen Verfahrens-ID, den Spaltenwerten und der Tabellen-ID aus.

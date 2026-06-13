@@ -751,92 +751,206 @@ if (validIds.includes(result.id_verfahren)) {
 	 * 
 	 * @returns {Promise<void>} Ein Promise, das aufgelöst wird, wenn der Importvorgang abgeschlossen ist.
 	 */
-	async	importIntoDB(){
-		// this.zone.run(() => this.startLoading());
-		 this.importPanel.close();
-			let useincludeDate:boolean=false;
-			this.jahr=this.child1.selected;
-			this.probenehmer=this.childPN.selectedPN;
-			console.log(this.jahr);
 
-			if (!this.jahr){this.InfoBox("Bitte erst das Untersuchungsjahr auswählen.");
-			}else{
+		async importIntoDB(): Promise<void> {
+  this.importPanel.close();
 
-			if (!this.probenehmer){this.InfoBox("Bitte erst den Probenehmer auswählen.");
-			}else 
+  // ✅ Eingaben prüfen
+  this.jahr = this.child1.selected;
+  this.probenehmer = this.childPN.selectedPN;
+  console.log(this.jahr);
+
+  if (!this.jahr) {
+    this.InfoBox("Bitte erst das Untersuchungsjahr auswählen.");
+    return;
+  }
+
+  if (!this.probenehmer) {
+    this.InfoBox("Bitte erst den Probenehmer auswählen.");
+    return;
+  }
+
+  const verfahren = this.valExceltabsService.NrVerfahren;
+
+  // ✅ Datum-Flag setzen
+  const useincludeDate = [6, 7, 8, 9].includes(verfahren);
+  if (useincludeDate) {
+    this.newuebersichtImport.id_komp = 5;
+  }
+
+  // ✅ Artdaten-Import (Phylib, MZB, Phytoplankton)
+  if ([1, 3, 6, 8, 9].includes(verfahren)) {
+    await this.importArtdaten(useincludeDate);
+    return;
+  }
+
+  // ✅ Bewertungs-Import
+  if ([2, 4, 5, 7].includes(verfahren)) {
+    await this.importBewertungen(verfahren);
+    return;
+  }
+
+  // ✅ Kein passendes Verfahren
+  this.InfoBox("Bitte erst eine Importdatei hochladen.");
+}
+
+// ─── Artdaten importieren ────────────────────────────────────────────────────
+
+private async importArtdaten(useincludeDate: boolean): Promise<void> {
+  if (this.MessDataOrgi.length === 0) {
+    this.InfoBox("Bitte erst eine Importdatei hochladen.");
+    return;
+  }
+
+  this.InfoBox("Der Import wird durchgeführt.");
+  this.archivImportErzeugen();
+
+  const message = await this.xlsxImportPhylibService.importIntoDB(
+    this.jahr,
+    this.probenehmer,
+    useincludeDate
+  );
+
+  this.InfoBox(message);
+
+  if (message === "Datenimport erfolgreich durchgeführt.") {
+    this.updateImportHistorie();
+  }
+}
+
+// ─── Bewertungen importieren ─────────────────────────────────────────────────
+
+private async importBewertungen(verfahren: number): Promise<void> {
+  // Verfahren 7 (PhytoflussExport) überspringt die Vorhanden-Prüfung
+  if (verfahren === 7) {
+    this.xlsxImportPhylibService.vorhanden = false;
+  }
+
+  if (this.xlsxImportPhylibService.vorhanden === true) {
+    this.InfoBox(
+      "Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. " +
+      "Der Import kann nicht ausgeführt werden."
+    );
+    return;
+  }
+
+  if (this.xlsxImportPhylibService.vorhandenMst === true) {
+    this.InfoBox(
+      "Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. " +
+      "Der Import kann nicht ausgeführt werden."
+    );
+    return;
+  }
+
+  this.InfoBox("Der Import wird durchgeführt.");
+
+  if (verfahren === 5) {
+    this.newuebersichtImport.id_komp = 5;
+  }
+
+  this.archivImportErzeugen();
+
+  // ✅ await ergänzt
+  await this.xlsxImportPhylibService.holeMst();
+
+  // ✅ await ergänzt – war vorher sync, jetzt async
+  const message = await this.xlsxImportPhylibService.importBewertungIntoDB(
+    this.jahr,
+    this.probenehmer
+  );
+
+  this.InfoBox(message);
+
+  if (message === "Datenimport erfolgreich durchgeführt.") {
+    this.updateImportHistorie();
+  }
+}
+	// async	importIntoDB(){
+	// 	// this.zone.run(() => this.startLoading());
+	// 	 this.importPanel.close();
+	// 		let useincludeDate:boolean=false;
+	// 		this.jahr=this.child1.selected;
+	// 		this.probenehmer=this.childPN.selectedPN;
+	// 		console.log(this.jahr);
+
+	// 		if (!this.jahr){this.InfoBox("Bitte erst das Untersuchungsjahr auswählen.");
+	// 		}else{
+
+	// 		if (!this.probenehmer){this.InfoBox("Bitte erst den Probenehmer auswählen.");
+	// 		}else 
 			
-			{
-				//PhytoLLBB_import(6) und PhytoflussExport(7) haben ein anderes Datum
-				if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===7 || this.valExceltabsService.NrVerfahren===8 || this.valExceltabsService.NrVerfahren===9)	
-					{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
-				// Import Artdaten für Phytoplankton, MZB, Phylib
-			if (this.valExceltabsService.NrVerfahren===1 || 
-				this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6
-				|| this.valExceltabsService.NrVerfahren===8|| this.valExceltabsService.NrVerfahren===9){
-			if (this.MessDataOrgi.length>0 ){
-				// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
-				// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
+	// 		{
+	// 			//PhytoLLBB_import(6) und PhytoflussExport(7) haben ein anderes Datum
+	// 			if (this.valExceltabsService.NrVerfahren===6 || this.valExceltabsService.NrVerfahren===7 || this.valExceltabsService.NrVerfahren===8 || this.valExceltabsService.NrVerfahren===9)	
+	// 				{useincludeDate=true;this.newuebersichtImport.id_komp=5;}
+	// 			// Import Artdaten für Phytoplankton, MZB, Phylib
+	// 		if (this.valExceltabsService.NrVerfahren===1 || 
+	// 			this.valExceltabsService.NrVerfahren===3|| this.valExceltabsService.NrVerfahren===6
+	// 			|| this.valExceltabsService.NrVerfahren===8|| this.valExceltabsService.NrVerfahren===9){
+	// 		if (this.MessDataOrgi.length>0 ){
+	// 			// await this.xlsxImportPhylibService.pruefeObMesswerteschonVorhanden(this.jahr,this.probenehmer);
+	// 			// await this.xlsxImportPhylibService.pruefeObMessstellenschonVorhanden(this.jahr,this.probenehmer);
 				
 			
 				
-				this.InfoBox("Der Import wird durchgeführt.");
+	// 			this.InfoBox("Der Import wird durchgeführt.");
 
-				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
+	// 			//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				
-				this.archivImportErzeugen();
+	// 			this.archivImportErzeugen();
 				
-				 const message =await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
-				this.InfoBox(message);
-				// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
-				// this.uebersichtImport.push(this.newuebersichtImport);
-				// return;
-				if (message==="Datenimport erfolgreich durchgeführt."){
-					this.updateImportHistorie();
+	// 			 const message =await this.xlsxImportPhylibService.importIntoDB(this.jahr,this.probenehmer,useincludeDate);
+	// 			this.InfoBox(message);
+	// 			// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+	// 			// this.uebersichtImport.push(this.newuebersichtImport);
+	// 			// return;
+	// 			if (message==="Datenimport erfolgreich durchgeführt."){
+	// 				this.updateImportHistorie();
 					
-				}
+	// 			}
 				
-				return;
+	// 			return;
 
-			}}
-				else 
-				// hier werden die Bewertungen importiert
+	// 		}}
+	// 			else 
+	// 			// hier werden die Bewertungen importiert
 				
-				console.log(this.valExceltabsService.NrVerfahren);
-				if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || 
-					this.valExceltabsService.NrVerfahren===5|| this.valExceltabsService.NrVerfahren===7){
+	// 			console.log(this.valExceltabsService.NrVerfahren);
+	// 			if (this.valExceltabsService.NrVerfahren===2 || this.valExceltabsService.NrVerfahren===4 || 
+	// 				this.valExceltabsService.NrVerfahren===5|| this.valExceltabsService.NrVerfahren===7){
 
-						if (this.valExceltabsService.NrVerfahren===7){this.xlsxImportPhylibService.vorhanden=false;}
-					if (this.xlsxImportPhylibService.vorhanden===true)
-				{this.InfoBox("Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
-				if (this.xlsxImportPhylibService.vorhandenMst===true)
-				{this.InfoBox("Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
+	// 					if (this.valExceltabsService.NrVerfahren===7){this.xlsxImportPhylibService.vorhanden=false;}
+	// 				if (this.xlsxImportPhylibService.vorhanden===true)
+	// 			{this.InfoBox("Es sind bereits Messwerte der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
+	// 			if (this.xlsxImportPhylibService.vorhandenMst===true)
+	// 			{this.InfoBox("Es sind bereits abiotische Daten der Importdatei in der Datenbank vorhanden. Der Import kann nicht ausgeführt werden.")} else
 
 				
 
-				{this.InfoBox("Der Import wird durchgeführt.");
-					if (this.valExceltabsService.NrVerfahren===5){	this.newuebersichtImport.id_komp=5;}
+	// 			{this.InfoBox("Der Import wird durchgeführt.");
+	// 				if (this.valExceltabsService.NrVerfahren===5){	this.newuebersichtImport.id_komp=5;}
 				
-					//neue importID,Jahr und Probenehmer erzeugen/anfuegen
+	// 				//neue importID,Jahr und Probenehmer erzeugen/anfuegen
 				
-					this.archivImportErzeugen();
+	// 				this.archivImportErzeugen();
 				
-				this.xlsxImportPhylibService.holeMst();
-				const message=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
-				this.InfoBox(message);
-				if (message==="Datenimport erfolgreich durchgeführt."){
-					this.updateImportHistorie();
-									}
+	// 			this.xlsxImportPhylibService.holeMst();
+	// 			const message=this.xlsxImportPhylibService.importBewertungIntoDB(this.jahr,this.probenehmer);
+	// 			this.InfoBox(message);
+	// 			if (message==="Datenimport erfolgreich durchgeführt."){
+	// 				this.updateImportHistorie();
+	// 								}
 				
-				return;
+	// 			return;
 
-				// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
-				// this.uebersichtImport.push(this.newuebersichtImport);
-				// return;
-			}}
-				else 
-				{this.InfoBox("Bitte erst eine Importdatei hochladen.")}
-				}}
-			}
+	// 			// this.uebersichtImportService.uebersicht.push(this.newuebersichtImport);
+	// 			// this.uebersichtImport.push(this.newuebersichtImport);
+	// 			// return;
+	// 		}}
+	// 			else 
+	// 			{this.InfoBox("Bitte erst eine Importdatei hochladen.")}
+	// 			}}
+	// 		}
 			sortData2(){
 
 
@@ -909,202 +1023,262 @@ if (validIds.includes(result.id_verfahren)) {
 			 * 
 			 * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn die Dateiverarbeitung abgeschlossen ist.
 			 */
-			async addfile()     
-		{ 
-			 this.importPanel.close();
-			// this.valExceltabsService = this.injector.get(ValExceltabsService);
-			// this.xlsxImportPhylibService = this.injector.get(XlsxImportPhylibService);
-			// this.phytoseeServiceService = this.injector.get(PhytoseeServiceService);
-			// this.perlodesimportService = this.injector.get(PerlodesimportService);
-			
-			
-			this.ImportDatenAnzeige=false;
-			this.xlsxImportPhylibService.MessDataImp=[]
-			this.ArtenNichtBekannt=false;
-			this.zone.run(() => this.startLoading());
+			private readFileAsWorkbook(file: File): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(file);
+    
+    fileReader.onload = () => {
+      try {
+        const arrayBuffer = fileReader.result as ArrayBuffer;
+        const data = new Uint8Array(arrayBuffer);
+        const bstr = Array.from(data, b => String.fromCharCode(b)).join('');
+        const workbook = XLSX.read(bstr, { type: 'binary' });
+        resolve(workbook);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    
+    fileReader.onerror = () => reject(fileReader.error);
+  });
+}
 
-			try {
-			this.pruefen=true;
-			this.mstimptab=true; this.Datimptab=false; this.Datimptabphyto=false; this.ImportIntoDB=true;
-	//	this.file= event.target.files[0];     
-		let fileReader = new FileReader();    
-		fileReader.readAsArrayBuffer(this.file);     
-		 fileReader.onload = async (e) => {    
-			this.arrayBuffer = fileReader.result;    
-			var data = new Uint8Array(this.arrayBuffer);    
-			var arr = new Array();    
-			for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);    
-			var bstr = arr.join("");    
-			var workbook = XLSX.read(bstr, {type:"binary"}); 
-			//Tab1 Inhalte löschen
-			//this.MessDataGr=[];
-			
-			//Exceltabs auslesen und VErfahren auswählen
-			await this.valExceltabsService.ExcelTabsinArray(workbook);	
-			let valexcelspalten: any=this.valExceltabsService.valspalten
+async addfile() {
+  this.importPanel.close();
+  this.ImportDatenAnzeige = false;
+  this.xlsxImportPhylibService.MessDataImp = [];
+  this.ArtenNichtBekannt = false;
+  this.zone.run(() => this.startLoading());
 
-			//importUebrsicht ID verfahren festlegen
-			let message="";
-			
-			
-			// console.log(this.valExceltabsService.NrVerfahren);
-			this.xlsxImportPhylibService.uebersicht=[];
-			this.newuebersichtImport.id_verfahren=this.valExceltabsService.NrVerfahren;
-			// console.log(this.valExceltabsService.NrVerfahren);
-				switch(this.valExceltabsService.NrVerfahren) {
-					
-				  case 1:
-						//importiert die Daten aus der XLSX in die Interfaces Messwerte und Messgroup
-						this.xlsxImportPhylibService.callarten();
-						this.xlsxImportPhylibService.ngOnInit();
-						
-						await this.xlsxImportPhylibService.Phylibimport(workbook,this.valExceltabsService.valspalten,0,1,this.valExceltabsService.NrVerfahren);
-						// Phylibimport(workbook,valspalten: any, tabMST: number,tabMW: number,verfahrennr : number)
-						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.newuebersichtImport.id_komp=1;
-					
-						this.displayableColumns(1);
-						
-						
-						this.InfoBox("Phylib-Importdatei erkannt (" + this.file.name+ "). " + this.xlsxImportPhylibService.MessDataOrgi.length + " Datensätze in der Importdatei.");
-						this.Datimptab=false;this.Datimptabphyto=false;
-						this.pruefen=false;
-						// this.dataSource.sort = this.sort;
-					break;
-				  case 2:
-					this.newuebersichtImport.id_komp=1;
-					this.InfoBox("Phylib-Bewertungen erkannt (" + this.file.name+ "). ");
-					this.xlsxImportPhylibService.callarten();
-						this.xlsxImportPhylibService.ngOnInit();
-						this.MessDataOrgi =[];
-						await  this.xlsxImportPhylibService.PhylibBewertungimport(workbook,this.valExceltabsService.valspalten,1,this.valExceltabsService.NrVerfahren );
-						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.pruefen=false;
-						this.displayableColumns(2);
-						// this.dataSource.sort=this.sort;
-						this.Datimptab=false;this.Datimptabphyto=false;
-						break;
-					case 3:
-						
-						this.newuebersichtImport.id_komp=3;
-						// this.xlsxImportPhylibService.uebersicht=[];
-						this.xlsxImportPhylibService.MessDataOrgi=[];
-						await this.perlodesimportService.startimport(workbook);
-						this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-						this.ArtenNichtBekanntIsVisible=this.perlodesimportService.ArtenNichtBekanntIsVisible;
-						if (this.ArtenNichtBekanntIsVisible===true){message=" Einige Arten sind nicht bekannt.";}
-						this.InfoBox("Perlodes-Importdatei erkannt (" + this.file.name+ ")." + 
-							this.xlsxImportPhylibService.MessDataOrgi.length + 
-							" Datensätze in der Importdatei."+message);
-						this.ArtenNichtBekanntIsVisible=this.perlodesimportService.ArtenNichtBekanntIsVisible;
-					this.displayableColumns(3);
-					// this.dataSource.sort=this.sort;
-					this.Datimptab=false;this.Datimptabphyto=false;
-					this.pruefen=false;
-					break;
-					case 4://MZB export
-					// this.xlsxImportPhylibService.uebersicht=[];
-					this.newuebersichtImport.id_komp=3;
-					await this.perlodesimportService.PerlodesexportStart(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren );
-					// this.xlsxImportPhylibService.uebersicht=[];
-					this.InfoBox("Perlodes-Bewertungen erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
-					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					this.Datimptab=false;this.Datimptabphyto=false;
-					this.displayableColumns(4);
-					// this.dataSource.sort=this.sort;
-					this.pruefen=false;
-					break;
-					case 5: //PhytoseeExport
-					// code block
-					await this.phytoseeServiceService.Phytoseeexport(workbook, this.valExceltabsService.valspalten,3,this.valExceltabsService.NrVerfahren);
-					this.InfoBox("Phytosee-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
-					this.Datimptab=false;this.Datimptabphyto=false;
-					this.displayableColumns(5);
-					// this.dataSource.sort=this.sort;
-					
-					this.pruefen=false;
-					break;
-					case 6://LLBB_Ilat Import
-					// this.InfoBox="";
-					console.log(this.valExceltabsService.tabs)
-					const result=await this.phytoseeServiceService.PhytoseeLLBBimport(workbook, this.valExceltabsService.valspalten,this.valExceltabsService.tabs,this.valExceltabsService.NrVerfahren,  this.valExceltabsService.loescheErste5Zeilen);
-					
-					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					if (result===("Import erfolgreich")){ 
-						this.pruefen=false;
-						this.InfoBox("LLBB-Phytoplankton-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Messstellen in der Importdatei.");}
-					else {this.InfoBox(result);}
-						this.Datimptab=false;this.Datimptabphyto=false;
+  try {
+    this.pruefen = true;
+    this.mstimptab = true;
+    this.Datimptab = false;
+    this.Datimptabphyto = false;
+    this.ImportIntoDB = true;
 
-					this.displayableColumns(6);
-					break;
-					case 7: //PhytoflussExport
-					// code block
-					await this.phytoseeServiceService.Phytoflussexport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
-					this.InfoBox("Phytofluss-Export erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
-					this.Datimptab=false;this.Datimptabphyto=false;
-					this.displayableColumns(7);
-					// this.dataSource.sort=this.sort;
-					
-					this.pruefen=false;
-					break;
-					case 8: //PhytoseeImport
-					// code block
-					;
-					 await this.phytoseeServiceService.Phytoseeimport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
-					this.Datimptab=false;this.Datimptabphyto=false;
-					
-					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					this.ArtenNichtBekanntIsVisible=this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
-						if (this.ArtenNichtBekanntIsVisible===true){message=" Einige Arten sind nicht bekannt.";}
-						// this.ArtenNichtBekanntIsVisible=this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
+    // ✅ FileReader als Promise - wartet wirklich bis Datei gelesen ist
+    const workbook = await this.readFileAsWorkbook(this.file);
 
-						this.InfoBox("Phytosee-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei. " +message);
-					
-					this.displayableColumns(8);
-					// this.dataSource.sort=this.sort;
-					
-					this.pruefen=false;
-					break;
-					case 9: //PhytoflussImport
-					// code block
-					 await this.phytoseeServiceService.Phytosflussimport(workbook, this.valExceltabsService.valspalten,2,this.valExceltabsService.NrVerfahren);
-					this.InfoBox("Phytofluss-Import erkannt (" + this.file.name+ ")." + this.xlsxImportPhylibService.uebersicht.length + " Datensätze in der Importdatei.");
-					this.Datimptab=false;this.Datimptabphyto=false;
-					this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
-					this.displayableColumns(9);
-					// this.dataSource.sort=this.sort;
-					
-					this.pruefen=false;
-					break;
-				  default:
-					this.InfoBox("Keine Importdatei.");
-				}
-				 this.dataSource.sort=this.sort;
-			}   }
-			
-			finally {
-				this.zone.run(() => {
-			  
-				  // ✅ 1️⃣ Neue Referenz (reicht völlig!)
-				  this.uebersichtImport = this.uebersichtImport.map(row => ({
-					...row,
-					_showDelete: this.uebersichtImportService.isWithinFourWeeks(row.importiert)
-				  }));
-				  
-			  
-				  // ✅ 2️⃣ Sort neu binden (sicher)
-				  if (this.dataSource && this.sort) {
-					this.dataSource.sort = this.sort;
-				  }
-			  
-				  // ✅ 3️⃣ Loading stoppen
-				  this.stopLoading();
-				});
-			  }
-			  
-			
-			}
+    // ✅ dann erst weiter
+    await this.valExceltabsService.ExcelTabsinArray(workbook);
+    const valexcelspalten: any = this.valExceltabsService.valspalten;
+
+    let message = "";
+    this.xlsxImportPhylibService.uebersicht = [];
+    this.newuebersichtImport.id_verfahren = this.valExceltabsService.NrVerfahren;
+    console.log(this.valExceltabsService.NrVerfahren);
+
+    switch (this.valExceltabsService.NrVerfahren) {
+
+      case 1:
+        this.xlsxImportPhylibService.callarten();
+        this.xlsxImportPhylibService.ngOnInit();
+        await this.xlsxImportPhylibService.Phylibimport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          0, 1,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.newuebersichtImport.id_komp = 1;
+        this.displayableColumns(1);
+        this.InfoBox(
+          "Phylib-Importdatei erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.MessDataOrgi.length +
+          " Datensätze in der Importdatei."
+        );
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.pruefen = false;
+        break;
+
+      case 2:
+        this.newuebersichtImport.id_komp = 1;
+        this.InfoBox("Phylib-Bewertungen erkannt (" + this.file.name + "). ");
+        this.xlsxImportPhylibService.callarten();
+        this.xlsxImportPhylibService.ngOnInit();
+        this.MessDataOrgi = [];
+        await this.xlsxImportPhylibService.PhylibBewertungimport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          1,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.pruefen = false;
+        this.displayableColumns(2);
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        break;
+
+      case 3:
+        this.newuebersichtImport.id_komp = 3;
+        this.xlsxImportPhylibService.MessDataOrgi = [];
+        await this.perlodesimportService.startimport(workbook);
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.ArtenNichtBekanntIsVisible = this.perlodesimportService.ArtenNichtBekanntIsVisible;
+        if (this.ArtenNichtBekanntIsVisible === true) {
+          message = " Einige Arten sind nicht bekannt.";
+        }
+        this.InfoBox(
+          "Perlodes-Importdatei erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.MessDataOrgi.length +
+          " Datensätze in der Importdatei." + message
+        );
+        this.displayableColumns(3);
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.pruefen = false;
+        break;
+
+      case 4:
+        this.newuebersichtImport.id_komp = 3;
+        await this.perlodesimportService.PerlodesexportStart(
+          workbook,
+          this.valExceltabsService.valspalten,
+          3,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.InfoBox(
+          "Perlodes-Bewertungen erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.uebersicht.length +
+          " Datensätze in der Importdatei."
+        );
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.displayableColumns(4);
+        this.pruefen = false;
+        break;
+
+      case 5:
+        await this.phytoseeServiceService.Phytoseeexport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          3,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.InfoBox(
+          "Phytosee-Export erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.uebersicht.length +
+          " Datensätze in der Importdatei."
+        );
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.displayableColumns(5);
+        this.pruefen = false;
+        break;
+
+      case 6:
+        console.log(this.valExceltabsService.tabs);
+        const result = await this.phytoseeServiceService.PhytoseeLLBBimport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          this.valExceltabsService.tabs,
+          this.valExceltabsService.NrVerfahren,
+          this.valExceltabsService.loescheErste5Zeilen
+        );
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        if (result === "Import erfolgreich") {
+          this.pruefen = false;
+          this.InfoBox(
+            "LLBB-Phytoplankton-Import erkannt (" + this.file.name + "). " +
+            this.xlsxImportPhylibService.uebersicht.length +
+            " Messstellen in der Importdatei."
+          );
+        } else {
+          this.InfoBox(result);
+        }
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.displayableColumns(6);
+        break;
+
+      case 7:
+        await this.phytoseeServiceService.Phytoflussexport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          2,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.InfoBox(
+          "Phytofluss-Export erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.uebersicht.length +
+          " Datensätze in der Importdatei."
+        );
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.displayableColumns(7);
+        this.pruefen = false;
+        break;
+
+      case 8:
+        await this.phytoseeServiceService.Phytoseeimport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          2,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.ArtenNichtBekanntIsVisible = this.phytoseeServiceService.ArtenNichtBekanntIsVisible;
+        if (this.ArtenNichtBekanntIsVisible === true) {
+          message = " Einige Arten sind nicht bekannt.";
+        }
+        this.InfoBox(
+          "Phytosee-Import erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.uebersicht.length +
+          " Datensätze in der Importdatei. " + message
+        );
+        this.displayableColumns(8);
+        this.pruefen = false;
+        break;
+
+      case 9:
+        await this.phytoseeServiceService.Phytosflussimport(
+          workbook,
+          this.valExceltabsService.valspalten,
+          2,
+          this.valExceltabsService.NrVerfahren
+        );
+        this.InfoBox(
+          "Phytofluss-Import erkannt (" + this.file.name + "). " +
+          this.xlsxImportPhylibService.uebersicht.length +
+          " Datensätze in der Importdatei."
+        );
+        this.Datimptab = false;
+        this.Datimptabphyto = false;
+        this.MessDataOrgi = this.xlsxImportPhylibService.MessDataOrgi;
+        this.displayableColumns(9);
+        this.pruefen = false;
+        break;
+
+      default:
+        this.InfoBox("Keine Importdatei.");
+        break;
+    }
+
+    this.dataSource.sort = this.sort;
+
+  } finally {
+    // ✅ läuft jetzt garantiert NACH dem kompletten Import
+    this.zone.run(() => {
+      this.uebersichtImport = this.uebersichtImport.map(row => ({
+        ...row,
+        _showDelete: this.uebersichtImportService.isWithinFourWeeks(row.importiert)
+      }));
+
+      if (this.dataSource && this.sort) {
+        this.dataSource.sort = this.sort;
+      }
+
+      this.stopLoading();
+    });
+  }
+}
 
 	/**
 	 * Bearbeitet die Details einer gegebenen Person in der Übersicht.

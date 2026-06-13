@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ImpPhylibServ } from './impformenphylib.service';
 import * as XLSX from 'xlsx';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -69,29 +70,11 @@ export class ValExceltabsService {
      * 
      * @returns {Promise<void>} Ein Versprechen, das aufgelöst wird, wenn alle Werte abgerufen und gesetzt wurden.
      */
-	async callvalexceltabs() {
-
-      // holt sich die Exceltabs aus Postgres
-      await this.impPhylibServ.getvalExceltabs().forEach(value => {
-        this.valexceltabs = value;
-        // console.log('observable -> ' + value);
-      });
-      // await this.impPhylibServ.getvalExceltabs().forEach(value => {
-      //   const lowerCaseValue = value.toLowerCase();
-      //   this.valexceltabs = lowerCaseValue;
-      //   console.log('observable -> ' + lowerCaseValue);
-      // });
-      await this.impPhylibServ.getvalVerfahren().forEach(value => {
-        this.valverfahren = value;
-        // console.log('observable -> ' + value);
-      });  
-      await this.impPhylibServ.getvalExcelSpalten().forEach(value => {
-        this.valspalten = value;
-        // console.log('observable -> ' + value);
-      }); 
-      
-
-	}
+	async callvalexceltabs(): Promise<void> {
+  this.valexceltabs = await firstValueFrom(this.impPhylibServ.getvalExceltabs());
+  this.valverfahren = await firstValueFrom(this.impPhylibServ.getvalVerfahren());
+  this.valspalten  = await firstValueFrom(this.impPhylibServ.getvalExcelSpalten());
+}
 
   /**
    * Wählt ein Verfahren basierend auf der angegebenen Verfahrensnummer aus.
@@ -214,149 +197,166 @@ exceltabsauslesen(workbook) {
      * 
      * Im Falle von Fehlern während des Prozesses versucht die Funktion, diese elegant zu behandeln.
      */
-  async ExcelTabsinArray(workbook) {
-    //holt sich alle Exceltabs aus Postgres (Tabelle val_exceltabs)
-    await this.callvalexceltabs();
-    
-//     //Anzahl Tabs ermitteln
-
-//     const sheetNames = workbook.SheetNames;
-
-//     // Anzahl der Tabs mit Inhalt ermitteln
-//     let tabs = 0;
-    
-//     sheetNames.forEach((sheetName) => {
-//       const sheet = workbook.Sheets[sheetName];
-    
-//       // Prüfen, ob das Sheet nicht leer ist und ermittelt die Anzahl der Tabs aus dem Worksheet
-//       if (sheet && sheet['!ref']) {
-//         tabs++;
-//       }
-//     });
-
-// this.tabs=tabs;
-// console.log (this.Exceltabsimpalle);
-// console.log (this.tabs);
-    // liest die erwarteten Exceltabsnamen aus der Postgres-Tabelle val_exceltabs aus, 
-    // die entsprechende zahl an Tabs haben
-   
-    // this.exceltabsauslesen(workbook);//liest Exceltabs aus
-    this.sanitizeWorkbook(workbook); // Sanitize workbook to fix broken !ref ranges
-    // this.spaltenauslesen(workbook);//auslesen der Tabs und enthaltener Spaltennamen
-this.analysiereWorkbook(workbook);
-
- let valexceltabsfilter = this.valexceltabs.filter(exceltabs => exceltabs.anzahltabs === this.tabs);
-    if (valexceltabsfilter.length === 1) {//wenn nur eine Vorlage für ein Tab vorhanden ist
-      //Anzahl der Tabs ist eindeutig für Verfahrensauswahl
-      if (valexceltabsfilter[0].ident_kriterium === 1) {
-        this.waehleVerfahren(valexceltabsfilter[0].id_verfahren);
-        //führe Verfahren aus
-        //Anzahl der Tabs ist nicht eindeutig für Verfahrensauswahl 
-      } else if (valexceltabsfilter[0].ident_kriterium === 2) {//Anzahl und Name der Tabs ist erforderlich für Verfahrensauswahl
-
-        let valexceltabsfilter2_1 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
-        if (valexceltabsfilter2_1.length === 1) {
-
-          this.waehleVerfahren(valexceltabsfilter2_1[0].id_verfahren);
-
-        }
-      } else if (valexceltabsfilter[0].ident_kriterium === 4) {
-
-        
-        this.ValExcelSpalten(valexceltabsfilter[0].namentabs);
-        this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
+ async ExcelTabsinArray(workbook): Promise<void> {
+  await this.callvalexceltabs();
+  
+  this.sanitizeWorkbook(workbook);
+  this.analysiereWorkbook(workbook);
 
 
-                console.log(this.NrVerfahren);
-            }
-      else if (valexceltabsfilter[0].ident_kriterium === 5 &&  this.countOccurrences(valexceltabsfilter[0].namentabs)>1) {
-        
-        this.NrVerfahren =valexceltabsfilter[0].id_verfahren;
-        console.log( this.NrVerfahren );
-    }
-
-    }
-      //wenn mehrere Vorlagen für ein Tab vorhanden sind in (PG) val_exceltabs
-    else if (valexceltabsfilter.length > 1) {
-
-      
-      //z.B.: Phylibimportdatei Prüfung anhand der Tab-Benennung
-    //  let valexceltabsfilter4=valexceltabsfilter.filter(exceltabs=>exceltabs.namentabs===this.ExceltabsimpVier);
-      let valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[0].namentabs);
-
-      let valexceltabsfilter2 = valexceltabsfilter.filter(exceltabs => exceltabs.namentabs === this.Exceltabsimpalle);
-      if (valexceltabsfilter2.length === 1) {
-
-        this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
-
-      }//Phytosee-Export 
-      else   if (valexceltabsfilter4 === 2) {this.waehleVerfahren(valexceltabsfilter2[0].id_verfahren);
-
-      }
-      //Phytofluss-Exportdatei
-      else if (valexceltabsfilter.length ===2 && valexceltabsfilter4 === 1 && this.excelspaltenimport.length>0) {
-        valexceltabsfilter4=this.countOccurrences(valexceltabsfilter[1].namentabs);
-      if (valexceltabsfilter4 === 2) {
-        this.waehleVerfahren(7);
-      }}
-      
-      else{
-        if (this.excelspaltenimport.length>0){
-          
-          
-        try {
-            for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
-              let name = this.excelspaltenimport[i];
-              if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr" || 
-                name.Spaltenname.includes("protokoll phytoplankton")) {
-                if (name.Spaltenname.includes("protokoll phytoplankton")) {
-                  this.loescheErste5Zeilen=true;
-                }else{  this.loescheErste5Zeilen=false;}
-                this.waehleVerfahren(6);break;}else  if
-                //Phylib-Exportdatei  Prüfung anhand der Spaltennamen
-                (name.Spaltenname === "makrophytentyp" || name.Spaltenname === "diatomeentyp" || 
-                  name.Spaltenname.includes("makrophytenverödung")) {
-                    this.waehleVerfahren(2);break;
-                }//Pelodes-import
-                else if(name.Spaltenname === "id_art")
-                  { this.waehleVerfahren(3);break;}
-            }
-             
-                 
-                }
-              
-            
-          catch (error) {
-           // console.error(error.message);
-          }
-      }
-   
+  // ✅ Prüfung: erster Tab heißt "_Metadaten" und enthält "phytosee"
+  if (this.pruefeMetadatenTab(workbook)) {
+    return;
   }
 
-    }else{
-      if (this.excelspaltenimport.length>0){
-        
-        
-        try {
-          for (let i = 0, l = this.excelspaltenimport.length; i < l; i += 1) {
-            let name = this.excelspaltenimport[i];
-            if (name.Spaltenname === "ilat-nr." || name.Spaltenname === "llbb-nr." || name.Spaltenname.includes("protokoll phytoplankton")) {
-              if (name.Spaltenname.includes("protokoll phytoplankton")) {
-                this.loescheErste5Zeilen=true;
-              }else{  this.loescheErste5Zeilen=false;} 
-              this.waehleVerfahren(6);break;}
-                }
-           
-               
-              }
-            
-          
-        catch (error) {
-         // console.error(error.message);
-        }
+
+  const valexceltabsfilter = this.valexceltabs.filter(
+    exceltabs => exceltabs.anzahltabs === this.tabs
+  );
+
+  // Klarer als verschachtelte if/else:
+  if (valexceltabsfilter.length === 0) {
+    this.handleKeineVorlage();
+    return;
+  }
+
+  if (valexceltabsfilter.length === 1) {
+    this.handleEineVorlage(valexceltabsfilter[0]);
+    return;
+  }
+
+  if (valexceltabsfilter.length > 1) {
+    this.handleMehrereVorlagen(valexceltabsfilter);
+    return;
+  }
 }
 
-}}
+private pruefeMetadatenTab(workbook: XLSX.WorkBook): boolean {
+  // Erster Tab-Name prüfen
+  const ersterTabName = workbook.SheetNames[0];
+  if (!ersterTabName || ersterTabName.toLowerCase() !== '_metadaten') {
+    return false;
+  }
+
+  // Inhalt des ersten Tabs lesen
+  const sheet = workbook.Sheets[ersterTabName];
+  if (!sheet || !sheet['!ref']) {
+    return false;
+  }
+
+  // Alle Zellwerte des Sheets durchsuchen
+  const range = XLSX.utils.decode_range(sheet['!ref']);
+  for (let r = range.s.r; r <= range.e.r; r++) {
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const cellRef = XLSX.utils.encode_cell({ r, c });
+      const cell = sheet[cellRef];
+      if (cell && cell.v != null) {
+        const cellWert = String(cell.v).toLowerCase();
+
+        if (cellWert.includes('phytosee')) {
+          this.waehleVerfahren(5);
+          return true;
+        }
+
+        if (cellWert.includes('phytofluss')) {
+          this.waehleVerfahren(7);
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+private handleKeineVorlage(): void {
+  if (this.excelspaltenimport.length === 0) return;
+
+  for (const name of this.excelspaltenimport) {
+    if (name.Spaltenname === "ilat-nr." || 
+        name.Spaltenname === "llbb-nr." || 
+        name.Spaltenname.includes("protokoll phytoplankton")) {
+      this.loescheErste5Zeilen = name.Spaltenname.includes("protokoll phytoplankton");
+      this.waehleVerfahren(6);
+      return;
+    }
+  }
+}
+
+private handleEineVorlage(vorlage: any): void {
+  switch (vorlage.ident_kriterium) {
+    case 1:
+      this.waehleVerfahren(vorlage.id_verfahren);
+      break;
+
+    case 2:
+      const filter2 = [vorlage].filter(
+        exceltabs => exceltabs.namentabs === this.Exceltabsimpalle
+      );
+      if (filter2.length === 1) {
+        this.waehleVerfahren(filter2[0].id_verfahren);
+      }
+      break;
+
+    case 4:
+      this.ValExcelSpalten(vorlage.namentabs);
+      this.NrVerfahren = this.ArrayAvg(this.VorhandeneVerfahren);
+      break;
+
+    case 5:
+      if (this.countOccurrences(vorlage.namentabs) > 1) {
+        this.NrVerfahren = vorlage.id_verfahren;
+      }
+      break;
+  }
+}
+
+private handleMehrereVorlagen(vorlagen: any[]): void {
+  const filter4count = this.countOccurrences(vorlagen[0].namentabs);
+  const filterExakt = vorlagen.filter(
+    exceltabs => exceltabs.namentabs === this.Exceltabsimpalle
+  );
+
+  if (filterExakt.length === 1) {
+    this.waehleVerfahren(filterExakt[0].id_verfahren);
+    return;
+  }
+
+  if (filter4count === 2) {
+    this.waehleVerfahren(filterExakt[0].id_verfahren);
+    return;
+  }
+
+  if (vorlagen.length === 2 && filter4count === 1 && this.excelspaltenimport.length > 0) {
+    if (this.countOccurrences(vorlagen[1].namentabs) === 2) {
+      this.waehleVerfahren(7);
+      return;
+    }
+  }
+
+  // Spaltennamen prüfen
+  if (this.excelspaltenimport.length === 0) return;
+
+  for (const name of this.excelspaltenimport) {
+    if (name.Spaltenname === "ilat-nr." || 
+        name.Spaltenname === "llbb-nr" || 
+        name.Spaltenname.includes("protokoll phytoplankton")) {
+      this.loescheErste5Zeilen = name.Spaltenname.includes("protokoll phytoplankton");
+      this.waehleVerfahren(6);
+      return;
+    }
+    if (name.Spaltenname === "makrophytentyp" || 
+        name.Spaltenname === "diatomeentyp" || 
+        name.Spaltenname.includes("makrophytenverödung")) {
+      this.waehleVerfahren(2);
+      return;
+    }
+    if (name.Spaltenname === "id_art") {
+      this.waehleVerfahren(3);
+      return;
+    }
+  }
+}
 
   /**
    * Liest Spalten aus einer Excel-Arbeitsmappe und speichert sie im Array `excelspaltenimport`.

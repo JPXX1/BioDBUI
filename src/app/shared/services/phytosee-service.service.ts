@@ -260,10 +260,11 @@ export class PhytoseeServiceService {
             // console.log(this.uebersicht);
             // Here is your object
             let o: number = 1;
-            obj.forEach((val, index) => {
+            obj.forEach((val: any, index: number) => {
+            // obj.forEach((val, index) => {
               if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
                 // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
-                if (index => 0) {
+                 if (obj[index] !== null) {
                   //console.log(val + " / " + obj[index][i] + ": " + i);
                   // console.log(obj.length)
                   o = o + 1;
@@ -584,7 +585,7 @@ const mstdatum =await this.hole_PNDatum(workbook, messtellen);
           obj.forEach((val, index) => {
             if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
               // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
-              if (index => 0) {
+              // if (index => 0) {
               
                 o = o + 1;
 
@@ -755,7 +756,7 @@ const mstdatum =await this.hole_PNDatum(workbook, messtellen);
 
 
 
-              }
+              // }
             }
 
           })
@@ -923,7 +924,7 @@ const mstdatum =await this.hole_PNDatum(workbook, messtellen);
             obj.forEach((val, index) => {
               if (obj[index] !== null) {//index=Zeilennummer der Exceltabelle
                 // for (var i in obj[index]) { //i=Spaltenüberschrift der Exceltabelle
-                if (index => 0) {
+                // if (index => 0) {
             
                   o = o + 1;
   
@@ -1102,7 +1103,7 @@ const mstdatum =await this.hole_PNDatum(workbook, messtellen);
   
   
   
-                }
+                // }
               }
   
             })
@@ -1525,9 +1526,9 @@ const mstdatum =await this.hole_PNDatum(workbook, messtellen);
  * @param bewertung - Die textuelle Bewertung.
  * @returns Die numerische Bewertung.
  */
-function bewertung_als_zahl(bewertung: string): number {
+function bewertung_als_zahl(bewertung: string | undefined | null): number {
   let bewertung_zahl: number;
-
+  if (!bewertung) return 0;   // ← null/undefined/leer → 0 zurückgeben
   // Überprüft, ob die Bewertung "sehr gut" enthält
   if (bewertung.includes("sehr gut")) {
     bewertung_zahl = 1;
@@ -1556,6 +1557,11 @@ function bewertung_als_zahl(bewertung: string): number {
   // Gibt die numerische Bewertung zurück
   return bewertung_zahl;
 }
+
+
+
+
+
 /**
  * Konvertiert eine Excel-Datumszahl in eine JavaScript-Datumszeichenkette im Format "DD.MM.YYYY".
  * 

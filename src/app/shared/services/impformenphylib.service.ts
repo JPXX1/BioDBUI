@@ -243,34 +243,78 @@ export class ImpPhylibServ {
          * @returns {Promise<string>} - Ein Versprechen, das den Antworttext vom Server zurückgibt.
          * @throws Wird einen Fehler werfen, wenn die Fetch-Anfrage fehlschlägt.
          */
-        async  postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import):Promise<string> {
-          let url=`${this.apiUrl}/insertPhylibMessstellen`;
+   
+   
+   async postMessstellenPhylib(MessstellenImp: MessstellenImp, datum: string, Probenehmer: string, id_import: any): Promise<string> {
+  const url = `${this.apiUrl}/insertPhylibMessstellen`;
+
+    // ✅ Datum konvertieren: '15.07.2023' → '2023-07-15'
+  const datumPG = datum.split('.').reverse().join('-');
+  
+  const payload = {
+    id_mst:    MessstellenImp.id_mst,
+    id_para:   MessstellenImp.id_para,
+    id_import: id_import,
+    id_pn:     Probenehmer,
+    datum:     datum,
+    id_einh:   MessstellenImp.id_einh,
+    wert:      MessstellenImp.wert
+  };
+
+  // ← temporär zum Debuggen
+  console.log('POST Payload:', JSON.stringify(payload, null, 2));
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload)
+    });
+
+    const responseText = await response.text();
+
+    // ← zeigt den eigentlichen Server-Fehler
+    if (!response.ok) {
+      console.error('Server Fehler:', response.status, responseText);
+    }
+
+    return responseText;
+
+  } catch (error) {
+    console.error('Fetch Fehler:', error);
+    throw error;
+  }
+}
+   
+   
+        // async  postMessstellenPhylib(MessstellenImp:MessstellenImp,datum:string,Probenehmer:string,id_import):Promise<string> {
+        //   let url=`${this.apiUrl}/insertPhylibMessstellen`;
      
           
-          try {
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                "Content-Type": "text/plain"
-              },
-              body: JSON.stringify({
-                id_mst: MessstellenImp.id_mst,
-                id_para: MessstellenImp.id_para,
-                id_import: id_import,
-                id_pn: Probenehmer,
-                datum: datum,
-                id_einh:MessstellenImp.id_einh,
-                wert:MessstellenImp.wert
-              })    
-            //this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp
-            });
-            return await response.text();
-          } catch (error) {
-            console.error('Error posting data:', error);
-            throw error;
-            return  "Fehler";
-          }
-        }
+        //   try {
+        //     const response = await fetch(url, {
+        //       method: 'POST',
+        //       headers: {
+        //         "Content-Type": "text/plain"
+        //       },
+        //       body: JSON.stringify({
+        //         id_mst: MessstellenImp.id_mst,
+        //         id_para: MessstellenImp.id_para,
+        //         id_import: id_import,
+        //         id_pn: Probenehmer,
+        //         datum: datum,
+        //         id_einh:MessstellenImp.id_einh,
+        //         wert:MessstellenImp.wert
+        //       })    
+        //     //this.messstellenImp[i], jahrtemp, probenehmer,this.uebersichtImport.id_imp
+        //     });
+        //     return await response.text();
+        //   } catch (error) {
+        //     console.error('Error posting data:', error);
+        //     throw error;
+        //     return  "Fehler";
+        //   }
+        // }
   
         
 
